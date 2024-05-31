@@ -5,7 +5,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.UUID;
 
-import com.academy.orders.apirest.common.SecurityConfig;
+import com.academy.orders.apirest.common.TestSecurityConfig;
 import com.academy.orders.apirest.orders.contoller.OrdersController;
 import com.academy.orders.apirest.orders.mapper.OrderDTOMapperImpl;
 import com.academy.orders.domain.entity.Order;
@@ -25,7 +25,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @WebMvcTest(OrdersController.class)
 @ContextConfiguration(classes = {OrdersController.class})
-@Import(value = {OrderDTOMapperImpl.class, AopAutoConfiguration.class, SecurityConfig.class})
+@Import(value = {OrderDTOMapperImpl.class, AopAutoConfiguration.class, TestSecurityConfig.class})
 class OrdersControllerTest {
 
 	@Autowired
