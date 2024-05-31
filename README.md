@@ -59,6 +59,11 @@ cd e2e/karate
 ```
 
 ```shell
+mvn clean verify -Dkarate.env=local 
+```
+It is possible to specify username/password via env vars which will be used by karate, defaults see in `config-local-secret.yml`
+
+```shell
 mvn clean verify -Dkarate.env=local -DUSERNAME=<TEST_USERNAME> -DPASSWORD=<TEST_PASSWORD>
 ```
 where `TEST_USERNAME` and `TEST_PASSWORD` is username and password with which app started
@@ -76,5 +81,9 @@ Example: `mvn clean install -DskipTests -P format-apply`
 
 #### Obtain JWT locally
 ```shell
-curl -X POST "http://localhost:8080/retail/auth/token" -H  "accept: application/json" -H  "Authorization: Basic BASE64(username:password)" -d ""
-```
+curl --location 'http://localhost:8080/retail/auth/token' \
+--header 'Content-Type: application/json' \
+--data '{
+    "username": "<USERNAME>",
+    "password":  "<PASSWORD>"
+}'```

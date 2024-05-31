@@ -7,6 +7,9 @@ info:
 servers:
   - url: http://localhost:8080/retail
 
+security:
+  - bearerAuth: [ ]
+
 tags:
   - name: orders
     description: Orders endpoints
@@ -63,9 +66,10 @@ paths:
 
 components:
   securitySchemes:
-    basicAuth:
+    bearerAuth:
       type: http
-      scheme: basic
+      scheme: bearer
+      bearerFormat: JWT
 
   responses:
     NotFoundResponse:
