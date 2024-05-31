@@ -1,0 +1,39 @@
+logging:
+  level:
+    root: WARN
+
+server:
+  port: ${SERVER_PORT:8080}
+  servlet.context-path: /retail
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/retail
+    username: pgusr
+    password: pgpwd
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate.ddl-auto: none
+    properties:
+      hibernate:
+        show-sql: true
+        globally_quoted_identifiers: true
+        physical_naming_strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+  flyway:
+    enabled: false
+
+rest:
+  client:
+    colors:
+      base-url: http://localhost:8081/colors
+
+auth:
+  users:
+    - username: user
+      password: user
+      roles: USER
+    - username: admin
+      roles: ADMIN
+      password: admin
+
+

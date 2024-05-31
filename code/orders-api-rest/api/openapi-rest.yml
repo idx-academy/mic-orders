@@ -1,0 +1,153 @@
+openapi: 3.0.1
+info:
+  title: Retail API
+  description: API description in OpenAPI 3.0 format
+  version: 0.0.1
+
+servers:
+  - url: http://localhost:8080/retail
+
+tags:
+  - name: orders
+    description: Orders endpoints
+
+  - name: token
+    description: Token retrieval
+
+
+paths:
+  /auth/token:
+    post:
+      tags:
+        - token
+      operationId: authToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthTokenRequest"
+      responses:
+        '200':
+          description: Auth token response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokenResponse'
+        '401':
+          $ref: '#/components/responses/NotAuthenticated'
+
+  /v1/orders/{orderId}:
+    get:
+      tags:
+        - orders
+      summary: Get order by id
+      operationId: getOrderById
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          schema:
+            type: string
+            description: Id of the order
+            format: uuid
+          example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
+      responses:
+        '200':
+          description: Order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+
+  responses:
+    NotFoundResponse:
+      description: Not found - if the resource specified by identifier is not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorObject'
+
+    NotAuthenticated:
+      description: Incorrect login or password
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorObject'
+  schemas:
+    Order:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
+          description: 'Order id'
+
+    ErrorObject:
+      title: ErrorObject
+      type: object
+      additionalProperties: false
+      properties:
+        status:
+          type: integer
+          description: Error code
+          minimum: 100
+          maximum: 599
+          example: 400
+        title:
+          type: string
+          description: Error title
+          example: Bad Request
+          maxLength: 100
+        detail:
+          type: string
+          maxLength: 1000
+          description: Error description
+          example: Invalid Request. Please, check the data in the request (QueryString Parameters and/or Body).
+        props:
+          type: object
+          additionalProperties: true
+      required:
+        - status
+        - title
+        - detail
+      example:
+        status: 400
+        title: Bad Request
+        detail: Invalid Request. Please, check the data in the request (QueryString Parameters and/or Body).
+
+    AuthTokenResponse:
+      title: AuthTokenResponse
+      type: object
+      additionalProperties: false
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          description: JWT
+
+    AuthTokenRequest:
+      title: AuthTokenRequest
+      type: object
+      additionalProperties: false
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          description: Username
+        password:
+          type: string
+          description: Password

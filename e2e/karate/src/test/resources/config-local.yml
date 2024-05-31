@@ -1,0 +1,4 @@
+urls:
+  retailApiUrl: "#('http://localhost:' + (karate.properties['APP_PORT'] || 8080) + '/retail')"
+
+defaultAuthMode: token

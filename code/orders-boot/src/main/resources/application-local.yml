@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/retail
+    username: pgusr
+    password: pgpwd
+  flyway:
+    enabled: false
+
+rest:
+  client:
+    colors:
+      base-url: http://localhost:8081/colors
+
+auth:
+  users:
+    - username: user
+      password: ${LOCAL_PASSWORD}
+      roles: USER
+    - username: admin
+      roles: ADMIN
+      password: ${LOCAL_PASSWORD}
+
+

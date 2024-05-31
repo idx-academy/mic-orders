@@ -1,0 +1,50 @@
+openapi: 3.0.1
+info:
+  title: Colors API
+  description: API description in OpenAPI 3.0 format
+  version: 0.0.1
+
+tags:
+  - name: colors
+    description: Colors endpoints
+paths:
+  /v1/colors:
+    get:
+      tags:
+        - colors
+      summary: Get all colors
+      operationId: getColors
+      responses:
+        '200':
+          description: All colors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Colors'
+
+components:
+  schemas:
+    Colors:
+      type: array
+      items:
+        $ref: '#/components/schemas/Color'
+    Color:
+      type: object
+      required:
+        - name
+        - hex
+        - id
+      properties:
+        id:
+          type: string
+          description: Id of the color
+          format: uuid
+          example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
+        name:
+          type: string
+          example: 'Black'
+          description: 'Black color'
+        hex:
+          type: string
+          example: '#0000ff'
+          description: 'Hex of black color'

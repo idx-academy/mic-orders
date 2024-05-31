@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.academy</groupId>
+    <artifactId>orders-api-rest-clients</artifactId>
+    <version>1.0.0</version>
+    <relativePath>..</relativePath>
+  </parent>
+
+  <artifactId>colors-api</artifactId>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.openapitools</groupId>
+        <artifactId>openapi-generator-maven-plugin</artifactId>
+        <version>7.5.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <skipIfSpecIsUnchanged>true</skipIfSpecIsUnchanged>
+              <inputSpec>${project.basedir}/api/openapi-rest.yml</inputSpec>
+              <generatorName>java</generatorName>
+              <library>resttemplate</library>
+              <generateApis>true</generateApis>
+              <generateApiDocumentation>false</generateApiDocumentation>
+              <generateApiTests>false</generateApiTests>
+              <generateModels>true</generateModels>
+              <generateModelDocumentation>false</generateModelDocumentation>
+              <generateModelTests>false</generateModelTests>
+              <generateSupportingFiles>true</generateSupportingFiles>
+              <apiPackage>${project.groupId}.${project.artifactId}.generated.api</apiPackage>
+              <modelPackage>${project.groupId}.${project.artifactId}.generated.model</modelPackage>
+              <modelNameSuffix>DTO</modelNameSuffix>
+              <configOptions>
+                <sourceFolder>src/gen/java/main</sourceFolder>
+                <dateLibrary>java8</dateLibrary>
+                <useTags>true</useTags>
+                <interfaceOnly>false</interfaceOnly>
+              </configOptions>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

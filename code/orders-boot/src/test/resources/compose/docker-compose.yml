@@ -1,0 +1,21 @@
+version: '3.9'
+
+services:
+  wiremock:
+    image: wiremock/wiremock:3.6.0
+    container_name: wiremock
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./mocks:/home/wiremock
+
+  postgres:
+    image: postgres:14-alpine
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=pgusr
+      - POSTGRES_PASSWORD=pgpwd
+      - POSTGRES_DB=retail
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
