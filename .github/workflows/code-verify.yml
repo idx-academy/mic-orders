@@ -59,3 +59,4 @@ jobs:
             -Dsonar.pullrequest.provider=GitHub 
             -Dsonar.pullrequest.github.repository="${{ github.repository }}" 
             -Dsonar.pullrequest.github.summary_comment=true 
+            -Dsonar.java.codeCoveragePlugin=jacoco
