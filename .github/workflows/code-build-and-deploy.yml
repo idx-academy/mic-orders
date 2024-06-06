@@ -40,7 +40,7 @@ jobs:
           java-version: '17'
 
       - name: Build jar with Maven
-        run: mvn -f code/pom.xml clean package -DskipTests
+        run: mvn -f code/pom.xml clean package -DskipITs
 
       - name: Log in to Azure
         uses: azure/login@v2
