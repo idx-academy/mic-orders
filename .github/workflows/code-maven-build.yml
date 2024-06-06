@@ -66,7 +66,7 @@ jobs:
         with:
           context: code
           load: true
-          tags: ${{ secrets.AZURE_ACR_NAME }}.azurecr.io/${{ env.IMAGE }}
+          tags: ${{ env.IMAGE }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -81,4 +81,4 @@ jobs:
           severity: 'CRITICAL'
 
       - name: Push to Azure Container registry
-        run: docker push ${{ secrets.AZURE_ACR_NAME }}.azurecr.io/${{ env.IMAGE }}
+        run: docker push ${{ env.IMAGE }}
