@@ -59,4 +59,5 @@ jobs:
             -Dsonar.pullrequest.provider=GitHub 
             -Dsonar.pullrequest.github.repository="${{ github.repository }}" 
             -Dsonar.pullrequest.github.summary_comment=true 
+            -Dsonar.newCode.referenceBranch="${{ github.base_ref }}"
             -Dsonar.verbose=true
