@@ -41,10 +41,6 @@
 
     <junit-vintage.version>5.9.2</junit-vintage.version>
 
-    <sonar.organization>idx-academy</sonar.organization>
-    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-    <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/jacoco-report-aggregate/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
-
     <skipTests>false</skipTests>
     <skipUTs>${skipTests}</skipUTs>
     <skipITs>${skipTests}</skipITs>
