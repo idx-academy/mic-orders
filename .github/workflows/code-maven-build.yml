@@ -16,13 +16,12 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: ${{ github.event_name == 'pull_request' && (github.base_ref == 'main' && 'prod' || github.base_ref == 'develop' && 'dev') || 'test'}}
+    env:
+      APP_NAME: ${{ github.repository }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Extract short SHA
-        run: echo "SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-8)" >> $GITHUB_ENV
 
       - name: Cache local Maven repository
         uses: actions/cache@v4
@@ -54,17 +53,25 @@ jobs:
         env:
           ACR_NAME: ${{ secrets.AZURE_ACR_NAME }}
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - name: Get image name
+        run: echo "IMAGE=${{ env.APP_NAME }}:${{ github.sha | slice(0,8) }}" >> $GITHUB_ENV
 
-      - name: Build docker image and push
-        uses: docker/build-push-action@v5
+      - name: Build docker image
+        run: docker build -t ${{ env.IMAGE}} -f code/Dockerfile code
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
         with:
-          context: code
-          push: true
-          tags: ${{ secrets.AZURE_ACR_NAME }}.azurecr.io/mic-orders:${{ env.SHORT_SHA }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          image-ref: '\${{ env.IMAGE }}'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
 
-      - name: Azure Container Registry logout
-        run: docker logout
+      - name: Push image to ACR
+        run: |
+          docker push \${{ secrets.AZURE_ACR_NAME }}.azurecr.io\${{ env.IMAGE }}
+
+
+
