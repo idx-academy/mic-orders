@@ -46,10 +46,9 @@ jobs:
         run: |
           JACOCO_REPORT_PATH="$GITHUB_WORKSPACE/code/jacoco-report-aggregate/target/site/jacoco-aggregate/jacoco.xml"
           mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:4.0.0.4121:sonar  -DskipITs \
-          -Dsonar.projectKey=idx-academy \
-          -Dsonar.projectName="${{ github.event.repository.name }}" \
+          -Dsonar.projectKey="${{ github.event.repository.name }}" \
           -Dsonar.host.url="https://sonarcloud.io/" \
-          -Dsonar.organization=inditex-sonarcloud \
+          -Dsonar.organization=idx-academy \
           -Dsonar.pullrequest.key=${{ github.event.pull_request.number }} \
           -Dsonar.pullrequest.branch="${{ github.head_ref }}" \
           -Dsonar.pullrequest.base=${{ github.base_ref }} \
