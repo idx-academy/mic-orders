@@ -39,7 +39,7 @@ jobs:
           java-version: '17'
 
       - name: Build jar with Maven
-        run: mvn -f code/pom.xml clean package -DskipITs
+        run: mvn -f code/pom.xml clean package -DskipTests
 
       - name: Log in to Azure
         uses: azure/login@v1
@@ -60,12 +60,11 @@ jobs:
       - name: Build docker image and push
         uses: docker/build-push-action@v5
         with:
-          context: code/Dockerfile
+          context: code
           push: true
           tags: ${{ secrets.AZURE_ACR_NAME }}.azurecr.io/mic-orders:${{ env.SHORT_SHA }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
       - name: Azure Container Registry logout
-        if: ${{ steps.az-acr-login.conclusion == 'success' }}
         run: docker logout
