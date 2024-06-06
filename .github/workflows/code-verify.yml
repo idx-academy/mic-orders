@@ -51,6 +51,7 @@ jobs:
           -Dsonar.host.url="https://sonarcloud.io/" \
           -Dsonar.organization=inditex-sonarcloud \
           -Dsonar.pullrequest.key=${{ github.event.pull_request.number }} \
+          -Dsonar.pullrequest.branch="${{ github.head_ref }}" \
           -Dsonar.pullrequest.base=${{ github.base_ref }} \
           -Dsonar.scm.revision=${{ github.event.pull_request.head.sha }} \
           -Dsonar.qualitygate.wait=true \
