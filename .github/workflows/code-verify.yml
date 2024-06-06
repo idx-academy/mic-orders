@@ -2,7 +2,6 @@ name: code-verify
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
     paths:
      - 'code/**'
 
