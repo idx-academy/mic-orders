@@ -7,13 +7,23 @@ on:
     branches:
       - develop
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.event_name == 'pull_request' && (github.base_ref == 'main' && 'prod' || github.base_ref == 'develop' && 'dev') || 'test'}}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Extract short SHA
+        id: extract-sha
+        run: echo "::set-output name=short-sha::$(echo ${{ github.sha }} | cut -c1-8)"
 
       - name: Cache local Maven repository
         uses: actions/cache@v4
@@ -29,8 +39,31 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Build with Maven
+      - name: Build jar with Maven
         run: mvn -f code/pom.xml clean package -DskipITs
 
-      - name: Build Docker image
-        run: docker build -t mic-orders:${{ github.sha }} -f code/Dockerfile code
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Login to Azure Container Registry
+        run: az acr login --name $ACR_NAME
+        env:
+          ACR_NAME: ${{ secrets.AZURE_ACR_NAME }}
+
+      - name: Build docker image and push
+        uses: docker/build-push-action@v5
+        with:
+          context: code/Dockerfile
+          push: true
+          tags: ${{ secrets.AZURE_ACR_NAME }}.azurecr.io/mic-orders:${{ steps.extract-sha.outputs.short-sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Azure Container Registry logout
+        uses: gacts/run-and-post-run@v1
+        with:
+          post: docker logout
