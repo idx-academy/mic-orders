@@ -1,21 +1,22 @@
 name: code-maven-build
 
 on:
-  pull_request:
-    #paths:
-    #  - 'code/**'
+  push:
+    paths:
+     - 'code/**'
     branches:
       - develop
+      - main
 
 permissions:
   id-token: write
   contents: read
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     environment:
-      name: ${{ github.event_name == 'pull_request' && (github.base_ref == 'main' && 'prod' || github.base_ref == 'develop' && 'dev') || 'test'}}
+      name: ${{ github.ref == 'refs/heads/main' && 'prod' || github.ref == 'refs/heads/develop' && 'dev' || 'test'}}
     env:
       APP_NAME: ${{ github.event.repository.name }}
       ACR_REGISTRY: ${{ secrets.AZURE_ACR_NAME }}.azurecr.io
