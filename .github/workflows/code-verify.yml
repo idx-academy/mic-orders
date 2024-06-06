@@ -5,6 +5,9 @@ on:
     types: [opened, synchronize, reopened]
     paths:
      - 'code/**'
+    branches:
+      - develop
+      - main
 
 jobs:
   verify:
@@ -35,28 +38,24 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Verify
-        working-directory: code
-        run: mvn -B clean verify -DskipITs
-
-      - name: Analyze with SonarCloud
+      - name: Build and analyze
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        uses: sonarsource/sonarcloud-github-action@v2.2.0
-        with:
-          projectBaseDir: code
-          args: >
-            -Dsonar.projectKey="${{ github.event.repository.name }}" 
-            -Dsonar.host.url="https://sonarcloud.io/" 
-            -Dsonar.organization=idx-academy 
-            -Dsonar.pullrequest.key=${{ github.event.pull_request.number }} 
-            -Dsonar.pullrequest.branch="${{ github.head_ref }}" 
-            -Dsonar.pullrequest.base=${{ github.base_ref }} 
-            -Dsonar.scm.revision=${{ github.event.pull_request.head.sha }} 
-            -Dsonar.qualitygate.wait=true 
-            -Dsonar.qualitygate.timeout=300 
-            -Dsonar.pullrequest.provider=GitHub 
-            -Dsonar.pullrequest.github.repository="${{ github.repository }}" 
-            -Dsonar.pullrequest.github.summary_comment=true 
-            -Dsonar.java.codeCoveragePlugin=jacoco
+        working-directory: code
+        run: |
+          JACOCO_REPORT_PATH="$GITHUB_WORKSPACE/code/jacoco-report-aggregate/target/site/jacoco-aggregate/jacoco.xml"
+          mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.1.2184:sonar -DskipITs \
+          -Dsonar.projectKey="${{ github.event.repository.name }}" \
+          -Dsonar.host.url="https://sonarcloud.io/"  \
+          -Dsonar.organization=idx-academy  \
+          -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}  \
+          -Dsonar.pullrequest.branch="${{ github.head_ref }}"  \
+          -Dsonar.pullrequest.base=${{ github.base_ref }}  \
+          -Dsonar.scm.revision=${{ github.event.pull_request.head.sha }}  \
+          -Dsonar.qualitygate.wait=true  \
+          -Dsonar.qualitygate.timeout=300  \
+          -Dsonar.pullrequest.provider=GitHub  \
+          -Dsonar.pullrequest.github.repository="${{ github.repository }}"  \
+          -Dsonar.pullrequest.github.summary_comment=true  \
+          -Dsonar.coverage.jacoco.xmlReportPaths="$JACOCO_REPORT_PATH"
