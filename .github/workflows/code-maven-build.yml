@@ -22,8 +22,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Extract short SHA
-        id: extract-sha
-        run: echo "::set-output name=short-sha::$(echo ${{ github.sha }} | cut -c1-8)"
+        run: echo "SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-8)" >> $GITHUB_ENV
 
       - name: Cache local Maven repository
         uses: actions/cache@v4
@@ -50,20 +49,24 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Login to Azure Container Registry
+        id: az-acr-login
         run: az acr login --name $ACR_NAME
         env:
           ACR_NAME: ${{ secrets.AZURE_ACR_NAME }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Build docker image and push
         uses: docker/build-push-action@v5
         with:
           context: code/Dockerfile
           push: true
-          tags: ${{ secrets.AZURE_ACR_NAME }}.azurecr.io/mic-orders:${{ steps.extract-sha.outputs.short-sha }}
+          tags: ${{ secrets.AZURE_ACR_NAME }}.azurecr.io/mic-orders:${{ env.SHORT_SHA }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
       - name: Azure Container Registry logout
-        uses: gacts/run-and-post-run@v1
-        with:
-          post: docker logout
+        if: always()
+        run: docker logout
+        needs: az-acr-login
