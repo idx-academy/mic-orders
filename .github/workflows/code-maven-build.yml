@@ -67,6 +67,5 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Azure Container Registry logout
-        if: always()
+        if: ${{ steps.az-acr-login.conclusion == 'success' }}
         run: docker logout
-        needs: az-acr-login
