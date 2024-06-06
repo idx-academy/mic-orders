@@ -1,6 +1,12 @@
 name: code-verify
 
 on:
+  push:
+    paths:
+      - 'code/**'
+    branches:
+      - develop
+      - main
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
