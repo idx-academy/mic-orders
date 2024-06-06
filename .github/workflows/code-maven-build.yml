@@ -54,7 +54,7 @@ jobs:
           ACR_NAME: ${{ secrets.AZURE_ACR_NAME }}
 
       - name: Get image name
-        run: echo "IMAGE=${{ env.APP_NAME }}:${{ github.sha | slice(0,8) }}" >> $GITHUB_ENV
+        run: echo "IMAGE=${{ env.APP_NAME }}:${{ github.sha }} | cut -c1-8" >> $GITHUB_ENV
 
       - name: Build docker image
         run: docker build -t ${{ env.IMAGE}} -f code/Dockerfile code
@@ -72,6 +72,3 @@ jobs:
       - name: Push image to ACR
         run: |
           docker push \${{ secrets.AZURE_ACR_NAME }}.azurecr.io\${{ env.IMAGE }}
-
-
-
