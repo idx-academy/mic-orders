@@ -87,3 +87,4 @@ curl --location 'http://localhost:8080/retail/auth/token' \
     "username": "<USERNAME>",
     "password":  "<PASSWORD>"
 }'```
+
