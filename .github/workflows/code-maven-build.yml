@@ -81,8 +81,4 @@ jobs:
           severity: 'CRITICAL'
 
       - name: Push to Azure Container registry
-        uses: docker/build-push-action@v5
-        with:
-          context: code
-          push: true
-          tags: ${{ secrets.AZURE_ACR_NAME }}.azurecr.io/${{ env.IMAGE }}
+        run: docker push ${{ secrets.AZURE_ACR_NAME }}.azurecr.io/${{ env.IMAGE }}
