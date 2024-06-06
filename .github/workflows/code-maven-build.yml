@@ -17,7 +17,7 @@ jobs:
     environment:
       name: ${{ github.event_name == 'pull_request' && (github.base_ref == 'main' && 'prod' || github.base_ref == 'develop' && 'dev') || 'test'}}
     env:
-      APP_NAME: ${{ github.repository }}
+      APP_NAME: ${{ github.event.repository.name }}
 
     steps:
       - name: Checkout repository
@@ -41,7 +41,7 @@ jobs:
         run: mvn -f code/pom.xml clean package -DskipTests
 
       - name: Log in to Azure
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
@@ -66,7 +66,7 @@ jobs:
         with:
           context: code
           load: true
-          tags: ${{ env.IMAGE }}
+          tags: ${{ secrets.AZURE_ACR_NAME }}.azurecr.io/${{ env.IMAGE }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
