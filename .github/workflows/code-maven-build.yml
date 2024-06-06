@@ -18,6 +18,7 @@ jobs:
       name: ${{ github.event_name == 'pull_request' && (github.base_ref == 'main' && 'prod' || github.base_ref == 'develop' && 'dev') || 'test'}}
     env:
       APP_NAME: ${{ github.event.repository.name }}
+      ACR_REGISTRY: ${{ secrets.AZURE_ACR_NAME }}.azurecr.io
 
     steps:
       - name: Checkout repository
@@ -66,14 +67,14 @@ jobs:
         with:
           context: code
           load: true
-          tags: ${{ env.IMAGE }}
+          tags: ${{ env.ACR_REGISTRY }}/${{ env.IMAGE }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ env.IMAGE }}
+          image-ref: ${{ env.ACR_REGISTRY }}/${{ env.IMAGE }}
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
@@ -81,4 +82,4 @@ jobs:
           severity: 'CRITICAL'
 
       - name: Push to Azure Container registry
-        run: docker push ${{ env.IMAGE }}
+        run: docker push ${{ env.ACR_REGISTRY }}/${{ env.IMAGE }}
