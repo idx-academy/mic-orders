@@ -36,6 +36,7 @@ public class AuthTokenController implements TokenApi {
 	}
 
 	private Authentication authenticate(AuthTokenRequestDTO credentials) {
+
 		return authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(credentials.getUsername(), credentials.getPassword()));
 	}
