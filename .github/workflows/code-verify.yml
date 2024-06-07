@@ -44,16 +44,23 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
+      - name: Store project version
+        id: version
+        run: |
+          echo "app-version=$(xmllint --xpath "/*[name()='project']/*[name()='version']/text()" code/pom.xml)" >> "$GITHUB_OUTPUT"
+
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         working-directory: code
         run: |
-          mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.1.2184:sonar -DskipITs \
+          JACOCO_REPORT_PATH="$GITHUB_WORKSPACE/code/jacoco-report-aggregate/target/site/jacoco-aggregate/jacoco.xml"
+          mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:4.0.0.4121:sonar -DskipITs \
           -Dsonar.projectKey="${{ github.event.repository.name }}" \
           -Dsonar.host.url="https://sonarcloud.io/"  \
           -Dsonar.organization=idx-academy  \
+          -Dsonar.projectVersion=${{ steps.version.outputs.app-version }} \
           -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}  \
           -Dsonar.pullrequest.branch="${{ github.head_ref }}"  \
           -Dsonar.pullrequest.base=${{ github.base_ref }}  \
@@ -62,4 +69,5 @@ jobs:
           -Dsonar.qualitygate.timeout=300  \
           -Dsonar.pullrequest.provider=GitHub  \
           -Dsonar.pullrequest.github.repository="${{ github.repository }}"  \
-          -Dsonar.pullrequest.github.summary_comment=true
+          -Dsonar.pullrequest.github.summary_comment=true  \
+          -Dsonar.coverage.jacoco.xmlReportPaths="$JACOCO_REPORT_PATH"
