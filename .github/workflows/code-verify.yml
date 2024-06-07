@@ -68,6 +68,7 @@ jobs:
           -Dsonar.qualitygate.wait=true  \
           -Dsonar.qualitygate.timeout=300  \
           -Dsonar.pullrequest.provider=GitHub  \
+          -Dsonar.verbose=true  \
           -Dsonar.pullrequest.github.repository="${{ github.repository }}"  \
           -Dsonar.pullrequest.github.summary_comment=true  \
           -Dsonar.coverage.jacoco.xmlReportPaths="$JACOCO_REPORT_PATH"
