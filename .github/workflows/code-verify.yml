@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'code/**'
+      - 'code/code-verify.yml'
     branches:
       - develop
       - main
