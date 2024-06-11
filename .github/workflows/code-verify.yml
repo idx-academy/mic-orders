@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'code/**'
+      - '.github/workflows/code-verify.yml'
     branches:
       - develop
       - main
