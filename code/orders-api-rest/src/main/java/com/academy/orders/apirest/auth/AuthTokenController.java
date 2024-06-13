@@ -27,7 +27,7 @@ public class AuthTokenController implements TokenApi {
 	private final AuthenticationManager authenticationManager;
 
 	@Override
-	public AuthTokenResponseDTO authToken(AuthTokenRequestDTO credentials) {
+	public AuthTokenResponseDTO login(AuthTokenRequestDTO credentials) {
 		var authentication = authenticate(credentials);
 		var claims = buildClaims(authentication);
 		var token = this.encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
@@ -38,7 +38,7 @@ public class AuthTokenController implements TokenApi {
 	private Authentication authenticate(AuthTokenRequestDTO credentials) {
 
 		return authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(credentials.getUsername(), credentials.getPassword()));
+				new UsernamePasswordAuthenticationToken(credentials.getEmail(), credentials.getPassword()));
 	}
 
 	private JwtClaimsSet buildClaims(Authentication authentication) {

@@ -5,40 +5,40 @@ info:
   version: 0.0.1
 
 servers:
-  - url: http://localhost:8080/retail
+  - url: http://localhost:8080/api/v1
 
 security:
   - bearerAuth: [ ]
 
 tags:
+  - name: Token
   - name: orders
     description: Orders endpoints
 
-  - name: token
-    description: Token retrieval
-
-
 paths:
-  /auth/token:
+  /auth/login:
     post:
       tags:
-        - token
-      operationId: authToken
+        - Token
+      summary: Login user
+      description: The endpoint login the user to the DB.
+      operationId: login
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/AuthTokenRequest"
+              $ref: '../api/components/schemas.yml#/components/schemas/AuthTokenRequest'
       responses:
         '200':
-          description: Auth token response
+          description: Successful login
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthTokenResponse'
-        '401':
-          $ref: '#/components/responses/NotAuthenticated'
-
+                $ref: '../api/components/schemas.yml#/components/schemas/AuthTokenResponse'
+        '400':
+          $ref: '../api/components/responses.yml#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '../api/components/responses.yml#/components/responses/NotFoundResponse'
   /v1/orders/{orderId}:
     get:
       tags:
@@ -60,98 +60,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Order'
+                $ref: '../api/components/schemas.yml#/components/schemas/Order'
         '404':
-          $ref: '#/components/responses/NotFoundResponse'
-
+          $ref: '../api/components/responses.yml#/components/responses/NotFoundResponse'
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
-
-  responses:
-    NotFoundResponse:
-      description: Not found - if the resource specified by identifier is not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorObject'
-
-    NotAuthenticated:
-      description: Incorrect login or password
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorObject'
-  schemas:
-    Order:
-      type: object
-      required:
-        - id
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
-          description: 'Order id'
-
-    ErrorObject:
-      title: ErrorObject
-      type: object
-      additionalProperties: false
-      properties:
-        status:
-          type: integer
-          description: Error code
-          minimum: 100
-          maximum: 599
-          example: 400
-        title:
-          type: string
-          description: Error title
-          example: Bad Request
-          maxLength: 100
-        detail:
-          type: string
-          maxLength: 1000
-          description: Error description
-          example: Invalid Request. Please, check the data in the request (QueryString Parameters and/or Body).
-        props:
-          type: object
-          additionalProperties: true
-      required:
-        - status
-        - title
-        - detail
-      example:
-        status: 400
-        title: Bad Request
-        detail: Invalid Request. Please, check the data in the request (QueryString Parameters and/or Body).
-
-    AuthTokenResponse:
-      title: AuthTokenResponse
-      type: object
-      additionalProperties: false
-      required:
-        - token
-      properties:
-        token:
-          type: string
-          description: JWT
-
-    AuthTokenRequest:
-      title: AuthTokenRequest
-      type: object
-      additionalProperties: false
-      required:
-        - username
-        - password
-      properties:
-        username:
-          type: string
-          description: Username
-        password:
-          type: string
-          description: Password

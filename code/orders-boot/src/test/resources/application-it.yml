@@ -4,7 +4,7 @@ logging:
 
 server:
   port: ${SERVER_PORT:8080}
-  servlet.context-path: /retail
+  servlet.context-path: /api/v1
 
 spring:
   datasource:
