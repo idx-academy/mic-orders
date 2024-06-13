@@ -5,15 +5,18 @@ info:
   version: 0.0.1
 
 servers:
-  - url: http://localhost:8080/api/v1
+  - url: http://localhost:8080/retail
 
 security:
   - bearerAuth: [ ]
 
 tags:
-  - name: Token
   - name: orders
     description: Orders endpoints
+
+  - name: token
+    description: Token retrieval
+
 
 paths:
   /auth/login:
@@ -63,6 +66,22 @@ paths:
                 $ref: '../api/components/schemas.yml#/components/schemas/Order'
         '404':
           $ref: '../api/components/responses.yml#/components/responses/NotFoundResponse'
+
+  /v1/users/profile:
+    get:
+      tags:
+        - users
+      summary: Get information about user
+      responses:
+        '200':
+          description: Information about user
+          content:
+            application/json:
+              schema:
+                $ref: '../api/components/schemas.yml#/components/schemas/User'
+        '401':
+          $ref: '../api/components/responses.yml#/components/responses/Unauthorized'
+
 components:
   securitySchemes:
     bearerAuth:

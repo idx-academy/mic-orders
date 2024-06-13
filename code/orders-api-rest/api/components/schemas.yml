@@ -57,3 +57,29 @@ components:
           format: uuid
           example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
           description: 'Order id'
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+          description: 'User id'
+        first_name:
+          type: string
+          example: 'John'
+          description: 'User first name'
+        last_name:
+          type: string
+          example: 'Doe'
+          description: 'User last name'
+        email:
+          type: string
+          format: email
+          example: 'test@mail.com'
+          description: 'User email'
+        phone_number:
+          type: string
+          format: phone_number
+          example: '380999999999'
+          description: 'User phone number'
