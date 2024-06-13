@@ -1,0 +1,48 @@
+components:
+  responses:
+    NotFoundResponse:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorObject'
+    BadRequestResponse:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorObject'
+
+  schemas:
+    ErrorObject:
+      title: ErrorObject
+      type: object
+      additionalProperties: false
+      properties:
+        status:
+          type: integer
+          description: Error code
+          minimum: 100
+          maximum: 599
+          example: 400
+        title:
+          type: string
+          description: Error title
+          example: Bad Request
+          maxLength: 100
+        detail:
+          type: string
+          maxLength: 1000
+          description: Error description
+          example: Invalid Request. Please, check the data in the request (QueryString Parameters and/or Body).
+        props:
+          type: object
+          additionalProperties: true
+      required:
+        - status
+        - title
+        - detail
+      example:
+        status: 400
+        title: Bad Request
+        detail: Invalid Request. Please, check the data in the request (QueryString Parameters and/or Body).

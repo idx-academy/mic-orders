@@ -55,7 +55,7 @@ public abstract class AbstractControllerIT {
 					.orElseThrow(() -> new RuntimeException(username + " not found"));
 
 			var body = new HttpEntity<>(new AuthTokenRequestDTO(username, password));
-			var authResponse = restTemplate.exchange("/auth/token", HttpMethod.POST, body, AuthTokenResponseDTO.class);
+			var authResponse = restTemplate.exchange("/auth/login", HttpMethod.POST, body, AuthTokenResponseDTO.class);
 			assertEquals(200, authResponse.getStatusCode().value());
 
 			token = authResponse.getBody().getToken();

@@ -1,0 +1,59 @@
+components:
+  schemas:
+    AuthTokenRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: example@mail.com
+        password:
+          type: string
+          format: password
+          example: Qwerty12345
+      required:
+        - email
+        - password
+    AuthTokenResponse:
+      title: AuthTokenResponse
+      type: object
+      additionalProperties: false
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          description: JWT
+          example: eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjpbIkFETUlOIl0sInN1YiI6ImRtaWtoYWlsb3ZpY2gwM0BnbWFpbC5jb20iLCJpYXQiOjE3MTU4MDIyNTQsImV4cCI6MTcxNTkxMDI1NH0.pRIMnAzcdcvd2HkveUlLtgM9iCeek1UGew4JEt3oRzmNB80p795KSl9Tx7P0zqytK5_aH3Q-ydmrWUVELHy7Cg
+    ErrorObject:
+      title: ErrorObject
+      type: object
+      additionalProperties: false
+      properties:
+        status:
+          type: integer
+          description: Error code
+          minimum: 100
+          maximum: 599
+          example: 400
+        title:
+          type: string
+          description: Error title
+          example: Bad Request
+          maxLength: 100
+      required:
+        - status
+        - title
+      example:
+        status: 400
+        title: Bad Request
+    Order:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
+          description: 'Order id'
