@@ -111,12 +111,12 @@ paths:
       parameters:
         - in: path
           name: userId
-          required: true
+          required: false
           schema:
             type: integer
             format: int64
             example: 1
-          description: The User ID
+          description: The User ID is optional, depends on user status login or not.
       requestBody:
         required: true
         content:
