@@ -33,7 +33,7 @@ components:
           description: JWT
           example: eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjpbIkFETUlOIl0sInN1YiI6ImRtaWtoYWlsb3ZpY2gwM0BnbWFpbC5jb20iLCJpYXQiOjE3MTU4MDIyNTQsImV4cCI6MTcxNTkxMDI1NH0.pRIMnAzcdcvd2HkveUlLtgM9iCeek1UGew4JEt3oRzmNB80p795KSl9Tx7P0zqytK5_aH3Q-ydmrWUVELHy7Cg
 
-    ErrorObject:
+    BadRequest:
       title: ErrorObject
       type: object
       additionalProperties: false
@@ -55,6 +55,52 @@ components:
       example:
         status: 400
         title: Bad Request
+
+    Unauthorized:
+      title: ErrorObject
+      type: object
+      additionalProperties: false
+      properties:
+        status:
+          type: integer
+          description: Error code
+          minimum: 100
+          maximum: 599
+          example: 400
+        title:
+          type: string
+          description: Error title
+          example: Bad Request
+          maxLength: 100
+      required:
+        - status
+        - title
+      example:
+        status: 401
+        title: Unauthorized
+
+    NotFound:
+      title: ErrorObject
+      type: object
+      additionalProperties: false
+      properties:
+        status:
+          type: integer
+          description: Error code
+          minimum: 100
+          maximum: 599
+          example: 400
+        title:
+          type: string
+          description: Error title
+          example: Bad Request
+          maxLength: 100
+      required:
+        - status
+        - title
+      example:
+        status: 404
+        title: Not Found
 
     Order:
       type: object

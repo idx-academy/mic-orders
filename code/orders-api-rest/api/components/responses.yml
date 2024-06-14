@@ -5,16 +5,16 @@ components:
       content:
         application/json:
           schema:
-            $ref: '../components/schemas.yml#/components/schemas/ErrorObject'
+            $ref: '../components/schemas.yml#/components/schemas/NotFound'
     BadRequestResponse:
       description: Bad Request
       content:
         application/json:
           schema:
-            $ref: '../components/schemas.yml#/components/schemas/ErrorObject'
+            $ref: '../components/schemas.yml#/components/schemas/BadRequest'
     Unauthorized:
       description: User is unauthorized
       content:
         application/json:
           schema:
-            $ref: '../components/schemas.yml#/components/schemas/ErrorObject'
+            $ref: '../components/schemas.yml#/components/schemas/Unauthorized'
