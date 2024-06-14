@@ -10,48 +10,46 @@ servers:
 security:
   - bearerAuth: [ ]
 
+# =============================TAGS=============================
 tags:
-  - name: token
+  - name: Security
     description: Token retrieval
 
-  - name: users
-    description: Users endpoint
-
-  - name: products
+  - name: Products
     description: Products endpoint
 
-  - name: orders
+  - name: Orders
     description: Orders endpoints
 
+# =============================ENDPOINTS=============================
 paths:
-  /auth/login:
+  /auth/sign-in:
     post:
       tags:
-        - token
-      summary: Login user
-      description: The endpoint login the user to the DB.
-      operationId: login
+        - Security
+      summary: Sign in user
+      description: The endpoint sign in the user to the DB.
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '../api/components/schemas.yml#/components/schemas/AuthTokenRequest'
+              $ref: '#/components/schemas/SignInRequestDto'
       responses:
         '200':
-          description: Successful login
+          description: Successful sign in
           content:
             application/json:
               schema:
-                $ref: '../api/components/schemas.yml#/components/schemas/AuthTokenResponse'
+                $ref: '#/components/schemas/AuthTokenResponseDto'
         '400':
-          $ref: '../api/components/responses.yml#/components/responses/BadRequestResponse'
+          $ref: '#/components/responses/BadRequestResponse'
         '404':
-          $ref: '../api/components/responses.yml#/components/responses/NotFoundResponse'
+          $ref: '#/components/responses/NotFoundResponse'
 
   /v1/orders/{orderId}:
     get:
       tags:
-        - orders
+        - Orders
       summary: Get order by id
       operationId: getOrderById
       parameters:
@@ -69,43 +67,30 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '../api/components/schemas.yml#/components/schemas/Order'
+                $ref: '#/components/schemas/OrderDto'
         '404':
-          $ref: '../api/components/responses.yml#/components/responses/NotFoundResponse'
-
-  /v1/users/profile:
-    get:
-      tags:
-        - users
-      summary: Get information about user
-      responses:
-        '200':
-          description: Information about user
-          content:
-            application/json:
-              schema:
-                $ref: '../api/components/schemas.yml#/components/schemas/User'
-        '401':
-          $ref: '../api/components/responses.yml#/components/responses/Unauthorized'
+          $ref: '#/components/responses/NotFoundResponse'
 
   /v1/products:
     get:
       tags:
-        - products
+        - Products
       summary: Get list of products
       description: The endpoint for getting all products from database.
       responses:
         '200':
-          description: Information about all products
+          description: Short information about all products
           content:
             application/json:
               schema:
-                $ref: '../api/components/schemas.yml#/components/schemas/Products'
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductPreviewDto'
 
-  /v1/cart/products/{userId}:
+  /v1/users/{userId}:
     post:
       tags:
-        - products
+        - Users
       summary: Add products to the cart
       description: The endpoint for adding a product to the user's shopping cart.
       parameters:
@@ -124,22 +109,240 @@ paths:
             schema:
               type: array
               items:
-               $ref: '../api/components/schemas.yml#/components/schemas/Products'
+                $ref: '#/components/schemas/ProductPreviewDto'
       responses:
-       '201':
-         description: The card with added products was created
-         content:
-           application/json:
-             schema:
-               $ref: '../api/components/schemas.yml#/components/schemas/Cart'
-       '400':
-         $ref: '../api/components/responses.yml#/components/responses/BadRequestResponse'
-       '404':
-         $ref: '../api/components/responses.yml#/components/responses/NotFoundResponse'
+        '201':
+          description: The card with added products was created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartItemDto'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
 
+  /v1/users/{userId}/cart/{productId}:
+    post:
+      tags:
+        - Users
+      summary: Add products to the cart
+      description: The endpoint for adding a product to the user's shopping cart.
+      parameters:
+        - in: path
+          name: userId
+          required: false
+          schema:
+            type: integer
+            format: int64
+            example: 1
+          description: The User ID is optional, depends on user status login or not.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/ProductPreviewDto'
+      responses:
+        '201':
+          description: The card with added products was created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartItemDto'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+
+# =============================COMPONENTS=============================
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
+
+  # =============================RESPONSES=============================
+  responses:
+    NotFoundResponse:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotFound'
+    BadRequestResponse:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequest'
+    Unauthorized:
+      description: User is unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Unauthorized'
+
+  # =============================SCHEMAS=============================
+  schemas:
+    SignInRequestDto:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: example@mail.com
+        password:
+          type: string
+          format: password
+          example: Qwerty12345
+      required:
+        - email
+        - password
+
+    AuthTokenResponseDto:
+      title: AuthTokenResponse
+      type: object
+      additionalProperties: false
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          description: JWT
+          example: eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjpbIkFETUlOIl0sInN1YiI6ImRtaWtoYWlsb3ZpY2gwM0BnbWFpbC5jb20iLCJpYXQiOjE3MTU4MDIyNTQsImV4cCI6MTcxNTkxMDI1NH0.pRIMnAzcdcvd2HkveUlLtgM9iCeek1UGew4JEt3oRzmNB80p795KSl9Tx7P0zqytK5_aH3Q-ydmrWUVELHy7Cg
+
+    BadRequest:
+      title: BadRequest
+      type: object
+      additionalProperties: false
+      properties:
+        status:
+          type: integer
+          description: Error code
+          minimum: 100
+          maximum: 599
+          example: 400
+        title:
+          type: string
+          description: Error title
+          example: Bad Request
+          maxLength: 100
+      required:
+        - status
+        - title
+      example:
+        status: 400
+        title: Bad Request
+
+    Unauthorized:
+      title: Unauthorized
+      type: object
+      additionalProperties: false
+      properties:
+        status:
+          type: integer
+          description: Error code
+          minimum: 100
+          maximum: 599
+          example: 400
+        title:
+          type: string
+          description: Error title
+          example: Bad Request
+          maxLength: 100
+      required:
+        - status
+        - title
+      example:
+        status: 401
+        title: Unauthorized
+
+    NotFound:
+      title: NotFound
+      type: object
+      additionalProperties: false
+      properties:
+        status:
+          type: integer
+          description: Error code
+          minimum: 100
+          maximum: 599
+          example: 400
+        title:
+          type: string
+          description: Error title
+          example: Bad Request
+          maxLength: 100
+      required:
+        - status
+        - title
+      example:
+        status: 404
+        title: Not Found
+
+    OrderDto:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
+          description: Order id
+
+    ProductPreviewDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '123e4567-e89b-12d3-a456-426614174000'
+          description: Product Id.
+        name:
+          type: string
+          example: APPLE iPhone
+          description: Name of the product.
+        description:
+          type: string
+          example: Device type, operation system, etc.
+          description: Product description
+        status:
+          type: string
+          enum:
+            - AVAILABLE
+            - END_SOON
+            - ENDED
+          example: VISIBLE
+          description: Status of the product's quantity
+        tags:
+          type: array
+          description: List of tags associated with the product
+          items:
+            type: string
+            example: category:electronics
+            description: Tag title
+        image:
+          type: string
+          format: uri
+          example: https://example.com/image.jpg
+          description: List of image URLs associated with the product.
+        price:
+          type: number
+          format: float
+          example: 999.99
+          description: Price of the product
+
+    CartItemDto:
+      type: object
+      properties:
+        product:
+          $ref: '#/components/schemas/ProductPreviewDto'
+        quantity:
+          type: integer
+          format: int32
+          example: 1
+          description: Quantity of the items in the cart
