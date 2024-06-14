@@ -11,18 +11,23 @@ security:
   - bearerAuth: [ ]
 
 tags:
-  - name: orders
-    description: Orders endpoints
-
   - name: token
     description: Token retrieval
 
+  - name: users
+    description: Users endpoint
+
+  - name: products
+    description: Products endpoint
+
+  - name: orders
+    description: Orders endpoints
 
 paths:
   /auth/login:
     post:
       tags:
-        - Token
+        - token
       summary: Login user
       description: The endpoint login the user to the DB.
       operationId: login
@@ -42,6 +47,7 @@ paths:
           $ref: '../api/components/responses.yml#/components/responses/BadRequestResponse'
         '404':
           $ref: '../api/components/responses.yml#/components/responses/NotFoundResponse'
+
   /v1/orders/{orderId}:
     get:
       tags:
@@ -81,6 +87,55 @@ paths:
                 $ref: '../api/components/schemas.yml#/components/schemas/User'
         '401':
           $ref: '../api/components/responses.yml#/components/responses/Unauthorized'
+
+  /v1/products:
+    get:
+      tags:
+        - products
+      summary: Get list of products
+      description: The endpoint for getting all products from database.
+      responses:
+        '200':
+          description: Information about all products
+          content:
+            application/json:
+              schema:
+                $ref: '../api/components/schemas.yml#/components/schemas/Products'
+
+  /v1/cart/products/{userId}:
+    post:
+      tags:
+        - products
+      summary: Add products to the cart
+      description: The endpoint for adding a product to the user's shopping cart.
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+          description: The User ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+               $ref: '../api/components/schemas.yml#/components/schemas/Products'
+      responses:
+       '201':
+         description: The card with added products was created
+         content:
+           application/json:
+             schema:
+               $ref: '../api/components/schemas.yml#/components/schemas/Cart'
+       '400':
+         $ref: '../api/components/responses.yml#/components/responses/BadRequestResponse'
+       '404':
+         $ref: '../api/components/responses.yml#/components/responses/NotFoundResponse'
 
 components:
   securitySchemes:
