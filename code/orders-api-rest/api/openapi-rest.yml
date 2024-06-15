@@ -21,6 +21,9 @@ tags:
   - name: Orders
     description: Orders endpoints
 
+  - name: Users
+    description: User management endpoints
+
 # =============================ENDPOINTS=============================
 paths:
   /auth/sign-in:
@@ -41,6 +44,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AuthTokenResponseDto'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+
+  /auth/sign-up:
+    post:
+      tags:
+        - Security
+      summary: Register a new user
+      description: The endpoint registers a new user to the DB.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUpRequestDto'
+      responses:
+        '201':
+          description: Successful registration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedResponse'
         '400':
           $ref: '#/components/responses/BadRequestResponse'
         '404':
@@ -167,6 +193,12 @@ components:
 
   # =============================RESPONSES=============================
   responses:
+    CreatedResponse:
+      description: Resource created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreatedResponse'
     NotFoundResponse:
       description: Not found
       content:
@@ -203,6 +235,29 @@ components:
         - email
         - password
 
+    SignUpRequestDto:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: example@mail.com
+        password:
+          type: string
+          format: password
+          example: Qwerty12345
+        first_name:
+          type: string
+          example: John
+        last_name:
+          type: string
+          example: Doe
+      required:
+        - email
+        - password
+        - first_name
+        - last_name
+
     AuthTokenResponseDto:
       title: AuthTokenResponse
       type: object
@@ -214,6 +269,23 @@ components:
           type: string
           description: JWT
           example: eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjpbIkFETUlOIl0sInN1YiI6ImRtaWtoYWlsb3ZpY2gwM0BnbWFpbC5jb20iLCJpYXQiOjE3MTU4MDIyNTQsImV4cCI6MTcxNTkxMDI1NH0.pRIMnAzcdcvd2HkveUlLtgM9iCeek1UGew4JEt3oRzmNB80p795KSl9Tx7P0zqytK5_aH3Q-ydmrWUVELHy7Cg
+
+    CreatedResponse:
+      title: CreatedResponse
+      type: object
+      additionalProperties: false
+      required:
+        - message
+        - id
+      properties:
+        message:
+          type: string
+          description: Creation status message
+          example: Resource successfully created
+        id:
+          type: string
+          description: ID of the created resource
+          example: 123e4567-e89b-12d3-a456-426614174000
 
     BadRequest:
       title: BadRequest
