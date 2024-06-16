@@ -1,4 +1,4 @@
-FROM arm64v8/eclipse-temurin:17-jre-ubi9-minimal
+FROM eclipse-temurin:17-jre-alpine
 
 RUN addgroup -S executor && adduser -S executor -G executor
 
