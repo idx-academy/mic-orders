@@ -21,9 +21,6 @@ tags:
   - name: Orders
     description: Orders endpoints
 
-  - name: Users
-    description: User management endpoints
-
   - name: Cart
     description: Cart management endpoints
 
@@ -50,8 +47,8 @@ paths:
                 $ref: '#/components/schemas/AuthTokenResponse'
         '400':
           $ref: '#/components/responses/BadRequestResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /auth/sign-up:
     post:
@@ -71,11 +68,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreatedResponse'
+                $ref: '#/components/schemas/AuthTokenResponse'
         '400':
           $ref: '#/components/responses/BadRequestResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
+        '409':
+          $ref: '#/components/responses/Conflict'
 
   /v1/orders/{orderId}:
     get:
@@ -108,6 +105,17 @@ paths:
         - Products
       summary: Get list of products
       description: The endpoint for getting all products from database.
+      operationId: getProducts
+      parameters:
+        - in: query
+          name: lang
+          required: false
+          schema:
+            type: string
+            default: en
+            nullable: false
+            example: en
+          description: The id of the product which is added to the cart
       responses:
         '200':
           description: Short information about all products
@@ -117,41 +125,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ProductPreview'
-
-  /v1/users/{userId}:
-    post:
-      tags:
-        - Users
-      summary: Add products to the cart
-      description: The endpoint for adding a product to the user's shopping cart.
-      parameters:
-        - in: path
-          name: userId
-          required: true
-          schema:
-            type: integer
-            format: int64
-            example: 1
-          description: The User ID is optional, depends on user status login or not.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/ProductPreview'
-      responses:
-        '201':
-          description: The card with added products was created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CartItem'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
 
   /v1/cart/{productId}:
     post:
@@ -171,10 +144,6 @@ paths:
       responses:
         '201':
           description: The card with added products was created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CartItem'
         '400':
           $ref: '#/components/responses/BadRequestResponse'
         '404':
@@ -207,8 +176,18 @@ components:
             $ref: '#/components/schemas/ErrorObject'
           example:
             status: 404
-            title: Unauthorized
+            title: Not Found
             detail: The requested resource was not found
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorObject'
+          example:
+            status: 409
+            title: Conflict
+            detail: The requested has conflict
     BadRequestResponse:
       description: Bad Request
       content:
@@ -221,7 +200,7 @@ components:
             detail: Invalid Request. Please, check the data in the request (QueryString Parameters and/or Body).
 
     Unauthorized:
-      description: User is unauthorized
+      description: Unauthorized
       content:
         application/json:
           schema:
@@ -259,17 +238,17 @@ components:
           type: string
           format: password
           example: Qwerty12345
-        first_name:
+        firstName:
           type: string
           example: John
-        last_name:
+        lastName:
           type: string
           example: Doe
       required:
         - email
         - password
-        - first_name
-        - last_name
+        - firstName
+        - lastName
 
     AuthTokenResponse:
       title: AuthTokenResponse
@@ -289,16 +268,11 @@ components:
       additionalProperties: false
       required:
         - message
-        - id
       properties:
         message:
           type: string
           description: Creation status message
           example: Resource successfully created
-        id:
-          type: string
-          description: ID of the created resource
-          example: 123e4567-e89b-12d3-a456-426614174000
     ErrorObject:
       title: Unauthorized
       type: object
@@ -352,7 +326,7 @@ components:
             - AVAILABLE
             - END_SOON
             - ENDED
-          example: VISIBLE
+          example: AVAILABLE
           description: Status of the product's quantity
         tags:
           type: array
@@ -371,14 +345,3 @@ components:
           format: float
           example: 999.99
           description: Price of the product
-
-    CartItem:
-      type: object
-      properties:
-        product:
-          $ref: '#/components/schemas/ProductPreview'
-        quantity:
-          type: integer
-          format: int32
-          example: 1
-          description: Quantity of the items in the cart
