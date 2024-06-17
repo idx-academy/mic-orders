@@ -205,18 +205,31 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorObject'
+          example:
+            status: 404
+            title: Unauthorized
+            detail: The requested resource was not found
     BadRequestResponse:
       description: Bad Request
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorObject'
+          example:
+            status: 400
+            title: Bad Request
+            detail: Invalid Request. Please, check the data in the request (QueryString Parameters and/or Body).
+
     Unauthorized:
       description: User is unauthorized
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorObject'
+          example:
+            status: 401
+            title: Unauthorized
+            detail: Unauthorized access to the resource
 
   # =============================SCHEMAS=============================
   schemas:
@@ -296,23 +309,17 @@ components:
           description: Error code
           minimum: 100
           maximum: 599
-          example: 400
         title:
           type: string
           description: Error title
-          example: Bad Request
           maxLength: 100
         detail:
           type: string
           description: Details of the exception
-          example: Invalid Request. Please, check the data in the request (QueryString Parameters and/or Body).
       required:
         - status
         - title
         - detail
-      example:
-        status: 401
-        title: Unauthorized
     Order:
       type: object
       required:
