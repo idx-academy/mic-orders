@@ -21,9 +21,6 @@ tags:
   - name: Orders
     description: Orders endpoints
 
-  - name: Users
-    description: User management endpoints
-
   - name: Cart
     description: Cart management endpoints
 
@@ -117,41 +114,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ProductPreview'
-
-  /v1/users/{userId}:
-    post:
-      tags:
-        - Users
-      summary: Add products to the cart
-      description: The endpoint for adding a product to the user's shopping cart.
-      parameters:
-        - in: path
-          name: userId
-          required: true
-          schema:
-            type: integer
-            format: int64
-            example: 1
-          description: The User ID is optional, depends on user status login or not.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/ProductPreview'
-      responses:
-        '201':
-          description: The card with added products was created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CartItem'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
-        '404':
-          $ref: '#/components/responses/NotFoundResponse'
 
   /v1/cart/{productId}:
     post:
