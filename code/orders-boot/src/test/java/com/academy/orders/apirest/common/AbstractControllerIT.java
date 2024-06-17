@@ -2,13 +2,12 @@ package com.academy.orders.apirest.common;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.academy.orders_api_rest.generated.model.SignInRequestDTO;
 import java.util.HashMap;
 import java.util.Map;
-
 import com.academy.orders.boot.Application;
 import com.academy.orders.boot.config.UsersConfig;
 import com.academy.orders.boot.config.UsersConfig.AppUser;
-import com.academy.orders_api_rest.generated.model.AuthTokenRequestDTO;
 import com.academy.orders_api_rest.generated.model.AuthTokenResponseDTO;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,8 +53,9 @@ public abstract class AbstractControllerIT {
 					.map(AppUser::password).findFirst()
 					.orElseThrow(() -> new RuntimeException(username + " not found"));
 
-			var body = new HttpEntity<>(new AuthTokenRequestDTO(username, password));
-			var authResponse = restTemplate.exchange("/auth/login", HttpMethod.POST, body, AuthTokenResponseDTO.class);
+			var body = new HttpEntity<>(new SignInRequestDTO(username, password));
+			var authResponse = restTemplate.exchange(baseUrl() + "/auth/sign-in", HttpMethod.POST, body,
+					AuthTokenResponseDTO.class);
 			assertEquals(200, authResponse.getStatusCode().value());
 
 			token = authResponse.getBody().getToken();
