@@ -24,6 +24,9 @@ tags:
   - name: Users
     description: User management endpoints
 
+  - name: Cart
+    description: Cart management endpoints
+
 # =============================ENDPOINTS=============================
 paths:
   /auth/sign-in:
@@ -31,19 +34,20 @@ paths:
       tags:
         - Security
       summary: Sign in user
+      operationId: signIn
       description: The endpoint sign in the user to the DB.
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SignInRequestDto'
+              $ref: '#/components/schemas/SignInRequest'
       responses:
         '200':
           description: Successful sign in
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthTokenResponseDto'
+                $ref: '#/components/schemas/AuthTokenResponse'
         '400':
           $ref: '#/components/responses/BadRequestResponse'
         '404':
@@ -54,12 +58,13 @@ paths:
       tags:
         - Security
       summary: Register a new user
+      operationId: signUp
       description: The endpoint registers a new user to the DB.
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SignUpRequestDto'
+              $ref: '#/components/schemas/SignUpRequest'
       responses:
         '201':
           description: Successful registration
@@ -93,7 +98,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OrderDto'
+                $ref: '#/components/schemas/Order'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
 
@@ -111,7 +116,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ProductPreviewDto'
+                  $ref: '#/components/schemas/ProductPreview'
 
   /v1/users/{userId}:
     post:
@@ -122,7 +127,7 @@ paths:
       parameters:
         - in: path
           name: userId
-          required: false
+          required: true
           schema:
             type: integer
             format: int64
@@ -135,53 +140,47 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/ProductPreviewDto'
+                $ref: '#/components/schemas/ProductPreview'
       responses:
         '201':
           description: The card with added products was created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CartItemDto'
+                $ref: '#/components/schemas/CartItem'
         '400':
           $ref: '#/components/responses/BadRequestResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
 
-  /v1/users/{userId}/cart/{productId}:
+  /v1/cart/{productId}:
     post:
       tags:
-        - Users
+        - Cart
       summary: Add products to the cart
       description: The endpoint for adding a product to the user's shopping cart.
       parameters:
         - in: path
-          name: userId
-          required: false
+          name: productId
+          required: true
           schema:
-            type: integer
-            format: int64
-            example: 1
-          description: The User ID is optional, depends on user status login or not.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/ProductPreviewDto'
+            type: string
+            format: uuid
+            example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
+          description: The id of the product which is added to the cart
       responses:
         '201':
           description: The card with added products was created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CartItemDto'
+                $ref: '#/components/schemas/CartItem'
         '400':
           $ref: '#/components/responses/BadRequestResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
+
+
 
 # =============================COMPONENTS=============================
 components:
@@ -190,6 +189,7 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+
 
   # =============================RESPONSES=============================
   responses:
@@ -204,23 +204,23 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/NotFound'
+            $ref: '#/components/schemas/ErrorObject'
     BadRequestResponse:
       description: Bad Request
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/BadRequest'
+            $ref: '#/components/schemas/ErrorObject'
     Unauthorized:
       description: User is unauthorized
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Unauthorized'
+            $ref: '#/components/schemas/ErrorObject'
 
   # =============================SCHEMAS=============================
   schemas:
-    SignInRequestDto:
+    SignInRequest:
       type: object
       properties:
         email:
@@ -235,7 +235,7 @@ components:
         - email
         - password
 
-    SignUpRequestDto:
+    SignUpRequest:
       type: object
       properties:
         email:
@@ -258,7 +258,7 @@ components:
         - first_name
         - last_name
 
-    AuthTokenResponseDto:
+    AuthTokenResponse:
       title: AuthTokenResponse
       type: object
       additionalProperties: false
@@ -286,31 +286,7 @@ components:
           type: string
           description: ID of the created resource
           example: 123e4567-e89b-12d3-a456-426614174000
-
-    BadRequest:
-      title: BadRequest
-      type: object
-      additionalProperties: false
-      properties:
-        status:
-          type: integer
-          description: Error code
-          minimum: 100
-          maximum: 599
-          example: 400
-        title:
-          type: string
-          description: Error title
-          example: Bad Request
-          maxLength: 100
-      required:
-        - status
-        - title
-      example:
-        status: 400
-        title: Bad Request
-
-    Unauthorized:
+    ErrorObject:
       title: Unauthorized
       type: object
       additionalProperties: false
@@ -326,37 +302,18 @@ components:
           description: Error title
           example: Bad Request
           maxLength: 100
+        detail:
+          type: string
+          description: Details of the exception
+          example: Invalid Request. Please, check the data in the request (QueryString Parameters and/or Body).
       required:
         - status
         - title
+        - detail
       example:
         status: 401
         title: Unauthorized
-
-    NotFound:
-      title: NotFound
-      type: object
-      additionalProperties: false
-      properties:
-        status:
-          type: integer
-          description: Error code
-          minimum: 100
-          maximum: 599
-          example: 400
-        title:
-          type: string
-          description: Error title
-          example: Bad Request
-          maxLength: 100
-      required:
-        - status
-        - title
-      example:
-        status: 404
-        title: Not Found
-
-    OrderDto:
+    Order:
       type: object
       required:
         - id
@@ -367,7 +324,7 @@ components:
           example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
           description: Order id
 
-    ProductPreviewDto:
+    ProductPreview:
       type: object
       properties:
         id:
@@ -408,11 +365,11 @@ components:
           example: 999.99
           description: Price of the product
 
-    CartItemDto:
+    CartItem:
       type: object
       properties:
         product:
-          $ref: '#/components/schemas/ProductPreviewDto'
+          $ref: '#/components/schemas/ProductPreview'
         quantity:
           type: integer
           format: int32

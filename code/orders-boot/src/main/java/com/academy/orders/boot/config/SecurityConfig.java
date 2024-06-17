@@ -73,7 +73,7 @@ public class SecurityConfig {
 			throws Exception {
 		return http.cors(Customizer.withDefaults()).csrf(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(auth -> {
-					auth.requestMatchers("/auth/token", "/swagger-ui/**", "/v3/api-docs/**").permitAll();
+					auth.requestMatchers("/auth/sign-in", "/swagger-ui/**", "/v3/api-docs/**").permitAll();
 					auth.anyRequest().authenticated();
 				}).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults())
