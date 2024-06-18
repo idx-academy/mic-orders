@@ -13,5 +13,6 @@ ENTRYPOINT ["java", \
             "-XX:InitialRAMPercentage=80", \
             "-XX:MinRAMPercentage=80", \
             "-XX:MaxRAMPercentage=80", \
+            "-Dspring.profiles.active=secrets", \
             "-jar", \
             "app.jar"]

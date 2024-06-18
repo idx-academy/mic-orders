@@ -26,8 +26,13 @@ public class OrderRepositoryImpl implements OrderRepository {
 
 	@Override
 	public Optional<Order> findById(UUID id) {
-		final var colors = colorsApi.getColors();
-		log.info("Retrieved colors {}", colors);
+		try {
+			// TODO delete me
+			final var colors = colorsApi.getColors();
+			log.info("Retrieved colors {}", colors);
+		} catch (Exception e) {
+			log.error("Ops", e);
+		}
 
 		return jpaAdapter.findById(id).map(mapper::fromEntity);
 	}
