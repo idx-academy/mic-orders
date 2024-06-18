@@ -25,10 +25,10 @@ public class SecurityUser extends User {
 
     public static UserDetails fromUser(Account user) {
         return new SecurityUser(
-            user.getId(),
-            user.getEmail(),
-            user.getPassword(),
-            Set.of(new SimpleGrantedAuthority(user.getRole().name()))
+            user.id(),
+            user.email(),
+            user.email(),
+            Set.of(new SimpleGrantedAuthority(user.role().name()))
         );
     }
 }
