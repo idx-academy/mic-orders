@@ -50,8 +50,7 @@ public class ErrorHandler {
 	public ErrorObjectDTO handleBadRequestException(final MethodArgumentTypeMismatchException error) {
 		log.warn("Bad request, param: {}", error.getPropertyName(), error);
 		return new ErrorObjectDTO().status(HttpStatus.BAD_REQUEST.value())
-				.title(HttpStatus.BAD_REQUEST.getReasonPhrase()).putPropsItem("field", error.getPropertyName())
-				.detail(error.getMessage());
+				.title(HttpStatus.BAD_REQUEST.getReasonPhrase()).detail(error.getMessage());
 	}
 
 }

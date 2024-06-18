@@ -10,39 +10,74 @@ servers:
 security:
   - bearerAuth: [ ]
 
+# =============================TAGS=============================
 tags:
-  - name: orders
-    description: Orders endpoints
-
-  - name: token
+  - name: Security
     description: Token retrieval
 
+  - name: Products
+    description: Products endpoint
 
+  - name: Orders
+    description: Orders endpoints
+
+  - name: Cart
+    description: Cart management endpoints
+
+# =============================ENDPOINTS=============================
 paths:
-  /auth/token:
+  /auth/sign-in:
     post:
       tags:
-        - token
-      operationId: authToken
+        - Security
+      summary: Sign in user
+      operationId: signIn
+      description: The endpoint sign in the user to the DB.
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/AuthTokenRequest"
+              $ref: '#/components/schemas/SignInRequest'
       responses:
         '200':
-          description: Auth token response
+          description: Successful sign in
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/AuthTokenResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
         '401':
-          $ref: '#/components/responses/NotAuthenticated'
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/sign-up:
+    post:
+      tags:
+        - Security
+      summary: Register a new user
+      operationId: signUp
+      description: The endpoint registers a new user to the DB.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUpRequest'
+      responses:
+        '201':
+          description: Successful registration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokenResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '409':
+          $ref: '#/components/responses/Conflict'
 
   /v1/orders/{orderId}:
     get:
       tags:
-        - orders
+        - Orders
       summary: Get order by id
       operationId: getOrderById
       parameters:
@@ -64,6 +99,59 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
 
+  /v1/products:
+    get:
+      tags:
+        - Products
+      summary: Get list of products
+      description: The endpoint for getting all products from database.
+      operationId: getProducts
+      parameters:
+        - in: query
+          name: lang
+          required: false
+          schema:
+            type: string
+            default: en
+            nullable: false
+            example: en
+          description: The id of the product which is added to the cart
+      responses:
+        '200':
+          description: Short information about all products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductPreview'
+
+  /v1/cart/{productId}:
+    post:
+      tags:
+        - Cart
+      summary: Add products to the cart
+      description: The endpoint for adding a product to the user's shopping cart.
+      parameters:
+        - in: path
+          name: productId
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
+          description: The id of the product which is added to the cart
+      responses:
+        '201':
+          description: The card with added products was created
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+
+
+
+# =============================COMPONENTS=============================
 components:
   securitySchemes:
     bearerAuth:
@@ -71,64 +159,96 @@ components:
       scheme: bearer
       bearerFormat: JWT
 
+
+  # =============================RESPONSES=============================
   responses:
+    CreatedResponse:
+      description: Resource created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreatedResponse'
     NotFoundResponse:
-      description: Not found - if the resource specified by identifier is not found
+      description: Not found
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorObject'
+          example:
+            status: 404
+            title: Not Found
+            detail: The requested resource was not found
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorObject'
+          example:
+            status: 409
+            title: Conflict
+            detail: The requested has conflict
+    BadRequestResponse:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorObject'
+          example:
+            status: 400
+            title: Bad Request
+            detail: Invalid Request. Please, check the data in the request (QueryString Parameters and/or Body).
 
-    NotAuthenticated:
-      description: Incorrect login or password
+    Unauthorized:
+      description: Unauthorized
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorObject'
+          example:
+            status: 401
+            title: Unauthorized
+            detail: Unauthorized access to the resource
+
+  # =============================SCHEMAS=============================
   schemas:
-    Order:
+    SignInRequest:
       type: object
-      required:
-        - id
       properties:
-        id:
+        email:
           type: string
-          format: uuid
-          example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
-          description: 'Order id'
+          format: email
+          example: example@mail.com
+        password:
+          type: string
+          format: password
+          example: Qwerty12345
+      required:
+        - email
+        - password
 
-    ErrorObject:
-      title: ErrorObject
+    SignUpRequest:
       type: object
-      additionalProperties: false
       properties:
-        status:
-          type: integer
-          description: Error code
-          minimum: 100
-          maximum: 599
-          example: 400
-        title:
+        email:
           type: string
-          description: Error title
-          example: Bad Request
-          maxLength: 100
-        detail:
+          format: email
+          example: example@mail.com
+        password:
           type: string
-          maxLength: 1000
-          description: Error description
-          example: Invalid Request. Please, check the data in the request (QueryString Parameters and/or Body).
-        props:
-          type: object
-          additionalProperties: true
+          format: password
+          example: Qwerty12345
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Doe
       required:
-        - status
-        - title
-        - detail
-      example:
-        status: 400
-        title: Bad Request
-        detail: Invalid Request. Please, check the data in the request (QueryString Parameters and/or Body).
+        - email
+        - password
+        - firstName
+        - lastName
 
     AuthTokenResponse:
       title: AuthTokenResponse
@@ -140,18 +260,88 @@ components:
         token:
           type: string
           description: JWT
+          example: eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjpbIkFETUlOIl0sInN1YiI6ImRtaWtoYWlsb3ZpY2gwM0BnbWFpbC5jb20iLCJpYXQiOjE3MTU4MDIyNTQsImV4cCI6MTcxNTkxMDI1NH0.pRIMnAzcdcvd2HkveUlLtgM9iCeek1UGew4JEt3oRzmNB80p795KSl9Tx7P0zqytK5_aH3Q-ydmrWUVELHy7Cg
 
-    AuthTokenRequest:
-      title: AuthTokenRequest
+    CreatedResponse:
+      title: CreatedResponse
       type: object
       additionalProperties: false
       required:
-        - username
-        - password
+        - message
       properties:
-        username:
+        message:
           type: string
-          description: Username
-        password:
+          description: Creation status message
+          example: Resource successfully created
+    ErrorObject:
+      title: Unauthorized
+      type: object
+      additionalProperties: false
+      properties:
+        status:
+          type: integer
+          description: Error code
+          minimum: 100
+          maximum: 599
+        title:
           type: string
-          description: Password
+          description: Error title
+          maxLength: 100
+        detail:
+          type: string
+          description: Details of the exception
+      required:
+        - status
+        - title
+        - detail
+    Order:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
+          description: Order id
+
+    ProductPreview:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '123e4567-e89b-12d3-a456-426614174000'
+          description: Product Id.
+        name:
+          type: string
+          example: APPLE iPhone
+          description: Name of the product.
+        description:
+          type: string
+          example: Device type, operation system, etc.
+          description: Product description
+        status:
+          type: string
+          enum:
+            - AVAILABLE
+            - END_SOON
+            - ENDED
+          example: AVAILABLE
+          description: Status of the product's quantity
+        tags:
+          type: array
+          description: List of tags associated with the product
+          items:
+            type: string
+            example: category:electronics
+            description: Tag title
+        image:
+          type: string
+          format: uri
+          example: https://example.com/image.jpg
+          description: List of image URLs associated with the product.
+        price:
+          type: number
+          format: float
+          example: 999.99
+          description: Price of the product
