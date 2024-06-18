@@ -1,7 +1,7 @@
 package com.academy.orders.infrastructure.account.entity;
 
-import com.academy.orders.infrastructure.account.enumerated.Role;
-import com.academy.orders.infrastructure.account.enumerated.UserStatus;
+import com.academy.orders.domain.enumerated.Role;
+import com.academy.orders.domain.enumerated.UserStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -24,7 +24,7 @@ import org.hibernate.annotations.CreationTimestamp;
 public class AccountEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "accounts_generator")
-    @SequenceGenerator(name="accounts_generator", sequenceName = "ACCOUNTS_id_seq",allocationSize = 1)
+    @SequenceGenerator(name="accounts_generator", sequenceName = "ACCOUNTS_id_seq", allocationSize = 1)
     @Column(name = "id")
     private Long id;
 
