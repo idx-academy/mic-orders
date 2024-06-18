@@ -1,0 +1,34 @@
+package com.academy.orders.boot.security;
+
+import com.academy.orders.domain.entity.Account;
+import java.util.Collection;
+import java.util.Set;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+
+@Setter
+@Getter
+@EqualsAndHashCode(callSuper = false)
+public class SecurityUser extends User {
+    private Long id;
+
+    public SecurityUser(
+        Long id, String username, String password, Collection<? extends GrantedAuthority> authorities) {
+        super(username, password, authorities);
+        this.id = id;
+    }
+
+    public static UserDetails fromUser(Account user) {
+        return new SecurityUser(
+            user.getId(),
+            user.getEmail(),
+            user.getPassword(),
+            Set.of(new SimpleGrantedAuthority(user.getRole().name()))
+        );
+    }
+}

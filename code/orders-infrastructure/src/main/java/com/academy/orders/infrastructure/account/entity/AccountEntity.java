@@ -24,7 +24,7 @@ import org.hibernate.annotations.CreationTimestamp;
 public class AccountEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "accounts_generator")
-    @SequenceGenerator(name="accounts_generator", sequenceName = "ACCOUNTS_id_seq")
+    @SequenceGenerator(name="accounts_generator", sequenceName = "ACCOUNTS_id_seq",allocationSize = 1)
     @Column(name = "id")
     private Long id;
 
