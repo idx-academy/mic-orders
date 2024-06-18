@@ -27,7 +27,7 @@ public class SecurityUser extends User {
         return new SecurityUser(
             user.id(),
             user.email(),
-            user.email(),
+            user.password(),
             Set.of(new SimpleGrantedAuthority(user.role().name()))
         );
     }
