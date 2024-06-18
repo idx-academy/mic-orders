@@ -1,7 +1,7 @@
 package com.academy.orders.infrastructure.account.entity;
 
-import com.academy.orders.domain.enumerated.Role;
-import com.academy.orders.domain.enumerated.UserStatus;
+import com.academy.orders.domain.account.entity.enumerated.Role;
+import com.academy.orders.domain.account.entity.enumerated.UserStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

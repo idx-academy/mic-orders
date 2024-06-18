@@ -1,10 +1,9 @@
-package com.academy.orders.domain.entity;
+package com.academy.orders.domain.account.entity;
 
-import com.academy.orders.domain.enumerated.Role;
-import com.academy.orders.domain.enumerated.UserStatus;
+import com.academy.orders.domain.account.entity.enumerated.Role;
+import com.academy.orders.domain.account.entity.enumerated.UserStatus;
 import java.time.LocalDateTime;
 import lombok.Builder;
-import lombok.Data;
 
 @Builder
 public record Account(

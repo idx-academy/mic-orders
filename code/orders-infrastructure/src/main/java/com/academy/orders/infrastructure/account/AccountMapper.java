@@ -1,6 +1,7 @@
 package com.academy.orders.infrastructure.account;
 
-import com.academy.orders.domain.entity.Account;
+import com.academy.orders.domain.account.entity.Account;
+import com.academy.orders.domain.account.entity.CreateAccountDTO;
 import com.academy.orders.infrastructure.account.entity.AccountEntity;
 import org.mapstruct.Mapper;
 
@@ -8,5 +9,5 @@ import org.mapstruct.Mapper;
 public interface AccountMapper {
 	Account fromEntity(AccountEntity accountEntity);
 
-	AccountEntity toEntity(Account account);
+	AccountEntity toEntity(CreateAccountDTO account);
 }

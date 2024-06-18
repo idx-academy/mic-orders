@@ -1,6 +1,6 @@
 package com.academy.orders.boot.security;
 
-import com.academy.orders.domain.repository.AccountRepository;
+import com.academy.orders.domain.account.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

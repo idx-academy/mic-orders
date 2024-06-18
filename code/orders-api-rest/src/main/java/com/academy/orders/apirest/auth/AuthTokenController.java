@@ -1,7 +1,11 @@
 package com.academy.orders.apirest.auth;
 
+import com.academy.orders.apirest.auth.mapper.SignUpRequestDTOMapper;
+import com.academy.orders.domain.account.entity.Account;
+import com.academy.orders.domain.account.usecase.CreateUserAccountUseCase;
 import com.academy.orders_api_rest.generated.api.SecurityApi;
 import com.academy.orders_api_rest.generated.model.SignInRequestDTO;
+import com.academy.orders_api_rest.generated.model.SignUpRequestDTO;
 import java.time.Instant;
 import java.util.stream.Collectors;
 import com.academy.orders_api_rest.generated.model.AuthTokenResponseDTO;
@@ -10,6 +14,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
@@ -20,10 +25,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @CrossOrigin
 public class AuthTokenController implements SecurityApi {
-
 	private final JwtEncoder encoder;
-
+	private final PasswordEncoder passwordEncoder;
 	private final AuthenticationManager authenticationManager;
+	private final CreateUserAccountUseCase createUserAccountUseCase;
+	private final SignUpRequestDTOMapper signUpRequestDTOMapper;
+
+	@Override
+	public AuthTokenResponseDTO signUp(SignUpRequestDTO signUpRequestDTO) {
+		SignInRequestDTO signInRequestDto = signUpRequestDTOMapper.toSignInRequestDto(signUpRequestDTO);
+		signUpRequestDTO.setPassword(passwordEncoder.encode(signUpRequestDTO.getPassword()));
+		createUserAccountUseCase.create(signUpRequestDTOMapper.fromDto(signUpRequestDTO));
+		return signIn(signInRequestDto);
+	}
 
 	@Override
 	public AuthTokenResponseDTO signIn(SignInRequestDTO credentials) {

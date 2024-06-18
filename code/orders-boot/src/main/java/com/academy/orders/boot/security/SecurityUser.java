@@ -1,6 +1,6 @@
 package com.academy.orders.boot.security;
 
-import com.academy.orders.domain.entity.Account;
+import com.academy.orders.domain.account.entity.Account;
 import java.util.Collection;
 import java.util.Set;
 import lombok.EqualsAndHashCode;

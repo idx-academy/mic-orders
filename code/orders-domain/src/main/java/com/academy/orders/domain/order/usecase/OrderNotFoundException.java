@@ -1,4 +1,4 @@
-package com.academy.orders.domain.usecase;
+package com.academy.orders.domain.order.usecase;
 
 import java.io.Serial;
 import java.util.UUID;

@@ -7,9 +7,6 @@ info:
 servers:
   - url: http://localhost:8080/retail
 
-security:
-  - bearerAuth: [ ]
-
 # =============================TAGS=============================
 tags:
   - name: Security
@@ -80,6 +77,8 @@ paths:
         - Orders
       summary: Get order by id
       operationId: getOrderById
+      security:
+        - bearerAuth: [ ]
       parameters:
         - in: path
           name: orderId
@@ -132,6 +131,8 @@ paths:
         - Cart
       summary: Add products to the cart
       description: The endpoint for adding a product to the user's shopping cart.
+      security:
+        - bearerAuth: [ ]
       parameters:
         - in: path
           name: productId
