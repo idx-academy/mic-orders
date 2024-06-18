@@ -9,8 +9,8 @@ server:
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/retail
-    username: pgusr
-    password: pgpwd
+    username: ${DATASOURCE_USER}
+    password: ${DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate.ddl-auto: none
