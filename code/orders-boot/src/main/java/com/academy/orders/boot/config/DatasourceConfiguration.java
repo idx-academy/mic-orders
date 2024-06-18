@@ -28,7 +28,7 @@ public class DatasourceConfiguration {
 	public LocalContainerEntityManagerFactoryBean retailEntityManagerFactory(final EntityManagerFactoryBuilder builder,
 			final DataSource datasource) {
 
-		return builder.dataSource(datasource).packages("com.academy.orders.infrastructure.order.entity").build();
+		return builder.dataSource(datasource).packages("com.academy.orders.infrastructure").build();
 	}
 
 	@Bean(name = "retailTransactionManager")
