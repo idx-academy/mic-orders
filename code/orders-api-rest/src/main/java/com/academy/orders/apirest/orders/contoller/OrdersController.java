@@ -23,7 +23,7 @@ public class OrdersController implements OrdersApi {
 	private final OrderDTOMapper mapper;
 
 	@Override
-	@PreAuthorize("hasAuthority('ADMIN')")
+	@PreAuthorize("hasRole('USER')")
 	public OrderDTO getOrderById(UUID orderId) {
 		log.debug("Get order by id {}", orderId);
 
