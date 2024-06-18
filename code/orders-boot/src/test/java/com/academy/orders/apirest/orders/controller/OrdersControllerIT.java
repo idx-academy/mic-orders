@@ -16,7 +16,7 @@ class OrdersControllerIT extends AbstractControllerIT {
 	void testGetOrderById() {
 		// Given
 		final var url = baseUrl() + "/v1/orders/8efbee82-8a0c-407a-a4c0-16bbad40a23e";
-		final HttpHeaders headers = buildAuthHeaders("admin");
+		final HttpHeaders headers = buildUserAuthHeaders();
 		final var requestEntity = new HttpEntity<>(headers);
 
 		// When

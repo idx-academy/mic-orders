@@ -1,7 +1,6 @@
 package com.academy.orders.apirest.auth;
 
 import com.academy.orders.apirest.auth.mapper.SignUpRequestDTOMapper;
-import com.academy.orders.domain.account.entity.Account;
 import com.academy.orders.domain.account.usecase.CreateUserAccountUseCase;
 import com.academy.orders_api_rest.generated.api.SecurityApi;
 import com.academy.orders_api_rest.generated.model.SignInRequestDTO;
