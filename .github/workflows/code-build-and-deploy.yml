@@ -102,7 +102,7 @@ jobs:
 
       - name: Update Kubernetes resources
         run: |
-          cd apps/env/${{ github.event.inputs.environment }}/backend
+          cd apps/env/${{ event.deployment.environment }}/backend
           kustomize edit set image ${{ env.ACR_REGISTRY }}/${{ env.APP_NAME }}=${{ env.ACR_REGISTRY }}/${{ env.IMAGE }}
           cat kustomization.yaml
 
