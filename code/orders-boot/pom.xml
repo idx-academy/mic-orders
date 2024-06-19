@@ -12,7 +12,7 @@
   <dependencies>
 
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>${project.groupIdfdf}<fdf/groupId>
       <artifactId>orders-api-rest</artifactId>
     </dependency>
 
