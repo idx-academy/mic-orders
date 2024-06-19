@@ -19,7 +19,7 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     environment:
-      name: ${{ github.ref == 'refs/heads/main' && 'prod' || github.ref == 'refs/heads/develop' && 'dev' || 'test'}}
+      name: ${{ github.ref == 'refs/heads/main' && 'prod' || github.ref == 'refs/heads/develop' && 'dev' || 'dev'}}
     env:
       APP_NAME: ${{ github.event.repository.name }}
       ACR_REGISTRY: ${{ secrets.AZURE_ACR_NAME }}.azurecr.io
