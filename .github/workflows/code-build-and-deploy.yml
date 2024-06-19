@@ -43,8 +43,8 @@ jobs:
 
       - name: Update Kubernetes resources
         run: |
-          ENV = ${{ github.ref == 'refs/heads/main' && 'prod' || github.ref == 'refs/heads/develop' && 'dev' || 'dev'}}
-          cd apps/env/${{ ENV }}/backend
+          ENV=${{ github.ref == 'refs/heads/main' && 'prod' || github.ref == 'refs/heads/develop' && 'dev' || 'dev'}}
+          cd apps/env/${ENV}/backend
           kustomize edit set image ${{ env.ACR_REGISTRY }}/${{ env.APP_NAME }}=${{ env.ACR_REGISTRY }}/${{ env.IMAGE }}
           cat kustomization.yaml
 
