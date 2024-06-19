@@ -90,7 +90,7 @@ jobs:
         uses: imranismail/setup-kustomize@v2
 
       - name: Checkout kustomize repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           repository: ${{ github.repository_owner }}/k8s-app-manifests
           ref: main
