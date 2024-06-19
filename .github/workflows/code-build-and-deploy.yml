@@ -1,6 +1,9 @@
 name: code-maven-build
 
 on:
+  pull_request:
+    branches: 
+      - develop #TODO delete me
   push:
     paths:
      - 'code/**'
@@ -85,3 +88,28 @@ jobs:
 
       - name: Push to Azure Container registry
         run: docker push ${{ env.ACR_REGISTRY }}/${{ env.IMAGE }}
+        
+      - name: Setup Kustomize
+        uses: imranismail/setup-kustomize@v2
+
+      - name: Checkout kustomize repository
+        uses: actions/checkout@v2
+        with:
+          repository: $GITHUB_USERNAME/k8s-app-manifests
+          ref: main
+          token: ${{ secrets.ACTION_TOKEN }}
+          path: k8s-app-manifests
+
+      - name: Update Kubernetes resources
+        run: |
+          cd apps/env/${{ github.event.inputs.environment }}/backend
+          kustomize edit set image ${{ env.ACR_REGISTRY }}/${{ env.APP_NAME }}=${{ env.ACR_REGISTRY }}/${{ env.IMAGE }}
+          cat kustomization.yaml
+
+      - name: Commit files
+        run: |
+          cd k8s-app-manifests
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "github-actions"
+          git commit -am "Update backend image ${{ env.IMAGE }}"
+          git push -u origin main
