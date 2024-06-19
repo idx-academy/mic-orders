@@ -1,4 +1,4 @@
-package com.academy.orders.application.usecase;
+package com.academy.orders.application.order.usecase;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -13,7 +13,7 @@ import java.util.UUID;
 
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.repository.OrderRepository;
-import com.academy.orders.domain.order.usecase.OrderNotFoundException;
+import com.academy.orders.domain.order.exception.OrderNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,4 +1,4 @@
-package com.academy.orders.apirest.auth;
+package com.academy.orders.apirest.auth.controller;
 
 import com.academy.orders.apirest.auth.mapper.SignUpRequestDTOMapper;
 import com.academy.orders.domain.account.usecase.CreateUserAccountUseCase;
@@ -48,7 +48,6 @@ public class AuthTokenController implements SecurityApi {
 	}
 
 	private Authentication authenticate(SignInRequestDTO credentials) {
-
 		return authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(credentials.getEmail(), credentials.getPassword()));
 	}
