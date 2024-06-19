@@ -102,7 +102,6 @@ jobs:
           ENV=${{ github.ref == 'refs/heads/main' && 'prod' || github.ref == 'refs/heads/develop' && 'dev' || 'test'}}
           cd k8s-app-manifests/apps/env/${ENV}/backend
           kustomize edit set image ${{ env.ACR_REGISTRY }}/${{ env.APP_NAME }}=${{ env.ACR_REGISTRY }}/${{ env.IMAGE }}
-          cat kustomization.yaml
 
       - name: Commit files
         run: |
