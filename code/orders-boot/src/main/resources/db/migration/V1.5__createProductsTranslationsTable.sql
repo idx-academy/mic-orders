@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS "product_translations" (
+CREATE TABLE IF NOT EXISTS "products_translations" (
     product_id VARCHAR(255),
     language_id BIGINT,
     name VARCHAR(255) NOT NULL,
