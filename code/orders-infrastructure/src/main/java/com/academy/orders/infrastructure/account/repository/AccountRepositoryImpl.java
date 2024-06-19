@@ -28,6 +28,10 @@ public class AccountRepositoryImpl implements AccountRepository {
 		return accountEntity.map(accountMapper::fromEntity);
 	}
 
+	public Boolean existsByEmail(String email) {
+		return accountJpaAdapter.existsByEmail(email);
+	}
+
 	@Override
 	@Transactional
 	public Account save(CreateAccountDTO account) {

@@ -6,5 +6,6 @@ import java.util.Optional;
 
 public interface AccountRepository {
 	Optional<Account> getAccountByEmail(String email);
+	Boolean existsByEmail(String email);
 	Account save(CreateAccountDTO account);
 }

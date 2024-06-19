@@ -1,6 +1,10 @@
 package com.academy.orders.apirest.common;
 
-import com.academy.orders.domain.order.usecase.OrderNotFoundException;
+import com.academy.orders.domain.account.entity.Account;
+import com.academy.orders.domain.account.exception.AccountAlreadyExistsException;
+import com.academy.orders.domain.exception.AlreadyExistsException;
+import com.academy.orders.domain.exception.NotFoundException;
+import com.academy.orders.domain.order.exception.OrderNotFoundException;
 import com.academy.orders_api_rest.generated.model.ErrorObjectDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,12 +19,19 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 @RestControllerAdvice
 public class ErrorHandler {
 
-	@ExceptionHandler(OrderNotFoundException.class)
+	@ExceptionHandler(NotFoundException.class)
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)
-	public ErrorObjectDTO handleOrderNotFoundException(final OrderNotFoundException ex) {
-		log.warn("Can't find order", ex);
+	public ErrorObjectDTO handleOrderNotFoundException(final NotFoundException ex) {
+		log.warn("Can't find entity", ex);
 		return new ErrorObjectDTO().status(HttpStatus.BAD_REQUEST.value())
 				.title(HttpStatus.BAD_REQUEST.getReasonPhrase()).detail(ex.getMessage());
+	}
+
+	@ExceptionHandler(AccountAlreadyExistsException.class)
+	@ResponseStatus(value = HttpStatus.NOT_FOUND)
+	public ErrorObjectDTO handleOrderNotFoundException(final AccountAlreadyExistsException ex) {
+		log.warn("Account already exists", ex);
+		return new ErrorObjectDTO().status(HttpStatus.FORBIDDEN.value()).title(HttpStatus.FORBIDDEN.getReasonPhrase());
 	}
 
 	@ExceptionHandler(AuthenticationException.class)

@@ -17,34 +17,31 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserDetailsServiceTest {
-    @InjectMocks
-    private UserDetailsServiceImpl userDetailsService;
-    @Mock
-    private AccountRepository accountRepository;
+	@InjectMocks
+	private UserDetailsServiceImpl userDetailsService;
+	@Mock
+	private AccountRepository accountRepository;
 
-    @Test
-    void loadUserByUsernameTest(){
-        var account = ModelsUtil.getAccount();
-        when(accountRepository.getAccountByEmail(Mockito.anyString()))
-            .thenReturn(Optional.of(account));
+	@Test
+	void loadUserByUsernameTest() {
+		var account = ModelsUtil.getAccount();
+		when(accountRepository.getAccountByEmail(Mockito.anyString())).thenReturn(Optional.of(account));
 
-        var result = (SecurityUser) userDetailsService.loadUserByUsername(account.email());
+		var result = (SecurityUser) userDetailsService.loadUserByUsername(account.email());
 
-        assertEquals(result.getUsername(), account.email());
-        assertEquals(result.getPassword(), account.password());
-        assertEquals(result.getId(), account.id());
-        assertTrue(result.getAuthorities().contains(new SimpleGrantedAuthority(account.role().name())));
+		assertEquals(result.getUsername(), account.email());
+		assertEquals(result.getPassword(), account.password());
+		assertEquals(result.getId(), account.id());
+		assertTrue(result.getAuthorities().contains(new SimpleGrantedAuthority(account.role().name())));
 
-        verify(accountRepository).getAccountByEmail(Mockito.anyString());
-    }
+		verify(accountRepository).getAccountByEmail(Mockito.anyString());
+	}
 
-    @Test
-    void loadUserByUsernameThrowsUsernameNotFoundExceptionTest(){
-        when(accountRepository.getAccountByEmail(Mockito.anyString()))
-            .thenReturn(Optional.empty());
+	@Test
+	void loadUserByUsernameThrowsUsernameNotFoundExceptionTest() {
+		when(accountRepository.getAccountByEmail(Mockito.anyString())).thenReturn(Optional.empty());
 
-        assertThrows(UsernameNotFoundException.class,
-            ()-> userDetailsService.loadUserByUsername(anyString()));
-        verify(accountRepository).getAccountByEmail(Mockito.anyString());
-    }
+		assertThrows(UsernameNotFoundException.class, () -> userDetailsService.loadUserByUsername(anyString()));
+		verify(accountRepository).getAccountByEmail(Mockito.anyString());
+	}
 }
