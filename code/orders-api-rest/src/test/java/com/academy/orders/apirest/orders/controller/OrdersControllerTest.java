@@ -35,7 +35,7 @@ class OrdersControllerTest {
 	private GetOrderByIdUseCase getOrderByIdUseCase;
 
 	@Test
-	@WithMockUser(authorities = "ADMIN")
+	@WithMockUser(roles = "ADMIN")
 	void testGetOrderById() throws Exception {
 		// given
 		var orderId = UUID.randomUUID();

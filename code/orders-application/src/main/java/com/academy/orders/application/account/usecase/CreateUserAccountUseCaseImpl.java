@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class CreateUserAccountUseCaseImpl implements CreateUserAccountUseCase {
-    private final AccountRepository accountRepository;
+	private final AccountRepository accountRepository;
 
-    @Override
-    public void create(CreateAccountDTO account) {
-        accountRepository.save(account);
-    }
+	@Override
+	public void create(CreateAccountDTO account) {
+		accountRepository.save(account);
+	}
 }

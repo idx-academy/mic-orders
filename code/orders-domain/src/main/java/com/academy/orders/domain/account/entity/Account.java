@@ -6,15 +6,7 @@ import java.time.LocalDateTime;
 import lombok.Builder;
 
 @Builder
-public record Account(
-    Long id,
-    String password,
-    String email,
-    String firstName,
-    String lastName,
-    Role role,
-    UserStatus status,
-    LocalDateTime createdAt
-) {
+public record Account(Long id, String password, String email, String firstName, String lastName, Role role,
+		UserStatus status, LocalDateTime createdAt) {
 
 }

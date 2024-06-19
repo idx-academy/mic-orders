@@ -13,7 +13,7 @@ public class TestSecurityConfig {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		return http.csrf(AbstractHttpConfigurer::disable)
-				.authorizeHttpRequests(auth -> auth.anyRequest().authenticated()).build();
+		return http.csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(
+				auth -> auth.requestMatchers("/auth/sign-in").permitAll().anyRequest().authenticated()).build();
 	}
 }

@@ -18,25 +18,25 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Transactional(readOnly = true)
 public class AccountRepositoryImpl implements AccountRepository {
-    private final AccountJpaAdapter accountJpaAdapter;
-    private final AccountMapper accountMapper;
+	private final AccountJpaAdapter accountJpaAdapter;
+	private final AccountMapper accountMapper;
 
-    @Override
-    public Account getAccountByEmail(String email) {
-        var accountEntity = accountJpaAdapter.findByEmail(email)
-            .orElseThrow(() -> new EntityNotFoundException("Not found account with email: " + email));
+	@Override
+	public Account getAccountByEmail(String email) {
+		var accountEntity = accountJpaAdapter.findByEmail(email)
+				.orElseThrow(() -> new EntityNotFoundException("Not found account with email: " + email));
 
-        return accountMapper.fromEntity(accountEntity);
-    }
+		return accountMapper.fromEntity(accountEntity);
+	}
 
-    @Override
-    @Transactional
-    public Account save(CreateAccountDTO account) {
-        log.info("Saving user {}:", account);
-        AccountEntity accountEntity = accountMapper.toEntity(account);
-        accountEntity.setRole(Role.ROLE_USER);
-        accountEntity.setStatus(UserStatus.ACTIVE);
-        AccountEntity savedAccount = accountJpaAdapter.save(accountEntity);
-        return accountMapper.fromEntity(savedAccount);
-    }
+	@Override
+	@Transactional
+	public Account save(CreateAccountDTO account) {
+		log.info("Saving user {}:", account);
+		AccountEntity accountEntity = accountMapper.toEntity(account);
+		accountEntity.setRole(Role.ROLE_USER);
+		accountEntity.setStatus(UserStatus.ACTIVE);
+		AccountEntity savedAccount = accountJpaAdapter.save(accountEntity);
+		return accountMapper.fromEntity(savedAccount);
+	}
 }

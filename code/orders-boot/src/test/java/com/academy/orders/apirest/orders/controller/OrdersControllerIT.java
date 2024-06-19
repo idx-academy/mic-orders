@@ -12,7 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 
 class OrdersControllerIT extends AbstractControllerIT {
-	@Value("${auth.users[0].username}")
+	@Value("${auth.users[1].username}")
 	private String username;
 
 	@Test

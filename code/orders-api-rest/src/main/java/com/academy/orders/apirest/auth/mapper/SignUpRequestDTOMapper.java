@@ -7,6 +7,6 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface SignUpRequestDTOMapper {
-    CreateAccountDTO fromDto(SignUpRequestDTO signUpRequestDTO);
-    SignInRequestDTO toSignInRequestDto(SignUpRequestDTO signUpRequestDTO);
+	CreateAccountDTO fromDto(SignUpRequestDTO signUpRequestDTO);
+	SignInRequestDTO toSignInRequestDto(SignUpRequestDTO signUpRequestDTO);
 }
