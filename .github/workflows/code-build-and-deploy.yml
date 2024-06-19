@@ -1,9 +1,6 @@
 name: code-maven-build
 
 on:
-  pull_request:
-    branches: 
-      - develop #TODO delete me
   push:
     paths:
      - 'code/**'
@@ -19,7 +16,7 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     environment:
-      name: ${{ github.ref == 'refs/heads/main' && 'prod' || github.ref == 'refs/heads/develop' && 'dev' || 'dev'}}
+      name: ${{ github.ref == 'refs/heads/main' && 'prod' || github.ref == 'refs/heads/develop' && 'dev' || 'test'}}
     env:
       APP_NAME: ${{ github.event.repository.name }}
       ACR_REGISTRY: ${{ secrets.AZURE_ACR_NAME }}.azurecr.io
@@ -102,7 +99,7 @@ jobs:
 
       - name: Update Kubernetes resources
         run: |
-          ENV=${{ github.ref == 'refs/heads/main' && 'prod' || github.ref == 'refs/heads/develop' && 'dev' || 'dev'}}
+          ENV=${{ github.ref == 'refs/heads/main' && 'prod' || github.ref == 'refs/heads/develop' && 'dev' || 'test'}}
           cd k8s-app-manifests/apps/env/${ENV}/backend
           kustomize edit set image ${{ env.ACR_REGISTRY }}/${{ env.APP_NAME }}=${{ env.ACR_REGISTRY }}/${{ env.IMAGE }}
           cat kustomization.yaml
