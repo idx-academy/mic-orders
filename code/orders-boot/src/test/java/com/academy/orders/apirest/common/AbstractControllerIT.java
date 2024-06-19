@@ -2,11 +2,12 @@ package com.academy.orders.apirest.common;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.academy.orders.apirest.constant.TestConstants;
 import com.academy.orders_api_rest.generated.model.SignInRequestDTO;
 import java.util.HashMap;
 import java.util.Map;
 import com.academy.orders.boot.Application;
+import com.academy.orders.boot.config.UsersConfig;
+import com.academy.orders.boot.config.UsersConfig.AppUser;
 import com.academy.orders_api_rest.generated.model.AuthTokenResponseDTO;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,27 +33,26 @@ public abstract class AbstractControllerIT {
 	private String contextPath;
 
 	@Autowired
+	private UsersConfig usersConfig;
+
+	@Autowired
 	protected TestRestTemplate restTemplate;
 
 	private final Map<String, String> userToken = new HashMap<>();
 
-	protected HttpHeaders buildAdminAuthHeaders() {
-		return buildAuthHeaders(TestConstants.ADMIN_MAIL, TestConstants.ADMIN_PASSWORD);
-	}
-
-	protected HttpHeaders buildUserAuthHeaders() {
-		return buildAuthHeaders(TestConstants.USER_MAIL, TestConstants.USER_PASSWORD);
-	}
-
-	private HttpHeaders buildAuthHeaders(String email, String password) {
+	protected HttpHeaders buildAuthHeaders(String username) {
 		final var headers = new HttpHeaders();
-		headers.set("Authorization", "Bearer " + getAuthToken(email, password));
+		headers.set("Authorization", "Bearer " + getAuthToken(username));
 		return headers;
 	}
 
-	private String getAuthToken(String username, String password) {
+	private String getAuthToken(String username) {
 		var token = userToken.get(username);
 		if (token == null) {
+			var password = usersConfig.users().stream().filter(usr -> usr.username().equals(username))
+					.map(AppUser::password).findFirst()
+					.orElseThrow(() -> new RuntimeException(username + " not found"));
+
 			var body = new HttpEntity<>(new SignInRequestDTO(username, password));
 			var authResponse = restTemplate.exchange(baseUrl() + "/auth/sign-in", HttpMethod.POST, body,
 					AuthTokenResponseDTO.class);
