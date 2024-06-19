@@ -8,6 +8,7 @@ import com.academy.orders.domain.account.repository.AccountRepository;
 import com.academy.orders.infrastructure.account.AccountMapper;
 import jakarta.persistence.EntityNotFoundException;
 import com.academy.orders.infrastructure.account.entity.AccountEntity;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -22,11 +23,9 @@ public class AccountRepositoryImpl implements AccountRepository {
 	private final AccountMapper accountMapper;
 
 	@Override
-	public Account getAccountByEmail(String email) {
-		var accountEntity = accountJpaAdapter.findByEmail(email)
-				.orElseThrow(() -> new EntityNotFoundException("Not found account with email: " + email));
-
-		return accountMapper.fromEntity(accountEntity);
+	public Optional<Account> getAccountByEmail(String email) {
+		var accountEntity = accountJpaAdapter.findByEmail(email);
+		return accountEntity.map(accountMapper::fromEntity);
 	}
 
 	@Override
