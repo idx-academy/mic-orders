@@ -25,6 +25,8 @@ jobs:
       ACR_REGISTRY: ${{ secrets.AZURE_ACR_NAME }}.azurecr.io
 
     steps:
+      - run: echo "💡 Deploying to ${{ environment.name }}."
+      
       - name: Checkout repository
         uses: actions/checkout@v4
 
