@@ -28,7 +28,66 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-    
+      - name: Cache local Maven repository
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build jar with Maven
+        run: mvn -f code/pom.xml clean package -DskipITs
+
+      - name: Log in to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Login to Azure Container Registry
+        id: az-acr-login
+        run: az acr login --name $ACR_NAME
+        env:
+          ACR_NAME: ${{ secrets.AZURE_ACR_NAME }}
+
+      - name: Get image name
+        run: |
+          IMAGE="${{ env.APP_NAME }}:$(echo "${{ github.sha }}" | cut -c1-8)"
+          echo "IMAGE=${IMAGE}" >> $GITHUB_ENV
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and export to Docker
+        uses: docker/build-push-action@v5
+        with:
+          context: code
+          load: true
+          tags: ${{ env.ACR_REGISTRY }}/${{ env.IMAGE }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.ACR_REGISTRY }}/${{ env.IMAGE }}
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL'
+
+      - name: Push to Azure Container registry
+        run: docker push ${{ env.ACR_REGISTRY }}/${{ env.IMAGE }}
         
       - name: Setup Kustomize
         uses: imranismail/setup-kustomize@v2
