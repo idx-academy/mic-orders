@@ -1,11 +1,11 @@
-package com.academy.orders.application.usecase;
+package com.academy.orders.application.order.usecase;
 
 import java.util.UUID;
 
-import com.academy.orders.domain.entity.Order;
-import com.academy.orders.domain.repository.OrderRepository;
-import com.academy.orders.domain.usecase.GetOrderByIdUseCase;
-import com.academy.orders.domain.usecase.OrderNotFoundException;
+import com.academy.orders.domain.order.entity.Order;
+import com.academy.orders.domain.order.repository.OrderRepository;
+import com.academy.orders.domain.order.usecase.GetOrderByIdUseCase;
+import com.academy.orders.domain.order.usecase.OrderNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,6 +1,6 @@
 package com.academy.orders.apirest.common;
 
-import com.academy.orders.domain.usecase.OrderNotFoundException;
+import com.academy.orders.domain.order.usecase.OrderNotFoundException;
 import com.academy.orders_api_rest.generated.model.ErrorObjectDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

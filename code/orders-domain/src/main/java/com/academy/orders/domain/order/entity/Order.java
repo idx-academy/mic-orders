@@ -1,4 +1,4 @@
-package com.academy.orders.domain.entity;
+package com.academy.orders.domain.order.entity;
 
 import java.util.UUID;
 
