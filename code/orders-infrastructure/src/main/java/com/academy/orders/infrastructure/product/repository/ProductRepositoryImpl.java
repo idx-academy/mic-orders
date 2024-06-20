@@ -2,7 +2,6 @@ package com.academy.orders.infrastructure.product.repository;
 
 import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.repository.ProductRepository;
-import com.academy.orders.infrastructure.product.ProductMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
