@@ -3,7 +3,7 @@ package com.academy.orders.apirest.orders.contoller;
 import java.util.UUID;
 
 import com.academy.orders.apirest.orders.mapper.OrderDTOMapper;
-import com.academy.orders.domain.usecase.GetOrderByIdUseCase;
+import com.academy.orders.domain.order.usecase.GetOrderByIdUseCase;
 import com.academy.orders_api_rest.generated.api.OrdersApi;
 import com.academy.orders_api_rest.generated.model.OrderDTO;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class OrdersController implements OrdersApi {
 	private final OrderDTOMapper mapper;
 
 	@Override
-	@PreAuthorize("hasAuthority('ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	public OrderDTO getOrderById(UUID orderId) {
 		log.debug("Get order by id {}", orderId);
 
