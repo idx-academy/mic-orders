@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS "products_translations" (
-    product_id VARCHAR(255),
+    product_id UUID,
     language_id BIGINT,
     name VARCHAR(255) NOT NULL,
     description VARCHAR(1000),
