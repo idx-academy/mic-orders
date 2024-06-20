@@ -13,14 +13,22 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
-@Table
-@Data
+@Table(name = "accounts")
+@Getter
 @Setter
-@Entity(name = "ACCOUNTS")
+@EqualsAndHashCode
+@ToString
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class AccountEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "accounts_generator")
