@@ -9,15 +9,25 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Set;
 
-@Table
-@Data
+@Table(name = "tags")
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
 @Setter
-@Entity(name = "TAGS")
+@Builder
+@Entity
+@EqualsAndHashCode(exclude = {"products"})
+@ToString(exclude = {"products"})
 public class TagEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tags_generator")

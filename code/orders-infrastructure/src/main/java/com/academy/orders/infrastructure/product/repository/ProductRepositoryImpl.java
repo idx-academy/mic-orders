@@ -13,12 +13,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class ProductRepositoryImpl implements ProductRepository {
-	private final ProductJpaAdapter jpaAdapter;
-
-	private final ProductMapper mapper;
+	private final ProductTranslationJpaAdapter productTranslationJpaAdapter;
 
 	@Override
 	public List<Product> getAllProducts() {
-		return jpaAdapter.findAll().stream().map(mapper::fromEntity).toList();
+		System.out.println(productTranslationJpaAdapter.getAllProductTranslationByLanguage("en"));
+		return null;
 	}
 }
