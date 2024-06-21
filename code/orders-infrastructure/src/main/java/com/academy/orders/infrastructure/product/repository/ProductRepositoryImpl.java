@@ -16,8 +16,8 @@ public class ProductRepositoryImpl implements ProductRepository {
 	private final ProductMapper productMapper;
 
 	@Override
-	public List<Product> getAllProducts() {
-		log.debug("Fetching all products");
-		return productMapper.fromEntities(productJpaAdapter.findAll());
+	public List<Product> getAllProducts(String language) {
+		log.debug("Fetching all products by language code");
+		return productMapper.fromEntities(productJpaAdapter.findAllByLanguageCode(language));
 	}
 }

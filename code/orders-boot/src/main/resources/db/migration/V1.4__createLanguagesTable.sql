@@ -3,4 +3,4 @@ CREATE TABLE IF NOT EXISTS "languages" (
     code VARCHAR(5) NOT NULL UNIQUE
 );
 
-INSERT INTO "languages" (code) VALUES ('en'), ('uk');
+INSERT INTO "languages" (code) VALUES ('en'), ('ua');

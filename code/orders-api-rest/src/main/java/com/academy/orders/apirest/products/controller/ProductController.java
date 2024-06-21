@@ -21,8 +21,8 @@ public class ProductController implements ProductsApi {
 	private final ProductPreviewDTOMapper mapper;
 
 	@Override
-	public List<ProductPreviewDTO> getProducts(String lang) {
-		log.debug("Get all products");
-		return getAllProductsUseCase.getAllProducts().stream().map(mapper::toDto).toList();
+	public List<ProductPreviewDTO> getProducts(String language) {
+		log.debug("Get all products by language code: {}", language);
+		return getAllProductsUseCase.getAllProducts(language).stream().map(mapper::toDto).toList();
 	}
 }

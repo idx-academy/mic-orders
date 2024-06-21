@@ -16,8 +16,8 @@ public class GetAllProductsUseCaseImpl implements GetAllProductsUseCase {
 	private final ProductRepository productRepository;
 
 	@Override
-	public List<Product> getAllProducts() {
-		List<Product> products = productRepository.getAllProducts();
+	public List<Product> getAllProducts(String language) {
+		List<Product> products = productRepository.getAllProducts(language);
 		return products != null ? products : Collections.emptyList();
 	}
 }

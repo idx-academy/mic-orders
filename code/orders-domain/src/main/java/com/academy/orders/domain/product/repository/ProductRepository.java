@@ -4,5 +4,5 @@ import com.academy.orders.domain.product.entity.Product;
 import java.util.List;
 
 public interface ProductRepository {
-	List<Product> getAllProducts();
+	List<Product> getAllProducts(String language);
 }
