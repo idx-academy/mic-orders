@@ -7,7 +7,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
-import com.academy.orders.application.order.usecase.GetOrderByIdUseCaseImpl;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -40,7 +39,7 @@ public class GetOrderByIdUseCaseTest {
 	}
 
 	@Test
-	public void testGetOrderById_OrderExists() {
+	void testGetOrderById_OrderExists() {
 		when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
 
 		Order result = getOrderByIdUseCase.getOrderById(orderId);
@@ -51,7 +50,7 @@ public class GetOrderByIdUseCaseTest {
 	}
 
 	@Test
-	public void testGetOrderById_OrderNotFound() {
+	void testGetOrderById_OrderNotFound() {
 		when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
 
 		var exception = assertThrows(OrderNotFoundException.class, () -> getOrderByIdUseCase.getOrderById(orderId));

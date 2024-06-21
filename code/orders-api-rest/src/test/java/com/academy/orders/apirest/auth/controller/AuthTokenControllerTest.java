@@ -1,6 +1,5 @@
 package com.academy.orders.apirest.auth.controller;
 
-import com.academy.orders.apirest.auth.mapper.SignUpRequestDTOMapper;
 import com.academy.orders.apirest.auth.mapper.SignUpRequestDTOMapperImpl;
 import com.academy.orders.apirest.common.TestSecurityConfig;
 import com.academy.orders.domain.account.entity.CreateAccountDTO;
@@ -24,7 +23,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -98,8 +96,8 @@ class AuthTokenControllerTest {
 				.content(objectMapper.writeValueAsString(signUpRequest))).andExpect(status().isCreated())
 				.andExpect(jsonPath("$.token").value(token));
 
-		verify(passwordEncoder).encode(eq(signUpRequest.getPassword()));
-		verify(createUserAccountUseCase).create(eq(createAccountDTO));
+		verify(passwordEncoder).encode(signUpRequest.getPassword());
+		verify(createUserAccountUseCase).create(createAccountDTO);
 		verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
 		verify(encoder).encode(any(JwtEncoderParameters.class));
 	}
