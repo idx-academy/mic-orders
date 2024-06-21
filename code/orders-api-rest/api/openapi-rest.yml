@@ -223,7 +223,7 @@ components:
         password:
           type: string
           format: password
-          example: Qwerty12345
+          example: Qwerty12345!
           pattern: ^(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$
       required:
         - email
