@@ -1,7 +1,10 @@
 package com.academy.orders.apirest.common;
 
+import com.academy.orders.domain.account.entity.Account;
 import com.academy.orders.domain.account.exception.AccountAlreadyExistsException;
+import com.academy.orders.domain.exception.AlreadyExistsException;
 import com.academy.orders.domain.exception.NotFoundException;
+import com.academy.orders.domain.order.exception.OrderNotFoundException;
 import com.academy.orders_api_rest.generated.model.ErrorObjectDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -28,7 +31,10 @@ public class ErrorHandler {
 	@ResponseStatus(value = HttpStatus.CONFLICT)
 	public ErrorObjectDTO handleOrderNotFoundException(final AccountAlreadyExistsException ex) {
 		log.warn("Account already exists ", ex);
-		return new ErrorObjectDTO().status(HttpStatus.CONFLICT.value()).title(HttpStatus.CONFLICT.getReasonPhrase());
+		return new ErrorObjectDTO()
+            .status(HttpStatus.CONFLICT.value())
+            .title(HttpStatus.CONFLICT.getReasonPhrase())
+            .detail(ex.getMessage());
 	}
 
 	@ExceptionHandler(AuthenticationException.class)
