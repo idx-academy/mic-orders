@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProductJpaAdapter extends CrudRepository<ProductEntity, UUID> {
-	@Query("SELECT p FROM ProductEntity p JOIN FETCH p.productTranslations pt JOIN FETCH pt.language l "
-			+ "WHERE l.code = :language")
+	@Query("SELECT p FROM ProductEntity p JOIN FETCH p.productTranslations pt JOIN FETCH pt.language " +
+			"l LEFT JOIN FETCH p.tags t WHERE l.code = :language")
 	List<ProductEntity> findAllByLanguageCode(String language);
 }
