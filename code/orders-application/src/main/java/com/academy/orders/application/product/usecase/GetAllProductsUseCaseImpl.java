@@ -6,6 +6,7 @@ import com.academy.orders.domain.product.usecase.GetAllProductsUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -16,6 +17,7 @@ public class GetAllProductsUseCaseImpl implements GetAllProductsUseCase {
 
 	@Override
 	public List<Product> getAllProducts() {
-		return productRepository.getAllProducts();
+		List<Product> products = productRepository.getAllProducts();
+		return products != null ? products : Collections.emptyList();
 	}
 }
