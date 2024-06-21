@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -19,6 +18,6 @@ public class ProductRepositoryImpl implements ProductRepository {
 	@Override
 	public List<Product> getAllProducts() {
 		log.debug("Fetching all products");
-		return productJpaAdapter.findAll().stream().map(productMapper::fromEntity).collect(Collectors.toList());
+		return productMapper.fromEntities(productJpaAdapter.findAll());
 	}
 }

@@ -1,4 +1,4 @@
-package com.academy.orders.infrastructure.product;
+package com.academy.orders.infrastructure.tag;
 
 import com.academy.orders.domain.product.entity.Tag;
 import com.academy.orders.infrastructure.tag.entity.TagEntity;

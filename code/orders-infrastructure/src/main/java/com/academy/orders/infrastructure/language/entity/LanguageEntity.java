@@ -1,7 +1,15 @@
 package com.academy.orders.infrastructure.language.entity;
 
 import com.academy.orders.infrastructure.product.entity.ProductTranslationEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
 import lombok.Data;
 import lombok.Setter;
 

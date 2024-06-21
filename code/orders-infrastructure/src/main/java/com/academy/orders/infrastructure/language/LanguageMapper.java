@@ -1,4 +1,4 @@
-package com.academy.orders.infrastructure.product;
+package com.academy.orders.infrastructure.language;
 
 import com.academy.orders.domain.product.entity.Language;
 import com.academy.orders.infrastructure.language.entity.LanguageEntity;
