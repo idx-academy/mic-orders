@@ -224,7 +224,8 @@ components:
           type: string
           format: password
           example: Qwerty12345!
-          pattern: ^(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$
+          pattern: ^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*#?&-_])[A-Za-z\d@$!%*#?&-_]{8,}$
+
       required:
         - email
         - password
@@ -240,7 +241,8 @@ components:
           type: string
           format: password
           example: Qwerty12345
-          pattern: ^(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$
+          pattern: ^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*#?&-_])[A-Za-z\d@$!%*#?&-_]{8,}$
+
         firstName:
           type: string
           example: John
