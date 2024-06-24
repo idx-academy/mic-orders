@@ -44,8 +44,7 @@ class ErrorHandlerTest {
 		var message = String.format("Order %s is not found", orderId);
 		var ex = new OrderNotFoundException(orderId);
 
-		assertEquals(buildErrorObjectDTO(NOT_FOUND, message),
-			errorHandler.handleNotFoundException(ex));
+		assertEquals(buildErrorObjectDTO(NOT_FOUND, message), errorHandler.handleNotFoundException(ex));
 	}
 
 	@Test
@@ -54,8 +53,7 @@ class ErrorHandlerTest {
 		var message = String.format("Account with email %s already exists", email);
 		var ex = new AccountAlreadyExistsException(email);
 
-		assertEquals(buildErrorObjectDTO(CONFLICT, message),
-			errorHandler.handleAccountAlreadyExistsException(ex));
+		assertEquals(buildErrorObjectDTO(CONFLICT, message), errorHandler.handleAccountAlreadyExistsException(ex));
 	}
 
 	@Test
@@ -86,12 +84,11 @@ class ErrorHandlerTest {
 		assertEquals(buildErrorObjectDTO(BAD_REQUEST), errorHandler.handleBadRequestException(ex));
 	}
 
-
-	private ErrorObjectDTO buildErrorObjectDTO(HttpStatus status, String detail){
-		return new ErrorObjectDTO(status.value(),status.getReasonPhrase(), detail);
+	private ErrorObjectDTO buildErrorObjectDTO(HttpStatus status, String detail) {
+		return new ErrorObjectDTO(status.value(), status.getReasonPhrase(), detail);
 	}
 
-	private ErrorObjectDTO buildErrorObjectDTO(HttpStatus status){
-		return new ErrorObjectDTO(status.value(),status.getReasonPhrase(), DEFAULT_ERROR_MESSAGE);
+	private ErrorObjectDTO buildErrorObjectDTO(HttpStatus status) {
+		return new ErrorObjectDTO(status.value(), status.getReasonPhrase(), DEFAULT_ERROR_MESSAGE);
 	}
 }

@@ -111,9 +111,9 @@ paths:
           required: false
           schema:
             type: string
-            default: en
+            default: ua
             nullable: false
-            example: en
+            example: ua
           description: The id of the product which is added to the cart
       responses:
         '200':
@@ -348,7 +348,6 @@ components:
             description: Tag title
         image:
           type: string
-          format: uri
           example: https://example.com/image.jpg
           description: List of image URLs associated with the product.
         price:

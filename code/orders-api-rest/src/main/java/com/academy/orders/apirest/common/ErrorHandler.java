@@ -33,8 +33,8 @@ public class ErrorHandler {
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)
 	public ErrorObjectDTO handleNotFoundException(final NotFoundException ex) {
 		log.warn("Can't find entity", ex);
-		return new ErrorObjectDTO().status(HttpStatus.NOT_FOUND.value())
-				.title(HttpStatus.NOT_FOUND.getReasonPhrase()).detail(ex.getMessage());
+		return new ErrorObjectDTO().status(HttpStatus.NOT_FOUND.value()).title(HttpStatus.NOT_FOUND.getReasonPhrase())
+				.detail(ex.getMessage());
 	}
 
 	@ExceptionHandler(AccountAlreadyExistsException.class)
