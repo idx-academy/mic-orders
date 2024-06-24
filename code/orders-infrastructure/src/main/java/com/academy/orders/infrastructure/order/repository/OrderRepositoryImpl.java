@@ -4,9 +4,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 import com.academy.colors_api.generated.api.ColorsApi;
-import com.academy.orders.domain.repository.OrderRepository;
+import com.academy.orders.domain.order.repository.OrderRepository;
 import com.academy.orders.infrastructure.order.OrderMapper;
-import com.academy.orders.domain.entity.Order;
+import com.academy.orders.domain.order.entity.Order;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;

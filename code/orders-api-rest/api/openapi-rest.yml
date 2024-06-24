@@ -7,9 +7,6 @@ info:
 servers:
   - url: http://localhost:8080/retail
 
-security:
-  - bearerAuth: [ ]
-
 # =============================TAGS=============================
 tags:
   - name: Security
@@ -80,6 +77,8 @@ paths:
         - Orders
       summary: Get order by id
       operationId: getOrderById
+      security:
+        - bearerAuth: [ ]
       parameters:
         - in: path
           name: orderId
@@ -112,9 +111,9 @@ paths:
           required: false
           schema:
             type: string
-            default: en
+            default: ua
             nullable: false
-            example: en
+            example: ua
           description: The id of the product which is added to the cart
       responses:
         '200':
@@ -132,6 +131,8 @@ paths:
         - Cart
       summary: Add products to the cart
       description: The endpoint for adding a product to the user's shopping cart.
+      security:
+        - bearerAuth: [ ]
       parameters:
         - in: path
           name: productId
@@ -222,7 +223,9 @@ components:
         password:
           type: string
           format: password
-          example: Qwerty12345
+          example: Qwerty12345!
+          pattern: ^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*#?&-_])[A-Za-z\d@$!%*#?&-_]{8,}$
+
       required:
         - email
         - password
@@ -238,12 +241,20 @@ components:
           type: string
           format: password
           example: Qwerty12345
+          pattern: ^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*#?&-_])[A-Za-z\d@$!%*#?&-_]{8,}$
+
         firstName:
           type: string
           example: John
+          minLength: 2
+          maxLength: 50
+          pattern: ^[a-zA-Zа-яА-ЯёЁіІїЇєЄ'’\-]+$
         lastName:
           type: string
           example: Doe
+          minLength: 2
+          maxLength: 50
+          pattern: ^[a-zA-Zа-яА-ЯёЁіІїЇєЄ'’\-]+$
       required:
         - email
         - password
@@ -337,7 +348,6 @@ components:
             description: Tag title
         image:
           type: string
-          format: uri
           example: https://example.com/image.jpg
           description: List of image URLs associated with the product.
         price:
