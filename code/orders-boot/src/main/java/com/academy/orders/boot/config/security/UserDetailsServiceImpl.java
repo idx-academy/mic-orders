@@ -1,4 +1,4 @@
-package com.academy.orders.boot.security;
+package com.academy.orders.boot.config.security;
 
 import com.academy.orders.domain.account.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;

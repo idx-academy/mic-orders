@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 import java.util.UUID;
 
 import com.academy.orders.apirest.common.TestSecurityConfig;
-import com.academy.orders.apirest.orders.contoller.OrdersController;
 import com.academy.orders.apirest.orders.mapper.OrderDTOMapperImpl;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.usecase.GetOrderByIdUseCase;

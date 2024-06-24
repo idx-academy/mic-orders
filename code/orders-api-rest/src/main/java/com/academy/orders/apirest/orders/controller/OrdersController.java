@@ -1,4 +1,4 @@
-package com.academy.orders.apirest.orders.contoller;
+package com.academy.orders.apirest.orders.controller;
 
 import java.util.UUID;
 
