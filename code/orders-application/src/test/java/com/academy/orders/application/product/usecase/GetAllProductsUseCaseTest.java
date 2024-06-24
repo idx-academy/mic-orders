@@ -32,4 +32,14 @@ class GetAllProductsUseCaseTest {
 
 		verify(productRepository).getAllProducts(LANGUAGE_UA);
 	}
+
+	@Test
+	void testGetAllProductsReturnsEmptyList() {
+		when(productRepository.getAllProducts(LANGUAGE_UA)).thenReturn(null);
+
+		var actual = getAllProductsUseCase.getAllProducts(LANGUAGE_UA);
+		Assertions.assertTrue(actual.isEmpty());
+
+		verify(productRepository).getAllProducts(LANGUAGE_UA);
+	}
 }
