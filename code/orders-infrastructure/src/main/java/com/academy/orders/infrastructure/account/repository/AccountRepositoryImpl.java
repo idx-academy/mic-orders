@@ -6,7 +6,6 @@ import com.academy.orders.domain.account.entity.enumerated.Role;
 import com.academy.orders.domain.account.entity.enumerated.UserStatus;
 import com.academy.orders.domain.account.repository.AccountRepository;
 import com.academy.orders.infrastructure.account.AccountMapper;
-import jakarta.persistence.EntityNotFoundException;
 import com.academy.orders.infrastructure.account.entity.AccountEntity;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +27,7 @@ public class AccountRepositoryImpl implements AccountRepository {
 		return accountEntity.map(accountMapper::fromEntity);
 	}
 
+	@Override
 	public Boolean existsByEmail(String email) {
 		return accountJpaAdapter.existsByEmail(email);
 	}
