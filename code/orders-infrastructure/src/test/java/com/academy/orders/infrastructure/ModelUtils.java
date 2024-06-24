@@ -14,13 +14,13 @@ public class ModelUtils {
 	public static AccountEntity getAccountEntity() {
 		return AccountEntity.builder().id(1L).password("$2a$12$5ZEfkhNQUREmioQ54TaFaOEM7h/QBgASIeqZceFGKPT80aTfYdvV.")
 				.email("mock@mail.com").firstName("MockFirst").lastName("MockLast").role(Role.ROLE_ADMIN)
-				.status(UserStatus.ACTIVE).createdAt(LocalDateTime.now()).build();
+				.status(UserStatus.ACTIVE).createdAt(LocalDateTime.of(1, 1, 1, 1, 1)).build();
 	}
 
 	public static Account getAccount() {
 		return Account.builder().id(1L).password("$2a$12$5ZEfkhNQUREmioQ54TaFaOEM7h/QBgASIeqZceFGKPT80aTfYdvV.")
 				.email("mock@mail.com").firstName("MockFirst").lastName("MockLast").role(Role.ROLE_ADMIN)
-				.status(UserStatus.ACTIVE).createdAt(LocalDateTime.now()).build();
+				.status(UserStatus.ACTIVE).createdAt(LocalDateTime.of(1, 1, 1, 1, 1)).build();
 	}
 
 	public static CreateAccountDTO getCreateAccountDTO() {

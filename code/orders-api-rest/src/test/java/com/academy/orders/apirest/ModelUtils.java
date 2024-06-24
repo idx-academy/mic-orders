@@ -24,26 +24,26 @@ import static com.academy.orders.apirest.TestConstants.TEST_UUID;
 public class ModelUtils {
 	public static Product getProduct() {
 		return Product.builder().id(TEST_UUID).status(ProductStatus.AVAILABLE).image(IMAGE_URL)
-				.createdAt(LocalDateTime.now()).quantity(TEST_QUANTITY).price(TEST_PRICE).tags(Set.of(getTag()))
-				.productTranslations(Set.of(getProductTranslation())).build();
+				.createdAt(LocalDateTime.of(1, 1, 1, 1, 1)).quantity(TEST_QUANTITY).price(TEST_PRICE)
+				.tags(Set.of(getTag())).productTranslations(Set.of(getProductTranslation())).build();
 	}
 
 	public static Product getProductWithEmptyTranslations() {
 		return Product.builder().id(TEST_UUID).status(ProductStatus.AVAILABLE).image(IMAGE_URL)
-				.createdAt(LocalDateTime.now()).quantity(TEST_QUANTITY).price(TEST_PRICE).tags(Set.of(getTag()))
-				.productTranslations(Collections.emptySet()).build();
+				.createdAt(LocalDateTime.of(1, 1, 1, 1, 1)).quantity(TEST_QUANTITY).price(TEST_PRICE)
+				.tags(Set.of(getTag())).productTranslations(Collections.emptySet()).build();
 	}
 
 	public static Product getProductWithNullTranslations() {
 		return Product.builder().id(TEST_UUID).status(ProductStatus.AVAILABLE).image(IMAGE_URL)
-				.createdAt(LocalDateTime.now()).quantity(TEST_QUANTITY).price(TEST_PRICE).tags(Set.of(getTag()))
-				.productTranslations(null).build();
+				.createdAt(LocalDateTime.of(1, 1, 1, 1, 1)).quantity(TEST_QUANTITY).price(TEST_PRICE)
+				.tags(Set.of(getTag())).productTranslations(null).build();
 	}
 
 	public static Product getProductWithEmptyTags() {
 		return Product.builder().id(TEST_UUID).status(ProductStatus.AVAILABLE).image(IMAGE_URL)
-				.createdAt(LocalDateTime.now()).quantity(TEST_QUANTITY).price(TEST_PRICE).tags(Collections.emptySet())
-				.productTranslations(Set.of(getProductTranslation())).build();
+				.createdAt(LocalDateTime.of(1, 1, 1, 1, 1)).quantity(TEST_QUANTITY).price(TEST_PRICE)
+				.tags(Collections.emptySet()).productTranslations(Set.of(getProductTranslation())).build();
 	}
 
 	public static Tag getTag() {
