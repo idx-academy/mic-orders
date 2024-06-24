@@ -29,11 +29,11 @@ rest:
 
 auth:
   users:
-    - username: user
-      password: user
-      roles: USER
-    - username: admin
-      roles: ADMIN
-      password: admin
+    - username: user@mail.com
+      password: User_1234
+      roles: ROLE_USER
+    - username: admin@mail.com
+      roles: ROLE_ADMIN
+      password: Admin_1234
 
 

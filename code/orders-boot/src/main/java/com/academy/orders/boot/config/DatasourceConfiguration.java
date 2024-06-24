@@ -25,9 +25,7 @@ public class DatasourceConfiguration {
 	public LocalContainerEntityManagerFactoryBean retailEntityManagerFactory(final EntityManagerFactoryBuilder builder,
 			final DataSource datasource) {
 
-		return builder.dataSource(datasource).packages("com.academy.orders.infrastructure.order.entity",
-				"com.academy.orders.infrastructure.product.entity", "com.academy.orders.infrastructure.tag.entity",
-				"com.academy.orders.infrastructure.language.entity").build();
+		return builder.dataSource(datasource).packages("com.academy.orders.infrastructure").build();
 	}
 
 	@Bean(name = "retailTransactionManager")
@@ -36,4 +34,5 @@ public class DatasourceConfiguration {
 
 		return new JpaTransactionManager(Objects.requireNonNull(entityManagerFactory.getObject()));
 	}
+
 }

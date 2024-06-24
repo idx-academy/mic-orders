@@ -1,6 +1,6 @@
 management.endpoints.web.exposure.include: "health,info,metrics"
 
-springdoc.swagger-ui.enabled: false
+springdoc.swagger-ui.enabled: true
 
 logging:
   level:

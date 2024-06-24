@@ -5,7 +5,7 @@ import java.util.UUID;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.repository.OrderRepository;
 import com.academy.orders.domain.order.usecase.GetOrderByIdUseCase;
-import com.academy.orders.domain.order.usecase.OrderNotFoundException;
+import com.academy.orders.domain.order.exception.OrderNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

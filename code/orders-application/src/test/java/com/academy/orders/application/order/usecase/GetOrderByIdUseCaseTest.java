@@ -12,7 +12,7 @@ import java.util.UUID;
 
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.repository.OrderRepository;
-import com.academy.orders.domain.order.usecase.OrderNotFoundException;
+import com.academy.orders.domain.order.exception.OrderNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,7 +39,7 @@ public class GetOrderByIdUseCaseTest {
 	}
 
 	@Test
-	public void testGetOrderById_OrderExists() {
+	void testGetOrderById_OrderExists() {
 		when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
 
 		Order result = getOrderByIdUseCase.getOrderById(orderId);
@@ -50,7 +50,7 @@ public class GetOrderByIdUseCaseTest {
 	}
 
 	@Test
-	public void testGetOrderById_OrderNotFound() {
+	void testGetOrderById_OrderNotFound() {
 		when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
 
 		var exception = assertThrows(OrderNotFoundException.class, () -> getOrderByIdUseCase.getOrderById(orderId));

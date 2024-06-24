@@ -7,8 +7,6 @@ spring:
     password: ${DATASOURCE_PASSWORD}
   flyway:
     enabled: true
-  jpa:
-   show-sql: true
 
 auth:
   users:
