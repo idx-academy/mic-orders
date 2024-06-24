@@ -20,6 +20,7 @@ import static com.academy.orders.infrastructure.ModelUtils.getAccountEntity;
 import static com.academy.orders.infrastructure.ModelUtils.getCreateAccountDTO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -64,20 +65,26 @@ class AccountRepositoryImplTest {
 	}
 
 	@Test
-	void existsByEmailTest() {
+	void existsByEmailReturnsTrueTest() {
 		String mail = "test@mail.com";
 		Boolean exists = true;
 
-		Mockito.when(this.accountJpaAdapter.existsByEmail(mail)).thenReturn(exists);
+		assertExistsByEmailHelper(mail, exists);
+	}
 
-		Boolean result = this.repository.existsByEmail(mail);
+	@Test
+	void existsByEmailReturnsFalseTest() {
+		String mail = "test@mail.com";
+		Boolean exists = false;
 
-		assertEquals(exists, result);
-		verify(accountJpaAdapter).existsByEmail(mail);
+		assertExistsByEmailHelper(mail, exists);
 	}
 
 	@Test
 	void saveTest() {
+		AccountEntity mappedAccountEntity = getAccountEntity();
+		mappedAccountEntity.setRole(null);
+		mappedAccountEntity.setStatus(null);
 		AccountEntity preSavedAccountEntity = getAccountEntity();
 		preSavedAccountEntity.setRole(Role.ROLE_USER);
 		preSavedAccountEntity.setStatus(UserStatus.ACTIVE);
@@ -86,7 +93,7 @@ class AccountRepositoryImplTest {
 		Account accountDomain = getAccount();
 
 		Mockito.when(accountJpaAdapter.save(preSavedAccountEntity)).thenReturn(savedAccountEntity);
-		Mockito.when(accountMapper.toEntity(createAccountDTO)).thenReturn(preSavedAccountEntity);
+		Mockito.when(accountMapper.toEntity(createAccountDTO)).thenReturn(mappedAccountEntity);
 		Mockito.when(accountMapper.fromEntity(savedAccountEntity)).thenReturn(accountDomain);
 
 		Account actualAccount = repository.save(createAccountDTO);
@@ -95,5 +102,14 @@ class AccountRepositoryImplTest {
 		verify(accountJpaAdapter).save(preSavedAccountEntity);
 		verify(accountMapper).toEntity(createAccountDTO);
 		verify(accountMapper).fromEntity(savedAccountEntity);
+	}
+
+	private void assertExistsByEmailHelper(String mail, Boolean exists) {
+		Mockito.when(this.accountJpaAdapter.existsByEmail(mail)).thenReturn(exists);
+
+		Boolean result = this.repository.existsByEmail(mail);
+
+		assertEquals(exists, result);
+		verify(accountJpaAdapter).existsByEmail(mail);
 	}
 }
