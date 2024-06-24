@@ -1,8 +1,18 @@
+### Project Documentation
+- [General](#general)
+- [Project Structure](#project-structure)
+- [Build and Run App](#build-and-run-app)
+- [Spin up Locally Required Infrastructure](#spin-up-locally-required-infrastructure)
+- [Run App](#run-app)
+- [Run Karate Tests](#run-karate-tests)
+- [Run Tests (Mutation + Code Coverage)](#run-tests-mutation--code-coverage)
+- [Obtain JWT Locally](#obtain-jwt-locally)
+
 ### Prerequisites:
  - Java 17
  - Docker compose
 
-#### General
+### General
 The project is organized in way of mix Hexagonal architecture + DDD + Clean architecture.
 
 `code` - Java source code
