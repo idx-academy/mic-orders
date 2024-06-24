@@ -1,8 +1,19 @@
+### Project Documentation
+- [General](#general)
+- [Project Structure](#project-structure)
+- [Build and Run App](#build-and-run-app)
+- [Spin up Locally Required Infrastructure](#spin-up-locally-required-infrastructure)
+- [Run App](#run-app)
+- [Run Karate Tests](#run-karate-tests)
+- [Run Tests (Mutation + Code Coverage)](#run-tests-mutation--code-coverage)
+- [Obtain JWT Locally](#obtain-jwt-locally)
+- [References](#references)
+
 ### Prerequisites:
  - Java 17
  - Docker compose
 
-#### General
+### General
 The project is organized in way of mix Hexagonal architecture + DDD + Clean architecture.
 
 `code` - Java source code
@@ -86,4 +97,13 @@ curl --location 'http://localhost:8080/retail/auth/token' \
 --data '{
     "username": "<USERNAME>",
     "password":  "<PASSWORD>"
-}'```
+}'
+```
+
+### References
+
+- [Use-case diagram](https://app.diagrams.net/#G17iCThtH58keC83T8SUX5Lpo9Oiipvetp#%7B%22pageId%22%3A%22c0BYFkauXTc5PcYzelpT%22%7D)
+- [Domain model diagram](https://app.diagrams.net/#G1elOkc_kON3mlytmNawvccNE0cexzDkxE#%7B%22pageId%22%3A%22C5RBs43oDa-KdzZeNtuy%22%7D)
+- [Frontend deployment](http://idxacademy.xyz/)
+- [Backend deployment](http://api.idxacademy.xyz/retail)
+- [Swagger link](http://api.idxacademy.xyz/retail/swagger-ui/index.html)
