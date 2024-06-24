@@ -21,41 +21,40 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AccountRepositoryImplTest {
-    @InjectMocks
-    private AccountRepositoryImpl repository;
-    @Mock
-    private AccountJpaAdapter accountJpaAdapter;
-    @Mock
-    private AccountMapper accountMapper;
+	@InjectMocks
+	private AccountRepositoryImpl repository;
+	@Mock
+	private AccountJpaAdapter accountJpaAdapter;
+	@Mock
+	private AccountMapper accountMapper;
 
+	@Test
+	void testGetAccountByEmail() {
+		var accountEntity = getAccountEntity();
+		var accountDomain = getAccount();
 
-    @Test
-    void testGetAccountByEmail(){
-        var accountEntity = getAccountEntity();
-        var accountDomain = getAccount();
+		when(accountJpaAdapter.findByEmail(anyString())).thenReturn(Optional.of(accountEntity));
+		when(accountMapper.fromEntity(accountEntity)).thenReturn(accountDomain);
 
-        when(accountJpaAdapter.findByEmail(anyString())).thenReturn(Optional.of(accountEntity));
-        when(accountMapper.fromEntity(accountEntity)).thenReturn(accountDomain);
+		var actualAccount = repository.getAccountByEmail(accountEntity.getEmail());
 
-        var actualAccount = repository.getAccountByEmail(accountEntity.getEmail());
+		assertEquals(accountDomain, actualAccount.get());
 
-        assertEquals(accountDomain, actualAccount.get());
+		verify(accountJpaAdapter).findByEmail(anyString());
+		verify(accountMapper).fromEntity(any(AccountEntity.class));
+	}
 
-        verify(accountJpaAdapter).findByEmail(anyString());
-        verify(accountMapper).fromEntity(any(AccountEntity.class));
-    }
+	@Test
+	void testGetAccountByEmailIfAccountAbsent() {
+		var mail = "test@mail.com";
 
-    @Test
-    void testGetAccountByEmailIfAccountAbsent(){
-        var mail = "test@mail.com";
+		when(accountJpaAdapter.findByEmail(anyString())).thenReturn(Optional.empty());
 
-        when(accountJpaAdapter.findByEmail(anyString())).thenReturn(Optional.empty());
+		var actualAccount = repository.getAccountByEmail(mail);
 
-        var actualAccount = repository.getAccountByEmail(mail);
-
-        assertTrue(actualAccount.isEmpty());
-        verify(accountJpaAdapter).findByEmail(anyString());
-        verify(accountMapper, never()).fromEntity(any(AccountEntity.class));
-    }
+		assertTrue(actualAccount.isEmpty());
+		verify(accountJpaAdapter).findByEmail(anyString());
+		verify(accountMapper, never()).fromEntity(any(AccountEntity.class));
+	}
 
 }

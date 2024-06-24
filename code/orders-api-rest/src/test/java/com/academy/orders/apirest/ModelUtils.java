@@ -34,6 +34,12 @@ public class ModelUtils {
 				.productTranslations(Collections.emptySet()).build();
 	}
 
+	public static Product getProductWithNullTranslations() {
+		return Product.builder().id(TEST_UUID).status(ProductStatus.AVAILABLE).image(IMAGE_URL)
+				.createdAt(LocalDateTime.now()).quantity(TEST_QUANTITY).price(TEST_PRICE).tags(Set.of(getTag()))
+				.productTranslations(null).build();
+	}
+
 	public static Product getProductWithEmptyTags() {
 		return Product.builder().id(TEST_UUID).status(ProductStatus.AVAILABLE).image(IMAGE_URL)
 				.createdAt(LocalDateTime.now()).quantity(TEST_QUANTITY).price(TEST_PRICE).tags(Collections.emptySet())
