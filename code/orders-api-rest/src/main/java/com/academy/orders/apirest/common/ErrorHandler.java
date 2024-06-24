@@ -1,26 +1,48 @@
 package com.academy.orders.apirest.common;
 
-import com.academy.orders.domain.usecase.OrderNotFoundException;
+import com.academy.orders.domain.account.exception.AccountAlreadyExistsException;
+import com.academy.orders.domain.exception.NotFoundException;
 import com.academy.orders_api_rest.generated.model.ErrorObjectDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import static java.util.Objects.*;
+
 @Slf4j
 @RestControllerAdvice
 public class ErrorHandler {
 
-	@ExceptionHandler(OrderNotFoundException.class)
-	@ResponseStatus(value = HttpStatus.NOT_FOUND)
-	public ErrorObjectDTO handleOrderNotFoundException(final OrderNotFoundException ex) {
-		log.warn("Can't find order", ex);
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	public final ErrorObjectDTO handleConstraintViolationException(final MethodArgumentNotValidException ex) {
+		log.warn("Constraint violation ", ex);
 		return new ErrorObjectDTO().status(HttpStatus.BAD_REQUEST.value())
-				.title(HttpStatus.BAD_REQUEST.getReasonPhrase()).detail(ex.getMessage());
+				.title(HttpStatus.BAD_REQUEST.getReasonPhrase())
+				.detail(requireNonNull(ex.getFieldError()).getDefaultMessage());
+
+	}
+
+	@ExceptionHandler(value = NotFoundException.class)
+	@ResponseStatus(value = HttpStatus.NOT_FOUND)
+	public ErrorObjectDTO handleNotFoundException(final NotFoundException ex) {
+		log.warn("Can't find entity", ex);
+		return new ErrorObjectDTO().status(HttpStatus.NOT_FOUND.value()).title(HttpStatus.NOT_FOUND.getReasonPhrase())
+				.detail(ex.getMessage());
+	}
+
+	@ExceptionHandler(AccountAlreadyExistsException.class)
+	@ResponseStatus(value = HttpStatus.CONFLICT)
+	public ErrorObjectDTO handleAccountAlreadyExistsException(final AccountAlreadyExistsException ex) {
+		log.warn("Account already exists ", ex);
+		return new ErrorObjectDTO().status(HttpStatus.CONFLICT.value()).title(HttpStatus.CONFLICT.getReasonPhrase())
+				.detail(ex.getMessage());
 	}
 
 	@ExceptionHandler(AuthenticationException.class)

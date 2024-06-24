@@ -2,11 +2,8 @@ package com.academy.orders.boot.config;
 
 import java.util.Objects;
 
-import com.zaxxer.hikari.HikariDataSource;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,7 +25,7 @@ public class DatasourceConfiguration {
 	public LocalContainerEntityManagerFactoryBean retailEntityManagerFactory(final EntityManagerFactoryBuilder builder,
 			final DataSource datasource) {
 
-		return builder.dataSource(datasource).packages("com.academy.orders.infrastructure.order.entity").build();
+		return builder.dataSource(datasource).packages("com.academy.orders.infrastructure").build();
 	}
 
 	@Bean(name = "retailTransactionManager")

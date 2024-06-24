@@ -7,6 +7,6 @@ Feature: Karate Auth / Login
   Scenario: fetchAuthHeader
     * def credentials = __arg
     Given url urls.retailApiUrl
-    Given path '/auth/token'
-    And request { username: '#(credentials.username)', password: '#(credentials.password)' }
+    Given path '/auth/sign-in'
+    And request { email: '#(credentials.username)', password: '#(credentials.password)' }
     When method POST
