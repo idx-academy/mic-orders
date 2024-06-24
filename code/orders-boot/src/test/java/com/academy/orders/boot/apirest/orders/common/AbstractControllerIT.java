@@ -1,4 +1,4 @@
-package com.academy.orders.apirest.common;
+package com.academy.orders.boot.apirest.orders.common;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

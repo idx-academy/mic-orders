@@ -1,9 +1,9 @@
-package com.academy.orders.apirest.orders.controller;
+package com.academy.orders.boot.apirest.orders.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import com.academy.orders.apirest.common.AbstractControllerIT;
+import com.academy.orders.boot.apirest.orders.common.AbstractControllerIT;
 import com.academy.orders_api_rest.generated.model.OrderDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
