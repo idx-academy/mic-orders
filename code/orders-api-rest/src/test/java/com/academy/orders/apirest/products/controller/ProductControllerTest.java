@@ -1,7 +1,6 @@
 package com.academy.orders.apirest.products.controller;
 
 import com.academy.orders.apirest.common.TestSecurityConfig;
-import com.academy.orders.apirest.products.ProductController;
 import com.academy.orders.apirest.products.mapper.ProductPreviewDTOMapper;
 import com.academy.orders.domain.product.usecase.GetAllProductsUseCase;
 import com.fasterxml.jackson.databind.ObjectMapper;
