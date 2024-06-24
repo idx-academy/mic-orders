@@ -7,6 +7,7 @@ import com.academy.orders.domain.product.entity.Tag;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders_api_rest.generated.model.ProductPreviewDTO;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import static com.academy.orders.apirest.TestConstants.IMAGE_URL;
@@ -24,6 +25,18 @@ public class ModelUtils {
 	public static Product getProduct() {
 		return Product.builder().id(TEST_UUID).status(ProductStatus.AVAILABLE).image(IMAGE_URL)
 				.createdAt(LocalDateTime.now()).quantity(TEST_QUANTITY).price(TEST_PRICE).tags(Set.of(getTag()))
+				.productTranslations(Set.of(getProductTranslation())).build();
+	}
+
+	public static Product getProductWithEmptyTranslations() {
+		return Product.builder().id(TEST_UUID).status(ProductStatus.AVAILABLE).image(IMAGE_URL)
+				.createdAt(LocalDateTime.now()).quantity(TEST_QUANTITY).price(TEST_PRICE).tags(Set.of(getTag()))
+				.productTranslations(Collections.emptySet()).build();
+	}
+
+	public static Product getProductWithEmptyTags() {
+		return Product.builder().id(TEST_UUID).status(ProductStatus.AVAILABLE).image(IMAGE_URL)
+				.createdAt(LocalDateTime.now()).quantity(TEST_QUANTITY).price(TEST_PRICE).tags(Collections.emptySet())
 				.productTranslations(Set.of(getProductTranslation())).build();
 	}
 
