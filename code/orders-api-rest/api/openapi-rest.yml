@@ -225,7 +225,7 @@ components:
           format: password
           example: Qwerty12345!
           pattern: ^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*#?&-_])[A-Za-z\d@$!%*#?&-_]{8,}$
-
+          description: The password must contain at least 8 characters, one uppercase letter, one digit, and one special character.
       required:
         - email
         - password
@@ -242,19 +242,21 @@ components:
           format: password
           example: Qwerty12345
           pattern: ^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*#?&-_])[A-Za-z\d@$!%*#?&-_]{8,}$
-
+          description: The password must contain at least 8 characters, one uppercase letter, one digit, and one special character.
         firstName:
           type: string
           example: John
           minLength: 2
           maxLength: 50
           pattern: ^[a-zA-Zа-яА-ЯёЁіІїЇєЄ'’\-]+$
+          description: First name must contain from 2 to 50 characters long and can only include Latin and Cyrillic letters, as well as apostrophes and hyphens.
         lastName:
           type: string
           example: Doe
           minLength: 2
           maxLength: 50
           pattern: ^[a-zA-Zа-яА-ЯёЁіІїЇєЄ'’\-]+$
+          description: Last name must contain from 2 to 50 characters long and can only include Latin and Cyrillic letters, as well as apostrophes and hyphens.
       required:
         - email
         - password
