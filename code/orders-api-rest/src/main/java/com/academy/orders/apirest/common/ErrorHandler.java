@@ -28,17 +28,18 @@ public class ErrorHandler {
 				.detail(requireNonNull(ex.getFieldError()).getDefaultMessage());
 
 	}
-	@ExceptionHandler(NotFoundException.class)
+
+	@ExceptionHandler(value = NotFoundException.class)
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)
-	public ErrorObjectDTO handleOrderNotFoundException(final NotFoundException ex) {
+	public ErrorObjectDTO handleNotFoundException(final NotFoundException ex) {
 		log.warn("Can't find entity", ex);
-		return new ErrorObjectDTO().status(HttpStatus.BAD_REQUEST.value())
-				.title(HttpStatus.BAD_REQUEST.getReasonPhrase()).detail(ex.getMessage());
+		return new ErrorObjectDTO().status(HttpStatus.NOT_FOUND.value())
+				.title(HttpStatus.NOT_FOUND.getReasonPhrase()).detail(ex.getMessage());
 	}
 
 	@ExceptionHandler(AccountAlreadyExistsException.class)
 	@ResponseStatus(value = HttpStatus.CONFLICT)
-	public ErrorObjectDTO handleOrderNotFoundException(final AccountAlreadyExistsException ex) {
+	public ErrorObjectDTO handleAccountAlreadyExistsException(final AccountAlreadyExistsException ex) {
 		log.warn("Account already exists ", ex);
 		return new ErrorObjectDTO().status(HttpStatus.CONFLICT.value()).title(HttpStatus.CONFLICT.getReasonPhrase())
 				.detail(ex.getMessage());
