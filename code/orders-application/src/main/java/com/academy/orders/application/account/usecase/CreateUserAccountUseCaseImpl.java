@@ -7,6 +7,8 @@ import com.academy.orders.domain.account.usecase.CreateUserAccountUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import static java.lang.Boolean.TRUE;
+
 @Service
 @RequiredArgsConstructor
 public class CreateUserAccountUseCaseImpl implements CreateUserAccountUseCase {
@@ -14,7 +16,7 @@ public class CreateUserAccountUseCaseImpl implements CreateUserAccountUseCase {
 
 	@Override
 	public void create(CreateAccountDTO account) {
-		if (accountRepository.existsByEmail(account.email())) {
+		if (TRUE.equals(accountRepository.existsByEmail(account.email()))) {
 			throw new AccountAlreadyExistsException(account.email());
 		}
 		accountRepository.save(account);

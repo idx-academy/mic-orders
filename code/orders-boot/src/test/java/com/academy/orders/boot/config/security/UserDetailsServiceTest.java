@@ -1,4 +1,4 @@
-package com.academy.orders.boot.security;
+package com.academy.orders.boot.config.security;
 
 import com.academy.orders.ModelsUtil;
 import com.academy.orders.domain.account.repository.AccountRepository;
@@ -12,8 +12,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UserDetailsServiceTest {
@@ -41,7 +45,7 @@ class UserDetailsServiceTest {
 	void loadUserByUsernameThrowsUsernameNotFoundExceptionTest() {
 		when(accountRepository.getAccountByEmail(Mockito.anyString())).thenReturn(Optional.empty());
 
-		assertThrows(UsernameNotFoundException.class, () -> userDetailsService.loadUserByUsername(anyString()));
+		assertThrowsExactly(UsernameNotFoundException.class, () -> userDetailsService.loadUserByUsername(anyString()));
 		verify(accountRepository).getAccountByEmail(Mockito.anyString());
 	}
 }

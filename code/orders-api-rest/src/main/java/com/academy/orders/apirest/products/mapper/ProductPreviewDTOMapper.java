@@ -9,7 +9,6 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface ProductPreviewDTOMapper {
@@ -37,6 +36,6 @@ public interface ProductPreviewDTOMapper {
 
 	@Named("mapTags")
 	default List<String> mapTags(Set<Tag> tags) {
-		return tags.stream().map(Tag::name).collect(Collectors.toList());
+		return tags.stream().map(Tag::name).toList();
 	}
 }
