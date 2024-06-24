@@ -1,6 +1,7 @@
 package com.academy.orders.apirest.products.controller;
 
 import com.academy.orders.apirest.common.TestSecurityConfig;
+import com.academy.orders.apirest.products.ProductController;
 import com.academy.orders.apirest.products.mapper.ProductPreviewDTOMapper;
 import com.academy.orders.domain.product.usecase.GetAllProductsUseCase;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,6 +22,7 @@ import static com.academy.orders.apirest.TestConstants.LANGUAGE_UA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ProductController.class)
@@ -39,16 +41,27 @@ class ProductControllerTest {
 	@Test
 	void testGetProducts() throws Exception {
 		var productsList = List.of(getProduct());
+		var dto = getProductPreviewDTO();
 		ObjectMapper objectMapper = new ObjectMapper();
-		String content = objectMapper.writeValueAsString(getProductPreviewDTO());
+		String expectedContent = objectMapper.writeValueAsString(List.of(dto));
 
 		when(getAllProductsUseCase.getAllProducts(LANGUAGE_UA)).thenReturn(productsList);
-		when(mapper.toDto(productsList.get(0))).thenReturn(getProductPreviewDTO());
+		when(mapper.toDto(productsList.get(0))).thenReturn(dto);
 
-		mockMvc.perform(get(GET_ALL_PRODUCTS_URL).contentType(MediaType.APPLICATION_JSON).content(content))
-				.andExpect(status().isOk());
+		mockMvc.perform(get(GET_ALL_PRODUCTS_URL).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(content().json(expectedContent));
 
 		verify(getAllProductsUseCase).getAllProducts(LANGUAGE_UA);
 		verify(mapper).toDto(productsList.get(0));
+	}
+
+	@Test
+	void testGetProductsEmptyList() throws Exception {
+		when(getAllProductsUseCase.getAllProducts(LANGUAGE_UA)).thenReturn(List.of());
+
+		mockMvc.perform(get(GET_ALL_PRODUCTS_URL).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(content().json("[]"));
+
+		verify(getAllProductsUseCase).getAllProducts(LANGUAGE_UA);
 	}
 }

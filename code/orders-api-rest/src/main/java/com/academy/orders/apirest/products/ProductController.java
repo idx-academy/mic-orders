@@ -1,4 +1,4 @@
-package com.academy.orders.apirest.products.controller;
+package com.academy.orders.apirest.products;
 
 import com.academy.orders.apirest.products.mapper.ProductPreviewDTOMapper;
 import com.academy.orders.domain.product.usecase.GetAllProductsUseCase;
