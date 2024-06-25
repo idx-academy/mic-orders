@@ -383,10 +383,28 @@ components:
     PlaceOrderRequest:
       type: object
       properties:
+        firstName:
+          type: string
+          example: Doe
+          minLength: 2
+          maxLength: 50
+          pattern: ^[a-zA-Zа-яА-ЯёЁіІїЇєЄ'’\-]+$
+          description: Last name must contain from 2 to 50 characters long and can only include Latin and Cyrillic letters, as well as apostrophes and hyphens.
+        lastName:
+          type: string
+          example: Doe
+          minLength: 2
+          maxLength: 50
+          pattern: ^[a-zA-Zа-яА-ЯёЁіІїЇєЄ'’\-]+$
+          description: First name must contain from 2 to 50 characters long and can only include Latin and Cyrillic letters, as well as apostrophes and hyphens.
+        email:
+          type: string
+          format: email
+          example: example@mail.com
         deliveryMethod:
           type: string
           enum:
-            - NOVA_POST
+            - NOVA
             - UKRPOSHTA
           description: delivery method
         city:
