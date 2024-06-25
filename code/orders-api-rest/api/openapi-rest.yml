@@ -97,6 +97,28 @@ paths:
                 $ref: '#/components/schemas/Order'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
+  /v1/orders:
+    post:
+      tags:
+        - Orders
+      summary: Place an order
+      operationId: placeOrder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlaceOrderRequest'
+      responses:
+        '201':
+          description: Order is created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlaceOrderResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /v1/products:
     get:
@@ -357,3 +379,34 @@ components:
           format: float
           example: 999.99
           description: Price of the product
+
+    PlaceOrderRequest:
+      type: object
+      properties:
+        deliveryMethod:
+          type: string
+          enum:
+            - NOVA_POST
+            - UKRPOSHTA
+          description: delivery method
+        city:
+          type: string
+          minLength: 2
+          maxLength: 100
+          description: city where department is located
+          example: Lviv
+        department:
+          type: string
+          minLength: 2
+          maxLength: 100
+          description: department of the post
+          example: №1 Franka street, 7
+
+    PlaceOrderResponse:
+      type: object
+      properties:
+        orderId:
+          type: integer
+          format: int64
+          example: 1
+          description: id of recently created order
