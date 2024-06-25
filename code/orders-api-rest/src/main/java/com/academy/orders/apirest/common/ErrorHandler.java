@@ -1,6 +1,7 @@
 package com.academy.orders.apirest.common;
 
 import com.academy.orders.domain.account.exception.AccountAlreadyExistsException;
+import com.academy.orders.domain.cart_item.exception.CartItemAlreadyExistsException;
 import com.academy.orders.domain.exception.NotFoundException;
 import com.academy.orders_api_rest.generated.model.ErrorObjectDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -75,4 +76,11 @@ public class ErrorHandler {
 				.title(HttpStatus.BAD_REQUEST.getReasonPhrase()).detail(error.getMessage());
 	}
 
+	@ExceptionHandler(CartItemAlreadyExistsException.class)
+	@ResponseStatus(value = HttpStatus.CONFLICT)
+	public ErrorObjectDTO handleCartItemAlreadyExistsException(final CartItemAlreadyExistsException ex) {
+		log.warn("Cart item already exists ", ex);
+		return new ErrorObjectDTO().status(HttpStatus.CONFLICT.value()).title(HttpStatus.CONFLICT.getReasonPhrase())
+				.detail(ex.getMessage());
+	}
 }
