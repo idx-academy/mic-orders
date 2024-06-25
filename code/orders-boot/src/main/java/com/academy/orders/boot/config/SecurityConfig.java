@@ -10,6 +10,7 @@ import java.security.interfaces.RSAPublicKey;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -42,6 +43,7 @@ public class SecurityConfig {
 	private final UserDetailsService userDetailsService;
 	private final String[] allowedOrigins;
 
+	@Autowired
 	public SecurityConfig(UserDetailsService userDetailsService,
 			@Value("${auth.allowed-origins}") String[] allowedOrigins) {
 		this.userDetailsService = userDetailsService;
