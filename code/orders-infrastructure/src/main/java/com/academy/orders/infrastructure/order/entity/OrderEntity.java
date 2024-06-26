@@ -61,13 +61,13 @@ public class OrderEntity {
 	private LocalDateTime editedAt = now();
 
 	@Embedded
-	private OrderReceiver receiver;
+	private OrderReceiverVO receiver;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "account_id", nullable = false)
 	private AccountEntity account;
 
-	@OneToOne(mappedBy = "order",fetch = FetchType.LAZY)
+	@OneToOne(mappedBy = "order", fetch = FetchType.LAZY)
 	private PostAddressEntity postAddress;
 
 	@Setter(AccessLevel.PRIVATE)

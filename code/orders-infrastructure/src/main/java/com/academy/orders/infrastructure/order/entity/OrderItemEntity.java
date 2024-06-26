@@ -26,22 +26,22 @@ import lombok.ToString;
 @EqualsAndHashCode(exclude = {"order", "product"})
 @ToString(exclude = {"order", "product"})
 public class OrderItemEntity {
-    @EmbeddedId
-    private OrderItemId orderItemId;
+	@EmbeddedId
+	private OrderItemId orderItemId;
 
-    @Column(nullable = false)
-    private BigDecimal price;
+	@Column(nullable = false)
+	private BigDecimal price;
 
-    @Column(nullable = false)
-    private Integer quantity;
+	@Column(nullable = false)
+	private Integer quantity;
 
-    @MapsId("productId")
-    @ManyToOne(optional = false,fetch = FetchType.LAZY)
-    @JoinColumn(name = "orderId", nullable = false)
-    private OrderEntity order;
+	@MapsId("productId")
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	@JoinColumn(name = "order_id", nullable = false)
+	private OrderEntity order;
 
-    @MapsId("productId")
-    @ManyToOne(optional = false,fetch = FetchType.LAZY)
-    @JoinColumn(name = "productId", nullable = false)
-    private ProductEntity product;
+	@MapsId("productId")
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	@JoinColumn(name = "product_id", nullable = false)
+	private ProductEntity product;
 }

@@ -28,20 +28,20 @@ import lombok.ToString;
 @ToString(exclude = "order")
 @Entity
 public class PostAddressEntity {
-    @Id
-    private UUID id;
+	@Id
+	private UUID id;
 
-    @Column(nullable = false)
-    private DeliveryMethod street;
+	@Column(name = "delivery_method", nullable = false)
+	private DeliveryMethod deliveryMethod;
 
-    @Column(nullable = false)
-    private String city;
+	@Column(nullable = false)
+	private String city;
 
-    @Column(nullable = false)
-    private String department;
+	@Column(nullable = false)
+	private String department;
 
-    @MapsId("id")
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id",nullable = false)
-    private OrderEntity order;
+	@MapsId("id")
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id", nullable = false)
+	private OrderEntity order;
 }

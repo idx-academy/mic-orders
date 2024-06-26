@@ -12,9 +12,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class OrderItemId implements Serializable {
-    @Column(name = "product_id", nullable = false)
-    private String orderId;
+	@Column(name = "order_id", nullable = false)
+	private String orderId;
 
-    @Column(name = "product_id", nullable = false)
-    private String productId;
+	@Column(name = "product_id", nullable = false)
+	private String productId;
 }
