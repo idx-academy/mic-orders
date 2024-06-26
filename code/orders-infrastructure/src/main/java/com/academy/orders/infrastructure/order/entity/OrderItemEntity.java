@@ -11,6 +11,7 @@ import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,7 @@ import lombok.ToString;
 @Table(name = "order_items")
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -35,7 +37,7 @@ public class OrderItemEntity {
 	@Column(nullable = false)
 	private Integer quantity;
 
-	@MapsId("productId")
+	@MapsId("orderId")
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "order_id", nullable = false)
 	private OrderEntity order;

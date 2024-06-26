@@ -2,6 +2,7 @@ package com.academy.orders.infrastructure.order.entity;
 
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import com.academy.orders.infrastructure.account.entity.AccountEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -28,6 +29,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import static java.time.LocalDateTime.now;
 
@@ -52,18 +55,18 @@ public class OrderEntity {
 	@Enumerated(EnumType.STRING)
 	private OrderStatus orderStatus;
 
-	@Builder.Default
-	@Column(name = "created_at", nullable = false)
-	private LocalDateTime createdAt = now();
+	@Column(name = "created_at", nullable = false, updatable = false)
+	@CreationTimestamp
+	private LocalDateTime createdAt;
 
-	@Builder.Default
 	@Column(name = "edited_at", nullable = false)
-	private LocalDateTime editedAt = now();
+	@UpdateTimestamp
+	private LocalDateTime editedAt;
 
 	@Embedded
 	private OrderReceiverVO receiver;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "account_id", nullable = false)
 	private AccountEntity account;
 
@@ -71,7 +74,7 @@ public class OrderEntity {
 	private PostAddressEntity postAddress;
 
 	@Setter(AccessLevel.PRIVATE)
-	@OneToMany(mappedBy = "order")
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
 	@Builder.Default
 	private List<OrderItemEntity> orderItems = new ArrayList<>();
 }
