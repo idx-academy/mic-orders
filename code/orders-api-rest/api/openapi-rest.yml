@@ -103,6 +103,8 @@ paths:
         - Orders
       summary: Place an order
       operationId: placeOrder
+      security:
+        - bearerAuth: [ ]
       requestBody:
         content:
           application/json:
@@ -115,6 +117,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PlaceOrderResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /v1/orders/user/{userId}:
+    get:
+      tags:
+        - Orders
+      summary: View the orders history
+      operationId: getOrdersByUser
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+            description: Id of the user
+            format: int64
+          example: '1'
+        - $ref: '#/components/parameters/Pageable'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageOrder'
         '400':
           $ref: '#/components/responses/BadRequestResponse'
         '401':
@@ -172,10 +204,16 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
 
-
-
 # =============================COMPONENTS=============================
 components:
+  # =============================PARAMETERS=============================
+  parameters:
+    Pageable:
+      name: pageable
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/Pageable'
   securitySchemes:
     bearerAuth:
       type: http
@@ -191,6 +229,7 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/CreatedResponse'
+
     NotFoundResponse:
       description: Not found
       content:
@@ -201,6 +240,7 @@ components:
             status: 404
             title: Not Found
             detail: The requested resource was not found
+
     Conflict:
       description: Conflict
       content:
@@ -211,6 +251,7 @@ components:
             status: 409
             title: Conflict
             detail: The requested has conflict
+
     BadRequestResponse:
       description: Bad Request
       content:
@@ -235,6 +276,60 @@ components:
 
   # =============================SCHEMAS=============================
   schemas:
+    Pageable:
+      type: object
+      properties:
+        page:
+          type: integer
+          minimum: 0
+        size:
+          type: integer
+          minimum: 1
+        sort:
+          type: array
+          items:
+            type: string
+
+    Sort:
+      type: object
+      properties:
+        sorted:
+          type: boolean
+        unsorted:
+          type: boolean
+        empty:
+          type: boolean
+
+    AbstractPage:
+      type: object
+      properties:
+        totalElements:
+          type: integer
+          format: int64
+          default: 0
+        totalPages:
+          type: integer
+          default: 0
+        sort:
+          $ref: "#/components/schemas/Sort"
+        first:
+          type: boolean
+        last:
+          type: boolean
+        number:
+          type: integer
+        pageable:
+          $ref: "#/components/schemas/Pageable"
+        numberOfElements:
+          type: integer
+        size:
+          type: integer
+        empty:
+          type: boolean
+        content:
+          type: array
+          items: { }
+
     SignInRequest:
       type: object
       properties:
@@ -308,6 +403,7 @@ components:
           type: string
           description: Creation status message
           example: Resource successfully created
+
     ErrorObject:
       title: Unauthorized
       type: object
@@ -329,16 +425,85 @@ components:
         - status
         - title
         - detail
+
     Order:
       type: object
-      required:
-        - id
       properties:
         id:
           type: string
           format: uuid
-          example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
-          description: Order id
+        isPaid:
+          type: boolean
+        orderStatus:
+          $ref: '#/components/schemas/OrderStatus'
+        createdAt:
+          type: string
+          format: date-time
+        receiver:
+          $ref: '#/components/schemas/OrderReceiver'
+        postAddress:
+          $ref: '#/components/schemas/PostAddress'
+        orderItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+
+    OrderItem:
+      type: object
+      properties:
+        price:
+          type: number
+          format: decimal
+        quantity:
+          type: integer
+        product:
+          $ref: '#/components/schemas/ProductPreview'
+
+    OrderReceiver:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+
+    PostAddress:
+      type: object
+      properties:
+        deliveryMethod:
+          $ref: '#/components/schemas/DeliveryMethod'
+        city:
+          type: string
+        department:
+          type: string
+
+    OrderStatus:
+      type: string
+      enum:
+        - IN_PROGRESS
+        - SHIPPED
+        - DELIVERED
+        - COMPLETED
+        - CANCELED
+
+    DeliveryMethod:
+      type: string
+      enum:
+        - NOVA
+        - UKRPOSHTA
+
+    PageOrder:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/AbstractPage'
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/Order'
 
     ProductPreview:
       type: object
