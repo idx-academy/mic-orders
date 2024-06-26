@@ -1,4 +1,4 @@
-@run
+
 Feature: Sign up feature
 
   Background:
@@ -6,7 +6,6 @@ Feature: Sign up feature
     * def generator = Java.type('com.academy.orders.karate.helper.DataGenerator')
     * def requestData  = call utils.readTestData 'classpath:apis/orders/test-data/signup-request.json'
 
-  @ignore
   Scenario: Sign up 201
     * set requestData.email = generator.generateEmail()
     * print requestData
@@ -15,7 +14,7 @@ Feature: Sign up feature
 
     When method Post
 
-    Then status == 201
+    Then status 201
     And  match response.token == "#string"
 
   Scenario: Sign up 409
