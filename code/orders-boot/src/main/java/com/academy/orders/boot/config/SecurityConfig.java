@@ -55,12 +55,12 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http, HandlerExceptionResolver handlerExceptionResolver)
 			throws Exception {
-		return http.cors(Customizer.withDefaults())
-			.csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(auth -> {
-			auth.requestMatchers("/auth/sign-in", "/auth/sign-up", "/swagger-ui/**", "/v3/api-docs/**", "/v1/products")
-					.permitAll();
-			auth.anyRequest().authenticated();
-		}).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+		return http.cors(Customizer.withDefaults()).csrf(AbstractHttpConfigurer::disable)
+				.authorizeHttpRequests(auth -> {
+					auth.requestMatchers("/auth/sign-in", "/auth/sign-up", "/swagger-ui/**", "/v3/api-docs/**",
+							"/v1/products").permitAll();
+					auth.anyRequest().authenticated();
+				}).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults())
 						.authenticationEntryPoint(authenticationEntryPoint(handlerExceptionResolver)))
 				.build();
