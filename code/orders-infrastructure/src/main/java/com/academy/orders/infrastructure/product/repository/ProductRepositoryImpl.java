@@ -1,40 +1,13 @@
-//package com.academy.orders.infrastructure.product.repository;
-//
-//import com.academy.orders.domain.product.entity.Product;
-//import com.academy.orders.domain.product.repository.ProductRepository;
-//import com.academy.orders.infrastructure.product.ProductMapper;
-//import lombok.RequiredArgsConstructor;
-//import lombok.extern.slf4j.Slf4j;
-//import org.springframework.stereotype.Repository;
-//import java.util.List;
-//
-//@Repository
-//@RequiredArgsConstructor
-//@Slf4j
-//public class ProductRepositoryImpl implements ProductRepository {
-//	private final ProductJpaAdapter productJpaAdapter;
-//	private final ProductMapper productMapper;
-//
-//	@Override
-//	public List<Product> getAllProducts(String language) {
-//		log.debug("Fetching all products by language code");
-//		return productMapper.fromEntities(productJpaAdapter.findAllByLanguageCode(language));
-//	}
-//}
 package com.academy.orders.infrastructure.product.repository;
 
+import com.academy.orders.domain.common.Page;
+import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.repository.ProductRepository;
-import com.academy.orders.domain.product.valueobject.PageRequest;
-import com.academy.orders.domain.product.valueobject.PageResponse;
-import com.academy.orders.domain.product.valueobject.SortOrder;
 import com.academy.orders.infrastructure.product.ProductMapper;
-import com.academy.orders.infrastructure.product.entity.ProductEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -47,25 +20,15 @@ public class ProductRepositoryImpl implements ProductRepository {
 	private final ProductMapper productMapper;
 
 	@Override
-	public PageResponse<Product> getAllProducts(String language, PageRequest pageRequest) {
+	public Page<Product> getAllProducts(String language, Pageable pageable) {
 		log.debug("Fetching all products by language code with pagination and sorting");
 
-		Pageable pageable = createPageable(pageRequest);
-		Page<ProductEntity> productEntities = productJpaAdapter.findAllByLanguageCode(language, pageable);
-
+		var productEntities = productJpaAdapter.findAllByLanguageCode(language,
+				PageRequest.of(pageable.page(), pageable.size()));
 		List<Product> products = productMapper.fromEntities(productEntities.getContent());
 
-		return new PageResponse<>(products, productEntities.getTotalPages(), productEntities.getTotalElements(),
-				productEntities.getNumber());
-	}
-
-	private Pageable createPageable(PageRequest pageRequest) {
-		List<Sort.Order> orders = pageRequest.sortOrders().stream()
-				.map(sortOrder -> new Sort.Order(
-						sortOrder.direction() == SortOrder.Direction.ASC ? Sort.Direction.ASC : Sort.Direction.DESC,
-						sortOrder.property()))
-				.toList();
-
-		return org.springframework.data.domain.PageRequest.of(pageRequest.page(), pageRequest.size(), Sort.by(orders));
+		return new Page<>(productEntities.getTotalElements(), productEntities.getTotalPages(),
+				productEntities.isFirst(), productEntities.isLast(), productEntities.getNumber(),
+				productEntities.getNumberOfElements(), productEntities.getSize(), productEntities.isEmpty(), products);
 	}
 }

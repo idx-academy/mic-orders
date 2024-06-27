@@ -171,63 +171,27 @@ paths:
       operationId: getProducts
       parameters:
         - in: query
-          name: page
-          required: false
-          schema:
-            type: integer
-            default: 0
-            minimum: 0
-            example: 0
-          description: The page number (starting from 0).
-        - in: query
-          name: size
-          required: false
-          schema:
-            type: integer
-            default: 4
-            minimum: 1
-            example: 4
-          description: The number of items per page.
-        - in: query
-          name: sort
-          required: false
-          schema:
-            type: string
-            example: name,asc
-          description: The sorting criteria in the format `property(,asc|desc)`. Default sort order is ascending. Multiple sort criteria are supported.
-        - in: query
           name: lang
           required: false
           schema:
-            type: string
-            default: en
-            nullable: false
-            example: en
-          description: Language for the product information.
+              type: string
+              default: ua
+              nullable: false
+              example: ua
+          description: The language code for the product information (e.g., 'ua' for Ukrainian).
+        - in: query
+          name: pageable
+          required: false
+          schema:
+            $ref: '#/components/schemas/Pageable'
+          description: Page request parameters for pagination and sorting.
       responses:
         '200':
           description: Short information about all products
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  content:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/ProductPreview'
-                  totalElements:
-                    type: integer
-                    description: Total number of products
-                    example: 100
-                  totalPages:
-                    type: integer
-                    description: Total number of pages
-                    example: 25
-                  currentPage:
-                    type: integer
-                    description: Current page number
-                    example: 0
+                $ref: '#/components/schemas/PageProducts'
 
   /v1/cart/{productId}:
     post:
@@ -546,6 +510,17 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/Order'
+
+    PageProducts:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/AbstractPage'
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/ProductPreview'
 
     ProductPreview:
       type: object
