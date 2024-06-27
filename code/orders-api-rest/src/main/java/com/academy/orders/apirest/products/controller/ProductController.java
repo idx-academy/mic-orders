@@ -26,10 +26,10 @@ public class ProductController implements ProductsApi {
 	private final PageableDTOMapper pageableDTOMapper;
 
 	@Override
-	public PageProductsDTO getProducts(String lang, PageableDTO dto) {
+	public PageProductsDTO getProducts(String lang, PageableDTO dto, String sort) {
 		log.debug("Get all products by language code: {}", lang);
 		var pageable = pageableDTOMapper.fromDto(dto);
-		var products = getAllProductsUseCase.getAllProducts(lang, pageable);
+		var products = getAllProductsUseCase.getAllProducts(lang, pageable, sort);
 
 		List<ProductPreviewDTO> productPreviews = products.content().stream().map(productPreviewDTOMapper::toDto)
 				.toList();

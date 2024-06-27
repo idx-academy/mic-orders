@@ -15,7 +15,7 @@ public class GetAllProductsUseCaseImpl implements GetAllProductsUseCase {
 	private final ProductRepository productRepository;
 
 	@Override
-	public Page<Product> getAllProducts(String language, Pageable pageable) {
-		return productRepository.getAllProducts(language, pageable);
+	public Page<Product> getAllProducts(String language, Pageable pageable, String sort) {
+		return productRepository.getAllProducts(language, pageable, sort);
 	}
 }

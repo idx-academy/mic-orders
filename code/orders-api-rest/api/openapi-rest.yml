@@ -174,10 +174,10 @@ paths:
           name: lang
           required: false
           schema:
-              type: string
-              default: ua
-              nullable: false
-              example: ua
+            type: string
+            default: en
+            nullable: false
+            example: ua
           description: The language code for the product information (e.g., 'ua' for Ukrainian).
         - in: query
           name: pageable
@@ -185,6 +185,18 @@ paths:
           schema:
             $ref: '#/components/schemas/Pageable'
           description: Page request parameters for pagination and sorting.
+        - in: query
+          name: sort
+          required: false
+          schema:
+            type: string
+            enum:
+              - name,asc
+              - name,desc
+              - price,asc
+              - price,desc
+            default: name,asc
+          description: Sorting criteria for the products.
       responses:
         '200':
           description: Short information about all products

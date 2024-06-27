@@ -5,5 +5,5 @@ import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.product.entity.Product;
 
 public interface GetAllProductsUseCase {
-	Page<Product> getAllProducts(String language, Pageable pageable);
+	Page<Product> getAllProducts(String language, Pageable pageable, String sort);
 }

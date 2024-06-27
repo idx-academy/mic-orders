@@ -20,11 +20,11 @@ public class ProductRepositoryImpl implements ProductRepository {
 	private final ProductMapper productMapper;
 
 	@Override
-	public Page<Product> getAllProducts(String language, Pageable pageable) {
+	public Page<Product> getAllProducts(String language, Pageable pageable, String sort) {
 		log.debug("Fetching all products by language code with pagination and sorting");
 
 		var productEntities = productJpaAdapter.findAllByLanguageCode(language,
-				PageRequest.of(pageable.page(), pageable.size()));
+				PageRequest.of(pageable.page(), pageable.size()), sort);
 		List<Product> products = productMapper.fromEntities(productEntities.getContent());
 
 		return new Page<>(productEntities.getTotalElements(), productEntities.getTotalPages(),
