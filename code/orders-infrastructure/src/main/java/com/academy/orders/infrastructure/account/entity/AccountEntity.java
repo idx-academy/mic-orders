@@ -2,6 +2,7 @@ package com.academy.orders.infrastructure.account.entity;
 
 import com.academy.orders.domain.account.entity.enumerated.Role;
 import com.academy.orders.domain.account.entity.enumerated.UserStatus;
+import com.academy.orders.infrastructure.order.entity.OrderEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -9,9 +10,12 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,9 +29,9 @@ import org.hibernate.annotations.CreationTimestamp;
 @Table(name = "accounts")
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = "orders")
 @Builder
-@ToString
+@ToString(exclude = "orders")
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -63,4 +67,8 @@ public class AccountEntity {
 	@Column(name = "created_at")
 	private LocalDateTime createdAt;
 
+	@Setter(AccessLevel.PRIVATE)
+	@OneToMany(mappedBy = "account")
+	@Builder.Default
+	private List<OrderEntity> orders = new ArrayList<>();
 }
