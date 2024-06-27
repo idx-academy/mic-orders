@@ -141,6 +141,14 @@ paths:
             description: Id of the user
             format: int64
           example: '1'
+        - in: query
+          name: lang
+          required: false
+          schema:
+            type: string
+            default: ua
+            nullable: false
+            example: ua
         - $ref: '#/components/parameters/Pageable'
       responses:
         '200':
@@ -328,23 +336,15 @@ components:
         page:
           type: integer
           minimum: 0
+          default: 0
         size:
           type: integer
           minimum: 1
+          default: 8
         sort:
           type: array
           items:
             type: string
-
-    Sort:
-      type: object
-      properties:
-        sorted:
-          type: boolean
-        unsorted:
-          type: boolean
-        empty:
-          type: boolean
 
     AbstractPage:
       type: object
@@ -356,16 +356,12 @@ components:
         totalPages:
           type: integer
           default: 0
-        sort:
-          $ref: "#/components/schemas/Sort"
         first:
           type: boolean
         last:
           type: boolean
         number:
           type: integer
-        pageable:
-          $ref: "#/components/schemas/Pageable"
         numberOfElements:
           type: integer
         size:
