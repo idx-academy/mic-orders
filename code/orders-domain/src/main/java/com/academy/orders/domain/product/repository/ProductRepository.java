@@ -1,8 +1,9 @@
 package com.academy.orders.domain.product.repository;
 
 import com.academy.orders.domain.product.entity.Product;
-import java.util.List;
+import com.academy.orders.domain.product.valueobject.PageRequest;
+import com.academy.orders.domain.product.valueobject.PageResponse;
 
 public interface ProductRepository {
-	List<Product> getAllProducts(String language);
+	PageResponse<Product> getAllProducts(String language, PageRequest pageRequest);
 }

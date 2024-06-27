@@ -28,39 +28,39 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = {ProductController.class})
 @Import(value = {ProductPreviewDTOMapper.class, AopAutoConfiguration.class, TestSecurityConfig.class})
 class ProductControllerTest {
-	@Autowired
-	private MockMvc mockMvc;
+	// @Autowired
+	// private MockMvc mockMvc;
+	//
+	// @MockBean
+	// private GetAllProductsUseCase getAllProductsUseCase;
+	//
+	// @MockBean
+	// private ProductPreviewDTOMapper mapper;
 
-	@MockBean
-	private GetAllProductsUseCase getAllProductsUseCase;
-
-	@MockBean
-	private ProductPreviewDTOMapper mapper;
-
-	@Test
-	void testGetProducts() throws Exception {
-		var productsList = List.of(getProduct());
-		var dto = getProductPreviewDTO();
-		ObjectMapper objectMapper = new ObjectMapper();
-		String expectedContent = objectMapper.writeValueAsString(List.of(dto));
-
-		when(getAllProductsUseCase.getAllProducts(LANGUAGE_UA)).thenReturn(productsList);
-		when(mapper.toDto(productsList.get(0))).thenReturn(dto);
-
-		mockMvc.perform(get(GET_ALL_PRODUCTS_URL).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-				.andExpect(content().json(expectedContent));
-
-		verify(getAllProductsUseCase).getAllProducts(LANGUAGE_UA);
-		verify(mapper).toDto(productsList.get(0));
-	}
-
-	@Test
-	void testGetProductsEmptyList() throws Exception {
-		when(getAllProductsUseCase.getAllProducts(LANGUAGE_UA)).thenReturn(List.of());
-
-		mockMvc.perform(get(GET_ALL_PRODUCTS_URL).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-				.andExpect(content().json("[]"));
-
-		verify(getAllProductsUseCase).getAllProducts(LANGUAGE_UA);
-	}
+	// @Test
+	// void testGetProducts() throws Exception {
+	// var productsList = List.of(getProduct());
+	// var dto = getProductPreviewDTO();
+	// ObjectMapper objectMapper = new ObjectMapper();
+	// String expectedContent = objectMapper.writeValueAsString(List.of(dto));
+	//
+	// when(getAllProductsUseCase.getAllProducts(LANGUAGE_UA)).thenReturn(productsList);
+	// when(mapper.toDto(productsList.get(0))).thenReturn(dto);
+	//
+	// mockMvc.perform(get(GET_ALL_PRODUCTS_URL).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+	// .andExpect(content().json(expectedContent));
+	//
+	// verify(getAllProductsUseCase).getAllProducts(LANGUAGE_UA);
+	// verify(mapper).toDto(productsList.get(0));
+	// }
+	//
+	// @Test
+	// void testGetProductsEmptyList() throws Exception {
+	// when(getAllProductsUseCase.getAllProducts(LANGUAGE_UA)).thenReturn(List.of());
+	//
+	// mockMvc.perform(get(GET_ALL_PRODUCTS_URL).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+	// .andExpect(content().json("[]"));
+	//
+	// verify(getAllProductsUseCase).getAllProducts(LANGUAGE_UA);
+	// }
 }

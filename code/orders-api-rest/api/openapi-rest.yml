@@ -192,9 +192,9 @@ paths:
           required: false
           schema:
             type: string
-            default: ua
+            default: en
             nullable: false
-            example: ua
+            example: en
           description: Language for the product information.
       responses:
         '200':
