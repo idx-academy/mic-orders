@@ -7,7 +7,8 @@ info:
 servers:
   - url: http://localhost:8080/retail
 
-# =============================TAGS=============================
+#TAGS
+#=======================================================================================================================
 tags:
   - name: Security
     description: Token retrieval
@@ -21,7 +22,8 @@ tags:
   - name: Cart
     description: Cart management endpoints
 
-# =============================ENDPOINTS=============================
+#ENDPOINTS
+#=======================================================================================================================
 paths:
   /auth/sign-in:
     post:
@@ -157,9 +159,34 @@ paths:
       tags:
         - Products
       summary: Get list of products
-      description: The endpoint for getting all products from database.
+      description: The endpoint for getting all products from the database.
       operationId: getProducts
       parameters:
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+            example: 0
+          description: The page number (starting from 0).
+        - in: query
+          name: size
+          required: false
+          schema:
+            type: integer
+            default: 4
+            minimum: 1
+            example: 4
+          description: The number of items per page.
+        - in: query
+          name: sort
+          required: false
+          schema:
+            type: string
+            example: name,asc
+          description: The sorting criteria in the format `property(,asc|desc)`. Default sort order is ascending. Multiple sort criteria are supported.
         - in: query
           name: lang
           required: false
@@ -168,16 +195,31 @@ paths:
             default: ua
             nullable: false
             example: ua
-          description: The id of the product which is added to the cart
+          description: Language for the product information.
       responses:
         '200':
           description: Short information about all products
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ProductPreview'
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductPreview'
+                  totalElements:
+                    type: integer
+                    description: Total number of products
+                    example: 100
+                  totalPages:
+                    type: integer
+                    description: Total number of pages
+                    example: 25
+                  currentPage:
+                    type: integer
+                    description: Current page number
+                    example: 0
 
   /v1/cart/{productId}:
     post:
@@ -204,9 +246,12 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
 
-# =============================COMPONENTS=============================
+#COMPONENTS
+#=======================================================================================================================
 components:
-  # =============================PARAMETERS=============================
+
+#PARAMETERS
+#=======================================================================================================================
   parameters:
     Pageable:
       name: pageable
@@ -220,8 +265,8 @@ components:
       scheme: bearer
       bearerFormat: JWT
 
-
-  # =============================RESPONSES=============================
+#RESPONSES
+#=======================================================================================================================
   responses:
     CreatedResponse:
       description: Resource created
@@ -274,7 +319,8 @@ components:
             title: Unauthorized
             detail: Unauthorized access to the resource
 
-  # =============================SCHEMAS=============================
+#SCHEMAS
+#=======================================================================================================================
   schemas:
     Pageable:
       type: object
