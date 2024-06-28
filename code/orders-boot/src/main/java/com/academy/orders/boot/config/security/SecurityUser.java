@@ -16,14 +16,19 @@ import org.springframework.security.core.userdetails.UserDetails;
 @EqualsAndHashCode(callSuper = false)
 public class SecurityUser extends User {
 	private Long id;
+	private String firstName;
+	private String lastName;
 
-	public SecurityUser(Long id, String username, String password, Collection<? extends GrantedAuthority> authorities) {
+	public SecurityUser(Long id, String firstName, String lastName, String username, String password,
+			Collection<? extends GrantedAuthority> authorities) {
 		super(username, password, authorities);
 		this.id = id;
+		this.firstName = firstName;
+		this.lastName = lastName;
 	}
 
 	public static UserDetails fromUser(Account user) {
-		return new SecurityUser(user.id(), user.email(), user.password(),
+		return new SecurityUser(user.id(), user.firstName(), user.lastName(), user.email(), user.password(),
 				Set.of(new SimpleGrantedAuthority(user.role().name())));
 	}
 }

@@ -3,7 +3,9 @@ package com.academy.orders.apirest.auth.controller;
 import com.academy.orders.apirest.auth.mapper.SignUpRequestDTOMapperImpl;
 import com.academy.orders.apirest.common.TestSecurityConfig;
 import com.academy.orders.domain.account.entity.CreateAccountDTO;
+import com.academy.orders.domain.account.entity.AccountDetails;
 import com.academy.orders.domain.account.usecase.CreateUserAccountUseCase;
+import com.academy.orders.domain.account.usecase.GetUserDetailsUseCase;
 import com.academy.orders_api_rest.generated.model.SignInRequestDTO;
 import com.academy.orders_api_rest.generated.model.SignUpRequestDTO;
 import org.junit.jupiter.api.Test;
@@ -48,6 +50,8 @@ class AuthTokenControllerTest {
 	private AuthenticationManager authenticationManager;
 	@MockBean
 	private CreateUserAccountUseCase createUserAccountUseCase;
+	@MockBean
+	private GetUserDetailsUseCase getUserDetailsUseCase;
 
 	@Test
 	void signInTest() throws Exception {
@@ -56,10 +60,12 @@ class AuthTokenControllerTest {
 				signInRequestDTO.getPassword());
 		var jwt = mock(Jwt.class);
 		var token = "token-value";
+		var userDetails = new AccountDetails(1L, "testName", "testLastName");
 
 		when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
 				.thenReturn(authentication);
-
+		when(getUserDetailsUseCase.getUserDetailsFromUserDetails(authentication.getPrincipal()))
+				.thenReturn(userDetails);
 		when(encoder.encode(any(JwtEncoderParameters.class))).thenReturn(jwt);
 		when(jwt.getTokenValue()).thenReturn(token);
 
@@ -68,6 +74,7 @@ class AuthTokenControllerTest {
 				.andExpect(jsonPath("$.token").value(token));
 
 		verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
+		verify(getUserDetailsUseCase).getUserDetailsFromUserDetails(authentication.getPrincipal());
 		verify(encoder).encode(any(JwtEncoderParameters.class));
 	}
 
@@ -85,10 +92,13 @@ class AuthTokenControllerTest {
 				signInRequestDTO.getPassword());
 		var jwt = mock(Jwt.class);
 		var token = "token-value";
+		var userDetails = new AccountDetails(1L, "testName", "testLastName");
 
 		when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
 				.thenReturn(authentication);
 		when(encoder.encode(any(JwtEncoderParameters.class))).thenReturn(jwt);
+		when(getUserDetailsUseCase.getUserDetailsFromUserDetails(authentication.getPrincipal()))
+			.thenReturn(userDetails);
 		when(jwt.getTokenValue()).thenReturn(token);
 		when(passwordEncoder.encode(signUpRequest.getPassword())).thenReturn(signUpRequestEncoded.getPassword());
 
@@ -98,6 +108,7 @@ class AuthTokenControllerTest {
 
 		verify(passwordEncoder).encode(signUpRequest.getPassword());
 		verify(createUserAccountUseCase).create(createAccountDTO);
+		verify(getUserDetailsUseCase).getUserDetailsFromUserDetails(authentication.getPrincipal());
 		verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
 		verify(encoder).encode(any(JwtEncoderParameters.class));
 	}
