@@ -1,5 +1,10 @@
 package com.academy.orders.infrastructure.order.repository;
 
+import com.academy.orders.domain.common.Page;
+import com.academy.orders.domain.common.Pageable;
+import com.academy.orders.infrastructure.common.PageableMapper;
+import com.academy.orders.infrastructure.order.OrderPageMapper;
+import com.academy.orders.infrastructure.product.repository.ProductJpaAdapter;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -10,15 +15,19 @@ import com.academy.orders.domain.order.entity.Order;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class OrderRepositoryImpl implements OrderRepository {
 
 	private final OrderJpaAdapter jpaAdapter;
-
+	private final ProductJpaAdapter productJpaAdapter;
 	private final OrderMapper mapper;
+	private final PageableMapper pageableMapper;
+	private final OrderPageMapper pageMapper;
 
 	// TODO remove, added for example. It should be created separate repo
 	// ColorsRepository
@@ -35,5 +44,16 @@ public class OrderRepositoryImpl implements OrderRepository {
 		}
 
 		return jpaAdapter.findById(id).map(mapper::fromEntity);
+	}
+
+	@Override
+	public Page<Order> findAllByUserId(Long userId, String language, Pageable pageable) {
+		var pageableFromDomain = pageableMapper.fromDomain(pageable);
+		var orderEntityPage = jpaAdapter.findAllByAccount_Id(userId, pageableFromDomain);
+		var productIds = orderEntityPage.getContent().stream()
+				.flatMap(orderEntity -> orderEntity.getOrderItems().stream())
+				.map(orderItemEntity -> orderItemEntity.getProduct().getId()).toList();
+		productJpaAdapter.findAllByIdAndLanguageCode(productIds, language);
+		return pageMapper.toDomain(orderEntityPage);
 	}
 }

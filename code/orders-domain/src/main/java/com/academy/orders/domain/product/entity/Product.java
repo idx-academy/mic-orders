@@ -9,6 +9,6 @@ import java.util.Set;
 import java.util.UUID;
 
 @Builder
-public record Product(UUID id, ProductStatus status, String image, LocalDateTime createdAt, int quantity,
+public record Product(UUID id, ProductStatus status, String image, LocalDateTime createdAt, Integer quantity,
 		BigDecimal price, Set<Tag> tags, Set<ProductTranslation> productTranslations) {
 }

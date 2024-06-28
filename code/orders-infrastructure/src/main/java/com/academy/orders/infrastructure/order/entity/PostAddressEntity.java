@@ -3,6 +3,8 @@ package com.academy.orders.infrastructure.order.entity;
 import com.academy.orders.domain.order.entity.enumerated.DeliveryMethod;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -31,6 +33,7 @@ public class PostAddressEntity {
 	@Id
 	private UUID id;
 
+	@Enumerated(EnumType.STRING)
 	@Column(name = "delivery_method", nullable = false)
 	private DeliveryMethod deliveryMethod;
 
