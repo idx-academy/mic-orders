@@ -11,7 +11,7 @@ import static java.lang.Boolean.TRUE;
 
 @Service
 @RequiredArgsConstructor
-public class CreateCartIdemByUserUseCaseImpl implements CreateCartItemByUser {
+public class CreateCartItemByUserUseCaseImpl implements CreateCartItemByUser {
 	private final CartItemRepository cartItemRepository;
 
 	@Override
