@@ -20,46 +20,46 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class CreateCartItemByUserUseCaseTest {
-    @Mock
-    private CartItemRepository cartItemRepository;
-    @InjectMocks
-    private CreateCartItemByUserUseCaseImpl createCartItemByUserUseCase;
+	@Mock
+	private CartItemRepository cartItemRepository;
+	@InjectMocks
+	private CreateCartItemByUserUseCaseImpl createCartItemByUserUseCase;
 
-    @Test
-    void createCartItemByUserTest() {
-        Account account = getAccount();
-        Product product = getProduct();
+	@Test
+	void createCartItemByUserTest() {
+		Account account = getAccount();
+		Product product = getProduct();
 
-        int quantity = 1;
+		int quantity = 1;
 
-        CreateCartItemDTO createCartItemDTO = CreateCartItemDTO.builder().productId(product.id()).userId(account.id())
-                .quantity(quantity).build();
-        CartItem cartItem = CartItem.builder().product(product).account(account).quantity(quantity).build();
+		CreateCartItemDTO createCartItemDTO = CreateCartItemDTO.builder().productId(product.id()).userId(account.id())
+				.quantity(quantity).build();
+		CartItem cartItem = CartItem.builder().product(product).account(account).quantity(quantity).build();
 
-        when(cartItemRepository.existsByProductIdAndUserId(createCartItemDTO.productId(), createCartItemDTO.userId()))
-                .thenReturn(false);
-        when(cartItemRepository.save(createCartItemDTO)).thenReturn(cartItem);
+		when(cartItemRepository.existsByProductIdAndUserId(createCartItemDTO.productId(), createCartItemDTO.userId()))
+				.thenReturn(false);
+		when(cartItemRepository.save(createCartItemDTO)).thenReturn(cartItem);
 
-        createCartItemByUserUseCase.create(createCartItemDTO);
+		createCartItemByUserUseCase.create(createCartItemDTO);
 
-        verify(cartItemRepository)
-                .existsByProductIdAndUserId(createCartItemDTO.productId(), createCartItemDTO.userId());
-        verify(cartItemRepository).save(createCartItemDTO);
-    }
+		verify(cartItemRepository).existsByProductIdAndUserId(createCartItemDTO.productId(),
+				createCartItemDTO.userId());
+		verify(cartItemRepository).save(createCartItemDTO);
+	}
 
-    @Test
-    void createThrowsCartItemAlreadyExistsExceptionTest() {
-        Account account = getAccount();
-        Product product = getProduct();
+	@Test
+	void createThrowsCartItemAlreadyExistsExceptionTest() {
+		Account account = getAccount();
+		Product product = getProduct();
 
-        int quantity = 1;
+		int quantity = 1;
 
-        CreateCartItemDTO createCartItemDTO = CreateCartItemDTO.builder().productId(product.id()).userId(account.id())
-                .quantity(quantity).build();
+		CreateCartItemDTO createCartItemDTO = CreateCartItemDTO.builder().productId(product.id()).userId(account.id())
+				.quantity(quantity).build();
 
-        when(cartItemRepository.existsByProductIdAndUserId(createCartItemDTO.productId(), createCartItemDTO.userId()))
-                .thenReturn(true);
+		when(cartItemRepository.existsByProductIdAndUserId(createCartItemDTO.productId(), createCartItemDTO.userId()))
+				.thenReturn(true);
 
-        assertThrows(CartItemAlreadyExistsException.class, () -> createCartItemByUserUseCase.create(createCartItemDTO));
-    }
+		assertThrows(CartItemAlreadyExistsException.class, () -> createCartItemByUserUseCase.create(createCartItemDTO));
+	}
 }
