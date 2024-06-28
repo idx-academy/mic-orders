@@ -98,7 +98,7 @@ class AuthTokenControllerTest {
 				.thenReturn(authentication);
 		when(encoder.encode(any(JwtEncoderParameters.class))).thenReturn(jwt);
 		when(getUserDetailsUseCase.getUserDetailsFromUserDetails(authentication.getPrincipal()))
-			.thenReturn(userDetails);
+				.thenReturn(userDetails);
 		when(jwt.getTokenValue()).thenReturn(token);
 		when(passwordEncoder.encode(signUpRequest.getPassword())).thenReturn(signUpRequestEncoded.getPassword());
 

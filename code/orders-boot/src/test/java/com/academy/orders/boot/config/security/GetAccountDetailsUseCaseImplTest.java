@@ -12,26 +12,26 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class GetAccountDetailsUseCaseImplTest {
-    @InjectMocks
-    private GetUserDetailsUseCaseImpl getUserDetailsUseCase;
+	@InjectMocks
+	private GetUserDetailsUseCaseImpl getUserDetailsUseCase;
 
-    @Mock
-    private SecurityUser securityUser;
+	@Mock
+	private SecurityUser securityUser;
 
-    @Test
-    void getUserDetailsFromUserDetailsTest() {
-        long id = 1L;
-        String firstName = "John";
-        String lastName = "Doe";
+	@Test
+	void getUserDetailsFromUserDetailsTest() {
+		long id = 1L;
+		String firstName = "John";
+		String lastName = "Doe";
 
-        when(securityUser.getId()).thenReturn(id);
-        when(securityUser.getFirstName()).thenReturn(firstName);
-        when(securityUser.getLastName()).thenReturn(lastName);
+		when(securityUser.getId()).thenReturn(id);
+		when(securityUser.getFirstName()).thenReturn(firstName);
+		when(securityUser.getLastName()).thenReturn(lastName);
 
-        AccountDetails accountDetails = getUserDetailsUseCase.getUserDetailsFromUserDetails(securityUser);
+		AccountDetails accountDetails = getUserDetailsUseCase.getUserDetailsFromUserDetails(securityUser);
 
-        assertEquals(id, accountDetails.id());
-        assertEquals(firstName, accountDetails.firstName());
-        assertEquals(lastName, accountDetails.lastName());
-    }
+		assertEquals(id, accountDetails.id());
+		assertEquals(firstName, accountDetails.firstName());
+		assertEquals(lastName, accountDetails.lastName());
+	}
 }

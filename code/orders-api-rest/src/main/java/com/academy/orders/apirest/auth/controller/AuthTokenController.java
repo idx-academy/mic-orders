@@ -59,7 +59,8 @@ public class AuthTokenController implements SecurityApi {
 		Instant now = Instant.now();
 		long expiry = 3600L;
 
-		AccountDetails accountDetails = getUserDetailsUseCase.getUserDetailsFromUserDetails(authentication.getPrincipal());
+		AccountDetails accountDetails = getUserDetailsUseCase
+				.getUserDetailsFromUserDetails(authentication.getPrincipal());
 		String scope = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
 				.collect(Collectors.joining(" "));
 
