@@ -8,4 +8,5 @@ import com.academy.orders.domain.order.entity.Order;
 public interface OrderRepository {
 
 	Optional<Order> findById(UUID id);
+	UUID save(Order order, String userEmail);
 }

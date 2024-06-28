@@ -8,6 +8,9 @@ spring:
   flyway:
     enabled: true
 
+  jpa:
+    show-sql: true
+
 auth:
   users:
     - username: user

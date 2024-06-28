@@ -32,8 +32,6 @@ import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import static java.time.LocalDateTime.now;
-
 @Table(name = "orders")
 @Entity
 @Data
@@ -70,7 +68,7 @@ public class OrderEntity {
 	@JoinColumn(name = "account_id", nullable = false)
 	private AccountEntity account;
 
-	@OneToOne(mappedBy = "order", fetch = FetchType.LAZY)
+	@OneToOne(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private PostAddressEntity postAddress;
 
 	@Setter(AccessLevel.PRIVATE)

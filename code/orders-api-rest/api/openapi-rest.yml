@@ -419,12 +419,21 @@ components:
           maxLength: 100
           description: department of the post
           example: №1 Franka street, 7
+      required:
+        - city
+        - deliveryMethod
+        - department
+        - email
+        - firstName
+        - lastName
 
     PlaceOrderResponse:
       type: object
       properties:
         orderId:
-          type: integer
-          format: int64
-          example: 1
+          type: string
+          format: uuid
+          example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
           description: id of recently created order
+      required:
+        - orderId

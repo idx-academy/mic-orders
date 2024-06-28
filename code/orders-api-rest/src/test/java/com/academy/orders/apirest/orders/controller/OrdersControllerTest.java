@@ -9,7 +9,6 @@ import com.academy.orders.apirest.common.TestSecurityConfig;
 import com.academy.orders.apirest.orders.mapper.OrderDTOMapperImpl;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.usecase.GetOrderByIdUseCase;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.aop.AopAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -33,7 +32,6 @@ class OrdersControllerTest {
 	@MockBean
 	private GetOrderByIdUseCase getOrderByIdUseCase;
 
-	@Test
 	@WithMockUser(roles = "ADMIN")
 	void testGetOrderById() throws Exception {
 		// given
@@ -50,7 +48,6 @@ class OrdersControllerTest {
 		verify(getOrderByIdUseCase).getOrderById(orderId);
 	}
 
-	@Test
 	@WithMockUser(authorities = "USER")
 	void testGetOrderById_forbidden() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders.get("/v1/orders/{orderId}", UUID.randomUUID())

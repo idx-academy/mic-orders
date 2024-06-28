@@ -5,10 +5,5 @@ import java.math.BigDecimal;
 import lombok.Builder;
 
 @Builder
-public record OrderItem(
-    Product product,
-    Order order,
-    BigDecimal price,
-    Integer quantity
-) {
+public record OrderItem(Product product, BigDecimal price, Integer quantity) {
 }
