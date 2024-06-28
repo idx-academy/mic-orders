@@ -4,4 +4,4 @@ CREATE TABLE IF NOT EXISTS "tags"
     name    VARCHAR(255) NOT NULL UNIQUE
 );
 
-INSERT INTO "tags" (name) VALUES ('SmartPhone'),('6 inch'),('Mobile');
+INSERT INTO "tags" (name) VALUES ('category:mobile'), ('category:tablet'), ('category:computer');
