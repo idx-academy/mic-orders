@@ -16,20 +16,20 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ProductRepositoryImplTest {
-    @InjectMocks
-    private ProductRepositoryImpl productRepository;
-    @Mock
-    private ProductJpaAdapter productJpaAdapter;
-    @Mock
-    private ProductMapper productMapper;
+	@InjectMocks
+	private ProductRepositoryImpl productRepository;
+	@Mock
+	private ProductJpaAdapter productJpaAdapter;
+	@Mock
+	private ProductMapper productMapper;
 
-    @ParameterizedTest
-    @CsvSource({"true", "false"})
-    void testExistsById(Boolean response) {
+	@ParameterizedTest
+	@CsvSource({"true", "false"})
+	void testExistsById(Boolean response) {
 
-        when(productJpaAdapter.existsById(any(UUID.class))).thenReturn(response);
+		when(productJpaAdapter.existsById(any(UUID.class))).thenReturn(response);
 
-        assertEquals(response, productRepository.existById(UUID.randomUUID()));
-        verify(productJpaAdapter).existsById(any(UUID.class));
-    }
+		assertEquals(response, productRepository.existById(UUID.randomUUID()));
+		verify(productJpaAdapter).existsById(any(UUID.class));
+	}
 }
