@@ -1,10 +1,10 @@
-package com.academy.orders.application.cart_item.usecase;
+package com.academy.orders.application.cart.usecase;
 
 import com.academy.orders.domain.account.entity.Account;
-import com.academy.orders.domain.cart_item.entity.CartItem;
-import com.academy.orders.domain.cart_item.entity.CreateCartItemDTO;
-import com.academy.orders.domain.cart_item.exception.CartItemAlreadyExistsException;
-import com.academy.orders.domain.cart_item.repository.CartItemRepository;
+import com.academy.orders.domain.cart.entity.CartItem;
+import com.academy.orders.domain.cart.entity.CreateCartItemDTO;
+import com.academy.orders.domain.cart.exception.CartItemAlreadyExistsException;
+import com.academy.orders.domain.cart.repository.CartItemRepository;
 import com.academy.orders.domain.product.entity.Product;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,11 +19,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class CreateCartItemByUserUseCaseTest {
+class CreateCartItemByUserUseCaseUseCaseTest {
 	@Mock
 	private CartItemRepository cartItemRepository;
 	@InjectMocks
-	private CreateCartItemByUserUseCaseImpl createCartItemByUserUseCase;
+	private CreateCartItemByUserUseCaseUseCaseImpl createCartItemByUserUseCase;
 
 	@Test
 	void createCartItemByUserTest() {

@@ -1,7 +1,7 @@
 package com.academy.orders.apirest.common;
 
 import com.academy.orders.domain.account.exception.AccountAlreadyExistsException;
-import com.academy.orders.domain.cart_item.exception.CartItemAlreadyExistsException;
+import com.academy.orders.domain.cart.exception.CartItemAlreadyExistsException;
 import com.academy.orders.domain.exception.NotFoundException;
 import com.academy.orders_api_rest.generated.model.ErrorObjectDTO;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package com.academy.orders.infrastructure.cart_item.entity;
+package com.academy.orders.infrastructure.cart.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

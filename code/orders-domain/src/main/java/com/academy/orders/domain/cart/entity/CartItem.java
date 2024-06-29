@@ -1,4 +1,4 @@
-package com.academy.orders.domain.cart_item.entity;
+package com.academy.orders.domain.cart.entity;
 
 import com.academy.orders.domain.account.entity.Account;
 import com.academy.orders.domain.product.entity.Product;

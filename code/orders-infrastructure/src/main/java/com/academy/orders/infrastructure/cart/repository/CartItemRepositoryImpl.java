@@ -1,11 +1,11 @@
-package com.academy.orders.infrastructure.cart_item.repository;
+package com.academy.orders.infrastructure.cart.repository;
 
-import com.academy.orders.domain.cart_item.entity.CartItem;
-import com.academy.orders.domain.cart_item.entity.CreateCartItemDTO;
-import com.academy.orders.domain.cart_item.repository.CartItemRepository;
-import com.academy.orders.infrastructure.cart_item.CartItemMapper;
-import com.academy.orders.infrastructure.cart_item.entity.CartItemEntity;
-import com.academy.orders.infrastructure.cart_item.entity.CartItemId;
+import com.academy.orders.domain.cart.entity.CartItem;
+import com.academy.orders.domain.cart.entity.CreateCartItemDTO;
+import com.academy.orders.domain.cart.repository.CartItemRepository;
+import com.academy.orders.infrastructure.cart.CartItemMapper;
+import com.academy.orders.infrastructure.cart.entity.CartItemEntity;
+import com.academy.orders.infrastructure.cart.entity.CartItemId;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;

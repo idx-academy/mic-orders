@@ -1,4 +1,4 @@
-package com.academy.orders.domain.cart_item.entity;
+package com.academy.orders.domain.cart.entity;
 
 import lombok.Builder;
 

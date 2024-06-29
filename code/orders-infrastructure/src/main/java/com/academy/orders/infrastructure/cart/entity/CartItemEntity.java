@@ -1,4 +1,4 @@
-package com.academy.orders.infrastructure.cart_item.entity;
+package com.academy.orders.infrastructure.cart.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
@@ -17,7 +17,8 @@ import lombok.*;
 @ToString
 public class CartItemEntity {
 	@EmbeddedId
-	private CartItemId cartItemId;
+	@Builder.Default
+	private CartItemId cartItemId = new CartItemId();
 
 	@Column(name = "quantity")
 	private int quantity;
