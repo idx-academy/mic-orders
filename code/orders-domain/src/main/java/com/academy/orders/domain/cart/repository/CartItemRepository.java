@@ -9,4 +9,6 @@ public interface CartItemRepository {
 
 	Boolean existsByProductIdAndUserId(UUID productId, Long userId);
 	CartItem save(CreateCartItemDTO cartItem);
+
+	void incrementQuantity(UUID uuid, Long aLong);
 }
