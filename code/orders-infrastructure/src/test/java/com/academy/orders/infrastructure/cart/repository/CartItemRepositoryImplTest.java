@@ -1,9 +1,7 @@
 package com.academy.orders.infrastructure.cart.repository;
 
-import com.academy.orders.domain.account.exception.AccountNotFoundException;
 import com.academy.orders.domain.cart.entity.CartItem;
 import com.academy.orders.domain.cart.entity.CreateCartItemDTO;
-import com.academy.orders.domain.product.exception.ProductNotFoundException;
 import com.academy.orders.infrastructure.account.entity.AccountEntity;
 import com.academy.orders.infrastructure.account.repository.AccountJpaAdapter;
 import com.academy.orders.infrastructure.cart.CartItemMapper;
@@ -13,7 +11,6 @@ import com.academy.orders.infrastructure.product.entity.ProductEntity;
 import com.academy.orders.infrastructure.product.repository.ProductJpaAdapter;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,8 +25,6 @@ import static com.academy.orders.infrastructure.ModelUtils.getProduct;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.any;
@@ -65,7 +60,7 @@ class CartItemRepositoryImplTest {
 
 		when(cartItemJpaAdapter.existsById(any(CartItemId.class))).thenReturn(response);
 
-		assertEquals(response,cartItemRepository.existsByProductIdAndUserId(UUID.randomUUID(), 1L));
+		assertEquals(response, cartItemRepository.existsByProductIdAndUserId(UUID.randomUUID(), 1L));
 		verify(cartItemJpaAdapter).existsById(any(CartItemId.class));
 	}
 
