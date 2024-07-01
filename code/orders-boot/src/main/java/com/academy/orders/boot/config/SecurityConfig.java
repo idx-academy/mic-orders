@@ -7,12 +7,9 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
-import java.util.Collections;
-import java.util.List;
 import java.util.function.Supplier;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,21 +31,13 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 @Configuration
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 	private final UserDetailsService userDetailsService;
-	private final String[] allowedOrigins;
-
-	@Autowired
-	public SecurityConfig(UserDetailsService userDetailsService,
-			@Value("${auth.allowed-origins}") String[] allowedOrigins) {
-		this.userDetailsService = userDetailsService;
-		this.allowedOrigins = allowedOrigins;
-	}
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -66,20 +55,12 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http, HandlerExceptionResolver handlerExceptionResolver)
 			throws Exception {
-		return http.cors(cors -> cors.configurationSource(configSource -> {
-			CorsConfiguration config = new CorsConfiguration();
-			config.setAllowedOrigins(List.of(allowedOrigins));
-			config.setAllowedMethods(Collections.singletonList("*"));
-			config.setAllowedHeaders(List.of("Access-Control-Allow-Origin", "Access-Control-Allow-Headers",
-					"X-Requested-With", "Origin", "Content-Type", "Accept", "Authorization"));
-			config.setAllowCredentials(true);
-			config.setMaxAge(3600L);
-			return config;
-		})).csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(auth -> {
-			auth.requestMatchers("/auth/sign-in", "/auth/sign-up", "/swagger-ui/**", "/v3/api-docs/**", "/v1/products")
-					.permitAll();
-			auth.anyRequest().authenticated();
-		}).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+		return http.cors(Customizer.withDefaults()).csrf(AbstractHttpConfigurer::disable)
+				.authorizeHttpRequests(auth -> {
+					auth.requestMatchers("/auth/sign-in", "/auth/sign-up", "/swagger-ui/**", "/v3/api-docs/**",
+							"/v1/products").permitAll();
+					auth.anyRequest().authenticated();
+				}).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults())
 						.authenticationEntryPoint(authenticationEntryPoint(handlerExceptionResolver)))
 				.build();
