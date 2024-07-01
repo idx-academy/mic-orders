@@ -5,15 +5,12 @@ import com.academy.orders.domain.account.entity.enumerated.Role;
 import com.academy.orders.domain.account.entity.enumerated.UserStatus;
 import com.academy.orders.domain.cart.entity.CartItem;
 import com.academy.orders.domain.order.dto.CreateOrderDto;
-import com.academy.orders.domain.order.entity.OrderItem;
 import com.academy.orders.domain.order.entity.enumerated.DeliveryMethod;
 import com.academy.orders.domain.product.entity.Language;
 import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.ProductTranslation;
 import com.academy.orders.domain.product.entity.Tag;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
-
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
 
