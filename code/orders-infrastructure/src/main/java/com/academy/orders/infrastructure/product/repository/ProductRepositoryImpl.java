@@ -32,4 +32,8 @@ public class ProductRepositoryImpl implements ProductRepository {
 		productJpaAdapter.setNewProductQuantity(productId, quantity);
 	}
 
+	@Override
+	public boolean existById(UUID id) {
+		return productJpaAdapter.existsById(id);
+	}
 }

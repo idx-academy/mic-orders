@@ -187,12 +187,13 @@ paths:
                 items:
                   $ref: '#/components/schemas/ProductPreview'
 
-  /v1/cart/{productId}:
+  /v1/cart/{productId}/{userId}:
     post:
       tags:
         - Cart
       summary: Add products to the cart
       description: The endpoint for adding a product to the user's shopping cart.
+      operationId: addProductToCart
       security:
         - bearerAuth: [ ]
       parameters:
@@ -204,6 +205,13 @@ paths:
             format: uuid
             example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
           description: The id of the product which is added to the cart
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+            format: long
+          description: The id of the user who added the product
       responses:
         '201':
           description: The card with added products was created
@@ -211,6 +219,8 @@ paths:
           $ref: '#/components/responses/BadRequestResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
+        '409':
+          description: Conflict - Product already exists in the cart
 
 # =============================COMPONENTS=============================
 components:

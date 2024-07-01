@@ -8,4 +8,5 @@ public interface ProductRepository {
 	List<Product> getAllProducts(String language);
 	List<Product> findProductsWithPricesAndQuantities(UUID... productsIds);
 	void setNewProductQuantity(UUID productId, Integer quantity);
+	boolean existById(UUID id);
 }
