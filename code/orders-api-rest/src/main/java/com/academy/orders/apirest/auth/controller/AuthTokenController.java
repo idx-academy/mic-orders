@@ -1,15 +1,14 @@
 package com.academy.orders.apirest.auth.controller;
 
 import com.academy.orders.apirest.auth.mapper.SignUpRequestDTOMapper;
-import com.academy.orders.domain.account.entity.AccountDetails;
+import com.academy.orders.domain.account.usecase.GetAccountDetailsUseCase;
 import com.academy.orders.domain.account.usecase.CreateUserAccountUseCase;
-import com.academy.orders.domain.account.usecase.GetUserDetailsUseCase;
 import com.academy.orders_api_rest.generated.api.SecurityApi;
+import com.academy.orders_api_rest.generated.model.AuthTokenResponseDTO;
 import com.academy.orders_api_rest.generated.model.SignInRequestDTO;
 import com.academy.orders_api_rest.generated.model.SignUpRequestDTO;
 import java.time.Instant;
 import java.util.stream.Collectors;
-import com.academy.orders_api_rest.generated.model.AuthTokenResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,7 +30,6 @@ public class AuthTokenController implements SecurityApi {
 	private final AuthenticationManager authenticationManager;
 	private final CreateUserAccountUseCase createUserAccountUseCase;
 	private final SignUpRequestDTOMapper signUpRequestDTOMapper;
-	private final GetUserDetailsUseCase getUserDetailsUseCase;
 
 	@Override
 	public AuthTokenResponseDTO signUp(SignUpRequestDTO signUpRequestDTO) {
@@ -59,13 +57,13 @@ public class AuthTokenController implements SecurityApi {
 		Instant now = Instant.now();
 		long expiry = 3600L;
 
-		AccountDetails accountDetails = getUserDetailsUseCase
-				.getUserDetailsFromUserDetails(authentication.getPrincipal());
+		GetAccountDetailsUseCase getAccountDetailsUseCase = (GetAccountDetailsUseCase) authentication.getPrincipal();
 		String scope = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
 				.collect(Collectors.joining(" "));
 
 		return JwtClaimsSet.builder().issuer("self").issuedAt(now).expiresAt(now.plusSeconds(expiry))
-				.subject(authentication.getName()).claim("scope", scope).claim("id", accountDetails.id())
-				.claim("firstName", accountDetails.firstName()).claim("lastName", accountDetails.lastName()).build();
+				.subject(authentication.getName()).claim("scope", scope).claim("id", getAccountDetailsUseCase.getId())
+				.claim("firstName", getAccountDetailsUseCase.getFirstName())
+				.claim("lastName", getAccountDetailsUseCase.getLastName()).build();
 	}
 }
