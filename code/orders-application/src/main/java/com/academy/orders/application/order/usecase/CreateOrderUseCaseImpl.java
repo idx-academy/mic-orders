@@ -26,12 +26,12 @@ public class CreateOrderUseCaseImpl implements CreateOrderUseCase {
 	private final CartItemRepository cartItemRepository;
 
 	@Override
-	public UUID createOrder(CreateOrderDto createOrderDto, String userEmail) {
+	public UUID createOrder(CreateOrderDto createOrderDto, Long accountId) {
 		var order = createOrderObject(createOrderDto);
-		var bucketElements = getBucketElements(userEmail);
+		var bucketElements = getBucketElements(accountId);
 		var orderItems = createOrderItems(bucketElements);
 		var orderWithItems = order.addOrderItems(orderItems);
-		return saveOrder(orderWithItems, userEmail);
+		return saveOrder(orderWithItems, accountId);
 	}
 
 	private Order createOrderObject(CreateOrderDto createOrderDto) {
@@ -50,8 +50,8 @@ public class CreateOrderUseCaseImpl implements CreateOrderUseCase {
 				.email(createOrderDto.email()).build();
 	}
 
-	private List<CartItem> getBucketElements(String accountEmail) {
-		return cartItemRepository.findByAccountEmail(accountEmail);
+	private List<CartItem> getBucketElements(Long accountId) {
+		return cartItemRepository.findCartItemsByAccountId(accountId);
 	}
 
 	private List<OrderItem> createOrderItems(List<CartItem> cartItems) {
@@ -64,7 +64,7 @@ public class CreateOrderUseCaseImpl implements CreateOrderUseCase {
 		return new OrderItem(cartItem.product(), calculatedPrice, cartItem.quantity());
 	}
 
-	private UUID saveOrder(Order order, String userEmail) {
-		return orderRepository.save(order, userEmail);
+	private UUID saveOrder(Order order, Long accountId) {
+		return orderRepository.save(order, accountId);
 	}
 }

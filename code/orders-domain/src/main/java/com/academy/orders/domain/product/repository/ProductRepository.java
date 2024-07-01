@@ -10,8 +10,10 @@ public interface ProductRepository {
 	/**
 	 * Method sets new quantity of products.
 	 *
-	 * @param productId id of the product
-	 * @param quantity new quantity of the product
+	 * @param productId
+	 *            id of the product
+	 * @param quantity
+	 *            new quantity of the product
 	 *
 	 * @author Denys Ryhal
 	 */
@@ -20,7 +22,8 @@ public interface ProductRepository {
 	/**
 	 * Method checks if product with id already exists.
 	 *
-	 * @param id id of the product
+	 * @param id
+	 *            id of the product
 	 *
 	 * @return {@link Boolean}
 	 * @author Denys Ryhal

@@ -56,8 +56,8 @@ public class CartItemRepositoryImpl implements CartItemRepository {
 	}
 
 	@Override
-	public List<CartItem> findByAccountEmail(String email) {
-		return cartItemMapper.fromEntities(cartItemJpaAdapter.findAllByAccountEmail(email));
+	public List<CartItem> findCartItemsByAccountId(Long accountId) {
+		return cartItemMapper.fromEntities(cartItemJpaAdapter.findAllByAccountId(accountId));
 	}
 
 }

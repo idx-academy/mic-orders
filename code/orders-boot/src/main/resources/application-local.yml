@@ -19,5 +19,3 @@ auth:
     - username: admin
       roles: ADMIN
       password: ${LOCAL_PASSWORD:admin}
-
-

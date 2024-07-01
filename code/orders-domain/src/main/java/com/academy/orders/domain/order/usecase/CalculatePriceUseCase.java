@@ -8,8 +8,10 @@ public interface CalculatePriceUseCase {
 	/**
 	 * Method calculates price of product.
 	 *
-	 * @param product product which price should be calculated
-	 * @param quantity quantity of the products to order
+	 * @param product
+	 *            product which price should be calculated
+	 * @param quantity
+	 *            quantity of the products to order
 	 *
 	 * @return {@link BigDecimal} calculated price
 	 * @author Denys Ryhal

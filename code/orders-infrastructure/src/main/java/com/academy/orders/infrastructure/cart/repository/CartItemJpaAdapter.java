@@ -14,6 +14,6 @@ public interface CartItemJpaAdapter extends CrudRepository<CartItemEntity, CartI
 	@Query("UPDATE CartItemEntity ci SET ci.quantity = ci.quantity + :quantity " + "WHERE ci.cartItemId = :cartItemId ")
 	void increaseQuantity(CartItemId cartItemId, Integer quantity);
 
-	@Query("SELECT c FROM CartItemEntity c INNER JOIN FETCH c.product WHERE c.account.email = :accountEmail")
-	List<CartItemEntity> findAllByAccountEmail(String accountEmail);
+	@Query("SELECT c FROM CartItemEntity c INNER JOIN FETCH c.product WHERE c.account.id = :accountId")
+	List<CartItemEntity> findAllByAccountId(Long accountId);
 }

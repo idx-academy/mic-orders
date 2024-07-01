@@ -97,11 +97,20 @@ paths:
                 $ref: '#/components/schemas/Order'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
-  /v1/orders:
+  /v1/users/{userId}/orders:
     post:
       tags:
         - Orders
       summary: Place an order
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+            description: Id of the user
+            format: int64
+          example: '1'
       operationId: placeOrder
       security:
         - bearerAuth: [ ]

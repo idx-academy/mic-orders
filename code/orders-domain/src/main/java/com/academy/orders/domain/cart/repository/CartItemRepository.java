@@ -50,9 +50,10 @@ public interface CartItemRepository {
 	/**
 	 * Method finds {@link CartItem} by accountEmail.
 	 *
-	 * @param accountEmail email of logged-in user.
+	 * @param accountId
+	 *            id of logged-in user.
 	 * @return {@link List} of {@link CartItem}
 	 * @author Denys Ryhal
 	 */
-	List<CartItem> findByAccountEmail(String accountEmail);
+	List<CartItem> findCartItemsByAccountId(Long accountId);
 }

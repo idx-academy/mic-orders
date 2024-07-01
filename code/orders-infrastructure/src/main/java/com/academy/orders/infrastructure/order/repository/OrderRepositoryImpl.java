@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 @RequiredArgsConstructor
 @Slf4j
-@Transactional
+@Transactional(readOnly = true)
 public class OrderRepositoryImpl implements OrderRepository {
 
 	private final OrderJpaAdapter jpaAdapter;
@@ -45,9 +45,10 @@ public class OrderRepositoryImpl implements OrderRepository {
 	}
 
 	@Override
-	public UUID save(Order order, String userEmail) {
+	@Transactional
+	public UUID save(Order order, Long accountId) {
 		var orderEntity = getOrderEntityWithPostAddress(order);
-		addAccountToOrder(orderEntity, userEmail);
+		addAccountToOrder(orderEntity, accountId);
 		mapOrderItemsWithProductsAndOrder(orderEntity);
 
 		return jpaAdapter.save(orderEntity).getId();
@@ -59,8 +60,8 @@ public class OrderRepositoryImpl implements OrderRepository {
 		return orderEntity;
 	}
 
-	private void addAccountToOrder(OrderEntity orderEntity, String userEmail) {
-		accountJpaAdapter.findByEmail(userEmail).ifPresent(orderEntity::setAccount);
+	private void addAccountToOrder(OrderEntity orderEntity, Long accountId) {
+		accountJpaAdapter.findById(accountId).ifPresent(orderEntity::setAccount);
 	}
 
 	private void mapOrderItemsWithProductsAndOrder(OrderEntity orderEntity) {
