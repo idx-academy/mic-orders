@@ -15,4 +15,10 @@ public class TestConstants {
 	public static final String TAG_NAME = "electronics";
 	public static final String PRODUCT_NAME = "IPhone";
 	public static final String PRODUCT_DESCRIPTION = "Phone";
+	public static final String TEST_FIRST_NAME = "mockedFirstName";
+	public static final String TEST_LAST_NAME = "mockedLastName";
+	public static final String TEST_EMAIL = "mockedmail@mail.com";
+	public static final String TEST_CITY = "mockedCity";
+	public static final String TEST_DEPARTMENT = "mockedDepartment";
+
 }

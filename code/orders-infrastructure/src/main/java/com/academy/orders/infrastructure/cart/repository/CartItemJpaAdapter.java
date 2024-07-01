@@ -16,4 +16,8 @@ public interface CartItemJpaAdapter extends CrudRepository<CartItemEntity, CartI
 
 	@Query("SELECT c FROM CartItemEntity c INNER JOIN FETCH c.product WHERE c.account.id = :accountId")
 	List<CartItemEntity> findAllByAccountId(Long accountId);
+
+	@Modifying
+	@Query("DELETE FROM CartItemEntity c WHERE c.account.id =:accountId")
+	void deleteAllByAccountId(Long accountId);
 }

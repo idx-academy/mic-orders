@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 public class OrdersController implements OrdersApi {
 	private final CreateOrderUseCase createOrderUseCase;
-
 	private final OrderDTOMapper mapper;
 
 	@Override

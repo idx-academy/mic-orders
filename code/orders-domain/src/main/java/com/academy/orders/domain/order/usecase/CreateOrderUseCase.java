@@ -7,8 +7,10 @@ public interface CreateOrderUseCase {
 	/**
 	 * Method creates new order.
 	 *
-	 * @param order     {@link CreateOrderDto}
-	 * @param accountId id of the user.
+	 * @param order
+	 *            {@link CreateOrderDto}
+	 * @param accountId
+	 *            id of the user.
 	 * @author Denys Ryhal
 	 */
 	UUID createOrder(CreateOrderDto order, Long accountId);

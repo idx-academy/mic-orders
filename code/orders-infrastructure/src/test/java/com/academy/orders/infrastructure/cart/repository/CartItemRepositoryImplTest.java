@@ -20,11 +20,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static com.academy.orders.infrastructure.ModelUtils.getCartItem;
+import static com.academy.orders.infrastructure.ModelUtils.getCartItemEntity;
 import static com.academy.orders.infrastructure.ModelUtils.getProduct;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
@@ -95,4 +99,27 @@ class CartItemRepositoryImplTest {
 		verify(cartItemJpaAdapter).increaseQuantity(any(CartItemId.class), anyInt());
 	}
 
+	@Test
+	void testFindCartItemsByAccountId() {
+		var cartItemEntities = singletonList(getCartItemEntity());
+		var cartItems = singletonList(getCartItem());
+
+		when(cartItemJpaAdapter.findAllByAccountId(anyLong())).thenReturn(cartItemEntities);
+		when(cartItemMapper.fromEntities(cartItemEntities)).thenReturn(cartItems);
+
+		var actualCartItems = cartItemRepository.findCartItemsByAccountId(anyLong());
+
+		assertEquals(cartItems, actualCartItems);
+
+		verify(cartItemJpaAdapter).findAllByAccountId(anyLong());
+		verify(cartItemMapper).fromEntities(anyList());
+	}
+
+	@Test
+	void testDeleteUsersCartItems() {
+		doNothing().when(cartItemJpaAdapter).deleteAllByAccountId(anyLong());
+
+		assertDoesNotThrow(() -> cartItemRepository.deleteUsersCartItems(1L));
+		verify(cartItemJpaAdapter).deleteAllByAccountId(anyLong());
+	}
 }

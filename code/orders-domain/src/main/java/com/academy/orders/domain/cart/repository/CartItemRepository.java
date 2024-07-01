@@ -48,7 +48,7 @@ public interface CartItemRepository {
 	void incrementQuantity(UUID productId, Long accountId);
 
 	/**
-	 * Method finds {@link CartItem} by accountEmail.
+	 * Method finds {@link CartItem} by accountId.
 	 *
 	 * @param accountId
 	 *            id of logged-in user.
@@ -56,4 +56,13 @@ public interface CartItemRepository {
 	 * @author Denys Ryhal
 	 */
 	List<CartItem> findCartItemsByAccountId(Long accountId);
+
+	/**
+	 * Method delete all {@link CartItem cartItems} by accountId.
+	 *
+	 * @param accountId
+	 *            id of logged-in user.
+	 * @author Denys Ryhal
+	 */
+	void deleteUsersCartItems(Long accountId);
 }

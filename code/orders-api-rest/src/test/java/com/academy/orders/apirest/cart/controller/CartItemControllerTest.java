@@ -16,13 +16,13 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @WebMvcTest(controllers = CartItemController.class)
 @ContextConfiguration(classes = {CartItemController.class})
@@ -40,8 +40,8 @@ class CartItemControllerTest {
 	void testAddProductToCart() throws Exception {
 		doNothing().when(cartItemByUserUseCase).create(any(CreateCartItemDTO.class));
 
-		mockMvc.perform(MockMvcRequestBuilders.post("/v1/cart/" + UUID.randomUUID() + "/" + 1L)
-				.contentType(MediaType.APPLICATION_JSON)).andExpect(MockMvcResultMatchers.status().isCreated());
+		mockMvc.perform(post("/v1/cart/" + UUID.randomUUID() + "/" + 1L).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(MockMvcResultMatchers.status().isCreated());
 
 		verify(cartItemByUserUseCase).create(any(CreateCartItemDTO.class));
 	}
@@ -51,8 +51,8 @@ class CartItemControllerTest {
 	void testAddProductToCartThrowsNotFoundException() throws Exception {
 		doThrow(ProductNotFoundException.class).when(cartItemByUserUseCase).create(any(CreateCartItemDTO.class));
 
-		mockMvc.perform(MockMvcRequestBuilders.post("/v1/cart/" + UUID.randomUUID() + "/" + 1L)
-				.contentType(MediaType.APPLICATION_JSON)).andExpect(MockMvcResultMatchers.status().isNotFound());
+		mockMvc.perform(post("/v1/cart/" + UUID.randomUUID() + "/" + 1L).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(MockMvcResultMatchers.status().isNotFound());
 
 		verify(cartItemByUserUseCase).create(any(CreateCartItemDTO.class));
 	}

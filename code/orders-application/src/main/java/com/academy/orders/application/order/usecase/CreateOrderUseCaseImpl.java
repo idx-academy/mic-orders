@@ -1,6 +1,7 @@
 package com.academy.orders.application.order.usecase;
 
 import com.academy.orders.domain.cart.entity.CartItem;
+import com.academy.orders.domain.cart.exception.EmptyCartException;
 import com.academy.orders.domain.cart.repository.CartItemRepository;
 import com.academy.orders.domain.order.dto.CreateOrderDto;
 import com.academy.orders.domain.order.entity.Order;
@@ -13,6 +14,7 @@ import com.academy.orders.domain.order.usecase.CalculatePriceUseCase;
 import com.academy.orders.domain.order.usecase.ChangeQuantityUseCase;
 import com.academy.orders.domain.order.usecase.CreateOrderUseCase;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,9 +31,12 @@ public class CreateOrderUseCaseImpl implements CreateOrderUseCase {
 	public UUID createOrder(CreateOrderDto createOrderDto, Long accountId) {
 		var order = createOrderObject(createOrderDto);
 		var bucketElements = getBucketElements(accountId);
+		checkCartIsNotEmpty(bucketElements);
 		var orderItems = createOrderItems(bucketElements);
 		var orderWithItems = order.addOrderItems(orderItems);
-		return saveOrder(orderWithItems, accountId);
+		var orderId = saveOrder(orderWithItems, accountId);
+		clearCart(accountId);
+		return orderId;
 	}
 
 	private Order createOrderObject(CreateOrderDto createOrderDto) {
@@ -43,6 +48,12 @@ public class CreateOrderUseCaseImpl implements CreateOrderUseCase {
 	private PostAddress createPostAddressObject(CreateOrderDto createOrderDto) {
 		return PostAddress.builder().city(createOrderDto.city()).department(createOrderDto.department())
 				.deliveryMethod(createOrderDto.deliveryMethod()).build();
+	}
+
+	private void checkCartIsNotEmpty(List<CartItem> bucketElements) {
+		if (Objects.isNull(bucketElements) || bucketElements.isEmpty()) {
+			throw new EmptyCartException();
+		}
 	}
 
 	private OrderReceiver createReceiverObject(CreateOrderDto createOrderDto) {
@@ -66,5 +77,9 @@ public class CreateOrderUseCaseImpl implements CreateOrderUseCase {
 
 	private UUID saveOrder(Order order, Long accountId) {
 		return orderRepository.save(order, accountId);
+	}
+
+	private void clearCart(Long accountId) {
+		cartItemRepository.deleteUsersCartItems(accountId);
 	}
 }

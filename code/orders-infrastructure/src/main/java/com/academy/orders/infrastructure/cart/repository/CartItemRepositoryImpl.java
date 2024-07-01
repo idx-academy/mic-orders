@@ -60,4 +60,10 @@ public class CartItemRepositoryImpl implements CartItemRepository {
 		return cartItemMapper.fromEntities(cartItemJpaAdapter.findAllByAccountId(accountId));
 	}
 
+	@Override
+	@Transactional
+	public void deleteUsersCartItems(Long accountId) {
+		cartItemJpaAdapter.deleteAllByAccountId(accountId);
+	}
+
 }
