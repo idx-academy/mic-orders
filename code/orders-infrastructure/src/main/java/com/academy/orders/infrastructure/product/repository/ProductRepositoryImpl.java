@@ -23,11 +23,6 @@ public class ProductRepositoryImpl implements ProductRepository {
 	}
 
 	@Override
-	public List<Product> findProductsWithPricesAndQuantities(UUID... productsIds) {
-		return productMapper.fromEntitiesWithoutJoin(productJpaAdapter.findProductsWithPrices(productsIds));
-	}
-
-	@Override
 	public void setNewProductQuantity(UUID productId, Integer quantity) {
 		productJpaAdapter.setNewProductQuantity(productId, quantity);
 	}

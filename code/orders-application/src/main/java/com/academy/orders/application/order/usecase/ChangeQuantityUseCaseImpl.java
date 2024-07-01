@@ -18,8 +18,8 @@ public class ChangeQuantityUseCaseImpl implements ChangeQuantityUseCase {
 		setNewQuantity(product.id(), quantityOfProductsLeft);
 	}
 
-	private int getQuantityOfProductsLeft(Product product, Integer value) {
-		var quantityDifference = product.quantity() - value;
+	private int getQuantityOfProductsLeft(Product product, Integer orderedQuantity) {
+		var quantityDifference = product.quantity() - orderedQuantity;
 		if (quantityDifference < 0)
 			throw new IllegalArgumentException("");
 

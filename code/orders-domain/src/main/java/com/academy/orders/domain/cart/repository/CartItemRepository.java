@@ -47,5 +47,12 @@ public interface CartItemRepository {
 	 */
 	void incrementQuantity(UUID productId, Long accountId);
 
+	/**
+	 * Method finds {@link CartItem} by accountEmail.
+	 *
+	 * @param accountEmail email of logged-in user.
+	 * @return {@link List} of {@link CartItem}
+	 * @author Denys Ryhal
+	 */
 	List<CartItem> findByAccountEmail(String accountEmail);
 }

@@ -14,10 +14,7 @@ public interface ProductJpaAdapter extends CrudRepository<ProductEntity, UUID> {
 	@Query("SELECT p FROM ProductEntity p JOIN FETCH p.productTranslations pt JOIN FETCH pt.language "
 			+ "l LEFT JOIN FETCH p.tags t WHERE l.code = :language")
 	List<ProductEntity> findAllByLanguageCode(String language);
-
-	@Query("SELECT p FROM ProductEntity p WHERE p.id in (:ids)")
-	List<ProductEntity> findProductsWithPrices(UUID... ids);
-
+	
 	@Modifying
 	@Transactional
 	@Query(nativeQuery = true, value = "UPDATE products SET quantity = :quantity WHERE id = :id")

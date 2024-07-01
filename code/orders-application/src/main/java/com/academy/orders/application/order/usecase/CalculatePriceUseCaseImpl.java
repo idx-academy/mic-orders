@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class CalculatePriceUseCaseImpl implements CalculatePriceUseCase {
 
 	@Override
-	public BigDecimal calculatePriceForOrder(Product product, Integer value) {
-		return product.price().multiply(new BigDecimal(value));
+	public BigDecimal calculatePriceForOrder(Product product, Integer quantity) {
+		return product.price().multiply(new BigDecimal(quantity));
 	}
 }
