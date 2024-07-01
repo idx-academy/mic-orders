@@ -7,8 +7,42 @@ import java.util.UUID;
 
 public interface CartItemRepository {
 
-	Boolean existsByProductIdAndUserId(UUID productId, Long userId);
+	/**
+	 * Method checks if the cart item exists.
+	 *
+	 * @param productId
+	 *            with type {@link UUID}
+	 * @param accountId
+	 *            with type {@link Long}
+	 *
+	 * @return {@link Boolean}
+	 *
+	 * @author Denys Ryhal, Oleksii Siianchuk
+	 */
+	Boolean existsByProductIdAndUserId(UUID productId, Long accountId);
+
+	/**
+	 * Method saves cartItems to the DB.
+	 *
+	 * @param cartItem
+	 *            with type {@link CreateCartItemDTO}
+	 *
+	 *
+	 * @return {@link CartItem}
+	 *
+	 * @author Denys Ryhal, Oleksii Siianchuk
+	 */
 	CartItem save(CreateCartItemDTO cartItem);
 
-	void incrementQuantity(UUID uuid, Long aLong);
+	/**
+	 * Method increases quantity of the product in the cart by 1.
+	 *
+	 * @param productId
+	 *            with type {@link UUID}
+	 * @param accountId
+	 *            with type {@link Long}
+	 *
+	 * @author Denys Ryhal
+	 */
+	void incrementQuantity(UUID productId, Long accountId);
 }

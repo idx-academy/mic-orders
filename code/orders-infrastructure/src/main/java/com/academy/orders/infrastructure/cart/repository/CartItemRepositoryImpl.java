@@ -25,8 +25,8 @@ public class CartItemRepositoryImpl implements CartItemRepository {
 	private final ProductJpaAdapter productJpaAdapter;
 
 	@Override
-	public Boolean existsByProductIdAndUserId(UUID productId, Long userId) {
-		return cartItemJpaAdapter.existsById(new CartItemId(productId, userId));
+	public Boolean existsByProductIdAndUserId(UUID productId, Long accountId) {
+		return cartItemJpaAdapter.existsById(new CartItemId(productId, accountId));
 	}
 
 	@Override
