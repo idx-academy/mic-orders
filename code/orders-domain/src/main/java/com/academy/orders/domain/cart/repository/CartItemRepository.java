@@ -3,6 +3,7 @@ package com.academy.orders.domain.cart.repository;
 import com.academy.orders.domain.cart.entity.CartItem;
 import com.academy.orders.domain.cart.entity.CreateCartItemDTO;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface CartItemRepository {
@@ -45,4 +46,6 @@ public interface CartItemRepository {
 	 * @author Denys Ryhal
 	 */
 	void incrementQuantity(UUID productId, Long accountId);
+
+	List<CartItem> findByAccountEmail(String accountEmail);
 }

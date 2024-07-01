@@ -66,9 +66,8 @@ class CartItemRepositoryImplTest {
 
 	@Test
 	void testSaveCartItem() {
-		var account = getAccount();
 		var productEntity = getProduct();
-		var expected = CartItem.builder().product(productEntity).account(account).quantity(1).build();
+		var expected = CartItem.builder().product(productEntity).quantity(1).build();
 
 		when(cartItemMapper.toEntity(createCartItemDto)).thenReturn(cartItemEntity);
 		when(productJpaAdapter.findById(createCartItemDto.productId())).thenReturn(Optional.of(new ProductEntity()));

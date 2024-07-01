@@ -1,5 +1,7 @@
 package com.academy.orders.application.order.usecase;
 
+import com.academy.orders.domain.cart.entity.CartItem;
+import com.academy.orders.domain.cart.repository.CartItemRepository;
 import com.academy.orders.domain.order.dto.CreateOrderDto;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.entity.OrderItem;
@@ -10,12 +12,8 @@ import com.academy.orders.domain.order.repository.OrderRepository;
 import com.academy.orders.domain.order.usecase.CalculatePriceUseCase;
 import com.academy.orders.domain.order.usecase.ChangeQuantityUseCase;
 import com.academy.orders.domain.order.usecase.CreateOrderUseCase;
-import com.academy.orders.domain.product.entity.Product;
-import com.academy.orders.domain.product.repository.ProductRepository;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,13 +22,13 @@ import org.springframework.stereotype.Service;
 public class CreateOrderUseCaseImpl implements CreateOrderUseCase {
 	private final CalculatePriceUseCase calculatePriceUseCase;
 	private final ChangeQuantityUseCase changeQuantityUseCase;
-	private final ProductRepository productRepository;
 	private final OrderRepository orderRepository;
+	private final CartItemRepository cartItemRepository;
 
 	@Override
 	public UUID createOrder(CreateOrderDto createOrderDto, String userEmail) {
 		var order = createOrderObject(createOrderDto);
-		var bucketElements = getBucketElements();
+		var bucketElements = getBucketElements(userEmail);
 		var orderItems = createOrderItems(bucketElements);
 		var orderWithItems = order.addOrderItems(orderItems);
 		return saveOrder(orderWithItems, userEmail);
@@ -52,21 +50,18 @@ public class CreateOrderUseCaseImpl implements CreateOrderUseCase {
 				.email(createOrderDto.email()).build();
 	}
 
-	private Map<Product, Integer> getBucketElements() {
-		var products = productRepository.findProductsWithPricesAndQuantities(
-				UUID.fromString("84b7e490-0dcf-44c3-beb6-7496dc6ef3b0"),
-				UUID.fromString("04f7a6b4-e55e-4f68-9f68-9636e1b2e256"));
-		return products.stream().collect(Collectors.toMap(f -> f, f -> 3));
+	private List<CartItem> getBucketElements(String accountEmail) {
+		return cartItemRepository.findByAccountEmail(accountEmail);
 	}
 
-	private List<OrderItem> createOrderItems(Map<Product, Integer> bucketElements) {
-		return bucketElements.entrySet().stream().map(this::createItem).toList();
+	private List<OrderItem> createOrderItems(List<CartItem> cartItems) {
+		return cartItems.stream().map(this::createItem).toList();
 	}
 
-	private OrderItem createItem(Map.Entry<Product, Integer> element) {
-		var calculatedPrice = calculatePriceUseCase.calculatePriceForOrder(element.getKey(), element.getValue());
-		changeQuantityUseCase.changeQuantityOfProduct(element.getKey(), element.getValue());
-		return new OrderItem(element.getKey(), calculatedPrice, element.getValue());
+	private OrderItem createItem(CartItem cartItem) {
+		var calculatedPrice = calculatePriceUseCase.calculatePriceForOrder(cartItem.product(), cartItem.quantity());
+		changeQuantityUseCase.changeQuantityOfProduct(cartItem.product(), cartItem.quantity());
+		return new OrderItem(cartItem.product(), calculatedPrice, cartItem.quantity());
 	}
 
 	private UUID saveOrder(Order order, String userEmail) {
