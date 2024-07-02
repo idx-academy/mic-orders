@@ -1,5 +1,7 @@
 package com.academy.orders.application.product.usecase;
 
+import com.academy.orders.domain.common.Pageable;
+import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.repository.ProductRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -7,9 +9,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.util.List;
-
+import static com.academy.orders.application.ModelUtils.getPage;
 import static com.academy.orders.application.ModelUtils.getProduct;
 import static com.academy.orders.application.TestConstants.LANGUAGE_UA;
 import static org.mockito.Mockito.verify;
@@ -17,29 +18,33 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class GetAllProductsUseCaseTest {
-	// @Mock
-	// private ProductRepository productRepository;
-	// @InjectMocks
-	// private GetAllProductsUseCaseImpl getAllProductsUseCase;
-	//
-	// @Test
-	// void testGetAllProducts() {
-	// var expected = List.of(getProduct());
-	//
-	// when(productRepository.getAllProducts(LANGUAGE_UA)).thenReturn(List.of(getProduct()));
-	// var actual = getAllProductsUseCase.getAllProducts(LANGUAGE_UA);
-	// Assertions.assertEquals(expected, actual);
-	//
-	// verify(productRepository).getAllProducts(LANGUAGE_UA);
-	// }
-	//
-	// @Test
-	// void testGetAllProductsReturnsEmptyList() {
-	// when(productRepository.getAllProducts(LANGUAGE_UA)).thenReturn(null);
-	//
-	// var actual = getAllProductsUseCase.getAllProducts(LANGUAGE_UA);
-	// Assertions.assertTrue(actual.isEmpty());
-	//
-	// verify(productRepository).getAllProducts(LANGUAGE_UA);
-	// }
+	@Mock
+	private ProductRepository productRepository;
+	@InjectMocks
+	private GetAllProductsUseCaseImpl getAllProductsUseCase;
+
+	@Test
+	void testGetAllProducts() {
+		var pageable = Pageable.builder().page(0).size(10).sort(List.of("name,desc")).build();
+		var expectedProducts = List.of(getProduct());
+		var expectedPage = getPage(expectedProducts, 1L, 1, 0, 10);
+
+		when(productRepository.getAllProducts(LANGUAGE_UA, pageable)).thenReturn(expectedPage);
+		var actualPage = getAllProductsUseCase.getAllProducts(LANGUAGE_UA, pageable);
+
+		Assertions.assertEquals(expectedPage, actualPage);
+		verify(productRepository).getAllProducts(LANGUAGE_UA, pageable);
+	}
+
+	@Test
+	void testGetAllProductsReturnsEmptyList() {
+		var pageable = Pageable.builder().page(0).size(10).sort(List.of("price,desc")).build();
+		var expectedPage = getPage(List.<Product>of(), 0L, 0, 0, 10);
+
+		when(productRepository.getAllProducts(LANGUAGE_UA, pageable)).thenReturn(expectedPage);
+		var actualPage = getAllProductsUseCase.getAllProducts(LANGUAGE_UA, pageable);
+
+		Assertions.assertEquals(expectedPage, actualPage);
+		verify(productRepository).getAllProducts(LANGUAGE_UA, pageable);
+	}
 }
