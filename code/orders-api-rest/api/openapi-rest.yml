@@ -131,14 +131,7 @@ paths:
       security:
         - bearerAuth: [ ]
       parameters:
-        - in: path
-          name: userId
-          required: true
-          schema:
-            type: integer
-            description: Id of the user
-            format: int64
-          example: '1'
+        - $ref: '#/components/parameters/UserId'
         - in: query
           name: lang
           required: false
@@ -232,6 +225,16 @@ components:
       required: false
       schema:
         $ref: '#/components/schemas/Pageable'
+    UserId:
+      in: path
+      name: userId
+      required: true
+      x-constraints: '@AllowedAccountId'
+      schema:
+        type: integer
+        description: Id of the user
+        format: int64
+      example: '1'
   securitySchemes:
     bearerAuth:
       type: http
