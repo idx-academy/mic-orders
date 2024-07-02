@@ -6,14 +6,16 @@ import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.product.usecase.GetOrdersByUserIdUseCase;
+import com.academy.orders.domain.product.usecase.GetOrderByUserIdUseCase;
 import com.academy.orders_api_rest.generated.model.PageOrderDTO;
 import com.academy.orders_api_rest.generated.model.PageableDTO;
 import java.util.UUID;
 
 import com.academy.orders.apirest.orders.mapper.OrderDTOMapper;
-import com.academy.orders.domain.order.usecase.GetOrderByIdUseCase;
+import com.academy.orders.domain.order.usecase.CreateOrderUseCase;
 import com.academy.orders_api_rest.generated.api.OrdersApi;
-import com.academy.orders_api_rest.generated.model.OrderDTO;
+import com.academy.orders_api_rest.generated.model.PlaceOrderRequestDTO;
+import com.academy.orders_api_rest.generated.model.PlaceOrderResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,19 +28,19 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @CrossOrigin
 public class OrdersController implements OrdersApi {
+    private final CreateOrderUseCase createOrderUseCase;
 	private final GetOrderByIdUseCase getOrderByIdUseCase;
-	private final GetOrdersByUserIdUseCase getOrdersByUserIdUseCase;
-	private final OrderDTOMapper mapper;
-	private final PageableDTOMapper pageableDTOMapper;
-	private final PageOrderDTOMapper pageOrderDTOMapper;
+    private final GetOrdersByUserIdUseCase getOrdersByUserIdUseCase;
+    private final OrderDTOMapper mapper;
+    private final PageableDTOMapper pageableDTOMapper;
+    private final PageOrderDTOMapper pageOrderDTOMapper;
 
-	@Override
-	@PreAuthorize("hasRole('ADMIN')")
-	public OrderDTO getOrderById(UUID orderId) {
-		log.debug("Get order by id {}", orderId);
-		final var order = getOrderByIdUseCase.getOrderById(orderId);
-		return mapper.toDto(order);
-	}
+
+    @Override
+    public PlaceOrderResponseDTO placeOrder(Long userId, PlaceOrderRequestDTO placeOrderRequestDTO) {
+        var id = createOrderUseCase.createOrder(mapper.toCreateOrderDto(placeOrderRequestDTO), userId);
+        return new PlaceOrderResponseDTO().orderId(id);
+    }
 
 	@Override
 	public PageOrderDTO getOrdersByUser(Long userId, String language, PageableDTO pageable) {

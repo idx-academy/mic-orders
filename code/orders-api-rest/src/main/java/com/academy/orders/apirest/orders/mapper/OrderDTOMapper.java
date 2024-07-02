@@ -10,6 +10,8 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Set;
+import com.academy.orders.domain.order.dto.CreateOrderDto;
+import com.academy.orders_api_rest.generated.model.PlaceOrderRequestDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -48,4 +50,6 @@ public interface OrderDTOMapper {
 	default List<String> mapTags(Set<Tag> tags) {
 		return tags.stream().map(Tag::name).toList();
 	}
+
+    CreateOrderDto toCreateOrderDto(PlaceOrderRequestDTO placeOrderRequestDTO);
 }

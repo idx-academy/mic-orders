@@ -1,8 +1,11 @@
 package com.academy.orders.apirest.common;
 
 import com.academy.orders.domain.account.exception.AccountAlreadyExistsException;
+import com.academy.orders.domain.cart.exception.EmptyCartException;
 import com.academy.orders.domain.exception.NotFoundException;
+import com.academy.orders.domain.order.exception.InsufficientProductQuantityException;
 import com.academy.orders_api_rest.generated.model.ErrorObjectDTO;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
@@ -13,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import static java.util.Objects.*;
+import static java.util.Objects.requireNonNull;
 
 @Slf4j
 @RestControllerAdvice
@@ -21,7 +24,7 @@ public class ErrorHandler {
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-	public final ErrorObjectDTO handleConstraintViolationException(final MethodArgumentNotValidException ex) {
+	public final ErrorObjectDTO handleMethodArgumentNotValidException(final MethodArgumentNotValidException ex) {
 		log.warn("Constraint violation ", ex);
 		return new ErrorObjectDTO().status(HttpStatus.BAD_REQUEST.value())
 				.title(HttpStatus.BAD_REQUEST.getReasonPhrase())
@@ -75,4 +78,27 @@ public class ErrorHandler {
 				.title(HttpStatus.BAD_REQUEST.getReasonPhrase()).detail(error.getMessage());
 	}
 
+	@ExceptionHandler(EmptyCartException.class)
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	public ErrorObjectDTO handleEmptyCartException(final EmptyCartException ex) {
+		log.warn("Cart is empty.", ex);
+		return new ErrorObjectDTO().status(HttpStatus.BAD_REQUEST.value())
+				.title(HttpStatus.BAD_REQUEST.getReasonPhrase()).detail(ex.getMessage());
+	}
+
+	@ExceptionHandler(InsufficientProductQuantityException.class)
+	@ResponseStatus(value = HttpStatus.CONFLICT)
+	public ErrorObjectDTO handleInsufficientProductQuantityException(final InsufficientProductQuantityException ex) {
+		log.warn("Ordered quantity exceeds available stock for product. ", ex);
+		return new ErrorObjectDTO().status(HttpStatus.CONFLICT.value()).title(HttpStatus.CONFLICT.getReasonPhrase())
+				.detail(ex.getMessage());
+	}
+
+	@ExceptionHandler(ConstraintViolationException.class)
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	public ErrorObjectDTO handleConstraintViolationException(final ConstraintViolationException error) {
+		log.warn("Bad request, param: {}", error.getMessage(), error);
+		return new ErrorObjectDTO().status(HttpStatus.BAD_REQUEST.value())
+				.title(HttpStatus.BAD_REQUEST.getReasonPhrase()).detail(error.getMessage());
+	}
 }

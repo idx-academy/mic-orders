@@ -43,7 +43,7 @@ public class PostAddressEntity {
 	@Column(nullable = false)
 	private String department;
 
-	@MapsId("id")
+	@MapsId
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id", nullable = false)
 	private OrderEntity order;
