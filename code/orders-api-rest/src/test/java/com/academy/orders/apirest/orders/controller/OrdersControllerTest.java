@@ -74,15 +74,14 @@ class OrdersControllerTest {
 	@Test
 	@WithMockUser(roles = "ADMIN")
 	@SneakyThrows
-	void testCreateOrderThrows() {
+	void testCreateOrderThrowsInsufficientProductQuantityException() {
 		when(mapper.toCreateOrderDto(any(PlaceOrderRequestDTO.class))).thenReturn(CreateOrderDto.builder().build());
 
 		when(createOrderUseCase.createOrder(any(CreateOrderDto.class), anyLong()))
 				.thenThrow(new InsufficientProductQuantityException(UUID.randomUUID()));
 
 		mockMvc.perform(post("/v1/users/{id}/orders", 1L).contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(getPlaceOrderRequestDTO())))
-				.andExpect(status().isBadRequest());
+				.content(objectMapper.writeValueAsString(getPlaceOrderRequestDTO()))).andExpect(status().isConflict());
 	}
 
 }

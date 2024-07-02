@@ -96,7 +96,7 @@ class ErrorHandlerTest {
 		var ex = new InsufficientProductQuantityException(productId);
 		var message = "Ordered quantity exceeds available stock for product: " + productId;
 
-		assertEquals(buildErrorObjectDTO(BAD_REQUEST, message),
+		assertEquals(buildErrorObjectDTO(CONFLICT, message),
 				errorHandler.handleInsufficientProductQuantityException(ex));
 	}
 

@@ -86,11 +86,11 @@ public class ErrorHandler {
 	}
 
 	@ExceptionHandler(InsufficientProductQuantityException.class)
-	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	@ResponseStatus(value = HttpStatus.CONFLICT)
 	public ErrorObjectDTO handleInsufficientProductQuantityException(final InsufficientProductQuantityException ex) {
-		log.warn("Cart is empty.", ex);
-		return new ErrorObjectDTO().status(HttpStatus.BAD_REQUEST.value())
-				.title(HttpStatus.BAD_REQUEST.getReasonPhrase()).detail(ex.getMessage());
+		log.warn("Ordered quantity exceeds available stock for product. ", ex);
+		return new ErrorObjectDTO().status(HttpStatus.CONFLICT.value()).title(HttpStatus.CONFLICT.getReasonPhrase())
+				.detail(ex.getMessage());
 	}
 
 }
