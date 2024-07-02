@@ -1,6 +1,5 @@
 package com.academy.orders.infrastructure.product.repository;
 
-import com.academy.orders.infrastructure.product.ProductMapper;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,7 +8,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -24,8 +22,6 @@ class ProductRepositoryImplTest {
 	private ProductRepositoryImpl productRepository;
 	@Mock
 	private ProductJpaAdapter productJpaAdapter;
-	@Mock
-	private ProductMapper productMapper;
 
 	@ParameterizedTest
 	@CsvSource({"true", "false"})

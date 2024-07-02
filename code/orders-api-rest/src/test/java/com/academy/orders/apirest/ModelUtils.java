@@ -7,7 +7,6 @@ import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.ProductTranslation;
 import com.academy.orders.domain.product.entity.Tag;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
-import com.academy.orders_api_rest.generated.model.PageProductsDTO;
 import com.academy.orders_api_rest.generated.model.PageableDTO;
 import com.academy.orders_api_rest.generated.model.PlaceOrderRequestDTO;
 import com.academy.orders_api_rest.generated.model.ProductPreviewDTO;
@@ -96,23 +95,6 @@ public class ModelUtils {
 
 	public static PageableDTO getPageableDTO() {
 		return new PageableDTO().page(0).size(8);
-	}
-
-	public static PageProductsDTO getPageProductsDTO() {
-		var productDTO = new PageProductsDTO();
-
-		productDTO.setTotalElements(1L);
-		productDTO.setTotalPages(1);
-		productDTO.setFirst(true);
-		productDTO.setLast(false);
-		productDTO.setNumber(1);
-		productDTO.setNumberOfElements(1);
-		productDTO.setSize(1);
-		productDTO.setEmpty(false);
-		productDTO.setContent(List.of(getProductPreviewDTO()));
-
-		return productDTO;
-
 	}
 
 	public static PlaceOrderRequestDTO getPlaceOrderRequestDTO() {
