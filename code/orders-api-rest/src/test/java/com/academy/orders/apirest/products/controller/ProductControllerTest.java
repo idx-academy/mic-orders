@@ -50,23 +50,24 @@ class ProductControllerTest {
 
 	@Test
 	void testGetProducts() throws Exception {
-		/*var pageableDTO = getPageableDTO();
-		var pageable = getPageable();
-		var pageProductsDTO = getPageProductsDTO();
-		var productPreviewDTO = getProductPreviewDTO();
-		var productPage = getProductsPage();
-		var product = getProduct();
-
-		ObjectMapper objectMapper = new ObjectMapper();
-		String expectedContent = objectMapper.writeValueAsString(pageProductsDTO);
-
-		when(pageableDTOMapper.fromDto(pageableDTO)).thenReturn(pageable);
-		when(getAllProductsUseCase.getAllProducts(LANGUAGE_UA, pageable)).thenReturn(productPage);
-		when(productPreviewDTOMapper.toDto(product)).thenReturn(productPreviewDTO);
-
-		mockMvc.perform(get(GET_ALL_PRODUCTS_URL).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-		.andExpect(content().json(expectedContent));*/
-
+		/*
+		 * var pageableDTO = getPageableDTO(); var pageable = getPageable(); var
+		 * pageProductsDTO = getPageProductsDTO(); var productPreviewDTO =
+		 * getProductPreviewDTO(); var productPage = getProductsPage(); var product =
+		 * getProduct();
+		 *
+		 * ObjectMapper objectMapper = new ObjectMapper(); String expectedContent =
+		 * objectMapper.writeValueAsString(pageProductsDTO);
+		 *
+		 * when(pageableDTOMapper.fromDto(pageableDTO)).thenReturn(pageable);
+		 * when(getAllProductsUseCase.getAllProducts(LANGUAGE_UA,
+		 * pageable)).thenReturn(productPage);
+		 * when(productPreviewDTOMapper.toDto(product)).thenReturn(productPreviewDTO);
+		 *
+		 * mockMvc.perform(get(GET_ALL_PRODUCTS_URL,
+		 * "ua").contentType(MediaType.APPLICATION_JSON)
+		 * .content(expectedContent)).andExpect(status().isOk());
+		 */
 	}
 
 	@Test

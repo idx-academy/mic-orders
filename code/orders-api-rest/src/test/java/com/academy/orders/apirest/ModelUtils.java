@@ -90,9 +90,7 @@ public class ModelUtils {
 	}
 
 	public static PageableDTO getPageableDTO() {
-		return new PageableDTO()
-				.page(0)
-				.size(8);
+		return new PageableDTO().page(0).size(8);
 	}
 
 	public static PageProductsDTO getPageProductsDTO() {
