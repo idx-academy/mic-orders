@@ -8,6 +8,7 @@ import com.academy.orders.infrastructure.cart.CartItemMapper;
 import com.academy.orders.infrastructure.cart.entity.CartItemEntity;
 import com.academy.orders.infrastructure.cart.entity.CartItemId;
 import com.academy.orders.infrastructure.product.repository.ProductJpaAdapter;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,6 +53,17 @@ public class CartItemRepositoryImpl implements CartItemRepository {
 	@Transactional
 	public void incrementQuantity(UUID productId, Long accountId) {
 		cartItemJpaAdapter.increaseQuantity(new CartItemId(productId, accountId), 1);
+	}
+
+	@Override
+	public List<CartItem> findCartItemsByAccountId(Long accountId) {
+		return cartItemMapper.fromEntities(cartItemJpaAdapter.findAllByAccountId(accountId));
+	}
+
+	@Override
+	@Transactional
+	public void deleteUsersCartItems(Long accountId) {
+		cartItemJpaAdapter.deleteAllByAccountId(accountId);
 	}
 
 }

@@ -3,11 +3,11 @@ package com.academy.orders.infrastructure.product.repository;
 import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.repository.ProductRepository;
 import com.academy.orders.infrastructure.product.ProductMapper;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
-import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
@@ -20,6 +20,11 @@ public class ProductRepositoryImpl implements ProductRepository {
 	public List<Product> getAllProducts(String language) {
 		log.debug("Fetching all products by language code");
 		return productMapper.fromEntities(productJpaAdapter.findAllByLanguageCode(language));
+	}
+
+	@Override
+	public void setNewProductQuantity(UUID productId, Integer quantity) {
+		productJpaAdapter.setNewProductQuantity(productId, quantity);
 	}
 
 	@Override

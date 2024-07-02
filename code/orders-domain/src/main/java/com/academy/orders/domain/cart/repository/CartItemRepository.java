@@ -3,6 +3,7 @@ package com.academy.orders.domain.cart.repository;
 import com.academy.orders.domain.cart.entity.CartItem;
 import com.academy.orders.domain.cart.entity.CreateCartItemDTO;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface CartItemRepository {
@@ -45,4 +46,23 @@ public interface CartItemRepository {
 	 * @author Denys Ryhal
 	 */
 	void incrementQuantity(UUID productId, Long accountId);
+
+	/**
+	 * Method finds {@link CartItem} by accountId.
+	 *
+	 * @param accountId
+	 *            id of logged-in user.
+	 * @return {@link List} of {@link CartItem}
+	 * @author Denys Ryhal
+	 */
+	List<CartItem> findCartItemsByAccountId(Long accountId);
+
+	/**
+	 * Method delete all {@link CartItem cartItems} by accountId.
+	 *
+	 * @param accountId
+	 *            id of logged-in user.
+	 * @author Denys Ryhal
+	 */
+	void deleteUsersCartItems(Long accountId);
 }
