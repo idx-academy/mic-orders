@@ -1,10 +1,9 @@
 package com.academy.orders.apirest.common;
 
 import com.academy.orders.domain.account.exception.AccountAlreadyExistsException;
-import com.academy.orders.domain.order.exception.OrderNotFoundException;
+import com.academy.orders.domain.exception.NotFoundException;
 import com.academy.orders_api_rest.generated.model.ErrorObjectDTO;
 import jakarta.validation.ConstraintViolationException;
-import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,7 +18,12 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @ExtendWith(MockitoExtension.class)
 class ErrorHandlerTest {
@@ -41,11 +45,10 @@ class ErrorHandlerTest {
 
 	@Test
 	void handleNotFoundExceptionTest() {
-		var orderId = UUID.randomUUID();
-		var message = String.format("Order %s is not found", orderId);
-		var ex = new OrderNotFoundException(orderId);
+		var ex = mock(NotFoundException.class);
 
-		assertEquals(buildErrorObjectDTO(NOT_FOUND, message), errorHandler.handleNotFoundException(ex));
+		when(ex.getMessage()).thenReturn(DEFAULT_ERROR_MESSAGE);
+		assertEquals(buildErrorObjectDTO(NOT_FOUND), errorHandler.handleNotFoundException(ex));
 	}
 
 	@Test
@@ -84,6 +87,7 @@ class ErrorHandlerTest {
 		when(ex.getMessage()).thenReturn(DEFAULT_ERROR_MESSAGE);
 		assertEquals(buildErrorObjectDTO(BAD_REQUEST), errorHandler.handleBadRequestException(ex));
 	}
+
 	@Test
 	void handleConstraintViolationExceptionTest() {
 		var ex = mock(ConstraintViolationException.class);
