@@ -7,5 +7,27 @@ import java.util.UUID;
 
 public interface ProductRepository {
 	Page<Product> getAllProducts(String language, Pageable pageable);
+
+	/**
+	 * Method sets new quantity of products.
+	 *
+	 * @param productId
+	 *            id of the product
+	 * @param quantity
+	 *            new quantity of the product
+	 *
+	 * @author Denys Ryhal
+	 */
+	void setNewProductQuantity(UUID productId, Integer quantity);
+
+	/**
+	 * Method checks if product with id already exists.
+	 *
+	 * @param id
+	 *            id of the product
+	 *
+	 * @return {@link Boolean}
+	 * @author Denys Ryhal
+	 */
 	boolean existById(UUID id);
 }

@@ -49,7 +49,7 @@ class CreateCartItemByUserUseCaseUseCaseTest {
 
 	@Test
 	void testCreateCartItemByUserIfProductIsNotAddedToTheCart() {
-		var cartItem = CartItem.builder().product(product).account(account).quantity(1).build();
+		var cartItem = CartItem.builder().product(product).quantity(1).build();
 
 		when(productRepository.existById(product.id())).thenReturn(true);
 		when(cartItemRepository.existsByProductIdAndUserId(cartItemDTO.productId(), cartItemDTO.userId()))

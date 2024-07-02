@@ -1,8 +1,11 @@
 package com.academy.orders.apirest.common;
 
 import com.academy.orders.domain.account.exception.AccountAlreadyExistsException;
+import com.academy.orders.domain.cart.exception.EmptyCartException;
 import com.academy.orders.domain.exception.NotFoundException;
+import com.academy.orders.domain.order.exception.InsufficientProductQuantityException;
 import com.academy.orders_api_rest.generated.model.ErrorObjectDTO;
+import java.util.UUID;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -86,6 +89,24 @@ class ErrorHandlerTest {
 
 		when(ex.getMessage()).thenReturn(DEFAULT_ERROR_MESSAGE);
 		assertEquals(buildErrorObjectDTO(BAD_REQUEST), errorHandler.handleBadRequestException(ex));
+	}
+
+	@Test
+	void handleInsufficientProductQuantityException() {
+		var productId = UUID.randomUUID();
+		var ex = new InsufficientProductQuantityException(productId);
+		var message = "Ordered quantity exceeds available stock for product: " + productId;
+
+		assertEquals(buildErrorObjectDTO(CONFLICT, message),
+				errorHandler.handleInsufficientProductQuantityException(ex));
+	}
+
+	@Test
+	void handleEmptyCartException() {
+		var ex = new EmptyCartException();
+		var message = "Cannot place an order with an empty cart.";
+
+		assertEquals(buildErrorObjectDTO(BAD_REQUEST, message), errorHandler.handleEmptyCartException(ex));
 	}
 
 	@Test

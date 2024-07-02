@@ -28,8 +28,10 @@ import lombok.ToString;
 @EqualsAndHashCode(exclude = {"order", "product"})
 @ToString(exclude = {"order", "product"})
 public class OrderItemEntity {
+
 	@EmbeddedId
-	private OrderItemId orderItemId;
+	@Builder.Default
+	private OrderItemId orderItemId = new OrderItemId();
 
 	@Column(nullable = false)
 	private BigDecimal price;
@@ -46,4 +48,14 @@ public class OrderItemEntity {
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "product_id", nullable = false)
 	private ProductEntity product;
+
+	public void setOrder(OrderEntity order) {
+		this.order = order;
+		this.orderItemId.setOrderId(order.getId());
+	}
+
+	public void setProduct(ProductEntity product) {
+		this.product = product;
+		this.orderItemId.setProductId(product.getId());
+	}
 }

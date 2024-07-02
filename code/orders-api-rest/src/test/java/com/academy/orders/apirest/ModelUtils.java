@@ -9,6 +9,7 @@ import com.academy.orders.domain.product.entity.Tag;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders_api_rest.generated.model.PageProductsDTO;
 import com.academy.orders_api_rest.generated.model.PageableDTO;
+import com.academy.orders_api_rest.generated.model.PlaceOrderRequestDTO;
 import com.academy.orders_api_rest.generated.model.ProductPreviewDTO;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -19,17 +20,25 @@ import static com.academy.orders.apirest.TestConstants.LANGUAGE_UA;
 import static com.academy.orders.apirest.TestConstants.PRODUCT_DESCRIPTION;
 import static com.academy.orders.apirest.TestConstants.PRODUCT_NAME;
 import static com.academy.orders.apirest.TestConstants.TAG_NAME;
+import static com.academy.orders.apirest.TestConstants.TEST_CITY;
+import static com.academy.orders.apirest.TestConstants.TEST_DEPARTMENT;
+import static com.academy.orders.apirest.TestConstants.TEST_EMAIL;
+import static com.academy.orders.apirest.TestConstants.TEST_FIRST_NAME;
 import static com.academy.orders.apirest.TestConstants.TEST_FLOAT_PRICE;
 import static com.academy.orders.apirest.TestConstants.TEST_ID;
+import static com.academy.orders.apirest.TestConstants.TEST_LAST_NAME;
 import static com.academy.orders.apirest.TestConstants.TEST_PRICE;
 import static com.academy.orders.apirest.TestConstants.TEST_QUANTITY;
 import static com.academy.orders.apirest.TestConstants.TEST_UUID;
+import static com.academy.orders_api_rest.generated.model.PlaceOrderRequestDTO.*;
 
 public class ModelUtils {
+	private static final LocalDateTime DATE_TIME = LocalDateTime.of(1, 1, 1, 1, 1);
+
 	public static Product getProduct() {
-		return Product.builder().id(TEST_UUID).status(ProductStatus.AVAILABLE).image(IMAGE_URL)
-				.createdAt(LocalDateTime.of(1, 1, 1, 1, 1)).quantity(TEST_QUANTITY).price(TEST_PRICE)
-				.tags(Set.of(getTag())).productTranslations(Set.of(getProductTranslation())).build();
+		return Product.builder().id(TEST_UUID).status(ProductStatus.AVAILABLE).image(IMAGE_URL).createdAt(DATE_TIME)
+				.quantity(TEST_QUANTITY).price(TEST_PRICE).tags(Set.of(getTag()))
+				.productTranslations(Set.of(getProductTranslation())).build();
 	}
 
 	public static Page<Product> getProductsPage() {
@@ -41,21 +50,20 @@ public class ModelUtils {
 	}
 
 	public static Product getProductWithEmptyTranslations() {
-		return Product.builder().id(TEST_UUID).status(ProductStatus.AVAILABLE).image(IMAGE_URL)
-				.createdAt(LocalDateTime.of(1, 1, 1, 1, 1)).quantity(TEST_QUANTITY).price(TEST_PRICE)
-				.tags(Set.of(getTag())).productTranslations(Collections.emptySet()).build();
+		return Product.builder().id(TEST_UUID).status(ProductStatus.AVAILABLE).image(IMAGE_URL).createdAt(DATE_TIME)
+				.quantity(TEST_QUANTITY).price(TEST_PRICE).tags(Set.of(getTag()))
+				.productTranslations(Collections.emptySet()).build();
 	}
 
 	public static Product getProductWithNullTranslations() {
-		return Product.builder().id(TEST_UUID).status(ProductStatus.AVAILABLE).image(IMAGE_URL)
-				.createdAt(LocalDateTime.of(1, 1, 1, 1, 1)).quantity(TEST_QUANTITY).price(TEST_PRICE)
-				.tags(Set.of(getTag())).productTranslations(null).build();
+		return Product.builder().id(TEST_UUID).status(ProductStatus.AVAILABLE).image(IMAGE_URL).createdAt(DATE_TIME)
+				.quantity(TEST_QUANTITY).price(TEST_PRICE).tags(Set.of(getTag())).productTranslations(null).build();
 	}
 
 	public static Product getProductWithEmptyTags() {
-		return Product.builder().id(TEST_UUID).status(ProductStatus.AVAILABLE).image(IMAGE_URL)
-				.createdAt(LocalDateTime.of(1, 1, 1, 1, 1)).quantity(TEST_QUANTITY).price(TEST_PRICE)
-				.tags(Collections.emptySet()).productTranslations(Set.of(getProductTranslation())).build();
+		return Product.builder().id(TEST_UUID).status(ProductStatus.AVAILABLE).image(IMAGE_URL).createdAt(DATE_TIME)
+				.quantity(TEST_QUANTITY).price(TEST_PRICE).tags(Collections.emptySet())
+				.productTranslations(Set.of(getProductTranslation())).build();
 	}
 
 	public static Tag getTag() {
@@ -108,5 +116,17 @@ public class ModelUtils {
 
 		return productDTO;
 
+	}
+
+	public static PlaceOrderRequestDTO getPlaceOrderRequestDTO() {
+		var placeOrderRequestDTO = new PlaceOrderRequestDTO();
+		placeOrderRequestDTO.setFirstName(TEST_FIRST_NAME);
+		placeOrderRequestDTO.setLastName(TEST_LAST_NAME);
+		placeOrderRequestDTO.setEmail(TEST_EMAIL);
+		placeOrderRequestDTO.setCity(TEST_CITY);
+		placeOrderRequestDTO.setDepartment(TEST_DEPARTMENT);
+		placeOrderRequestDTO.setDeliveryMethod(DeliveryMethodEnum.NOVA);
+
+		return placeOrderRequestDTO;
 	}
 }
