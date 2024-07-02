@@ -32,8 +32,6 @@ import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import static java.time.LocalDateTime.now;
-
 @Table(name = "orders")
 @Entity
 @Data
