@@ -3,6 +3,7 @@ package com.academy.orders.apirest.common;
 import com.academy.orders.domain.account.exception.AccountAlreadyExistsException;
 import com.academy.orders.domain.exception.NotFoundException;
 import com.academy.orders_api_rest.generated.model.ErrorObjectDTO;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
@@ -21,7 +22,7 @@ public class ErrorHandler {
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-	public final ErrorObjectDTO handleConstraintViolationException(final MethodArgumentNotValidException ex) {
+	public final ErrorObjectDTO handleMethodArgumentNotValidException(final MethodArgumentNotValidException ex) {
 		log.warn("Constraint violation ", ex);
 		return new ErrorObjectDTO().status(HttpStatus.BAD_REQUEST.value())
 				.title(HttpStatus.BAD_REQUEST.getReasonPhrase())
@@ -75,4 +76,11 @@ public class ErrorHandler {
 				.title(HttpStatus.BAD_REQUEST.getReasonPhrase()).detail(error.getMessage());
 	}
 
+	@ExceptionHandler(ConstraintViolationException.class)
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	public ErrorObjectDTO handleConstraintViolationException(final ConstraintViolationException error) {
+		log.warn("Bad request, param: {}", error.getMessage(), error);
+		return new ErrorObjectDTO().status(HttpStatus.BAD_REQUEST.value())
+				.title(HttpStatus.BAD_REQUEST.getReasonPhrase()).detail(error.getMessage());
+	}
 }

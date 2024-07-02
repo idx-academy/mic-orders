@@ -3,6 +3,7 @@ package com.academy.orders.apirest.common;
 import com.academy.orders.domain.account.exception.AccountAlreadyExistsException;
 import com.academy.orders.domain.order.exception.OrderNotFoundException;
 import com.academy.orders_api_rest.generated.model.ErrorObjectDTO;
+import jakarta.validation.ConstraintViolationException;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,14 +29,14 @@ class ErrorHandlerTest {
 	private ErrorHandler errorHandler;
 
 	@Test
-	void handleConstraintViolationExceptionTest() {
+	void handleMethodArgumentNotValidExceptionTest() {
 		var ex = mock(MethodArgumentNotValidException.class);
 		var fieldError = mock(FieldError.class);
 
 		when(fieldError.getDefaultMessage()).thenReturn(DEFAULT_ERROR_MESSAGE);
 		when(ex.getFieldError()).thenReturn(fieldError);
 
-		assertEquals(buildErrorObjectDTO(BAD_REQUEST), errorHandler.handleConstraintViolationException(ex));
+		assertEquals(buildErrorObjectDTO(BAD_REQUEST), errorHandler.handleMethodArgumentNotValidException(ex));
 	}
 
 	@Test
@@ -82,6 +83,13 @@ class ErrorHandlerTest {
 
 		when(ex.getMessage()).thenReturn(DEFAULT_ERROR_MESSAGE);
 		assertEquals(buildErrorObjectDTO(BAD_REQUEST), errorHandler.handleBadRequestException(ex));
+	}
+	@Test
+	void handleConstraintViolationExceptionTest() {
+		var ex = mock(ConstraintViolationException.class);
+
+		when(ex.getMessage()).thenReturn(DEFAULT_ERROR_MESSAGE);
+		assertEquals(buildErrorObjectDTO(BAD_REQUEST), errorHandler.handleConstraintViolationException(ex));
 	}
 
 	private ErrorObjectDTO buildErrorObjectDTO(HttpStatus status, String detail) {

@@ -1,7 +1,6 @@
 package com.academy.orders.apirest.auth.validator;
 
 import com.academy.orders.apirest.auth.annotation.AllowedAccountId;
-import com.academy.orders.domain.account.usecase.GetAccountDetailsUseCase;
 import jakarta.validation.ConstraintValidatorContext;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -13,6 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -21,11 +21,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class AccountIdVerifierTest {
+public class AccountIdValidatorTest {
 	@InjectMocks
-	private AccountIdVerifier accountIdVerifier;
+	private AccountIdValidator accountIdValidator;
 	@Mock
-	private GetAccountDetailsUseCase detailsUseCase;
+	private Jwt jwt;
 	@Mock
 	private SecurityContext securityContext;
 	@Mock
@@ -37,20 +37,19 @@ public class AccountIdVerifierTest {
 	void isValidReturnsTrueWhenAccountIdAreSameTest() {
 		Long userId = 1L;
 		String role = "ROLE_USER";
-		Authentication authentication = new UsernamePasswordAuthenticationToken(detailsUseCase, "Passwd123!",
-				List.of(() -> role));
+		Authentication authentication = new UsernamePasswordAuthenticationToken(jwt, "Passwd123!", List.of(() -> role));
 
 		try (var mockedStatic = mockStatic(SecurityContextHolder.class)) {
 			mockedStatic.when(SecurityContextHolder::getContext).thenReturn(securityContext);
 			when(securityContext.getAuthentication()).thenReturn(authentication);
-			when(detailsUseCase.getId()).thenReturn(userId);
+			when(jwt.getClaim("id")).thenReturn(userId);
 
-			accountIdVerifier.initialize(allowedAccountId);
-			boolean valid = accountIdVerifier.isValid(userId, constraintValidatorContext);
+			accountIdValidator.initialize(allowedAccountId);
+			boolean valid = accountIdValidator.isValid(userId, constraintValidatorContext);
 
 			assertTrue(valid);
 			verify(securityContext).getAuthentication();
-			verify(detailsUseCase).getId();
+			verify(jwt).getClaim("id");
 			mockedStatic.verify(SecurityContextHolder::getContext);
 		}
 	}
@@ -59,20 +58,19 @@ public class AccountIdVerifierTest {
 	void isValidReturnsTrueWhenAccountHasRoleAdminTest() {
 		Long userId = 1L;
 		String role = "ROLE_ADMIN";
-		Authentication authentication = new UsernamePasswordAuthenticationToken(detailsUseCase, "Passwd123!",
-				List.of(() -> role));
+		Authentication authentication = new UsernamePasswordAuthenticationToken(jwt, "Passwd123!", List.of(() -> role));
 
 		try (var mockedStatic = mockStatic(SecurityContextHolder.class)) {
 			mockedStatic.when(SecurityContextHolder::getContext).thenReturn(securityContext);
 			when(securityContext.getAuthentication()).thenReturn(authentication);
-			when(detailsUseCase.getId()).thenReturn(userId);
+			when(jwt.getClaim("id")).thenReturn(userId);
 
-			accountIdVerifier.initialize(allowedAccountId);
-			boolean valid = accountIdVerifier.isValid(2L, constraintValidatorContext);
+			accountIdValidator.initialize(allowedAccountId);
+			boolean valid = accountIdValidator.isValid(2L, constraintValidatorContext);
 
 			assertTrue(valid);
 			verify(securityContext).getAuthentication();
-			verify(detailsUseCase).getId();
+			verify(jwt).getClaim("id");
 			mockedStatic.verify(SecurityContextHolder::getContext);
 		}
 	}
@@ -81,20 +79,19 @@ public class AccountIdVerifierTest {
 	void isValidReturnsFalseTest() {
 		Long userId = 1L;
 		String role = "ROLE_USER";
-		Authentication authentication = new UsernamePasswordAuthenticationToken(detailsUseCase, "Passwd123!",
-				List.of(() -> role));
+		Authentication authentication = new UsernamePasswordAuthenticationToken(jwt, "Passwd123!", List.of(() -> role));
 
 		try (var mockedStatic = mockStatic(SecurityContextHolder.class)) {
 			mockedStatic.when(SecurityContextHolder::getContext).thenReturn(securityContext);
 			when(securityContext.getAuthentication()).thenReturn(authentication);
-			when(detailsUseCase.getId()).thenReturn(userId);
+			when(jwt.getClaim("id")).thenReturn(userId);
 
-			accountIdVerifier.initialize(allowedAccountId);
-			boolean valid = accountIdVerifier.isValid(2L, constraintValidatorContext);
+			accountIdValidator.initialize(allowedAccountId);
+			boolean valid = accountIdValidator.isValid(2L, constraintValidatorContext);
 
 			assertFalse(valid);
 			verify(securityContext).getAuthentication();
-			verify(detailsUseCase).getId();
+			verify(jwt).getClaim("id");
 			mockedStatic.verify(SecurityContextHolder::getContext);
 		}
 	}

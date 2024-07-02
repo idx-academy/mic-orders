@@ -1,6 +1,6 @@
 package com.academy.orders.apirest.auth.annotation;
 
-import com.academy.orders.apirest.auth.validator.AccountIdVerifier;
+import com.academy.orders.apirest.auth.validator.AccountIdValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 import java.lang.annotation.Documented;
@@ -12,9 +12,9 @@ import java.lang.annotation.Target;
 @Documented
 @Target({ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = {AccountIdVerifier.class})
+@Constraint(validatedBy = {AccountIdValidator.class})
 public @interface AllowedAccountId {
-	String message() default "";
+	String message() default "You do not have the necessary permissions to enter this ID.";
 
 	Class<?>[] groups() default {};
 
