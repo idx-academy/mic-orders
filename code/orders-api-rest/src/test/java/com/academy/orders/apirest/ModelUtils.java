@@ -42,10 +42,7 @@ public class ModelUtils {
 	}
 
 	public static Page<Product> getProductsPage() {
-		List<Product> productList = List.of(Product.builder().id(TEST_UUID).status(ProductStatus.AVAILABLE)
-				.image(IMAGE_URL).createdAt(LocalDateTime.of(1, 1, 1, 1, 1)).quantity(TEST_QUANTITY).price(TEST_PRICE)
-				.tags(Set.of(getTag())).productTranslations(Set.of(getProductTranslation())).build());
-
+		List<Product> productList = List.of(getProduct());
 		return new Page<>(1L, 1, true, true, 1, productList.size(), productList.size(), false, productList);
 	}
 
@@ -94,7 +91,7 @@ public class ModelUtils {
 	}
 
 	public static Pageable getPageable() {
-		return Pageable.builder().page(1).size(1).sort(List.of("price, asc")).build();
+		return Pageable.builder().page(1).size(1).sort(List.of("price,asc")).build();
 	}
 
 	public static PageableDTO getPageableDTO() {
@@ -112,7 +109,7 @@ public class ModelUtils {
 		productDTO.setNumberOfElements(1);
 		productDTO.setSize(1);
 		productDTO.setEmpty(false);
-		productDTO.addContentItem(getProductPreviewDTO());
+		productDTO.setContent(List.of(getProductPreviewDTO()));
 
 		return productDTO;
 
