@@ -38,9 +38,6 @@ import static com.academy.orders.apirest.ModelUtils.getPageOrderDTO;
 import static com.academy.orders.apirest.ModelUtils.getPageable;
 import static com.academy.orders.apirest.ModelUtils.getPageableParams;
 import static com.academy.orders.apirest.ModelUtils.getPlaceOrderRequestDTO;
-import static com.academy.orders.apirest.TestConstants.ADMIN_ROLE;
-import static com.academy.orders.apirest.TestConstants.USER_ROLE;
-import static com.academy.orders.apirest.TestSecurityUtil.jwtAuth;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.anyLong;
@@ -55,7 +52,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = {OrdersController.class})
 @Import(value = {OrderDTOMapperImpl.class, AopAutoConfiguration.class, TestSecurityConfig.class, ErrorHandler.class})
 class OrdersControllerTest {
-	private final Long userId = 1L;
 	@Autowired
 	private ObjectMapper objectMapper;
 	@Autowired
@@ -104,8 +100,8 @@ class OrdersControllerTest {
 				.content(objectMapper.writeValueAsString(getPlaceOrderRequestDTO())))
 				.andExpect(status().isBadRequest());
 
-        verify(mapper).toCreateOrderDto(any(PlaceOrderRequestDTO.class));
-        verify(createOrderUseCase).createOrder(any(CreateOrderDto.class), anyLong());
+		verify(mapper).toCreateOrderDto(any(PlaceOrderRequestDTO.class));
+		verify(createOrderUseCase).createOrder(any(CreateOrderDto.class), anyLong());
 	}
 
 	@Test
@@ -122,9 +118,9 @@ class OrdersControllerTest {
 		mockMvc.perform(post("/v1/users/{id}/orders", userId).with(getJwtRequest(userId, role))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(getPlaceOrderRequestDTO()))).andExpect(status().isConflict());
-        verify(mapper).toCreateOrderDto(any(PlaceOrderRequestDTO.class));
-        verify(createOrderUseCase).createOrder(any(CreateOrderDto.class), anyLong());
-    }
+		verify(mapper).toCreateOrderDto(any(PlaceOrderRequestDTO.class));
+		verify(createOrderUseCase).createOrder(any(CreateOrderDto.class), anyLong());
+	}
 
 	@Test
 	@SneakyThrows
@@ -152,8 +148,8 @@ class OrdersControllerTest {
 
 		// Then
 		assertEquals(pageOrderDTO, objectMapper.readValue(contentAsString, PageOrderDTO.class));
-	    verify(pageableDTOMapper).fromDto(pageableDTO);
-        verify(getOrdersByUserIdUseCase).getOrdersByUserId(userId, language, pageable);
-        verify(pageOrderDTOMapper).toDto(orderPage);
-    }
+		verify(pageableDTOMapper).fromDto(pageableDTO);
+		verify(getOrdersByUserIdUseCase).getOrdersByUserId(userId, language, pageable);
+		verify(pageOrderDTOMapper).toDto(orderPage);
+	}
 }
