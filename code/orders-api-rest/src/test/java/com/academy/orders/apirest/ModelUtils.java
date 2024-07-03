@@ -18,6 +18,7 @@ import com.academy.orders_api_rest.generated.model.OrderItemDTO;
 import com.academy.orders_api_rest.generated.model.OrderReceiverDTO;
 import com.academy.orders_api_rest.generated.model.OrderStatusDTO;
 import com.academy.orders_api_rest.generated.model.PageOrderDTO;
+import com.academy.orders_api_rest.generated.model.PageableDTO;
 import com.academy.orders_api_rest.generated.model.PlaceOrderRequestDTO;
 import com.academy.orders_api_rest.generated.model.PostAddressDTO;
 import com.academy.orders_api_rest.generated.model.ProductPreviewDTO;
@@ -30,7 +31,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -64,6 +64,11 @@ public class ModelUtils {
 		return Product.builder().id(TEST_UUID).status(ProductStatus.AVAILABLE).image(IMAGE_URL).createdAt(DATE_TIME)
 				.quantity(TEST_QUANTITY).price(TEST_PRICE).tags(Set.of(getTag()))
 				.productTranslations(Set.of(getProductTranslation())).build();
+	}
+
+	public static Page<Product> getProductsPage() {
+		List<Product> productList = List.of(getProduct());
+		return new Page<>(1L, 1, true, true, 1, productList.size(), productList.size(), false, productList);
 	}
 
 	public static Product getProductWithEmptyTranslations() {
@@ -108,6 +113,10 @@ public class ModelUtils {
 		productDTO.setStatus(ProductPreviewDTO.StatusEnum.AVAILABLE);
 
 		return productDTO;
+	}
+
+	public static PageableDTO getPageableDTO() {
+		return new PageableDTO().page(0).size(8);
 	}
 
 	public static PlaceOrderRequestDTO getPlaceOrderRequestDTO() {

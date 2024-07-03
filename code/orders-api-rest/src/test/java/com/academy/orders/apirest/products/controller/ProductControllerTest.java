@@ -1,9 +1,9 @@
 package com.academy.orders.apirest.products.controller;
 
 import com.academy.orders.apirest.common.TestSecurityConfig;
+import com.academy.orders.apirest.common.mapper.PageableDTOMapper;
 import com.academy.orders.apirest.products.mapper.ProductPreviewDTOMapper;
 import com.academy.orders.domain.product.usecase.GetAllProductsUseCase;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.aop.AopAutoConfiguration;
@@ -13,16 +13,16 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import java.util.List;
+import static com.academy.orders.apirest.ModelUtils.getPageable;
+import static com.academy.orders.apirest.ModelUtils.getPageableDTO;
 import static com.academy.orders.apirest.ModelUtils.getProduct;
 import static com.academy.orders.apirest.ModelUtils.getProductPreviewDTO;
+import static com.academy.orders.apirest.ModelUtils.getProductsPage;
 import static com.academy.orders.apirest.TestConstants.GET_ALL_PRODUCTS_URL;
 import static com.academy.orders.apirest.TestConstants.LANGUAGE_UA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ProductController.class)
 @ContextConfiguration(classes = {ProductController.class})
@@ -35,32 +35,28 @@ class ProductControllerTest {
 	private GetAllProductsUseCase getAllProductsUseCase;
 
 	@MockBean
-	private ProductPreviewDTOMapper mapper;
+	private ProductPreviewDTOMapper productPreviewDTOMapper;
+
+	@MockBean
+	private PageableDTOMapper pageableDTOMapper;
 
 	@Test
 	void testGetProducts() throws Exception {
-		var productsList = List.of(getProduct());
-		var dto = getProductPreviewDTO();
-		ObjectMapper objectMapper = new ObjectMapper();
-		String expectedContent = objectMapper.writeValueAsString(List.of(dto));
+		var pageableDTO = getPageableDTO();
+		var productPreviewDTO = getProductPreviewDTO();
 
-		when(getAllProductsUseCase.getAllProducts(LANGUAGE_UA)).thenReturn(productsList);
-		when(mapper.toDto(productsList.get(0))).thenReturn(dto);
+		var pageable = getPageable();
+		var pageProducts = getProductsPage();
+		var product = getProduct();
 
-		mockMvc.perform(get(GET_ALL_PRODUCTS_URL).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-				.andExpect(content().json(expectedContent));
+		when(pageableDTOMapper.fromDto(pageableDTO)).thenReturn(pageable);
+		when(getAllProductsUseCase.getAllProducts(LANGUAGE_UA, pageable)).thenReturn(pageProducts);
+		when(productPreviewDTOMapper.toDto(product)).thenReturn(productPreviewDTO);
 
-		verify(getAllProductsUseCase).getAllProducts(LANGUAGE_UA);
-		verify(mapper).toDto(productsList.get(0));
-	}
+		mockMvc.perform(get(GET_ALL_PRODUCTS_URL).param("lang", LANGUAGE_UA).contentType(MediaType.APPLICATION_JSON));
 
-	@Test
-	void testGetProductsEmptyList() throws Exception {
-		when(getAllProductsUseCase.getAllProducts(LANGUAGE_UA)).thenReturn(List.of());
-
-		mockMvc.perform(get(GET_ALL_PRODUCTS_URL).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-				.andExpect(content().json("[]"));
-
-		verify(getAllProductsUseCase).getAllProducts(LANGUAGE_UA);
+		verify(pageableDTOMapper).fromDto(pageableDTO);
+		verify(getAllProductsUseCase).getAllProducts(LANGUAGE_UA, pageable);
+		verify(productPreviewDTOMapper).toDto(product);
 	}
 }

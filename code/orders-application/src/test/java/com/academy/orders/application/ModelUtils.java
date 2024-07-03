@@ -70,6 +70,12 @@ public class ModelUtils {
 		return CartItem.builder().product(getProduct()).quantity(1).build();
 	}
 
+	public static <T> Page<T> getPage(List<T> content, long totalElements, int totalPages, int number, int size) {
+		return Page.<T>builder().totalElements(totalElements).totalPages(totalPages).first(number == 0)
+				.last(number == totalPages - 1).number(number).numberOfElements(content.size()).size(size)
+				.empty(content.isEmpty()).content(content).build();
+	}
+
 	public static Pageable getPageable() {
 		return getPageable(0, 8, List.of("id"));
 	}

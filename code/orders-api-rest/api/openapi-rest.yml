@@ -7,7 +7,8 @@ info:
 servers:
   - url: http://localhost:8080/retail
 
-# =============================TAGS=============================
+#TAGS
+#=======================================================================================================================
 tags:
   - name: Security
     description: Token retrieval
@@ -21,7 +22,8 @@ tags:
   - name: Cart
     description: Cart management endpoints
 
-# =============================ENDPOINTS=============================
+#ENDPOINTS
+#=======================================================================================================================
 paths:
   /auth/sign-in:
     post:
@@ -158,7 +160,7 @@ paths:
       tags:
         - Products
       summary: Get list of products
-      description: The endpoint for getting all products from database.
+      description: The endpoint for getting all products from the database.
       operationId: getProducts
       parameters:
         - in: query
@@ -166,21 +168,25 @@ paths:
           required: false
           schema:
             type: string
-            default: ua
+            default: en
             nullable: false
             example: ua
-          description: The id of the product which is added to the cart
+          description: The language code for the product information (e.g., 'ua' for Ukrainian).
+        - in: query
+          name: pageable
+          required: false
+          schema:
+            $ref: '#/components/schemas/Pageable'
+          description: Page request parameters for pagination and sorting.
       responses:
         '200':
           description: Short information about all products
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ProductPreview'
+                $ref: '#/components/schemas/PageProducts'
 
-  /v1/cart/{productId}/{userId}:
+  /v1/users/{userId}/cart/{productId}:
     post:
       tags:
         - Cart
@@ -198,13 +204,7 @@ paths:
             format: uuid
             example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
           description: The id of the product which is added to the cart
-        - in: path
-          name: userId
-          required: true
-          schema:
-            type: string
-            format: long
-          description: The id of the user who added the product
+        - $ref: '#/components/parameters/UserId'
       responses:
         '201':
           description: The card with added products was created
@@ -215,9 +215,12 @@ paths:
         '409':
           description: Conflict - Product already exists in the cart
 
-# =============================COMPONENTS=============================
+#COMPONENTS
+#=======================================================================================================================
 components:
-  # =============================PARAMETERS=============================
+
+#PARAMETERS
+#=======================================================================================================================
   parameters:
     Pageable:
       name: pageable
@@ -240,8 +243,8 @@ components:
       scheme: bearer
       bearerFormat: JWT
 
-
-  # =============================RESPONSES=============================
+#RESPONSES
+#=======================================================================================================================
   responses:
     CreatedResponse:
       description: Resource created
@@ -294,7 +297,8 @@ components:
             title: Unauthorized
             detail: Unauthorized access to the resource
 
-  # =============================SCHEMAS=============================
+#SCHEMAS
+#=======================================================================================================================
   schemas:
     Pageable:
       type: object
@@ -512,6 +516,17 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/Order'
+
+    PageProducts:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/AbstractPage'
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/ProductPreview'
 
     ProductPreview:
       type: object

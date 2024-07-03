@@ -1,11 +1,12 @@
 package com.academy.orders.domain.product.repository;
 
+import com.academy.orders.domain.common.Page;
+import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.product.entity.Product;
-import java.util.List;
 import java.util.UUID;
 
 public interface ProductRepository {
-	List<Product> getAllProducts(String language);
+	Page<Product> getAllProducts(String language, Pageable pageable);
 
 	/**
 	 * Method sets new quantity of products.
