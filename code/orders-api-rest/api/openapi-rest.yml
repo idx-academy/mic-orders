@@ -39,7 +39,7 @@ paths:
               $ref: '#/components/schemas/SignInRequest'
       responses:
         '200':
-          description: Successful sign in
+          description: Successful login
           content:
             application/json:
               schema:
@@ -221,8 +221,8 @@ paths:
 #=======================================================================================================================
 components:
 
-#PARAMETERS
-#=======================================================================================================================
+  #PARAMETERS
+  #=======================================================================================================================
   parameters:
     Pageable:
       name: pageable
@@ -246,8 +246,8 @@ components:
       scheme: bearer
       bearerFormat: JWT
 
-#RESPONSES
-#=======================================================================================================================
+  #RESPONSES
+  #=======================================================================================================================
   responses:
     CreatedResponse:
       description: Resource created
@@ -300,8 +300,8 @@ components:
             title: Unauthorized
             detail: Unauthorized access to the resource
 
-#SCHEMAS
-#=======================================================================================================================
+  #SCHEMAS
+  #=======================================================================================================================
   schemas:
     Pageable:
       type: object
@@ -404,8 +404,32 @@ components:
       properties:
         token:
           type: string
-          description: JWT
-          example: eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjpbIkFETUlOIl0sInN1YiI6ImRtaWtoYWlsb3ZpY2gwM0BnbWFpbC5jb20iLCJpYXQiOjE3MTU4MDIyNTQsImV4cCI6MTcxNTkxMDI1NH0.pRIMnAzcdcvd2HkveUlLtgM9iCeek1UGew4JEt3oRzmNB80p795KSl9Tx7P0zqytK5_aH3Q-ydmrWUVELHy7Cg
+      description: |
+        Token claims description.            
+        - `sub`: Subject of the token (email of the user)
+        - `firstName`: First name of the user
+        - `lastName`: First name of the user
+        - `scope`: Role assigned to the user
+        - `iss`: issuer(who created and signed this token)
+        - `id`: id of the logged-in user
+        - `exp`: Expiration time (timestamp)
+        - `iat`: Issued at time (timestamp)
+        
+        Example JWT payload:
+        
+        ```json
+        {
+          "sub": "user@mail.com",
+          "firstName": "user",
+          "lastName": "user",
+          "scope": "ROLE_USER",
+          "iss": "self",
+          "id": 2,
+          "exp": 1720025093,
+          "iat": 1720021493
+        }
+        ```
+      example: eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjpbIkFETUlOIl0sInN1YiI6ImRtaWtoYWlsb3ZpY2gwM0BnbWFpbC5jb20iLCJpYXQiOjE3MTU4MDIyNTQsImV4cCI6MTcxNTkxMDI1NH0.pRIMnAzcdcvd2HkveUlLtgM9iCeek1UGew4JEt3oRzmNB80p795KSl9Tx7P0zqytK5_aH3Q-ydmrWUVELHy7Cg
 
     CreatedResponse:
       title: CreatedResponse
