@@ -1,7 +1,8 @@
 package com.academy.orders.infrastructure.product.repository;
 
-import com.academy.orders.infrastructure.product.ProductMapper;
+import java.util.List;
 import java.util.UUID;
+import com.academy.orders.infrastructure.product.ProductMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -9,11 +10,14 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import static com.academy.orders.infrastructure.ModelUtils.getPageable;
+import static com.academy.orders.infrastructure.ModelUtils.getProduct;
+import static com.academy.orders.infrastructure.ModelUtils.getProductEntity;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -24,6 +28,7 @@ class ProductRepositoryImplTest {
 	private ProductRepositoryImpl productRepository;
 	@Mock
 	private ProductJpaAdapter productJpaAdapter;
+
 	@Mock
 	private ProductMapper productMapper;
 
@@ -41,5 +46,23 @@ class ProductRepositoryImplTest {
 	void testSetNewProductQuantity() {
 		doNothing().when(productJpaAdapter).setNewProductQuantity(any(UUID.class), anyInt());
 		assertDoesNotThrow(() -> productRepository.setNewProductQuantity(UUID.randomUUID(), 1));
+	}
+
+	@Test
+	void testGetAllProducts() {
+		var pageable = getPageable();
+		String sort = String.join(",", pageable.sort());
+		var productEntity = getProductEntity();
+		var product = getProduct();
+		var page = new PageImpl<>(List.of(productEntity));
+		when(productJpaAdapter.findAllByLanguageCode("en", PageRequest.of(pageable.page(), pageable.size()), sort))
+				.thenReturn(page);
+
+		when(productMapper.fromEntities(page.getContent())).thenReturn(List.of(product));
+		var products = productRepository.getAllProducts("en", pageable);
+		assertEquals(1, products.size());
+
+		verify(productJpaAdapter).findAllByLanguageCode("en", PageRequest.of(pageable.page(), pageable.size()), sort);
+		verify(productMapper).fromEntities(page.getContent());
 	}
 }

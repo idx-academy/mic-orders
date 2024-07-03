@@ -61,7 +61,7 @@ public class ModelUtils {
 	}
 
 	public static Pageable getPageable() {
-		return Pageable.builder().page(0).size(8).sort(List.of("test")).build();
+		return Pageable.builder().page(0).size(8).sort(List.of("price", "desc")).build();
 	}
 
 	public static OrderEntity getOrderEntity() {

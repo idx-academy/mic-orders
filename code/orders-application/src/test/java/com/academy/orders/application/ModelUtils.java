@@ -4,6 +4,7 @@ import com.academy.orders.domain.account.entity.Account;
 import com.academy.orders.domain.account.entity.enumerated.Role;
 import com.academy.orders.domain.account.entity.enumerated.UserStatus;
 import com.academy.orders.domain.cart.entity.CartItem;
+import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.order.dto.CreateOrderDto;
 import com.academy.orders.domain.order.entity.enumerated.DeliveryMethod;
 import com.academy.orders.domain.product.entity.Language;
@@ -12,8 +13,8 @@ import com.academy.orders.domain.product.entity.ProductTranslation;
 import com.academy.orders.domain.product.entity.Tag;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
-
 import static com.academy.orders.application.TestConstants.IMAGE_URL;
 import static com.academy.orders.application.TestConstants.LANGUAGE_UA;
 import static com.academy.orders.application.TestConstants.PRODUCT_DESCRIPTION;
@@ -60,4 +61,9 @@ public class ModelUtils {
 		return CartItem.builder().product(getProduct()).quantity(1).build();
 	}
 
+	public static <T> Page<T> getPage(List<T> content, long totalElements, int totalPages, int number, int size) {
+		return Page.<T>builder().totalElements(totalElements).totalPages(totalPages).first(number == 0)
+				.last(number == totalPages - 1).number(number).numberOfElements(content.size()).size(size)
+				.empty(content.isEmpty()).content(content).build();
+	}
 }
