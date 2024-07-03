@@ -18,6 +18,7 @@ import java.util.Objects;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +29,7 @@ public class CreateOrderUseCaseImpl implements CreateOrderUseCase {
 	private final CartItemRepository cartItemRepository;
 
 	@Override
+	@Transactional
 	public UUID createOrder(CreateOrderDto createOrderDto, Long accountId) {
 		var order = createOrderObject(createOrderDto);
 		var bucketElements = getBucketElements(accountId);

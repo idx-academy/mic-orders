@@ -8,7 +8,6 @@ import com.academy.orders.infrastructure.order.entity.OrderEntity;
 import com.academy.orders.infrastructure.product.entity.ProductEntity;
 import com.academy.orders.infrastructure.product.repository.ProductJpaAdapter;
 import java.util.Collections;
-import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -68,15 +67,15 @@ class OrderRepositoryImplTest {
 	private void setUpMocksForSaveMethod(OrderEntity orderEntity, AccountEntity accountEntity,
 			ProductEntity productEntity) {
 		when(mapper.toEntity(any(Order.class))).thenReturn(orderEntity);
-		when(accountJpaAdapter.findById(anyLong())).thenReturn(Optional.of(accountEntity));
-		when(productJpaAdapter.findById(any(UUID.class))).thenReturn(Optional.of(productEntity));
+		when(accountJpaAdapter.getReferenceById(anyLong())).thenReturn(accountEntity);
+		when(productJpaAdapter.getReferenceById(any(UUID.class))).thenReturn(productEntity);
 		when(jpaAdapter.save(any())).thenReturn(orderEntity);
 	}
 
 	private void verifyMocksOfSaveMethod() {
 		verify(mapper).toEntity(any(Order.class));
-		verify(accountJpaAdapter).findById(anyLong());
-		verify(productJpaAdapter).findById(any(UUID.class));
+		verify(accountJpaAdapter).getReferenceById(anyLong());
+		verify(productJpaAdapter).getReferenceById(any(UUID.class));
 		verify(jpaAdapter).save(any());
 	}
 }

@@ -7,6 +7,7 @@ import com.academy.orders.domain.account.entity.CreateAccountDTO;
 import com.academy.orders.domain.account.usecase.CreateUserAccountUseCase;
 import com.academy.orders_api_rest.generated.model.SignInRequestDTO;
 import com.academy.orders_api_rest.generated.model.SignUpRequestDTO;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -24,7 +25,6 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
@@ -38,11 +38,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = {AuthTokenController.class})
 @Import(value = {SignUpRequestDTOMapperImpl.class, AopAutoConfiguration.class, TestSecurityConfig.class})
 class AuthTokenControllerTest {
-	private final ObjectMapper objectMapper = new ObjectMapper();
-
+	@Autowired
+	private ObjectMapper objectMapper;
 	@Autowired
 	private MockMvc mockMvc;
-
 	@MockBean
 	private JwtEncoder encoder;
 	@MockBean

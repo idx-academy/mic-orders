@@ -9,6 +9,7 @@ import com.academy.orders.domain.order.dto.CreateOrderDto;
 import com.academy.orders.domain.order.exception.InsufficientProductQuantityException;
 import com.academy.orders.domain.order.usecase.CreateOrderUseCase;
 import com.academy.orders_api_rest.generated.model.PlaceOrderRequestDTO;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.UUID;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
@@ -18,14 +19,16 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import static com.academy.orders.apirest.ModelUtils.getPlaceOrderRequestDTO;
+import static com.academy.orders.apirest.TestConstants.ADMIN_ROLE;
+import static com.academy.orders.apirest.TestConstants.USER_ROLE;
+import static com.academy.orders.apirest.TestSecurityUtil.jwtAuth;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -35,8 +38,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = {OrdersController.class})
 @Import(value = {OrderDTOMapperImpl.class, AopAutoConfiguration.class, TestSecurityConfig.class, ErrorHandler.class})
 class OrdersControllerTest {
-	private final ObjectMapper objectMapper = new ObjectMapper();
+	private final Long userId = 1L;
 
+	@Autowired
+	private ObjectMapper objectMapper;
 	@Autowired
 	private MockMvc mockMvc;
 	@MockBean
@@ -45,7 +50,6 @@ class OrdersControllerTest {
 	private OrderDTOMapper mapper;
 
 	@Test
-	@WithMockUser(roles = "ADMIN")
 	@SneakyThrows
 	void testCreateOrder() {
 		var orderId = UUID.randomUUID();
@@ -53,35 +57,42 @@ class OrdersControllerTest {
 		when(mapper.toCreateOrderDto(any(PlaceOrderRequestDTO.class))).thenReturn(CreateOrderDto.builder().build());
 		when(createOrderUseCase.createOrder(any(CreateOrderDto.class), anyLong())).thenReturn(orderId);
 
-		mockMvc.perform(post("/v1/users/{id}/orders", 1L).contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(getPlaceOrderRequestDTO()))).andExpect(status().isCreated())
+		mockMvc.perform(post("/v1/users/{id}/orders", userId).contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(getPlaceOrderRequestDTO()))
+				.with(jwtAuth(userId, ADMIN_ROLE, USER_ROLE))).andExpect(status().isCreated())
 				.andExpect(jsonPath("$.orderId").value(orderId.toString()));
+
+		verify(mapper).toCreateOrderDto(any(PlaceOrderRequestDTO.class));
+		verify(createOrderUseCase).createOrder(any(CreateOrderDto.class), anyLong());
 	}
 
 	@Test
-	@WithMockUser(roles = "ADMIN")
 	@SneakyThrows
 	void testCreateOrderThrowsEmptyCartException() {
 		when(mapper.toCreateOrderDto(any(PlaceOrderRequestDTO.class))).thenReturn(CreateOrderDto.builder().build());
-
 		when(createOrderUseCase.createOrder(any(CreateOrderDto.class), anyLong())).thenThrow(new EmptyCartException());
 
-		mockMvc.perform(post("/v1/users/{id}/orders", 1L).contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(getPlaceOrderRequestDTO())))
-				.andExpect(status().isBadRequest());
+		mockMvc.perform(post("/v1/users/{id}/orders", userId).contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(getPlaceOrderRequestDTO()))
+				.with(jwtAuth(userId, ADMIN_ROLE, USER_ROLE))).andExpect(status().isBadRequest());
+
+		verify(mapper).toCreateOrderDto(any(PlaceOrderRequestDTO.class));
+		verify(createOrderUseCase).createOrder(any(CreateOrderDto.class), anyLong());
 	}
 
 	@Test
-	@WithMockUser(roles = "ADMIN")
 	@SneakyThrows
 	void testCreateOrderThrowsInsufficientProductQuantityException() {
 		when(mapper.toCreateOrderDto(any(PlaceOrderRequestDTO.class))).thenReturn(CreateOrderDto.builder().build());
-
 		when(createOrderUseCase.createOrder(any(CreateOrderDto.class), anyLong()))
 				.thenThrow(new InsufficientProductQuantityException(UUID.randomUUID()));
 
-		mockMvc.perform(post("/v1/users/{id}/orders", 1L).contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(getPlaceOrderRequestDTO()))).andExpect(status().isConflict());
+		mockMvc.perform(post("/v1/users/{id}/orders", userId).contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(getPlaceOrderRequestDTO()))
+				.with(jwtAuth(userId, ADMIN_ROLE, USER_ROLE))).andExpect(status().isConflict());
+
+		verify(mapper).toCreateOrderDto(any(PlaceOrderRequestDTO.class));
+		verify(createOrderUseCase).createOrder(any(CreateOrderDto.class), anyLong());
 	}
 
 }

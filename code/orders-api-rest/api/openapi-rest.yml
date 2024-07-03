@@ -105,14 +105,7 @@ paths:
         - Orders
       summary: Place an order
       parameters:
-        - in: path
-          name: userId
-          required: true
-          schema:
-            type: integer
-            description: Id of the user
-            format: int64
-          example: '1'
+        - $ref: '#/components/parameters/UserId'
       operationId: placeOrder
       security:
         - bearerAuth: [ ]
@@ -195,7 +188,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PageProducts'
 
-  /v1/cart/{productId}/{userId}:
+  /v1/users/{userId}/cart/{productId}:
     post:
       tags:
         - Cart
@@ -213,13 +206,7 @@ paths:
             format: uuid
             example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
           description: The id of the product which is added to the cart
-        - in: path
-          name: userId
-          required: true
-          schema:
-            type: string
-            format: long
-          description: The id of the user who added the product
+        - $ref: '#/components/parameters/UserId'
       responses:
         '201':
           description: The card with added products was created

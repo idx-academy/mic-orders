@@ -13,11 +13,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import static com.academy.orders.apirest.TestConstants.USER_ROLE;
+import static com.academy.orders.apirest.TestSecurityUtil.jwtAuth;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -28,7 +29,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @ContextConfiguration(classes = {CartItemController.class})
 @Import(value = {AopAutoConfiguration.class, TestSecurityConfig.class, ErrorHandler.class})
 class CartItemControllerTest {
-
 	@Autowired
 	private MockMvc mockMvc;
 
@@ -36,22 +36,28 @@ class CartItemControllerTest {
 	private CreateCartItemByUserUseCase cartItemByUserUseCase;
 
 	@Test
-	@WithMockUser(roles = "ADMIN")
 	void testAddProductToCart() throws Exception {
+		var productId = UUID.randomUUID();
+		var userId = 1L;
+
 		doNothing().when(cartItemByUserUseCase).create(any(CreateCartItemDTO.class));
 
-		mockMvc.perform(post("/v1/cart/" + UUID.randomUUID() + "/" + 1L).contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(post("/v1/users/{userId}/cart/{productId}", userId, productId)
+				.contentType(MediaType.APPLICATION_JSON).with(jwtAuth(userId, USER_ROLE)))
 				.andExpect(MockMvcResultMatchers.status().isCreated());
 
 		verify(cartItemByUserUseCase).create(any(CreateCartItemDTO.class));
 	}
 
 	@Test
-	@WithMockUser(roles = "ADMIN")
 	void testAddProductToCartThrowsNotFoundException() throws Exception {
+		var productId = UUID.randomUUID();
+		var userId = 1L;
+
 		doThrow(ProductNotFoundException.class).when(cartItemByUserUseCase).create(any(CreateCartItemDTO.class));
 
-		mockMvc.perform(post("/v1/cart/" + UUID.randomUUID() + "/" + 1L).contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(post("/v1/users/{userId}/cart/{productId}", userId, productId)
+				.contentType(MediaType.APPLICATION_JSON).with(jwtAuth(userId, USER_ROLE)))
 				.andExpect(MockMvcResultMatchers.status().isNotFound());
 
 		verify(cartItemByUserUseCase).create(any(CreateCartItemDTO.class));

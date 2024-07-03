@@ -42,11 +42,11 @@ public class CartItemRepositoryImpl implements CartItemRepository {
 	}
 
 	private void setProduct(CartItemEntity cartItemEntity, UUID productId) {
-		productJpaAdapter.findById(productId).ifPresent(cartItemEntity::setProduct);
+		cartItemEntity.setProduct(productJpaAdapter.getReferenceById(productId));
 	}
 
 	private void setAccount(CartItemEntity cartItemEntity, Long accountId) {
-		accountJpaAdapter.findById(accountId).ifPresent(cartItemEntity::setAccount);
+		cartItemEntity.setAccount(accountJpaAdapter.getReferenceById(accountId));
 	}
 
 	@Override
