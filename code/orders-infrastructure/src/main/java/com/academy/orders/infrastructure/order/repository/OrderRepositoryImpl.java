@@ -50,8 +50,8 @@ public class OrderRepositoryImpl implements OrderRepository {
 
 	@Override
 	public Page<Order> findAllByUserId(Long userId, String language, Pageable pageable) {
-		var pageableFromDomain = pageableMapper.fromDomain(pageable);
-		var orderEntityPage = jpaAdapter.findAllByAccount_Id(userId, pageableFromDomain);
+		var springPageable = pageableMapper.fromDomain(pageable);
+		var orderEntityPage = jpaAdapter.findAllByAccount_Id(userId, springPageable);
 		var productIds = orderEntityPage.getContent().stream()
 				.flatMap(orderEntity -> orderEntity.getOrderItems().stream())
 				.map(orderItemEntity -> orderItemEntity.getProduct().getId()).toList();

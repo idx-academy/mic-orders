@@ -84,8 +84,9 @@ public class ModelUtils {
 		return Pageable.builder().page(page).size(size).sort(sort).build();
 	}
 
-	public static <T> Page<T> getPageOf(T element) {
-		return Page.<T>builder().content(List.of(element)).empty(false).first(true).last(false).number(1)
+	@SafeVarargs
+	public static <T> Page<T> getPageOf(T... elements) {
+		return Page.<T>builder().content(List.of(elements)).empty(false).first(true).last(false).number(1)
 				.numberOfElements(10).totalPages(10).totalElements(100L).size(1).build();
 	}
 

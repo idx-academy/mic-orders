@@ -5,9 +5,12 @@ import com.academy.orders.domain.account.entity.CreateAccountDTO;
 import com.academy.orders.domain.account.entity.enumerated.Role;
 import com.academy.orders.domain.account.entity.enumerated.UserStatus;
 import com.academy.orders.domain.cart.entity.CartItem;
+import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.order.entity.Order;
+import com.academy.orders.domain.order.entity.OrderItem;
 import com.academy.orders.domain.order.entity.OrderReceiver;
+import com.academy.orders.domain.order.entity.PostAddress;
 import com.academy.orders.domain.order.entity.enumerated.DeliveryMethod;
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import com.academy.orders.domain.product.entity.Product;
@@ -24,12 +27,12 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import org.springframework.data.domain.PageImpl;
+
+import static com.academy.orders.domain.order.entity.enumerated.DeliveryMethod.NOVA;
 
 public class ModelUtils {
 	private static final LocalDateTime DATE_TIME = LocalDateTime.of(1, 1, 1, 1, 1);
-
-	private ModelUtils() {
-	}
 
 	public static AccountEntity getAccountEntity() {
 		return AccountEntity.builder().id(1L).password("$2a$12$5ZEfkhNQUREmioQ54TaFaOEM7h/QBgASIeqZceFGKPT80aTfYdvV.")
@@ -60,10 +63,6 @@ public class ModelUtils {
 				.quantity(100).price(BigDecimal.valueOf(100.00)).build();
 	}
 
-	public static Pageable getPageable() {
-		return Pageable.builder().page(0).size(8).sort(List.of("price", "desc")).build();
-	}
-
 	public static OrderEntity getOrderEntity() {
 		return OrderEntity.builder().id(UUID.fromString("4602edda-6e9f-4a35-a472-2f6eac06e203")).createdAt(DATE_TIME)
 				.editedAt(DATE_TIME).isPaid(false).orderStatus(OrderStatus.IN_PROGRESS).receiver(getOrderReceiverVO())
@@ -83,11 +82,6 @@ public class ModelUtils {
 		return OrderItemEntity.builder().price(BigDecimal.valueOf(100.00)).quantity(1).build();
 	}
 
-	public static Order getOrder() {
-		return Order.builder().id(UUID.fromString("4602edda-6e9f-4a35-a472-2f6eac06e203")).createdAt(DATE_TIME)
-				.isPaid(false).orderStatus(OrderStatus.IN_PROGRESS).receiver(getOrderReceiver()).build();
-	}
-
 	public static OrderReceiver getOrderReceiver() {
 		return OrderReceiver.builder().email("mock@mail.com").firstName("MockFirst").lastName("MockLast").build();
 	}
@@ -101,5 +95,42 @@ public class ModelUtils {
 
 	public static CartItem getCartItem() {
 		return CartItem.builder().product(getProduct()).quantity(1).build();
+	}
+
+	public static <T> Page<T> getPage(List<T> content, long totalElements, int totalPages, int number, int size) {
+		return Page.<T>builder().totalElements(totalElements).totalPages(totalPages).first(number == 0)
+				.last(number == totalPages - 1).number(number).numberOfElements(content.size()).size(size)
+				.empty(content.isEmpty()).content(content).build();
+	}
+
+	public static Pageable getPageable() {
+		return getPageable(0, 8, List.of("id"));
+	}
+
+	public static Pageable getPageable(Integer page, Integer size, List<String> sort) {
+		return Pageable.builder().page(page).size(size).sort(sort).build();
+	}
+
+	@SafeVarargs
+	public static <T> Page<T> getPageOf(T... elements) {
+		return Page.<T>builder().content(List.of(elements)).empty(false).first(true).last(false).number(1)
+				.numberOfElements(10).totalPages(10).totalElements(100L).size(1).build();
+	}
+
+	public static Order getOrder() {
+		return Order.builder().id(UUID.fromString("4602edda-6e9f-4a35-a472-2f6eac06e203"))
+				.createdAt(LocalDateTime.of(1, 1, 1, 1, 1)).isPaid(false).orderStatus(OrderStatus.IN_PROGRESS)
+				.postAddress(PostAddress.builder().city("Kyiv").deliveryMethod(NOVA).department("1").build())
+				.receiver(OrderReceiver.builder().firstName("John").lastName("Doe").email("test@mail.com").build())
+				.orderItems(List.of(getOrderItem())).build();
+	}
+
+	public static OrderItem getOrderItem() {
+		return OrderItem.builder().product(getProduct()).quantity(3).price(BigDecimal.valueOf(200)).build();
+	}
+
+	@SafeVarargs
+	public static <T> PageImpl<T> getPageImplOf(T... elements) {
+		return new PageImpl<>(List.of(elements));
 	}
 }
