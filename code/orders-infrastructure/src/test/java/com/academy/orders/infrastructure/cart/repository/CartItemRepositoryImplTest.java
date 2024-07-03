@@ -9,7 +9,6 @@ import com.academy.orders.infrastructure.cart.entity.CartItemEntity;
 import com.academy.orders.infrastructure.cart.entity.CartItemId;
 import com.academy.orders.infrastructure.product.entity.ProductEntity;
 import com.academy.orders.infrastructure.product.repository.ProductJpaAdapter;
-import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -73,8 +72,8 @@ class CartItemRepositoryImplTest {
 		var expected = CartItem.builder().product(productEntity).quantity(1).build();
 
 		when(cartItemMapper.toEntity(createCartItemDto)).thenReturn(cartItemEntity);
-		when(productJpaAdapter.findById(createCartItemDto.productId())).thenReturn(Optional.of(new ProductEntity()));
-		when(accountJpaAdapter.findById(createCartItemDto.userId())).thenReturn(Optional.of(new AccountEntity()));
+		when(productJpaAdapter.getReferenceById(createCartItemDto.productId())).thenReturn(new ProductEntity());
+		when(accountJpaAdapter.getReferenceById(createCartItemDto.userId())).thenReturn(new AccountEntity());
 		when(cartItemJpaAdapter.save(any(CartItemEntity.class))).thenReturn(cartItemEntity);
 		when(cartItemMapper.fromEntity(cartItemEntity)).thenReturn(expected);
 
@@ -85,8 +84,8 @@ class CartItemRepositoryImplTest {
 		assertNotNull(cartItemEntity.getProduct());
 
 		verify(cartItemMapper).toEntity(any(CreateCartItemDTO.class));
-		verify(productJpaAdapter).findById(any(UUID.class));
-		verify(accountJpaAdapter).findById(anyLong());
+		verify(productJpaAdapter).getReferenceById(any(UUID.class));
+		verify(accountJpaAdapter).getReferenceById(anyLong());
 		verify(cartItemJpaAdapter).save(any(CartItemEntity.class));
 		verify(cartItemMapper).fromEntity(any(CartItemEntity.class));
 	}

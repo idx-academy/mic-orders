@@ -6,7 +6,6 @@ import com.academy.orders.domain.order.repository.OrderRepository;
 import com.academy.orders.infrastructure.account.repository.AccountJpaAdapter;
 import com.academy.orders.infrastructure.order.OrderMapper;
 import com.academy.orders.infrastructure.order.entity.OrderEntity;
-import com.academy.orders.infrastructure.order.entity.OrderItemEntity;
 import com.academy.orders.infrastructure.product.repository.ProductJpaAdapter;
 import java.util.Optional;
 import java.util.UUID;
@@ -61,13 +60,13 @@ public class OrderRepositoryImpl implements OrderRepository {
 	}
 
 	private void addAccountToOrder(OrderEntity orderEntity, Long accountId) {
-		accountJpaAdapter.findById(accountId).ifPresent(orderEntity::setAccount);
+		orderEntity.setAccount(accountJpaAdapter.getReferenceById(accountId));
 	}
 
 	private void mapOrderItemsWithProductsAndOrder(OrderEntity orderEntity) {
-		for (OrderItemEntity item : orderEntity.getOrderItems()) {
-			productJpaAdapter.findById(item.getProduct().getId()).ifPresent(item::setProduct);
+		orderEntity.getOrderItems().forEach(item -> {
+			item.setProduct(productJpaAdapter.getReferenceById(item.getProduct().getId()));
 			item.setOrder(orderEntity);
-		}
+		});
 	}
 }
