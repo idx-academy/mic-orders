@@ -2,9 +2,7 @@ package com.academy.orders.infrastructure.product.repository;
 
 import java.util.List;
 import java.util.UUID;
-import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.infrastructure.product.ProductMapper;
-import com.academy.orders.infrastructure.product.entity.ProductEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -33,12 +31,6 @@ class ProductRepositoryImplTest {
 
 	@Mock
 	private ProductMapper productMapper;
-
-	@Mock
-	private List<ProductEntity> productEntities;
-
-	@Mock
-	private List<Product> products;
 
 	@ParameterizedTest
 	@CsvSource({"true", "false"})
