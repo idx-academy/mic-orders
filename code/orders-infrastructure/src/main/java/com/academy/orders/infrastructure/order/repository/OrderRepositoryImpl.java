@@ -60,16 +60,15 @@ public class OrderRepositoryImpl implements OrderRepository {
 		return pageMapper.toDomain(orderEntityPage);
 	}
 
-    @Override
-    @Transactional
-    public UUID save(Order order, Long accountId) {
-        var orderEntity = getOrderEntityWithPostAddress(order);
-        addAccountToOrder(orderEntity, accountId);
-        mapOrderItemsWithProductsAndOrder(orderEntity);
+	@Override
+	@Transactional
+	public UUID save(Order order, Long accountId) {
+		var orderEntity = getOrderEntityWithPostAddress(order);
+		addAccountToOrder(orderEntity, accountId);
+		mapOrderItemsWithProductsAndOrder(orderEntity);
 
-        return jpaAdapter.save(orderEntity).getId();
-    }
-}
+		return jpaAdapter.save(orderEntity).getId();
+	}
 
 	private OrderEntity getOrderEntityWithPostAddress(Order order) {
 		var orderEntity = mapper.toEntity(order);

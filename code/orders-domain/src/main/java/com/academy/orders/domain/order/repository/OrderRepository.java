@@ -19,18 +19,18 @@ public interface OrderRepository {
 	 */
 	Optional<Order> findById(UUID id);
 
-    /**
-     * Method saves order to the DB.
-     *
-     * @param accountId
-     *            id of logged-in user
-     * @param order
-     *            to save
-     *
-     * @return {@link UUID} id of created order
-     * @author Denys Ryhal
-     */
-    UUID save(Order order, Long accountId);
+	/**
+	 * Method saves order to the DB.
+	 *
+	 * @param accountId
+	 *            id of logged-in user
+	 * @param order
+	 *            to save
+	 *
+	 * @return {@link UUID} id of created order
+	 * @author Denys Ryhal
+	 */
+	UUID save(Order order, Long accountId);
 
 	Page<Order> findAllByUserId(Long userId, String language, Pageable pageable);
 }

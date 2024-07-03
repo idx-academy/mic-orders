@@ -34,7 +34,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class CreateOrderUseCaseImplTest {
+class CreateOrderUseCaseTest {
 	@InjectMocks
 	private CreateOrderUseCaseImpl createOrderUseCase;
 	@Mock

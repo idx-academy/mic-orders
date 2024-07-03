@@ -103,14 +103,7 @@ paths:
         - Orders
       summary: Place an order
       parameters:
-        - in: path
-          name: userId
-          required: true
-          schema:
-            type: integer
-            description: Id of the user
-            format: int64
-          example: '1'
+        - $ref: '#/components/parameters/UserId'
       operationId: placeOrder
       security:
         - bearerAuth: [ ]
@@ -130,8 +123,6 @@ paths:
           $ref: '#/components/responses/BadRequestResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
-
-  /v1/orders/user/{userId}:
     get:
       tags:
         - Orders
@@ -238,7 +229,6 @@ components:
       in: path
       name: userId
       required: true
-      x-constraints: '@AllowedAccountId'
       schema:
         type: integer
         description: Id of the user

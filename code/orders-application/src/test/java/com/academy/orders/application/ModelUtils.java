@@ -4,14 +4,23 @@ import com.academy.orders.domain.account.entity.Account;
 import com.academy.orders.domain.account.entity.enumerated.Role;
 import com.academy.orders.domain.account.entity.enumerated.UserStatus;
 import com.academy.orders.domain.cart.entity.CartItem;
+import com.academy.orders.domain.common.Page;
+import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.order.dto.CreateOrderDto;
+import com.academy.orders.domain.order.entity.Order;
+import com.academy.orders.domain.order.entity.OrderItem;
+import com.academy.orders.domain.order.entity.OrderReceiver;
+import com.academy.orders.domain.order.entity.PostAddress;
 import com.academy.orders.domain.order.entity.enumerated.DeliveryMethod;
+import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import com.academy.orders.domain.product.entity.Language;
 import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.ProductTranslation;
 import com.academy.orders.domain.product.entity.Tag;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 import static com.academy.orders.application.TestConstants.IMAGE_URL;
@@ -23,6 +32,7 @@ import static com.academy.orders.application.TestConstants.TEST_ID;
 import static com.academy.orders.application.TestConstants.TEST_PRICE;
 import static com.academy.orders.application.TestConstants.TEST_QUANTITY;
 import static com.academy.orders.application.TestConstants.TEST_UUID;
+import static com.academy.orders.domain.order.entity.enumerated.DeliveryMethod.NOVA;
 
 public class ModelUtils {
 	private static final LocalDateTime DATE_TIME = LocalDateTime.of(1, 1, 1, 1, 1, 1);
@@ -60,4 +70,28 @@ public class ModelUtils {
 		return CartItem.builder().product(getProduct()).quantity(1).build();
 	}
 
+	public static Pageable getPageable() {
+		return getPageable(0, 8, List.of("id"));
+	}
+
+	public static Pageable getPageable(Integer page, Integer size, List<String> sort) {
+		return Pageable.builder().page(page).size(size).sort(sort).build();
+	}
+
+	public static <T> Page<T> getPageOf(T element) {
+		return Page.<T>builder().content(List.of(element)).empty(false).first(true).last(false).number(1)
+				.numberOfElements(10).totalPages(10).totalElements(100L).size(1).build();
+	}
+
+	public static Order getOrder() {
+		return Order.builder().id(TEST_UUID).createdAt(LocalDateTime.of(1, 1, 1, 1, 1)).isPaid(false)
+				.orderStatus(OrderStatus.IN_PROGRESS)
+				.postAddress(PostAddress.builder().city("Kyiv").deliveryMethod(NOVA).department("1").build())
+				.receiver(OrderReceiver.builder().firstName("John").lastName("Doe").email("test@mail.com").build())
+				.orderItems(List.of(getOrderItem())).build();
+	}
+
+	public static OrderItem getOrderItem() {
+		return OrderItem.builder().product(getProduct()).quantity(3).price(BigDecimal.valueOf(200)).build();
+	}
 }
