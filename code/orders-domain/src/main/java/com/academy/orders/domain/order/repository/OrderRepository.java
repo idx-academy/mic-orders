@@ -1,5 +1,7 @@
 package com.academy.orders.domain.order.repository;
 
+import com.academy.orders.domain.common.Page;
+import com.academy.orders.domain.common.Pageable;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -29,4 +31,6 @@ public interface OrderRepository {
 	 * @author Denys Ryhal
 	 */
 	UUID save(Order order, Long accountId);
+
+	Page<Order> findAllByUserId(Long userId, String language, Pageable pageable);
 }

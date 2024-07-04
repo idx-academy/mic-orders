@@ -1,6 +1,7 @@
 package com.academy.orders.infrastructure.product.repository;
 
 import com.academy.orders.infrastructure.product.entity.ProductEntity;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,9 +25,13 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 					+ "JOIN pt.language l WHERE l.code = :language")
 	Page<ProductEntity> findAllByLanguageCode(String language, Pageable pageable, String sort);
 
+	@Query("SELECT p FROM ProductEntity p " + "LEFT JOIN FETCH p.productTranslations pt "
+			+ "LEFT JOIN FETCH pt.language l " + "LEFT JOIN FETCH p.tags t "
+			+ "WHERE p.id in (:productIds) and l.code = :language")
+	List<ProductEntity> findAllByIdAndLanguageCode(List<UUID> productIds, String language);
+
 	@Modifying
 	@Transactional
 	@Query(nativeQuery = true, value = "UPDATE products SET quantity = :quantity WHERE id = :id")
 	void setNewProductQuantity(UUID id, Integer quantity);
-
 }

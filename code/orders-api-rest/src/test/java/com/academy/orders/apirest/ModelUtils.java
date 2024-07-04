@@ -2,18 +2,43 @@ package com.academy.orders.apirest;
 
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
+import com.academy.orders.domain.order.entity.Order;
+import com.academy.orders.domain.order.entity.OrderItem;
+import com.academy.orders.domain.order.entity.OrderReceiver;
+import com.academy.orders.domain.order.entity.PostAddress;
+import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import com.academy.orders.domain.product.entity.Language;
 import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.ProductTranslation;
 import com.academy.orders.domain.product.entity.Tag;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
+import com.academy.orders_api_rest.generated.model.DeliveryMethodDTO;
+import com.academy.orders_api_rest.generated.model.OrderDTO;
+import com.academy.orders_api_rest.generated.model.OrderItemDTO;
+import com.academy.orders_api_rest.generated.model.OrderReceiverDTO;
+import com.academy.orders_api_rest.generated.model.OrderStatusDTO;
+import com.academy.orders_api_rest.generated.model.PageOrderDTO;
 import com.academy.orders_api_rest.generated.model.PageableDTO;
 import com.academy.orders_api_rest.generated.model.PlaceOrderRequestDTO;
+import com.academy.orders_api_rest.generated.model.PostAddressDTO;
 import com.academy.orders_api_rest.generated.model.ProductPreviewDTO;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+
 import static com.academy.orders.apirest.TestConstants.IMAGE_URL;
 import static com.academy.orders.apirest.TestConstants.LANGUAGE_UA;
 import static com.academy.orders.apirest.TestConstants.PRODUCT_DESCRIPTION;
@@ -29,7 +54,8 @@ import static com.academy.orders.apirest.TestConstants.TEST_LAST_NAME;
 import static com.academy.orders.apirest.TestConstants.TEST_PRICE;
 import static com.academy.orders.apirest.TestConstants.TEST_QUANTITY;
 import static com.academy.orders.apirest.TestConstants.TEST_UUID;
-import static com.academy.orders_api_rest.generated.model.PlaceOrderRequestDTO.*;
+import static com.academy.orders.domain.order.entity.enumerated.DeliveryMethod.NOVA;
+import static com.academy.orders_api_rest.generated.model.PlaceOrderRequestDTO.DeliveryMethodEnum;
 
 public class ModelUtils {
 	private static final LocalDateTime DATE_TIME = LocalDateTime.of(1, 1, 1, 1, 1);
@@ -89,10 +115,6 @@ public class ModelUtils {
 		return productDTO;
 	}
 
-	public static Pageable getPageable() {
-		return Pageable.builder().page(1).size(1).sort(List.of("price,asc")).build();
-	}
-
 	public static PageableDTO getPageableDTO() {
 		return new PageableDTO().page(0).size(8);
 	}
@@ -107,5 +129,98 @@ public class ModelUtils {
 		placeOrderRequestDTO.setDeliveryMethod(DeliveryMethodEnum.NOVA);
 
 		return placeOrderRequestDTO;
+	}
+
+	public static Order getOrder() {
+		return Order.builder().id(TEST_UUID).createdAt(LocalDateTime.of(1, 1, 1, 1, 1)).isPaid(false)
+				.orderStatus(OrderStatus.IN_PROGRESS)
+				.postAddress(
+						PostAddress.builder().city(TEST_CITY).deliveryMethod(NOVA).department(TEST_DEPARTMENT).build())
+				.receiver(OrderReceiver.builder().firstName(TEST_FIRST_NAME).lastName(TEST_LAST_NAME).email(TEST_EMAIL)
+						.build())
+				.orderItems(List.of(getOrderItem())).build();
+	}
+
+	public static OrderItem getOrderItem() {
+		return OrderItem.builder().product(getProduct()).quantity(3).price(BigDecimal.valueOf(200)).build();
+	}
+
+	public static RequestPostProcessor getJwtRequest(Long userId, String... roles) {
+		var grantedRoles = Arrays.stream(roles).map(SimpleGrantedAuthority::new)
+				.collect(Collectors.toCollection(() -> new ArrayList<GrantedAuthority>()));
+		return SecurityMockMvcRequestPostProcessors.jwt().jwt(builder -> builder.claim("id", userId))
+				.authorities(grantedRoles);
+	}
+
+	@SafeVarargs
+	public static <T> Page<T> getPageOf(T... elements) {
+		return Page.<T>builder().content(List.of(elements)).empty(false).first(true).last(false).number(1)
+				.numberOfElements(10).totalPages(10).totalElements(100L).size(1).build();
+	}
+
+	public static PageOrderDTO getPageOrderDTO() {
+		PageOrderDTO pageOrderDTO = new PageOrderDTO();
+		pageOrderDTO.setEmpty(false);
+		pageOrderDTO.setTotalElements(100L);
+		pageOrderDTO.setTotalPages(10);
+		pageOrderDTO.setFirst(true);
+		pageOrderDTO.setLast(false);
+		pageOrderDTO.setNumber(1);
+		pageOrderDTO.setNumberOfElements(10);
+		pageOrderDTO.setSize(10);
+		pageOrderDTO.content(List.of(getOrderDTO()));
+		return pageOrderDTO;
+	}
+
+	public static OrderDTO getOrderDTO() {
+		OrderDTO orderDTO = new OrderDTO();
+		orderDTO.setId(TEST_UUID);
+		orderDTO.setOrderStatus(OrderStatusDTO.IN_PROGRESS);
+		orderDTO.setCreatedAt(OffsetDateTime.of(1, 1, 1, 1, 1, 1, 1, ZoneOffset.UTC));
+		orderDTO.setIsPaid(false);
+		orderDTO.setPostAddress(getPostAddressDTO());
+		orderDTO.setReceiver(getOrderReceiverDTO());
+		orderDTO.setOrderItems(List.of(getOrderItemDTO()));
+		return orderDTO;
+	}
+
+	public static OrderItemDTO getOrderItemDTO() {
+		OrderItemDTO orderItemDTO = new OrderItemDTO();
+		orderItemDTO.setPrice(BigDecimal.valueOf(200));
+		orderItemDTO.setQuantity(3);
+		orderItemDTO.setProduct(getProductPreviewDTO());
+		return orderItemDTO;
+	}
+
+	public static OrderReceiverDTO getOrderReceiverDTO() {
+		OrderReceiverDTO orderReceiverDTO = new OrderReceiverDTO();
+		orderReceiverDTO.email(TEST_EMAIL);
+		orderReceiverDTO.firstName(TEST_FIRST_NAME);
+		orderReceiverDTO.lastName(TEST_LAST_NAME);
+		return orderReceiverDTO;
+	}
+
+	public static PostAddressDTO getPostAddressDTO() {
+		PostAddressDTO postAddressDTO = new PostAddressDTO();
+		postAddressDTO.setCity(TEST_CITY);
+		postAddressDTO.setDepartment(TEST_DEPARTMENT);
+		postAddressDTO.setDeliveryMethod(DeliveryMethodDTO.NOVA);
+		return postAddressDTO;
+	}
+
+	public static MultiValueMap<String, String> getPageableParams(Integer page, Integer size, List<String> sort) {
+		MultiValueMap<String, String> pageableParams = new LinkedMultiValueMap<>();
+		pageableParams.add("page", page.toString());
+		pageableParams.add("size", size.toString());
+		pageableParams.addAll("sort", sort);
+		return pageableParams;
+	}
+
+	public static Pageable getPageable() {
+		return getPageable(0, 8, List.of("id"));
+	}
+
+	public static Pageable getPageable(Integer page, Integer size, List<String> sort) {
+		return Pageable.builder().page(page).size(size).sort(sort).build();
 	}
 }

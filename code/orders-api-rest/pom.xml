@@ -94,7 +94,6 @@
             </goals>
             <configuration>
               <inputSpec>${project.basedir}/api/openapi-rest.yml</inputSpec>
-              <templateDirectory>${project.basedir}/api/template</templateDirectory>
               <modelNameSuffix>DTO</modelNameSuffix>
               <generatorName>spring</generatorName>
               <apiPackage>${project.groupId}.${project.artifactId}.generated.api</apiPackage>
