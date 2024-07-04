@@ -3,6 +3,7 @@ package com.academy.orders.application.cart.usecase;
 import com.academy.orders.domain.account.entity.Account;
 import com.academy.orders.domain.cart.entity.CartItem;
 import com.academy.orders.domain.cart.entity.CreateCartItemDTO;
+import com.academy.orders.domain.cart.exception.CartItemAlreadyExists;
 import com.academy.orders.domain.cart.repository.CartItemRepository;
 import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.exception.ProductNotFoundException;
@@ -18,10 +19,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static com.academy.orders.application.ModelUtils.getAccount;
 import static com.academy.orders.application.ModelUtils.getProduct;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -37,13 +38,11 @@ class CreateCartItemByUserUseCaseUseCaseTest {
 
 	private CreateCartItemDTO cartItemDTO;
 	private Product product;
-	private Account account;
 
 	@BeforeEach
 	void setUp() {
-		account = getAccount();
+		Account account = getAccount();
 		product = getProduct();
-
 		cartItemDTO = CreateCartItemDTO.builder().productId(product.id()).userId(account.id()).quantity(1).build();
 	}
 
@@ -68,13 +67,11 @@ class CreateCartItemByUserUseCaseUseCaseTest {
 		when(productRepository.existById(product.id())).thenReturn(true);
 		when(cartItemRepository.existsByProductIdAndUserId(cartItemDTO.productId(), cartItemDTO.userId()))
 				.thenReturn(true);
-		doNothing().when(cartItemRepository).incrementQuantity(product.id(), account.id());
 
-		assertDoesNotThrow(() -> createCartItemByUserUseCase.create(cartItemDTO));
+		assertThrows(CartItemAlreadyExists.class, () -> createCartItemByUserUseCase.create(cartItemDTO));
 
 		verify(productRepository).existById(any(UUID.class));
 		verify(cartItemRepository).existsByProductIdAndUserId(any(UUID.class), anyLong());
-		verify(cartItemRepository).incrementQuantity(any(UUID.class), anyLong());
 		verify(cartItemRepository, never()).save(cartItemDTO);
 
 	}
