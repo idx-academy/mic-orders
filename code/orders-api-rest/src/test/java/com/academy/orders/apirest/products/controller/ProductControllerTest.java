@@ -20,9 +20,12 @@ import static com.academy.orders.apirest.ModelUtils.getProductPreviewDTO;
 import static com.academy.orders.apirest.ModelUtils.getProductsPage;
 import static com.academy.orders.apirest.TestConstants.GET_ALL_PRODUCTS_URL;
 import static com.academy.orders.apirest.TestConstants.LANGUAGE_UA;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ProductController.class)
 @ContextConfiguration(classes = {ProductController.class})
@@ -53,7 +56,17 @@ class ProductControllerTest {
 		when(getAllProductsUseCase.getAllProducts(LANGUAGE_UA, pageable)).thenReturn(pageProducts);
 		when(productPreviewDTOMapper.toDto(product)).thenReturn(productPreviewDTO);
 
-		mockMvc.perform(get(GET_ALL_PRODUCTS_URL).param("lang", LANGUAGE_UA).contentType(MediaType.APPLICATION_JSON));
+		mockMvc.perform(get(GET_ALL_PRODUCTS_URL).param("lang", LANGUAGE_UA).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.content[0].id", is(productPreviewDTO.getId())))
+				.andExpect(jsonPath("$.content[0].name", is(productPreviewDTO.getName())))
+				.andExpect(jsonPath("$.totalElements", is(1)))
+				.andExpect(jsonPath("$.totalPages", is(pageProducts.totalPages())))
+				.andExpect(jsonPath("$.first", is(pageProducts.first())))
+				.andExpect(jsonPath("$.last", is(pageProducts.last())))
+				.andExpect(jsonPath("$.number", is(pageProducts.number())))
+				.andExpect(jsonPath("$.numberOfElements", is(pageProducts.numberOfElements())))
+				.andExpect(jsonPath("$.size", is(pageProducts.size())))
+				.andExpect(jsonPath("$.empty", is(pageProducts.empty())));
 
 		verify(pageableDTOMapper).fromDto(pageableDTO);
 		verify(getAllProductsUseCase).getAllProducts(LANGUAGE_UA, pageable);
