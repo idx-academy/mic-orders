@@ -1,6 +1,7 @@
 package com.academy.orders.application.cart.usecase;
 
 import com.academy.orders.domain.cart.entity.CreateCartItemDTO;
+import com.academy.orders.domain.cart.exception.CartItemAlreadyExists;
 import com.academy.orders.domain.cart.repository.CartItemRepository;
 import com.academy.orders.domain.cart.usecase.CreateCartItemByUserUseCase;
 import com.academy.orders.domain.product.exception.ProductNotFoundException;
@@ -18,11 +19,8 @@ public class CreateCartItemByUserUseCaseUseCaseImpl implements CreateCartItemByU
 	@Override
 	public void create(CreateCartItemDTO cartItem) {
 		checkIfProductExistsById(cartItem.productId());
-		if (isProductAddedToCart(cartItem)) {
-			incrementQuantityOfProducts(cartItem);
-		} else {
-			saveCartItem(cartItem);
-		}
+		checkIsProductAddedToCart(cartItem);
+		saveCartItem(cartItem);
 	}
 
 	private void checkIfProductExistsById(UUID uuid) {
@@ -31,12 +29,11 @@ public class CreateCartItemByUserUseCaseUseCaseImpl implements CreateCartItemByU
 		}
 	}
 
-	private boolean isProductAddedToCart(CreateCartItemDTO cartItem) {
-		return cartItemRepository.existsByProductIdAndUserId(cartItem.productId(), cartItem.userId());
-	}
-
-	private void incrementQuantityOfProducts(CreateCartItemDTO cartItem) {
-		cartItemRepository.incrementQuantity(cartItem.productId(), cartItem.userId());
+	private void checkIsProductAddedToCart(CreateCartItemDTO cartItem) {
+		boolean isPresent = cartItemRepository.existsByProductIdAndUserId(cartItem.productId(), cartItem.userId());
+		if (isPresent) {
+			throw new CartItemAlreadyExists(cartItem.productId());
+		}
 	}
 
 	private void saveCartItem(CreateCartItemDTO cartItem) {

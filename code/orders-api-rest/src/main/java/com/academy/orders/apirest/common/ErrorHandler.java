@@ -1,7 +1,7 @@
 package com.academy.orders.apirest.common;
 
-import com.academy.orders.domain.account.exception.AccountAlreadyExistsException;
 import com.academy.orders.domain.cart.exception.EmptyCartException;
+import com.academy.orders.domain.exception.AlreadyExistsException;
 import com.academy.orders.domain.exception.NotFoundException;
 import com.academy.orders.domain.order.exception.InsufficientProductQuantityException;
 import com.academy.orders_api_rest.generated.model.ErrorObjectDTO;
@@ -40,9 +40,9 @@ public class ErrorHandler {
 				.detail(ex.getMessage());
 	}
 
-	@ExceptionHandler(AccountAlreadyExistsException.class)
+	@ExceptionHandler(AlreadyExistsException.class)
 	@ResponseStatus(value = HttpStatus.CONFLICT)
-	public ErrorObjectDTO handleAccountAlreadyExistsException(final AccountAlreadyExistsException ex) {
+	public ErrorObjectDTO handleAccountAlreadyExistsException(final AlreadyExistsException ex) {
 		log.warn("Account already exists ", ex);
 		return new ErrorObjectDTO().status(HttpStatus.CONFLICT.value()).title(HttpStatus.CONFLICT.getReasonPhrase())
 				.detail(ex.getMessage());
