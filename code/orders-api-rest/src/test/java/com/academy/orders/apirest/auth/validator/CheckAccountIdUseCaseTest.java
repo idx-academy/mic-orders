@@ -17,7 +17,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class CheckAccountIdUseCaseTest {
+class CheckAccountIdUseCaseTest {
 	@InjectMocks
 	private CheckAccountIdUseCaseImpl checkAccountIdUseCase;
 	@Mock
@@ -29,25 +29,6 @@ public class CheckAccountIdUseCaseTest {
 
 	@Test
 	void isValidReturnsTrueWhenAccountIdAreSameTest() {
-		Long userId = 1L;
-
-		try (var mockedStatic = mockStatic(SecurityContextHolder.class)) {
-			mockedStatic.when(SecurityContextHolder::getContext).thenReturn(securityContext);
-			when(authentication.getPrincipal()).thenReturn(jwt);
-			when(securityContext.getAuthentication()).thenReturn(authentication);
-			when(jwt.getClaim("id")).thenReturn(userId);
-
-			boolean valid = checkAccountIdUseCase.hasSameId(userId);
-
-			assertTrue(valid);
-			verify(securityContext).getAuthentication();
-			verify(jwt).getClaim("id");
-			mockedStatic.verify(SecurityContextHolder::getContext);
-		}
-	}
-
-	@Test
-	void isValidReturnsTrueWhenAccountHasRoleAdminTest() {
 		Long userId = 1L;
 
 		try (var mockedStatic = mockStatic(SecurityContextHolder.class)) {

@@ -10,12 +10,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
-public class LocalDateTimeMapperTest {
+class LocalDateTimeMapperTest {
 	private final LocalDateTimeMapper localDateTimeMapper = new LocalDateTimeMapper() {
 	};
 
 	@Test
-	public void testMap() {
+	void testMap() {
 		// Given
 		LocalDateTime localDateTime = LocalDateTime.of(2023, 7, 3, 12, 0);
 
