@@ -51,7 +51,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(OrdersController.class)
 @ContextConfiguration(classes = {OrdersController.class})
-@Import(value = {OrderDTOMapperImpl.class, CheckAccountIdUseCaseImpl.class, AopAutoConfiguration.class, TestSecurityConfig.class, ErrorHandler.class})
+@Import(value = {OrderDTOMapperImpl.class, CheckAccountIdUseCaseImpl.class, AopAutoConfiguration.class,
+		TestSecurityConfig.class, ErrorHandler.class})
 class OrdersControllerTest {
 	@Autowired
 	private ObjectMapper objectMapper;
