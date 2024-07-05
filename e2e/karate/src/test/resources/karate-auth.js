@@ -2,9 +2,9 @@ function fn(auth) {
 
    var credentials = karate.merge(auth || {});
    // get password from system properties
-   credentials.username = credentials.username || karate.get('credentials.username')
-   credentials.password = credentials.password || karate.get('credentials.password')
-   credentials.authMode = credentials.authMode || karate.get('defaultAuthMode');
+   credentials.username = karate.get('credentials.username') || credentials.username
+   credentials.password = karate.get('credentials.password') || credentials.password
+   credentials.authMode = karate.get('defaultAuthMode') || credentials.authMode;
 
   // returns auth header
   var tokenAuth = function(credentials) {
