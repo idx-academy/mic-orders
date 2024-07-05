@@ -82,6 +82,6 @@ public class CreateOrderUseCaseImpl implements CreateOrderUseCase {
 	}
 
 	private void clearCart(Long accountId) {
-		cartItemRepository.deleteUsersCartItems(accountId);
+		cartItemRepository.deleteCartItemsByAccountId(accountId);
 	}
 }

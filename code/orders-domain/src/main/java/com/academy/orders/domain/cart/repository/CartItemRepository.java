@@ -61,8 +61,19 @@ public interface CartItemRepository {
 	 * Method delete all {@link CartItem cartItems} by accountId.
 	 *
 	 * @param accountId
-	 *            id of logged-in user.
+	 *            id of the logged-in user.
 	 * @author Denys Ryhal
 	 */
-	void deleteUsersCartItems(Long accountId);
+	void deleteCartItemsByAccountId(Long accountId);
+
+	/**
+	 * Method delete {@link CartItem cartItem} by accountId and productId
+	 *
+	 * @param accountId
+	 *            id of the logged-in user.
+	 * @param productId
+	 *            id of the product.
+	 * @author Denys Ryhal
+	 */
+	void deleteCartItemByAccountAndProductIds(Long accountId, UUID productId);
 }

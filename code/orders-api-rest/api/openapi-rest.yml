@@ -209,7 +209,7 @@ paths:
           $ref: '#/components/responses/Conflict'
 
   /v1/users/{userId}/cart/items/{productId}:
-    post:
+    delete:
       tags:
         - Cart
       summary: Delete product from user`s cart

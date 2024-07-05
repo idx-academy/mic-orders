@@ -115,10 +115,10 @@ class CartItemRepositoryImplTest {
 	}
 
 	@Test
-	void testDeleteUsersCartItems() {
+	void testDeleteCartItemsByAccountId() {
 		doNothing().when(cartItemJpaAdapter).deleteAllByAccountId(anyLong());
 
-		assertDoesNotThrow(() -> cartItemRepository.deleteUsersCartItems(1L));
+		assertDoesNotThrow(() -> cartItemRepository.deleteCartItemsByAccountId(1L));
 		verify(cartItemJpaAdapter).deleteAllByAccountId(anyLong());
 	}
 }
