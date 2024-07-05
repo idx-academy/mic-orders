@@ -5,6 +5,10 @@ import com.academy.orders.domain.cart.exception.EmptyCartException;
 import com.academy.orders.domain.cart.repository.CartItemRepository;
 import com.academy.orders.domain.order.dto.CreateOrderDto;
 import com.academy.orders.domain.order.entity.Order;
+import com.academy.orders.domain.order.entity.OrderItem;
+import com.academy.orders.domain.order.entity.OrderReceiver;
+import com.academy.orders.domain.order.entity.PostAddress;
+import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import com.academy.orders.domain.order.exception.InsufficientProductQuantityException;
 import com.academy.orders.domain.order.repository.OrderRepository;
 import com.academy.orders.domain.order.usecase.CalculatePriceUseCase;
@@ -26,6 +30,7 @@ import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.doNothing;
@@ -55,16 +60,21 @@ class CreateOrderUseCaseTest {
 		createOrderDto = getCreateOrderDto();
 		cartItem = getCartItem();
 		calculatedPrice = cartItem.product().price().multiply(BigDecimal.valueOf(cartItem.quantity()));
+
 	}
 
 	@Test
 	void testCreateOrder() {
 		var expectedOrderId = UUID.randomUUID();
+		var order = Order.builder().receiver(getOrderReceiver()).postAddress(getPostAddress())
+				.orderStatus(OrderStatus.IN_PROGRESS)
+				.orderItems(singletonList(new OrderItem(cartItem.product(), calculatedPrice, cartItem.quantity())))
+				.isPaid(false).build();
 
 		when(cartItemRepository.findCartItemsByAccountId(anyLong())).thenReturn(singletonList(cartItem));
 		when(calculatePriceUseCase.calculatePriceForOrder(any(Product.class), anyInt())).thenReturn(calculatedPrice);
 		doNothing().when(changeQuantityUseCase).changeQuantityOfProduct(any(Product.class), anyInt());
-		when(orderRepository.save(any(Order.class), anyLong())).thenReturn(expectedOrderId);
+		when(orderRepository.save(eq(order), anyLong())).thenReturn(expectedOrderId);
 		doNothing().when(cartItemRepository).deleteUsersCartItems(anyLong());
 
 		var actualOrderId = createOrderUseCase.createOrder(createOrderDto, 1L);
@@ -76,7 +86,16 @@ class CreateOrderUseCaseTest {
 		verify(changeQuantityUseCase).changeQuantityOfProduct(any(Product.class), anyInt());
 		verify(orderRepository).save(any(Order.class), anyLong());
 		verify(cartItemRepository).deleteUsersCartItems(anyLong());
+	}
 
+	private OrderReceiver getOrderReceiver() {
+		return OrderReceiver.builder().firstName(createOrderDto.firstName()).lastName(createOrderDto.lastName())
+				.email(createOrderDto.email()).build();
+	}
+
+	private PostAddress getPostAddress() {
+		return PostAddress.builder().city(createOrderDto.city()).department(createOrderDto.department())
+				.deliveryMethod(createOrderDto.deliveryMethod()).build();
 	}
 
 	@Test
