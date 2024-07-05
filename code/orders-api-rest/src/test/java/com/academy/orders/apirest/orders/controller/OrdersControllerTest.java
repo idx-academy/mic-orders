@@ -1,5 +1,6 @@
 package com.academy.orders.apirest.orders.controller;
 
+import com.academy.orders.apirest.auth.validator.CheckAccountIdUseCaseImpl;
 import com.academy.orders.apirest.common.ErrorHandler;
 import com.academy.orders.apirest.common.TestSecurityConfig;
 import com.academy.orders.apirest.common.mapper.PageableDTOMapper;
@@ -50,7 +51,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(OrdersController.class)
 @ContextConfiguration(classes = {OrdersController.class})
-@Import(value = {OrderDTOMapperImpl.class, AopAutoConfiguration.class, TestSecurityConfig.class, ErrorHandler.class})
+@Import(value = {OrderDTOMapperImpl.class, CheckAccountIdUseCaseImpl.class, AopAutoConfiguration.class, TestSecurityConfig.class, ErrorHandler.class})
 class OrdersControllerTest {
 	@Autowired
 	private ObjectMapper objectMapper;
