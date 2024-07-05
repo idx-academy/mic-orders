@@ -121,4 +121,15 @@ class CartItemRepositoryImplTest {
 		assertDoesNotThrow(() -> cartItemRepository.deleteCartItemsByAccountId(1L));
 		verify(cartItemJpaAdapter).deleteAllByAccountId(anyLong());
 	}
+
+	@Test
+	void testDeleteCartItemByAccountAndProductIds() {
+		var productId = UUID.randomUUID();
+		var accountId = 1L;
+
+		doNothing().when(cartItemJpaAdapter).deleteByAccountIdAndProductId(accountId, productId);
+
+		assertDoesNotThrow(() -> cartItemRepository.deleteCartItemByAccountAndProductIds(accountId, productId));
+		verify(cartItemJpaAdapter).deleteByAccountIdAndProductId(anyLong(), any(UUID.class));
+	}
 }
