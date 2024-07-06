@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ExtendWith(MockitoExtension.class)
-public class PageableMapperTest {
+class PageableMapperTest {
 	@InjectMocks
 	private final PageableMapper pageableMapper = new PageableMapper() {
 	};

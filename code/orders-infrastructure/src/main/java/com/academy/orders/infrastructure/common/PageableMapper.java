@@ -20,9 +20,7 @@ public interface PageableMapper {
 		int pageNumber = pageable.page();
 		int pageSize = pageable.size();
 
-		PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sort);
-
-		return pageRequest;
+		return PageRequest.of(pageNumber, pageSize, sort);
 	}
 
 	default Sort map(List<String> value) {
