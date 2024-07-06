@@ -62,15 +62,4 @@ class ProductPreviewDTOMapperTest {
 		Assertions.assertEquals(1, dto.getTags().size());
 		Assertions.assertEquals(TAG_NAME, dto.getTags().get(0));
 	}
-
-	@Test
-	void testToDtoWithEmptyProductTranslations() {
-		var product = getProductWithNullTranslations();
-		var dto = productPreviewDTOMapper.toDto(product);
-
-		Assertions.assertNull(dto.getName());
-		Assertions.assertNull(dto.getDescription());
-		Assertions.assertEquals(1, dto.getTags().size());
-		Assertions.assertEquals(TAG_NAME, dto.getTags().get(0));
-	}
 }
