@@ -32,10 +32,11 @@ class ChangeQuantityUseCaseTest {
 	@ParameterizedTest
 	@MethodSource("testChangeQuantityDataProvider")
 	void testChangeQuantity(Product product, int quantity) {
-		doNothing().when(productRepository).setNewProductQuantity(any(UUID.class), anyInt());
+		var quantityDifference = product.quantity() - quantity;
+		doNothing().when(productRepository).setNewProductQuantity(product.id(), quantityDifference);
 
 		assertDoesNotThrow(() -> changeQuantityUseCase.changeQuantityOfProduct(product, quantity));
-		verify(productRepository).setNewProductQuantity(any(UUID.class), anyInt());
+		verify(productRepository).setNewProductQuantity(product.id(), quantityDifference);
 	}
 
 	private static Stream<Arguments> testChangeQuantityDataProvider() {

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CreateCartItemByUserUseCaseUseCaseImpl implements CreateCartItemByUserUseCase {
+public class CreateCartItemByUserUseCaseImpl implements CreateCartItemByUserUseCase {
 	private final CartItemRepository cartItemRepository;
 	private final ProductRepository productRepository;
 

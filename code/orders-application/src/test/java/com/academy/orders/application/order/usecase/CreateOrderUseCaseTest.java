@@ -5,6 +5,10 @@ import com.academy.orders.domain.cart.exception.EmptyCartException;
 import com.academy.orders.domain.cart.repository.CartItemRepository;
 import com.academy.orders.domain.order.dto.CreateOrderDto;
 import com.academy.orders.domain.order.entity.Order;
+import com.academy.orders.domain.order.entity.OrderItem;
+import com.academy.orders.domain.order.entity.OrderReceiver;
+import com.academy.orders.domain.order.entity.PostAddress;
+import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import com.academy.orders.domain.order.exception.InsufficientProductQuantityException;
 import com.academy.orders.domain.order.repository.OrderRepository;
 import com.academy.orders.domain.order.usecase.CalculatePriceUseCase;
@@ -55,11 +59,16 @@ class CreateOrderUseCaseTest {
 		createOrderDto = getCreateOrderDto();
 		cartItem = getCartItem();
 		calculatedPrice = cartItem.product().price().multiply(BigDecimal.valueOf(cartItem.quantity()));
+
 	}
 
 	@Test
 	void testCreateOrder() {
 		var expectedOrderId = UUID.randomUUID();
+		var order = Order.builder().receiver(getOrderReceiver()).postAddress(getPostAddress())
+				.orderStatus(OrderStatus.IN_PROGRESS)
+				.orderItems(singletonList(new OrderItem(cartItem.product(), calculatedPrice, cartItem.quantity())))
+				.isPaid(false).build();
 
 		when(cartItemRepository.findCartItemsByAccountId(anyLong())).thenReturn(singletonList(cartItem));
 		when(calculatePriceUseCase.calculatePriceForOrder(any(Product.class), anyInt())).thenReturn(calculatedPrice);
@@ -75,8 +84,17 @@ class CreateOrderUseCaseTest {
 		verify(calculatePriceUseCase).calculatePriceForOrder(any(Product.class), anyInt());
 		verify(changeQuantityUseCase).changeQuantityOfProduct(any(Product.class), anyInt());
 		verify(orderRepository).save(any(Order.class), anyLong());
-		verify(cartItemRepository).deleteCartItemsByAccountId(anyLong());
+        verify(cartItemRepository).deleteCartItemsByAccountId(anyLong());
+    }
 
+	private OrderReceiver getOrderReceiver() {
+		return OrderReceiver.builder().firstName(createOrderDto.firstName()).lastName(createOrderDto.lastName())
+				.email(createOrderDto.email()).build();
+	}
+
+	private PostAddress getPostAddress() {
+		return PostAddress.builder().city(createOrderDto.city()).department(createOrderDto.department())
+				.deliveryMethod(createOrderDto.deliveryMethod()).build();
 	}
 
 	@Test
