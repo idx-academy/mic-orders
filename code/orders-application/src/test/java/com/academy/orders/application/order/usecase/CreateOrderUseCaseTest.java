@@ -67,9 +67,9 @@ class CreateOrderUseCaseTest {
 	void testCreateOrder() {
 		var expectedOrderId = UUID.randomUUID();
 		var order = Order.builder().receiver(getOrderReceiver()).postAddress(getPostAddress())
-			.orderStatus(OrderStatus.IN_PROGRESS)
-			.orderItems(singletonList(new OrderItem(cartItem.product(), calculatedPrice, cartItem.quantity())))
-			.isPaid(false).build();
+				.orderStatus(OrderStatus.IN_PROGRESS)
+				.orderItems(singletonList(new OrderItem(cartItem.product(), calculatedPrice, cartItem.quantity())))
+				.isPaid(false).build();
 
 		when(cartItemRepository.findCartItemsByAccountId(anyLong())).thenReturn(singletonList(cartItem));
 		when(calculatePriceUseCase.calculatePriceForOrder(any(Product.class), anyInt())).thenReturn(calculatedPrice);
@@ -90,12 +90,12 @@ class CreateOrderUseCaseTest {
 
 	private OrderReceiver getOrderReceiver() {
 		return OrderReceiver.builder().firstName(createOrderDto.firstName()).lastName(createOrderDto.lastName())
-			.email(createOrderDto.email()).build();
+				.email(createOrderDto.email()).build();
 	}
 
 	private PostAddress getPostAddress() {
 		return PostAddress.builder().city(createOrderDto.city()).department(createOrderDto.department())
-			.deliveryMethod(createOrderDto.deliveryMethod()).build();
+				.deliveryMethod(createOrderDto.deliveryMethod()).build();
 	}
 
 	@Test
@@ -103,10 +103,10 @@ class CreateOrderUseCaseTest {
 		when(cartItemRepository.findCartItemsByAccountId(anyLong())).thenReturn(singletonList(cartItem));
 		when(calculatePriceUseCase.calculatePriceForOrder(any(Product.class), anyInt())).thenReturn(calculatedPrice);
 		doThrow(InsufficientProductQuantityException.class).when(changeQuantityUseCase)
-			.changeQuantityOfProduct(any(Product.class), anyInt());
+				.changeQuantityOfProduct(any(Product.class), anyInt());
 
 		assertThrows(InsufficientProductQuantityException.class,
-			() -> createOrderUseCase.createOrder(createOrderDto, 1L));
+				() -> createOrderUseCase.createOrder(createOrderDto, 1L));
 
 		verify(cartItemRepository).findCartItemsByAccountId(anyLong());
 		verify(calculatePriceUseCase).calculatePriceForOrder(any(Product.class), anyInt());
