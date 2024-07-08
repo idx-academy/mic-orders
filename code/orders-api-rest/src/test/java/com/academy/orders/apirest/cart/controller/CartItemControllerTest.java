@@ -48,7 +48,6 @@ class CartItemControllerTest {
 	@MockBean
 	private DeleteProductFromCartUseCase deleteProductFromCartUseCase;
 
-
 	@Test
 	void testAddProductToCart() throws Exception {
 		doNothing().when(cartItemByUserUseCase).create(any(CreateCartItemDTO.class));
@@ -76,18 +75,17 @@ class CartItemControllerTest {
 		doNothing().when(deleteProductFromCartUseCase).deleteProductFromCart(userId, productId);
 
 		mockMvc.perform(delete("/v1/users/{userId}/cart/items/{productId}", userId, productId)
-				.with(getJwtRequest(userId, ROLE_ADMIN)))
-				.andExpect(status().isNoContent());
+				.with(getJwtRequest(userId, ROLE_ADMIN))).andExpect(status().isNoContent());
 
 		verify(deleteProductFromCartUseCase).deleteProductFromCart(anyLong(), any(UUID.class));
 	}
 	@Test
 	void testDeleteProductFromCartThrowsNotFoundException() throws Exception {
-		doThrow(CartItemNotFoundException.class).when(deleteProductFromCartUseCase).deleteProductFromCart(userId, productId);
+		doThrow(CartItemNotFoundException.class).when(deleteProductFromCartUseCase).deleteProductFromCart(userId,
+				productId);
 
 		mockMvc.perform(delete("/v1/users/{userId}/cart/items/{productId}", userId, productId)
-				.with(getJwtRequest(userId, ROLE_ADMIN)))
-				.andExpect(status().isNotFound());
+				.with(getJwtRequest(userId, ROLE_ADMIN))).andExpect(status().isNotFound());
 
 		verify(deleteProductFromCartUseCase).deleteProductFromCart(anyLong(), any(UUID.class));
 	}

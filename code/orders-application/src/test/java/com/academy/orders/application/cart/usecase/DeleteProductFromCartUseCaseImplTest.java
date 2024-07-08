@@ -20,33 +20,34 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class DeleteProductFromCartUseCaseImplTest {
-    @InjectMocks
-    private DeleteProductFromCartUseCaseImpl deleteProductFromCartUseCase;
-    @Mock
-    private CartItemRepository cartItemRepository;
+	@InjectMocks
+	private DeleteProductFromCartUseCaseImpl deleteProductFromCartUseCase;
+	@Mock
+	private CartItemRepository cartItemRepository;
 
-    @Test
-    void deleteProductFromCart() {
-        var accountId = 1L;
-        var productId = UUID.randomUUID();
+	@Test
+	void deleteProductFromCart() {
+		var accountId = 1L;
+		var productId = UUID.randomUUID();
 
-        when(cartItemRepository.existsByProductIdAndUserId(productId, accountId)).thenReturn(true);
-        doNothing().when(cartItemRepository).deleteCartItemByAccountAndProductIds(accountId,productId);
+		when(cartItemRepository.existsByProductIdAndUserId(productId, accountId)).thenReturn(true);
+		doNothing().when(cartItemRepository).deleteCartItemByAccountAndProductIds(accountId, productId);
 
-        assertDoesNotThrow(()-> deleteProductFromCartUseCase.deleteProductFromCart(accountId,productId));
-        verify(cartItemRepository).existsByProductIdAndUserId(any(UUID.class),anyLong());
-        verify(cartItemRepository).deleteCartItemByAccountAndProductIds(anyLong(),any(UUID.class));
-    }
+		assertDoesNotThrow(() -> deleteProductFromCartUseCase.deleteProductFromCart(accountId, productId));
+		verify(cartItemRepository).existsByProductIdAndUserId(any(UUID.class), anyLong());
+		verify(cartItemRepository).deleteCartItemByAccountAndProductIds(anyLong(), any(UUID.class));
+	}
 
-    @Test
-    void deleteProductFromCartThrowsCartItemNotFoundException() {
-        var accountId = 1L;
-        var productId = UUID.randomUUID();
+	@Test
+	void deleteProductFromCartThrowsCartItemNotFoundException() {
+		var accountId = 1L;
+		var productId = UUID.randomUUID();
 
-        when(cartItemRepository.existsByProductIdAndUserId(productId, accountId)).thenReturn(false);
+		when(cartItemRepository.existsByProductIdAndUserId(productId, accountId)).thenReturn(false);
 
-        assertThrows(CartItemNotFoundException.class,()-> deleteProductFromCartUseCase.deleteProductFromCart(accountId,productId));
-        verify(cartItemRepository).existsByProductIdAndUserId(any(UUID.class),anyLong());
-        verify(cartItemRepository, never()).deleteCartItemByAccountAndProductIds(anyLong(),any(UUID.class));
-    }
+		assertThrows(CartItemNotFoundException.class,
+				() -> deleteProductFromCartUseCase.deleteProductFromCart(accountId, productId));
+		verify(cartItemRepository).existsByProductIdAndUserId(any(UUID.class), anyLong());
+		verify(cartItemRepository, never()).deleteCartItemByAccountAndProductIds(anyLong(), any(UUID.class));
+	}
 }
