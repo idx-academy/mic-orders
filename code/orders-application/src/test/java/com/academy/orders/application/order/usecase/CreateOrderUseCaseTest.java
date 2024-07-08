@@ -75,7 +75,7 @@ class CreateOrderUseCaseTest {
 		when(calculatePriceUseCase.calculatePriceForOrder(any(Product.class), anyInt())).thenReturn(calculatedPrice);
 		doNothing().when(changeQuantityUseCase).changeQuantityOfProduct(any(Product.class), anyInt());
 		when(orderRepository.save(eq(order), anyLong())).thenReturn(expectedOrderId);
-		doNothing().when(cartItemRepository).deleteUsersCartItems(anyLong());
+		doNothing().when(cartItemRepository).deleteCartItemsByAccountId(anyLong());
 
 		var actualOrderId = createOrderUseCase.createOrder(createOrderDto, 1L);
 
@@ -85,7 +85,7 @@ class CreateOrderUseCaseTest {
 		verify(calculatePriceUseCase).calculatePriceForOrder(any(Product.class), anyInt());
 		verify(changeQuantityUseCase).changeQuantityOfProduct(any(Product.class), anyInt());
 		verify(orderRepository).save(any(Order.class), anyLong());
-		verify(cartItemRepository).deleteUsersCartItems(anyLong());
+		verify(cartItemRepository).deleteCartItemsByAccountId(anyLong());
 	}
 
 	private OrderReceiver getOrderReceiver() {

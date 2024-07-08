@@ -62,8 +62,14 @@ public class CartItemRepositoryImpl implements CartItemRepository {
 
 	@Override
 	@Transactional
-	public void deleteUsersCartItems(Long accountId) {
+	public void deleteCartItemsByAccountId(Long accountId) {
 		cartItemJpaAdapter.deleteAllByAccountId(accountId);
+	}
+
+	@Override
+	@Transactional
+	public void deleteCartItemByAccountAndProductIds(Long accountId, UUID productId) {
+		cartItemJpaAdapter.deleteByAccountIdAndProductId(accountId, productId);
 	}
 
 }

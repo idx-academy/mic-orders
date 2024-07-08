@@ -196,24 +196,35 @@ paths:
       security:
         - bearerAuth: [ ]
       parameters:
-        - in: path
-          name: productId
-          required: true
-          schema:
-            type: string
-            format: uuid
-            example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
-          description: The id of the product which is added to the cart
+        - $ref: '#/components/parameters/ProductId'
         - $ref: '#/components/parameters/UserId'
       responses:
         '201':
           description: The card with added products was created
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
         '409':
-          description: Conflict - Product already exists in the cart
+          $ref: '#/components/responses/Conflict'
+
+  /v1/users/{userId}/cart/items/{productId}:
+    delete:
+      tags:
+        - Cart
+      summary: Delete product from user`s cart
+      description: The endpoint for deleting product from the user`s cart
+      operationId: deleteProductFromCart
+      parameters:
+        - $ref: "#/components/parameters/UserId"
+        - $ref: "#/components/parameters/ProductId"
+      responses:
+        '204':
+          description: Product successfully deleted form user`s cart
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
 
 #COMPONENTS
 #=======================================================================================================================
@@ -232,11 +243,20 @@ components:
       in: path
       name: userId
       required: true
+      description: Id of the user
       schema:
         type: integer
-        description: Id of the user
         format: int64
       example: '1'
+    ProductId:
+      in: path
+      name: productId
+      required: true
+      description: Id of the product
+      schema:
+        type: string
+        format: uuid
+        example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
   securitySchemes:
     bearerAuth:
       type: http
