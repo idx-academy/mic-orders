@@ -1,7 +1,6 @@
 package com.academy.orders.boot.config;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -25,7 +24,7 @@ public class MapperConfig {
 		simpleModule.addSerializer(OffsetDateTime.class, new JsonSerializer<>() {
 			@Override
 			public void serialize(OffsetDateTime offsetDateTime, JsonGenerator jsonGenerator,
-					SerializerProvider serializerProvider) throws IOException, JsonProcessingException {
+					SerializerProvider serializerProvider) throws IOException {
 				jsonGenerator.writeString(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(offsetDateTime));
 			}
 		});
