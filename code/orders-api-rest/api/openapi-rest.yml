@@ -163,15 +163,7 @@ paths:
       description: The endpoint for getting all products from the database.
       operationId: getProducts
       parameters:
-        - in: query
-          name: lang
-          required: false
-          schema:
-            type: string
-            default: en
-            nullable: false
-            example: ua
-          description: The language code for the product information (e.g., 'ua' for Ukrainian).
+        - $ref: '#/components/parameters/Lang'
         - in: query
           name: pageable
           required: false
@@ -225,6 +217,29 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
+  /v1/users/{userId}/cart/items:
+    get:
+      tags:
+        - Cart
+      summary: Get user`s cart items
+      description: The endpoint retrieves user`s cart items
+      operationId: getCartItems
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+        - $ref: '#/components/parameters/Lang'
+      responses:
+        '200':
+          description: Information about cart items
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartItemsResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+
 
 #COMPONENTS
 #=======================================================================================================================
@@ -257,6 +272,16 @@ components:
         type: string
         format: uuid
         example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
+    Lang:
+      in: query
+      name: lang
+      required: false
+      schema:
+        type: string
+        default: en
+        nullable: false
+        example: ua
+      description: The language code for the product information (e.g., 'ua' for Ukrainian).
   securitySchemes:
     bearerAuth:
       type: http
@@ -316,6 +341,16 @@ components:
             status: 401
             title: Unauthorized
             detail: Unauthorized access to the resource
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorObject'
+          example:
+            status: 403
+            title: Forbidden
+            detail: User does not have success to this resource
 
   #SCHEMAS
   #=======================================================================================================================
@@ -669,3 +704,55 @@ components:
           description: id of recently created order
       required:
         - orderId
+
+    CartItemsResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItem'
+        totalPrice:
+          type: number
+          format: double
+          example: 1000.45
+          description: total price of products in the cart
+      required:
+        - items
+        - totalPrice
+    CartItem:
+      type: object
+      properties:
+        productId:
+          type: string
+          format: uuid
+          description: id of the product
+          example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
+        image:
+          type: string
+          example: https://example.com/image.jpg
+          description: Image URL associated with the product.
+        name:
+          type: string
+          example: Iphone
+        productPrice:
+          type: number
+          format: double
+          example: 100.45
+          description: price of products in the cart
+        quantity:
+          type: integer
+          example: 2
+          description: Quantity of the product in the cart.
+        calculatedPrice:
+          type: number
+          format: double
+          example: 200.90
+          description: Price that include quantity of the product
+      required:
+        - productId
+        - image
+        - name
+        - productPrice
+        - quantity
+        - calculatedPrice
