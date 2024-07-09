@@ -6,6 +6,7 @@ import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.entity.OrderItem;
 import com.academy.orders.domain.order.entity.OrderReceiver;
 import com.academy.orders.domain.order.entity.PostAddress;
+import com.academy.orders.domain.order.entity.enumerated.DeliveryMethod;
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import com.academy.orders.domain.product.entity.Language;
 import com.academy.orders.domain.product.entity.Product;
@@ -14,7 +15,6 @@ import com.academy.orders.domain.product.entity.Tag;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders_api_rest.generated.model.CartItemDTO;
 import com.academy.orders_api_rest.generated.model.CartItemsResponseDTO;
-import com.academy.orders_api_rest.generated.model.DeliveryMethodDTO;
 import com.academy.orders_api_rest.generated.model.OrderDTO;
 import com.academy.orders_api_rest.generated.model.OrderItemDTO;
 import com.academy.orders_api_rest.generated.model.OrderReceiverDTO;
@@ -55,9 +55,9 @@ import static com.academy.orders.apirest.TestConstants.TEST_LAST_NAME;
 import static com.academy.orders.apirest.TestConstants.TEST_PRICE;
 import static com.academy.orders.apirest.TestConstants.TEST_QUANTITY;
 import static com.academy.orders.apirest.TestConstants.TEST_UUID;
-import static com.academy.orders.domain.order.entity.enumerated.DeliveryMethod.NOVA;
-import static com.academy.orders_api_rest.generated.model.PlaceOrderRequestDTO.DeliveryMethodEnum;
-import static java.util.Collections.*;
+import static com.academy.orders_api_rest.generated.model.DeliveryMethodDTO.NOVA;
+import static java.util.Collections.emptySet;
+import static java.util.Collections.singletonList;
 
 public class ModelUtils {
 	private static final LocalDateTime DATE_TIME = LocalDateTime.of(1, 1, 1, 1, 1);
@@ -128,7 +128,7 @@ public class ModelUtils {
 		placeOrderRequestDTO.setEmail(TEST_EMAIL);
 		placeOrderRequestDTO.setCity(TEST_CITY);
 		placeOrderRequestDTO.setDepartment(TEST_DEPARTMENT);
-		placeOrderRequestDTO.setDeliveryMethod(DeliveryMethodEnum.NOVA);
+		placeOrderRequestDTO.setDeliveryMethod(NOVA);
 
 		return placeOrderRequestDTO;
 	}
@@ -136,8 +136,8 @@ public class ModelUtils {
 	public static Order getOrder() {
 		return Order.builder().id(TEST_UUID).createdAt(LocalDateTime.of(1, 1, 1, 1, 1)).isPaid(false)
 				.orderStatus(OrderStatus.IN_PROGRESS)
-				.postAddress(
-						PostAddress.builder().city(TEST_CITY).deliveryMethod(NOVA).department(TEST_DEPARTMENT).build())
+				.postAddress(PostAddress.builder().city(TEST_CITY).deliveryMethod(DeliveryMethod.NOVA)
+						.department(TEST_DEPARTMENT).build())
 				.receiver(OrderReceiver.builder().firstName(TEST_FIRST_NAME).lastName(TEST_LAST_NAME).email(TEST_EMAIL)
 						.build())
 				.orderItems(List.of(getOrderItem())).build();
@@ -206,7 +206,7 @@ public class ModelUtils {
 		PostAddressDTO postAddressDTO = new PostAddressDTO();
 		postAddressDTO.setCity(TEST_CITY);
 		postAddressDTO.setDepartment(TEST_DEPARTMENT);
-		postAddressDTO.setDeliveryMethod(DeliveryMethodDTO.NOVA);
+		postAddressDTO.setDeliveryMethod(NOVA);
 		return postAddressDTO;
 	}
 

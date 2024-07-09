@@ -8,7 +8,7 @@ import org.mapstruct.Mapper;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Sort;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {OrderMapper.class})
 public interface OrderPageMapper {
 	Page<Order> toDomain(PageImpl<OrderEntity> page);
 

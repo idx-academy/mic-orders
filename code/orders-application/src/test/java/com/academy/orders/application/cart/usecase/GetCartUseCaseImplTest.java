@@ -2,7 +2,7 @@ package com.academy.orders.application.cart.usecase;
 
 import com.academy.orders.domain.cart.entity.CartItem;
 import com.academy.orders.domain.cart.repository.CartItemRepository;
-import com.academy.orders.domain.order.usecase.CalculatePriceUseCase;
+import com.academy.orders.domain.product.usecase.CalculatePriceUseCase;
 import java.math.BigDecimal;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

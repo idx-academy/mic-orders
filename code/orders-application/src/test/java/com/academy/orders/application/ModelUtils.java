@@ -93,11 +93,10 @@ public class ModelUtils {
 	}
 
 	public static Order getOrder() {
-		return Order.builder().id(TEST_UUID).createdAt(LocalDateTime.of(1, 1, 1, 1, 1)).isPaid(false)
-				.orderStatus(OrderStatus.IN_PROGRESS)
+		return Order.builder().id(TEST_UUID).createdAt(DATE_TIME).isPaid(false).orderStatus(OrderStatus.IN_PROGRESS)
 				.postAddress(PostAddress.builder().city("Kyiv").deliveryMethod(NOVA).department("1").build())
 				.receiver(OrderReceiver.builder().firstName("John").lastName("Doe").email("test@mail.com").build())
-				.orderItems(List.of(getOrderItem())).build();
+				.orderItems(List.of(getOrderItem())).editedAt(DATE_TIME).total(BigDecimal.TEN).build();
 	}
 
 	public static OrderItem getOrderItem() {

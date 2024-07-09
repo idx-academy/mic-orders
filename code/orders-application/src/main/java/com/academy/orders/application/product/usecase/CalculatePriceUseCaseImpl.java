@@ -1,7 +1,7 @@
 package com.academy.orders.application.product.usecase;
 
 import com.academy.orders.domain.cart.entity.CartItem;
-import com.academy.orders.domain.order.usecase.CalculatePriceUseCase;
+import com.academy.orders.domain.product.usecase.CalculatePriceUseCase;
 import java.math.BigDecimal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

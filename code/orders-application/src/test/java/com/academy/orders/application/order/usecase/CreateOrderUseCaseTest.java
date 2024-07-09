@@ -11,7 +11,7 @@ import com.academy.orders.domain.order.entity.PostAddress;
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import com.academy.orders.domain.order.exception.InsufficientProductQuantityException;
 import com.academy.orders.domain.order.repository.OrderRepository;
-import com.academy.orders.domain.order.usecase.CalculatePriceUseCase;
+import com.academy.orders.domain.product.usecase.CalculatePriceUseCase;
 import com.academy.orders.domain.order.usecase.ChangeQuantityUseCase;
 import com.academy.orders.domain.product.entity.Product;
 import java.math.BigDecimal;

@@ -1,4 +1,4 @@
-package com.academy.orders.domain.order.usecase;
+package com.academy.orders.domain.product.usecase;
 
 import com.academy.orders.domain.cart.entity.CartItem;
 import java.math.BigDecimal;
