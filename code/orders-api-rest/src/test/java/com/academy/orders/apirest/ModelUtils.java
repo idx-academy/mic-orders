@@ -12,6 +12,8 @@ import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.ProductTranslation;
 import com.academy.orders.domain.product.entity.Tag;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
+import com.academy.orders_api_rest.generated.model.CartItemDTO;
+import com.academy.orders_api_rest.generated.model.CartItemsResponseDTO;
 import com.academy.orders_api_rest.generated.model.DeliveryMethodDTO;
 import com.academy.orders_api_rest.generated.model.OrderDTO;
 import com.academy.orders_api_rest.generated.model.OrderItemDTO;
@@ -28,7 +30,6 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -56,6 +57,7 @@ import static com.academy.orders.apirest.TestConstants.TEST_QUANTITY;
 import static com.academy.orders.apirest.TestConstants.TEST_UUID;
 import static com.academy.orders.domain.order.entity.enumerated.DeliveryMethod.NOVA;
 import static com.academy.orders_api_rest.generated.model.PlaceOrderRequestDTO.DeliveryMethodEnum;
+import static java.util.Collections.*;
 
 public class ModelUtils {
 	private static final LocalDateTime DATE_TIME = LocalDateTime.of(1, 1, 1, 1, 1);
@@ -73,8 +75,8 @@ public class ModelUtils {
 
 	public static Product getProductWithEmptyTranslations() {
 		return Product.builder().id(TEST_UUID).status(ProductStatus.AVAILABLE).image(IMAGE_URL).createdAt(DATE_TIME)
-				.quantity(TEST_QUANTITY).price(TEST_PRICE).tags(Set.of(getTag()))
-				.productTranslations(Collections.emptySet()).build();
+				.quantity(TEST_QUANTITY).price(TEST_PRICE).tags(Set.of(getTag())).productTranslations(emptySet())
+				.build();
 	}
 
 	public static Product getProductWithNullTranslations() {
@@ -84,7 +86,7 @@ public class ModelUtils {
 
 	public static Product getProductWithEmptyTags() {
 		return Product.builder().id(TEST_UUID).status(ProductStatus.AVAILABLE).image(IMAGE_URL).createdAt(DATE_TIME)
-				.quantity(TEST_QUANTITY).price(TEST_PRICE).tags(Collections.emptySet())
+				.quantity(TEST_QUANTITY).price(TEST_PRICE).tags(emptySet())
 				.productTranslations(Set.of(getProductTranslation())).build();
 	}
 
@@ -222,5 +224,21 @@ public class ModelUtils {
 
 	public static Pageable getPageable(Integer page, Integer size, List<String> sort) {
 		return Pageable.builder().page(page).size(size).sort(sort).build();
+	}
+
+	public static CartItemsResponseDTO getCartItemResponseDto() {
+		return new CartItemsResponseDTO(singletonList(getCartItemDTO()), TEST_PRICE.doubleValue());
+	}
+
+	private static CartItemDTO getCartItemDTO() {
+		CartItemDTO cartItemDTO = new CartItemDTO();
+		cartItemDTO.setProductId(TEST_UUID);
+		cartItemDTO.setQuantity(TEST_QUANTITY);
+		cartItemDTO.setProductPrice(TEST_PRICE.doubleValue());
+		cartItemDTO.setCalculatedPrice(TEST_PRICE.doubleValue());
+		cartItemDTO.setName(PRODUCT_NAME);
+		cartItemDTO.setImage(IMAGE_URL);
+
+		return cartItemDTO;
 	}
 }

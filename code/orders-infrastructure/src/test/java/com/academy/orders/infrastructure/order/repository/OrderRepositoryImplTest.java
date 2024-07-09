@@ -7,8 +7,9 @@ import com.academy.orders.infrastructure.account.repository.AccountJpaAdapter;
 import com.academy.orders.infrastructure.common.PageableMapper;
 import com.academy.orders.infrastructure.order.OrderMapper;
 import com.academy.orders.infrastructure.order.OrderPageMapper;
+import com.academy.orders.infrastructure.order.entity.OrderEntity;
+import com.academy.orders.infrastructure.product.entity.ProductEntity;
 import com.academy.orders.infrastructure.product.repository.ProductJpaAdapter;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
@@ -49,22 +50,17 @@ class OrderRepositoryImplTest {
 	private PageableMapper pageableMapper;
 	@Mock
 	private OrderPageMapper pageMapper;
-
 	@Test
 	void testSave() {
-		var orderEntity = getOrderEntity();
-		var productEntity = getProductEntity();
-		var orderItemEntity = getOrderItemEntity();
-		orderItemEntity.setProduct(productEntity);
-		orderEntity.addOrderItems(Collections.singletonList(orderItemEntity));
-
-		var postAddressEntity = getPostAddressEntity();
-		orderEntity.setPostAddress(postAddressEntity);
-		var accountEntity = getAccountEntity();
+		var orderEntity = createOrderEntityWithDependencies();
+		var postAddressEntity = orderEntity.getPostAddress();
+		var accountEntity = orderEntity.getAccount();
+		var orderItemEntity = orderEntity.getOrderItems().get(0);
+		var referencedProductEntity = ProductEntity.builder().id(orderItemEntity.getProduct().getId()).build();
 
 		when(mapper.toEntity(any(Order.class))).thenReturn(orderEntity);
 		when(accountJpaAdapter.getReferenceById(anyLong())).thenReturn(accountEntity);
-		when(productJpaAdapter.getReferenceById(any(UUID.class))).thenReturn(productEntity);
+		when(productJpaAdapter.getReferenceById(any(UUID.class))).thenReturn(referencedProductEntity);
 		when(jpaAdapter.save(any())).thenReturn(orderEntity);
 
 		var orderId = orderRepository.save(getOrder(), 1L);
@@ -73,11 +69,27 @@ class OrderRepositoryImplTest {
 		assertEquals(postAddressEntity.getOrder(), orderEntity);
 		assertEquals(orderEntity.getAccount(), accountEntity);
 		assertEquals(orderItemEntity.getOrder(), orderEntity);
+		assertEquals(orderItemEntity.getProduct(), referencedProductEntity);
 
 		verify(mapper).toEntity(any(Order.class));
 		verify(accountJpaAdapter).getReferenceById(anyLong());
 		verify(productJpaAdapter).getReferenceById(any(UUID.class));
 		verify(jpaAdapter).save(any());
+	}
+
+	private OrderEntity createOrderEntityWithDependencies() {
+		var orderEntity = getOrderEntity();
+		var orderItemEntity = getOrderItemEntity();
+		orderItemEntity.setProduct(getProductEntity());
+		orderEntity.getOrderItems().add(orderItemEntity);
+
+		var postAddressEntity = getPostAddressEntity();
+		orderEntity.setPostAddress(postAddressEntity);
+		postAddressEntity.setOrder(orderEntity);
+
+		var accountEntity = getAccountEntity();
+		orderEntity.setAccount(accountEntity);
+		return orderEntity;
 	}
 
 	@Test

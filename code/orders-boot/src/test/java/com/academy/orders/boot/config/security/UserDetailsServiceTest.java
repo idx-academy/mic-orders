@@ -36,6 +36,8 @@ class UserDetailsServiceTest {
 		assertEquals(result.getUsername(), account.email());
 		assertEquals(result.getPassword(), account.password());
 		assertEquals(result.getId(), account.id());
+		assertEquals(result.getFirstName(), account.firstName());
+		assertEquals(result.getLastName(), account.lastName());
 		assertTrue(result.getAuthorities().contains(new SimpleGrantedAuthority(account.role().name())));
 
 		verify(accountRepository).getAccountByEmail(Mockito.anyString());
