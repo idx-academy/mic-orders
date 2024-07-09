@@ -116,7 +116,6 @@ class CartItemControllerTest {
 	@Test
 	@SneakyThrows
 	void testGetCartItems() {
-		var userId = 1L;
 		var lang = "ua";
 		var cartResponseDto = CartResponseDto.builder().build();
 		var cartItemsResponseDTO = ModelUtils.getCartItemResponseDto();
