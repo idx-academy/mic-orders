@@ -1,9 +1,7 @@
 package com.academy.orders.application.product.usecase;
 
 import com.academy.orders.application.ModelUtils;
-import com.academy.orders.domain.order.entity.OrderItem;
 import java.math.BigDecimal;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,17 +23,5 @@ class CalculatePriceUseCaseTest {
 		var actualPrice = calculatePriceUseCase.calculateTotalPrice(product, quantity);
 
 		assertEquals(expectedResult, actualPrice);
-	}
-
-	@Test
-	void calculateTotalTest() {
-		// Given
-		OrderItem orderItem = ModelUtils.getOrderItem();
-
-		// When
-		BigDecimal actual = calculatePriceUseCase.calculateTotalPrice(List.of(orderItem, orderItem));
-
-		// Then
-		assertEquals(orderItem.price().add(orderItem.price()), actual);
 	}
 }

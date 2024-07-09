@@ -4,6 +4,8 @@ import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.repository.OrderRepository;
+import com.academy.orders.domain.order.usecase.CalculateOrderTotalPriceUseCase;
+import java.math.BigDecimal;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,6 +25,8 @@ class GetOrdersByUserIdUseCaseTest {
 	private GetOrdersByUserIdUseCaseImpl getOrdersByUserIdUseCase;
 	@Mock
 	private OrderRepository orderRepository;
+	@Mock
+	private CalculateOrderTotalPriceUseCase calculateOrderTotalPriceUseCase;
 
 	@Test
 	void getOrdersByUserId() {
@@ -30,9 +34,15 @@ class GetOrdersByUserIdUseCaseTest {
 		Long userId = 1L;
 		String language = "ua";
 		Pageable pageable = getPageable();
-		Page<Order> expected = getPageOf(getOrder());
+		Order order = getOrder();
+		BigDecimal totalValue = BigDecimal.valueOf(24);
+		Order withTotal = Order.builder().id(order.id()).orderStatus(order.orderStatus()).receiver(order.receiver())
+				.postAddress(order.postAddress()).total(totalValue).orderItems(order.orderItems())
+				.isPaid(order.isPaid()).editedAt(order.editedAt()).createdAt(order.createdAt()).build();
+		Page<Order> expected = getPageOf(withTotal);
 
 		when(orderRepository.findAllByUserId(userId, language, pageable)).thenReturn(expected);
+		when(calculateOrderTotalPriceUseCase.calculateTotalPrice(order.orderItems())).thenReturn(totalValue);
 
 		// When
 		Page<Order> ordersByUserId = getOrdersByUserIdUseCase.getOrdersByUserId(userId, language, pageable);
