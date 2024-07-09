@@ -161,7 +161,7 @@ paths:
           name: ordersSort
           required: false
           schema:
-            $ref: '#/components/schemas/OrdersSortParameters'
+            $ref: '#/components/schemas/OrdersFilterParameters'
         - $ref: '#/components/parameters/Language'
         - $ref: '#/components/parameters/Pageable'
       responses:
@@ -584,7 +584,7 @@ components:
         - UKRPOSHTA
       description: The delivery methods available for shipping the order
 
-    OrdersSortParameters:
+    OrdersFilterParameters:
       type: object
       properties:
         deliveryMethods:
