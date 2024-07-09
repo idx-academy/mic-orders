@@ -7,7 +7,6 @@ import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.usecase.CreateOrderUseCase;
-import com.academy.orders.domain.product.usecase.CalculatePriceUseCase;
 import com.academy.orders.domain.product.usecase.GetOrdersByUserIdUseCase;
 import com.academy.orders_api_rest.generated.api.OrdersApi;
 import com.academy.orders_api_rest.generated.model.PageOrderDTO;
