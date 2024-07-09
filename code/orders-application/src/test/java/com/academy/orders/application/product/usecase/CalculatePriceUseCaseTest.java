@@ -1,4 +1,4 @@
-package com.academy.orders.application.order.usecase;
+package com.academy.orders.application.product.usecase;
 
 import com.academy.orders.application.ModelUtils;
 import java.math.BigDecimal;
@@ -7,7 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 class CalculatePriceUseCaseTest {
@@ -20,7 +20,7 @@ class CalculatePriceUseCaseTest {
 		var quantity = 10;
 		var expectedResult = product.price().multiply(BigDecimal.valueOf(quantity));
 
-		var actualPrice = calculatePriceUseCase.calculatePriceForOrder(product, quantity);
+		var actualPrice = calculatePriceUseCase.calculateTotalPrice(product, quantity);
 
 		assertEquals(expectedResult, actualPrice);
 	}

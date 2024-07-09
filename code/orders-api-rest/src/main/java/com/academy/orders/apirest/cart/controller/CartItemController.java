@@ -20,13 +20,15 @@ public class CartItemController implements CartApi {
 	private final DeleteProductFromCartUseCase deleteProductFromCartUseCase;
 
 	@Override
-	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN') || @checkAccountIdUseCaseImpl.hasSameId(#userId)")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN') || "
+			+ "(hasAnyAuthority('ROLE_USER') && @checkAccountIdUseCaseImpl.hasSameId(#userId))")
 	public void addProductToCart(UUID productId, Long userId) {
 		cartItemByUserUseCase.create(new CreateCartItemDTO(productId, userId, 1));
 	}
 
 	@Override
-	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN') || @checkAccountIdUseCaseImpl.hasSameId(#userId)")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN') || "
+			+ "(hasAnyAuthority('ROLE_USER') && @checkAccountIdUseCaseImpl.hasSameId(#userId))")
 	public void deleteProductFromCart(Long userId, UUID productId) {
 		deleteProductFromCartUseCase.deleteProductFromCart(userId, productId);
 	}

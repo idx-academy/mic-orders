@@ -10,7 +10,7 @@ import com.academy.orders.domain.order.entity.OrderReceiver;
 import com.academy.orders.domain.order.entity.PostAddress;
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import com.academy.orders.domain.order.repository.OrderRepository;
-import com.academy.orders.domain.order.usecase.CalculatePriceUseCase;
+import com.academy.orders.domain.product.usecase.CalculatePriceUseCase;
 import com.academy.orders.domain.order.usecase.ChangeQuantityUseCase;
 import com.academy.orders.domain.order.usecase.CreateOrderUseCase;
 import java.util.List;
@@ -31,20 +31,19 @@ public class CreateOrderUseCaseImpl implements CreateOrderUseCase {
 	@Override
 	@Transactional
 	public UUID createOrder(CreateOrderDto createOrderDto, Long accountId) {
-		var order = createOrderObject(createOrderDto);
 		var bucketElements = getBucketElements(accountId);
 		checkCartIsNotEmpty(bucketElements);
 		var orderItems = createOrderItems(bucketElements);
-		var orderWithItems = order.addOrderItems(orderItems);
-		var orderId = saveOrder(orderWithItems, accountId);
+		var order = createOrderObject(createOrderDto, orderItems);
+		var orderId = saveOrder(order, accountId);
 		clearCart(accountId);
 		return orderId;
 	}
 
-	private Order createOrderObject(CreateOrderDto createOrderDto) {
+	private Order createOrderObject(CreateOrderDto createOrderDto, List<OrderItem> orderItems) {
 		return Order.builder().receiver(createReceiverObject(createOrderDto))
 				.postAddress(createPostAddressObject(createOrderDto)).orderStatus(OrderStatus.IN_PROGRESS).isPaid(false)
-				.build();
+				.orderItems(orderItems).build();
 	}
 
 	private PostAddress createPostAddressObject(CreateOrderDto createOrderDto) {
@@ -72,7 +71,7 @@ public class CreateOrderUseCaseImpl implements CreateOrderUseCase {
 	}
 
 	private OrderItem createItem(CartItem cartItem) {
-		var calculatedPrice = calculatePriceUseCase.calculatePriceForOrder(cartItem.product(), cartItem.quantity());
+		var calculatedPrice = calculatePriceUseCase.calculateTotalPrice(cartItem.product(), cartItem.quantity());
 		changeQuantityUseCase.changeQuantityOfProduct(cartItem.product(), cartItem.quantity());
 		return new OrderItem(cartItem.product(), calculatedPrice, cartItem.quantity());
 	}

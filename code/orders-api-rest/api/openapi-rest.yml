@@ -488,13 +488,20 @@ components:
         id:
           type: string
           format: uuid
+          description: Unique identifier for the order
         isPaid:
           type: boolean
+          description: Indicates whether the order has been paid
         orderStatus:
           $ref: '#/components/schemas/OrderStatus'
         createdAt:
           type: string
           format: date-time
+          description: The date and time when the order was created
+        total:
+          type: number
+          format: decimal
+          description: The total cost of the order
         receiver:
           $ref: '#/components/schemas/OrderReceiver'
         postAddress:
@@ -510,8 +517,10 @@ components:
         price:
           type: number
           format: decimal
+          description: Price of the individual item
         quantity:
           type: integer
+          description: Quantity of the item ordered
         product:
           $ref: '#/components/schemas/ProductPreview'
 
@@ -520,10 +529,13 @@ components:
       properties:
         firstName:
           type: string
+          description: Receiver's first name
         lastName:
           type: string
+          description: Receiver's last name
         email:
           type: string
+          description: Receiver's email address
 
     PostAddress:
       type: object
@@ -532,8 +544,10 @@ components:
           $ref: '#/components/schemas/DeliveryMethod'
         city:
           type: string
+          description: City of the delivery address
         department:
           type: string
+          description: Department or region of the delivery address
 
     OrderStatus:
       type: string
@@ -543,12 +557,14 @@ components:
         - DELIVERED
         - COMPLETED
         - CANCELED
+      description: The various statuses an order can have
 
     DeliveryMethod:
       type: string
       enum:
         - NOVA
         - UKRPOSHTA
+      description: The delivery methods available for shipping the order
 
     PageOrder:
       type: object
@@ -560,6 +576,7 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/Order'
+              description: List of orders in the page
 
     PageProducts:
       type: object
@@ -634,11 +651,7 @@ components:
           format: email
           example: example@mail.com
         deliveryMethod:
-          type: string
-          enum:
-            - NOVA
-            - UKRPOSHTA
-          description: delivery method
+          $ref: '#/components/schemas/DeliveryMethod'
         city:
           type: string
           minLength: 2
