@@ -158,7 +158,7 @@ paths:
         - bearerAuth: [ ]
       parameters:
         - in: query
-          name: ordersSort
+          name: ordersFilter
           required: false
           schema:
             $ref: '#/components/schemas/OrdersFilterParameters'
