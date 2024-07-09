@@ -71,7 +71,7 @@ public class CreateOrderUseCaseImpl implements CreateOrderUseCase {
 	}
 
 	private OrderItem createItem(CartItem cartItem) {
-		var calculatedPrice = calculatePriceUseCase.calculateTotalPrice(cartItem.product(), cartItem.quantity());
+		var calculatedPrice = calculatePriceUseCase.calculateCartItemPrice(cartItem);
 		changeQuantityUseCase.changeQuantityOfProduct(cartItem.product(), cartItem.quantity());
 		return new OrderItem(cartItem.product(), calculatedPrice, cartItem.quantity());
 	}

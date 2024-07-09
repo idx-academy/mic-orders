@@ -3,6 +3,8 @@ package com.academy.orders.application;
 import com.academy.orders.domain.account.entity.Account;
 import com.academy.orders.domain.account.entity.enumerated.Role;
 import com.academy.orders.domain.account.entity.enumerated.UserStatus;
+import com.academy.orders.domain.cart.dto.CartItemDto;
+import com.academy.orders.domain.cart.dto.CartResponseDto;
 import com.academy.orders.domain.cart.entity.CartItem;
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
@@ -99,5 +101,16 @@ public class ModelUtils {
 
 	public static OrderItem getOrderItem() {
 		return OrderItem.builder().product(getProduct()).quantity(3).price(BigDecimal.valueOf(200)).build();
+	}
+
+	public static CartItemDto getCartItemDto(CartItem cartItem, BigDecimal cartPrice) {
+		return CartItemDto.builder().productId(cartItem.product().id()).image(cartItem.product().image())
+				.name(cartItem.product().productTranslations().iterator().next().name())
+				.productPrice(cartItem.product().price()).quantity(cartItem.quantity()).calculatedPrice(cartPrice)
+				.build();
+	}
+
+	public static CartResponseDto getCartResponseDto(List<CartItemDto> cartItemDtos, BigDecimal totalPrice) {
+		return CartResponseDto.builder().items(cartItemDtos).totalPrice(totalPrice).build();
 	}
 }

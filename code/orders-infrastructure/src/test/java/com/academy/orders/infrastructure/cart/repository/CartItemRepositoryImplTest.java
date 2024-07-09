@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
@@ -131,5 +132,21 @@ class CartItemRepositoryImplTest {
 
 		assertDoesNotThrow(() -> cartItemRepository.deleteCartItemByAccountAndProductIds(accountId, productId));
 		verify(cartItemJpaAdapter).deleteByAccountIdAndProductId(anyLong(), any(UUID.class));
+	}
+
+	@Test
+	void testFindCartItemsByAccountIdAndLang() {
+		var lang = "ua";
+		var accountId = 1L;
+		var cartItemEntities = singletonList(getCartItemEntity());
+		var cartItems = singletonList(getCartItem());
+
+		when(cartItemJpaAdapter.findAllByAccountIdAndProductLang(accountId, lang)).thenReturn(cartItemEntities);
+		when(cartItemMapper.fromEntitiesWithProductsTranslations(cartItemEntities)).thenReturn(cartItems);
+		var actualItems = cartItemRepository.findCartItemsByAccountIdAndLang(accountId, lang);
+
+		assertEquals(cartItems, actualItems);
+		verify(cartItemJpaAdapter).findAllByAccountIdAndProductLang(anyLong(), anyString());
+		verify(cartItemMapper).fromEntitiesWithProductsTranslations(any());
 	}
 }

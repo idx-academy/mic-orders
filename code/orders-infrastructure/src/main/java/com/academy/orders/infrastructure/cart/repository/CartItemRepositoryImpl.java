@@ -72,4 +72,10 @@ public class CartItemRepositoryImpl implements CartItemRepository {
 		cartItemJpaAdapter.deleteByAccountIdAndProductId(accountId, productId);
 	}
 
+	@Override
+	public List<CartItem> findCartItemsByAccountIdAndLang(Long accountId, String lang) {
+		var cartItems = cartItemJpaAdapter.findAllByAccountIdAndProductLang(accountId, lang);
+		return cartItemMapper.fromEntitiesWithProductsTranslations(cartItems);
+	}
+
 }
