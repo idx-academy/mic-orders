@@ -134,14 +134,35 @@ paths:
         - bearerAuth: [ ]
       parameters:
         - $ref: '#/components/parameters/UserId'
+        - $ref: '#/components/parameters/Language'
+        - $ref: '#/components/parameters/Pageable'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageOrder'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /v1/management/orders:
+    get:
+      tags:
+        - Orders
+      summary: View all orders
+      operationId: getAllOrders
+      security:
+        - bearerAuth: [ ]
+      parameters:
         - in: query
-          name: lang
+          name: ordersSort
           required: false
           schema:
-            type: string
-            default: ua
-            nullable: false
-            example: ua
+            $ref: '#/components/schemas/OrdersSortParameters'
+        - $ref: '#/components/parameters/Language'
         - $ref: '#/components/parameters/Pageable'
       responses:
         '200':
@@ -163,21 +184,8 @@ paths:
       description: The endpoint for getting all products from the database.
       operationId: getProducts
       parameters:
-        - in: query
-          name: lang
-          required: false
-          schema:
-            type: string
-            default: en
-            nullable: false
-            example: ua
-          description: The language code for the product information (e.g., 'ua' for Ukrainian).
-        - in: query
-          name: pageable
-          required: false
-          schema:
-            $ref: '#/components/schemas/Pageable'
-          description: Page request parameters for pagination and sorting.
+        - $ref: '#/components/parameters/Language'
+        - $ref: '#/components/parameters/Pageable'
       responses:
         '200':
           description: Short information about all products
@@ -257,6 +265,16 @@ components:
         type: string
         format: uuid
         example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
+    Language:
+      in: query
+      name: lang
+      required: false
+      schema:
+        type: string
+        default: en
+        nullable: false
+        example: ua
+      description: The language code for the product information (e.g., 'ua' for Ukrainian).
   securitySchemes:
     bearerAuth:
       type: http
@@ -565,6 +583,37 @@ components:
         - NOVA
         - UKRPOSHTA
       description: The delivery methods available for shipping the order
+
+    OrdersSortParameters:
+      type: object
+      properties:
+        deliveryMethods:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeliveryMethod'
+        statuses:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderStatus'
+        isPaid:
+          type: boolean
+          description: Indicates whether the order has been paid
+        createdBefore:
+          type: string
+          format: date-time
+          description: The date and time before the order was created
+        createdAfter:
+          type: string
+          format: date-time
+          description: The date and time after the order was created
+        totalMore:
+          type: number
+          format: decimal
+          description: The total cost of the order is more than
+        totalLess:
+          type: number
+          format: decimal
+          description: The total cost of the order is less than
 
     PageOrder:
       type: object
