@@ -3,6 +3,7 @@ package com.academy.orders.infrastructure.cart.repository;
 import com.academy.orders.infrastructure.cart.entity.CartItemEntity;
 import com.academy.orders.infrastructure.cart.entity.CartItemId;
 import java.util.List;
+import java.util.UUID;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -20,4 +21,6 @@ public interface CartItemJpaAdapter extends CrudRepository<CartItemEntity, CartI
 	@Modifying
 	@Query("DELETE FROM CartItemEntity c WHERE c.account.id =:accountId")
 	void deleteAllByAccountId(Long accountId);
+
+	void deleteByAccountIdAndProductId(Long accountId, UUID productId);
 }

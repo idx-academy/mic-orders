@@ -14,7 +14,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface OrderMapper {
 	Order fromEntity(OrderEntity orderEntity);
-
 	OrderEntity toEntity(Order order);
 	OrderReceiverVO toOrderReceiverVO(OrderReceiver orderReceiver);
 	PostAddressEntity toPostAddressEntity(PostAddress postAddress);

@@ -7,6 +7,7 @@ import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.usecase.CreateOrderUseCase;
+import com.academy.orders.domain.product.usecase.CalculatePriceUseCase;
 import com.academy.orders.domain.product.usecase.GetOrdersByUserIdUseCase;
 import com.academy.orders_api_rest.generated.api.OrdersApi;
 import com.academy.orders_api_rest.generated.model.PageOrderDTO;
@@ -31,14 +32,14 @@ public class OrdersController implements OrdersApi {
 	private final PageOrderDTOMapper pageOrderDTOMapper;
 
 	@Override
-	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN') || @checkAccountIdUseCaseImpl.hasSameId(#userId)")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN') || (hasAnyAuthority('ROLE_USER') && @checkAccountIdUseCaseImpl.hasSameId(#userId))")
 	public PlaceOrderResponseDTO placeOrder(Long userId, PlaceOrderRequestDTO placeOrderRequestDTO) {
 		var id = createOrderUseCase.createOrder(mapper.toCreateOrderDto(placeOrderRequestDTO), userId);
 		return new PlaceOrderResponseDTO().orderId(id);
 	}
 
 	@Override
-	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN') || @checkAccountIdUseCaseImpl.hasSameId(#userId)")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN') || (hasAnyAuthority('ROLE_USER') && @checkAccountIdUseCaseImpl.hasSameId(#userId))")
 	public PageOrderDTO getOrdersByUser(Long userId, String language, PageableDTO pageable) {
 		Pageable pageableDomain = pageableDTOMapper.fromDto(pageable);
 		Page<Order> ordersByUserId = getOrdersByUserIdUseCase.getOrdersByUserId(userId, language, pageableDomain);

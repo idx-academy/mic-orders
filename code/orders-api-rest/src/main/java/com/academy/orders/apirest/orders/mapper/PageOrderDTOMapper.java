@@ -7,7 +7,8 @@ import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders_api_rest.generated.model.PageOrderDTO;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring", uses = {ProductPreviewDTOMapper.class, LocalDateTimeMapper.class})
+@Mapper(componentModel = "spring", uses = {OrderDTOMapper.class, ProductPreviewDTOMapper.class,
+		LocalDateTimeMapper.class})
 public interface PageOrderDTOMapper {
 	PageOrderDTO toDto(Page<Order> orderPage);
 }
