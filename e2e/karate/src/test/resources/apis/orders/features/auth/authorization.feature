@@ -3,7 +3,7 @@ Feature: Sign up feature
 
   Background:
     * url urls.retailApiUrl
-    * def generator = Java.type('com.academy.orders.karate.helper.DataGenerator')
+    * def generator = Java.type('com.academy.orders.karate.generator.DataGenerator')
     * def requestData  = call utils.readTestData 'classpath:apis/orders/test-data/signup-request.json'
 
   Scenario: Sign up 201
