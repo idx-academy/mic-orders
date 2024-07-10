@@ -5,7 +5,6 @@ import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
-import com.academy.orders.domain.order.exception.OrderNotFoundException;
 import com.academy.orders.domain.order.repository.OrderRepository;
 import com.academy.orders.infrastructure.account.repository.AccountJpaAdapter;
 import com.academy.orders.infrastructure.common.PageableMapper;
@@ -53,7 +52,7 @@ public class OrderRepositoryImpl implements OrderRepository {
 	@Override
 	public Page<Order> findAllByUserId(Long userId, String language, Pageable pageable) {
 		var springPageable = pageableMapper.fromDomain(pageable);
-		var orderEntityPage = jpaAdapter.findAllByAccount_Id(userId, springPageable);
+		var orderEntityPage = jpaAdapter.findAllByAccountId(userId, springPageable);
 		var productIds = orderEntityPage.getContent().stream()
 				.flatMap(orderEntity -> orderEntity.getOrderItems().stream())
 				.map(orderItemEntity -> orderItemEntity.getProduct().getId()).toList();
@@ -74,8 +73,7 @@ public class OrderRepositoryImpl implements OrderRepository {
 	@Override
 	@Transactional
 	public void updateOrderStatus(UUID orderId, OrderStatus orderStatus) {
-		var order = jpaAdapter.findById(orderId).orElseThrow(() -> new OrderNotFoundException(orderId));
-		jpaAdapter.updateOrderStatus(order.getId(), orderStatus);
+		jpaAdapter.updateOrderStatus(orderId, orderStatus);
 	}
 
 	private OrderEntity getOrderEntityWithPostAddress(Order order) {
