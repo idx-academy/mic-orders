@@ -24,7 +24,7 @@ class UpdateOrderStatusUseCaseTest {
 	private OrderRepository orderRepository;
 
 	@Test
-	void testUpdateOrderStatus() {
+	void updateOrderStatusTest() {
 		UUID orderId = TEST_UUID;
 		OrderStatus status = OrderStatus.COMPLETED;
 		when(orderRepository.findById(orderId)).thenReturn(Optional.of(getOrder()));
@@ -34,7 +34,7 @@ class UpdateOrderStatusUseCaseTest {
 	}
 
 	@Test
-	void testUpdateOrderStatusThrowsNotFoundException() {
+	void updateOrderStatusThrowsNotFoundExceptionTest() {
 		UUID orderId = TEST_UUID;
 		OrderStatus status = OrderStatus.COMPLETED;
 		when(orderRepository.findById(orderId)).thenReturn(Optional.empty());

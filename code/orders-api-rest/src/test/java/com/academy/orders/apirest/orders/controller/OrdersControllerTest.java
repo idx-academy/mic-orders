@@ -167,7 +167,7 @@ class OrdersControllerTest {
 	}
 
 	@Test
-	void testUpdateOrderStatus() throws Exception {
+	void updateOrderStatusTest() throws Exception {
 		var orderId = UUID.randomUUID();
 		var status = OrderStatusDTO.COMPLETED;
 

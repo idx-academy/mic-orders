@@ -11,7 +11,7 @@ class OrderStatusMapperTest {
 	private final OrderStatusMapper orderStatusMapper = Mappers.getMapper(OrderStatusMapper.class);
 
 	@Test
-	void testFromDTO() {
+	void fromDTOTest() {
 		Assertions.assertEquals(OrderStatus.IN_PROGRESS, orderStatusMapper.fromDTO(OrderStatusDTO.IN_PROGRESS));
 		Assertions.assertEquals(OrderStatus.SHIPPED, orderStatusMapper.fromDTO(OrderStatusDTO.SHIPPED));
 		Assertions.assertEquals(OrderStatus.DELIVERED, orderStatusMapper.fromDTO(OrderStatusDTO.DELIVERED));
@@ -20,7 +20,7 @@ class OrderStatusMapperTest {
 	}
 
 	@Test
-	void testFromDTOWithInvalidValue() {
+	void fromDTOWithInvalidValueTest() {
 		assertThrows(IllegalArgumentException.class,
 				() -> orderStatusMapper.fromDTO(OrderStatusDTO.fromValue("INVALID_STATUS")));
 	}

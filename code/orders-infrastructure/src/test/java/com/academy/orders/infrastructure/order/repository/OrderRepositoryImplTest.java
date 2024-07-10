@@ -124,7 +124,7 @@ class OrderRepositoryImplTest {
 	}
 
 	@Test
-	void testUpdateOrderStatus() {
+	void updateOrderStatusTest() {
 		UUID orderId = TEST_UUID;
 		OrderStatus status = OrderStatus.COMPLETED;
 
