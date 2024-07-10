@@ -275,6 +275,39 @@ paths:
         '403':
           $ref: '#/components/responses/Forbidden'
 
+  /v1/users/{userId}/cart/{productId}/quantitycheck:
+    get:
+      tags:
+        - Cart
+      summary: Check available quantity of a product in stock
+      description: The endpoint checks the available quantity in stock for a specific product in the user's cart.
+      operationId: checkProductQuantity
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+        - $ref: '#/components/parameters/ProductId'
+        - in: query
+          name: quantity
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          example: 5
+      responses:
+        '200':
+          description: The available quantity in stock
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuantityCheckResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+
 
 
 #COMPONENTS
@@ -805,3 +838,14 @@ components:
         - productPrice
         - quantity
         - calculatedPrice
+
+    QuantityCheckResponse:
+      type: object
+      properties:
+        isAvailable:
+          type: boolean
+        availableQuantity:
+          type: integer
+      required:
+        - isAvailable
+        - availableQuantity
