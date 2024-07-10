@@ -74,8 +74,8 @@ public class OrderRepositoryImpl implements OrderRepository {
 	@Override
 	@Transactional
 	public void updateOrderStatus(UUID orderId, OrderStatus orderStatus) {
-		jpaAdapter.findById(orderId).orElseThrow(() -> new OrderNotFoundException(orderId));
-		jpaAdapter.updateOrderStatus(orderId, orderStatus);
+		var order = jpaAdapter.findById(orderId).orElseThrow(() -> new OrderNotFoundException(orderId));
+		jpaAdapter.updateOrderStatus(order.getId(), orderStatus);
 	}
 
 	private OrderEntity getOrderEntityWithPostAddress(Order order) {

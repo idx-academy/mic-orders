@@ -30,6 +30,7 @@ import static com.academy.orders.infrastructure.ModelUtils.getPageOf;
 import static com.academy.orders.infrastructure.ModelUtils.getPageable;
 import static com.academy.orders.infrastructure.ModelUtils.getPostAddressEntity;
 import static com.academy.orders.infrastructure.ModelUtils.getProductEntity;
+import static com.academy.orders.infrastructure.TestConstants.TEST_UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -127,7 +128,7 @@ class OrderRepositoryImplTest {
 
 	@Test
 	void testUpdateOrderStatus() {
-		UUID orderId = UUID.randomUUID();
+		UUID orderId = TEST_UUID;
 		OrderStatus status = OrderStatus.COMPLETED;
 		when(jpaAdapter.findById(orderId)).thenReturn(Optional.of(getOrderEntity()));
 
@@ -137,7 +138,7 @@ class OrderRepositoryImplTest {
 
 	@Test
 	void testUpdateOrderStatusThrowsNotFoundException() {
-		UUID orderId = UUID.randomUUID();
+		UUID orderId = TEST_UUID;
 		OrderStatus status = OrderStatus.COMPLETED;
 		when(jpaAdapter.findById(orderId)).thenReturn(Optional.empty());
 
