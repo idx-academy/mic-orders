@@ -21,8 +21,7 @@ class OrderStatusMapperTest {
 
 	@Test
 	void testFromDTOWithInvalidValue() {
-		assertThrows(IllegalArgumentException.class, () -> {
-			orderStatusMapper.fromDTO(OrderStatusDTO.fromValue("INVALID_STATUS"));
-		});
+		assertThrows(IllegalArgumentException.class,
+				() -> orderStatusMapper.fromDTO(OrderStatusDTO.fromValue("INVALID_STATUS")));
 	}
 }
