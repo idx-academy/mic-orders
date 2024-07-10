@@ -14,4 +14,5 @@ public class CalculateOrderTotalPriceUseCaseImpl implements CalculateOrderTotalP
 	public BigDecimal calculateTotalPrice(List<OrderItem> orderItems) {
 		return orderItems.stream().map(OrderItem::price).reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
+
 }

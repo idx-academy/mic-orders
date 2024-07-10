@@ -4,6 +4,7 @@ function fn(auth) {
    // get password from system properties
    credentials.username = karate.get('credentials.username') || credentials.username
    credentials.password = karate.get('credentials.password') || credentials.password
+   credentials.id = karate.get('credentials.id') || credentials.id
    credentials.authMode = karate.get('defaultAuthMode') || credentials.authMode;
 
   // returns auth header
