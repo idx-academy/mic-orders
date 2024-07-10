@@ -2,7 +2,9 @@ package com.academy.orders.infrastructure.order.repository;
 
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
+import com.academy.orders.domain.exception.NotFoundException;
 import com.academy.orders.domain.order.entity.Order;
+import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import com.academy.orders.infrastructure.account.repository.AccountJpaAdapter;
 import com.academy.orders.infrastructure.common.PageableMapper;
 import com.academy.orders.infrastructure.order.OrderMapper;
@@ -11,6 +13,7 @@ import com.academy.orders.infrastructure.order.entity.OrderEntity;
 import com.academy.orders.infrastructure.product.entity.ProductEntity;
 import com.academy.orders.infrastructure.product.repository.ProductJpaAdapter;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +21,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
-
 import static com.academy.orders.infrastructure.ModelUtils.getAccountEntity;
 import static com.academy.orders.infrastructure.ModelUtils.getOrder;
 import static com.academy.orders.infrastructure.ModelUtils.getOrderEntity;
@@ -29,6 +31,7 @@ import static com.academy.orders.infrastructure.ModelUtils.getPageable;
 import static com.academy.orders.infrastructure.ModelUtils.getPostAddressEntity;
 import static com.academy.orders.infrastructure.ModelUtils.getProductEntity;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
@@ -120,5 +123,25 @@ class OrderRepositoryImplTest {
 		verify(jpaAdapter).findAllByAccount_Id(userId, springPageable);
 		verify(productJpaAdapter).findAllByIdAndLanguageCode(productIds, language);
 		verify(pageMapper).toDomain(orderEntityPage);
+	}
+
+	@Test
+	void testUpdateOrderStatus() {
+		UUID orderId = UUID.randomUUID();
+		OrderStatus status = OrderStatus.COMPLETED;
+		when(jpaAdapter.findById(orderId)).thenReturn(Optional.of(getOrderEntity()));
+
+		orderRepository.updateOrderStatus(orderId, status);
+		verify(jpaAdapter).updateOrderStatus(orderId, status);
+	}
+
+	@Test
+	void testUpdateOrderStatusThrowsNotFoundException() {
+		UUID orderId = UUID.randomUUID();
+		OrderStatus status = OrderStatus.COMPLETED;
+		when(jpaAdapter.findById(orderId)).thenReturn(Optional.empty());
+
+		assertThrows(NotFoundException.class, () -> orderRepository.updateOrderStatus(orderId, status));
+		verify(jpaAdapter).findById(orderId);
 	}
 }
