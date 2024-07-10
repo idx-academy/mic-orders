@@ -4,8 +4,10 @@ import com.academy.orders.apirest.auth.validator.CheckAccountIdUseCaseImpl;
 import com.academy.orders.apirest.common.ErrorHandler;
 import com.academy.orders.apirest.common.TestSecurityConfig;
 import com.academy.orders.apirest.common.mapper.PageableDTOMapper;
+import com.academy.orders.apirest.orders.OrdersController;
 import com.academy.orders.apirest.orders.mapper.OrderDTOMapper;
 import com.academy.orders.apirest.orders.mapper.OrderDTOMapperImpl;
+import com.academy.orders.apirest.orders.mapper.OrderStatusMapper;
 import com.academy.orders.apirest.orders.mapper.PageOrderDTOMapper;
 import com.academy.orders.domain.cart.exception.EmptyCartException;
 import com.academy.orders.domain.common.Page;
@@ -14,7 +16,9 @@ import com.academy.orders.domain.order.dto.CreateOrderDto;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.exception.InsufficientProductQuantityException;
 import com.academy.orders.domain.order.usecase.CreateOrderUseCase;
+import com.academy.orders.domain.order.usecase.UpdateOrderStatusUseCase;
 import com.academy.orders.domain.product.usecase.GetOrdersByUserIdUseCase;
+import com.academy.orders_api_rest.generated.model.OrderStatusDTO;
 import com.academy.orders_api_rest.generated.model.PageOrderDTO;
 import com.academy.orders_api_rest.generated.model.PageableDTO;
 import com.academy.orders_api_rest.generated.model.PlaceOrderRequestDTO;
@@ -31,7 +35,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-
 import static com.academy.orders.apirest.ModelUtils.getJwtRequest;
 import static com.academy.orders.apirest.ModelUtils.getOrder;
 import static com.academy.orders.apirest.ModelUtils.getPageOf;
@@ -39,12 +42,16 @@ import static com.academy.orders.apirest.ModelUtils.getPageOrderDTO;
 import static com.academy.orders.apirest.ModelUtils.getPageable;
 import static com.academy.orders.apirest.ModelUtils.getPageableParams;
 import static com.academy.orders.apirest.ModelUtils.getPlaceOrderRequestDTO;
+import static com.academy.orders.apirest.TestConstants.ROLE_MANAGER;
+import static com.academy.orders.apirest.TestConstants.UPDATE_ORDER_STATUS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -61,11 +68,15 @@ class OrdersControllerTest {
 	@MockBean
 	private CreateOrderUseCase createOrderUseCase;
 	@MockBean
+	private UpdateOrderStatusUseCase updateOrderStatusUseCase;
+	@MockBean
 	private OrderDTOMapper mapper;
 	@MockBean
 	private PageableDTOMapper pageableDTOMapper;
 	@MockBean
 	private PageOrderDTOMapper pageOrderDTOMapper;
+	@MockBean
+	private OrderStatusMapper orderStatusMapper;
 	@MockBean
 	private GetOrdersByUserIdUseCase getOrdersByUserIdUseCase;
 
@@ -153,5 +164,19 @@ class OrdersControllerTest {
 		verify(pageableDTOMapper).fromDto(pageableDTO);
 		verify(getOrdersByUserIdUseCase).getOrdersByUserId(userId, language, pageable);
 		verify(pageOrderDTOMapper).toDto(orderPage);
+	}
+
+	@Test
+	void updateOrderStatusTest() throws Exception {
+		var orderId = UUID.randomUUID();
+		var status = OrderStatusDTO.COMPLETED;
+
+		doNothing().when(updateOrderStatusUseCase).updateOrderStatus(any(UUID.class), any());
+
+		mockMvc.perform(patch(UPDATE_ORDER_STATUS, orderId).with(getJwtRequest(1L, ROLE_MANAGER))
+				.param("orderStatus", status.toString()).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
+
+		verify(updateOrderStatusUseCase).updateOrderStatus(orderId, orderStatusMapper.fromDTO(status));
 	}
 }

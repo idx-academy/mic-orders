@@ -99,6 +99,42 @@ paths:
                 $ref: '#/components/schemas/Order'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
+
+  /v1/orders/{orderId}/status:
+    patch:
+      tags:
+        - Orders
+      summary: Update order status
+      operationId: updateOrderStatus
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: The ID of the order to update
+          example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
+        - in: query
+          name: orderStatus
+          required: true
+          schema:
+            $ref: '#/components/schemas/OrderStatus'
+          description: The new status for the order
+      responses:
+        '200':
+          description: Order status updated successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+
   /v1/users/{userId}/orders:
     post:
       tags:
@@ -245,8 +281,8 @@ paths:
 #=======================================================================================================================
 components:
 
-  #PARAMETERS
-  #=======================================================================================================================
+#PARAMETERS
+#=======================================================================================================================
   parameters:
     Pageable:
       name: pageable
@@ -288,8 +324,8 @@ components:
       scheme: bearer
       bearerFormat: JWT
 
-  #RESPONSES
-  #=======================================================================================================================
+#RESPONSES
+#=======================================================================================================================
   responses:
     CreatedResponse:
       description: Resource created
@@ -352,8 +388,8 @@ components:
             title: Forbidden
             detail: User does not have success to this resource
 
-  #SCHEMAS
-  #=======================================================================================================================
+#SCHEMAS
+#=======================================================================================================================
   schemas:
     Pageable:
       type: object

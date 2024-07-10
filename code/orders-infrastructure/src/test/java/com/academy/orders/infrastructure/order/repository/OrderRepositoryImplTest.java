@@ -3,6 +3,7 @@ package com.academy.orders.infrastructure.order.repository;
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.order.entity.Order;
+import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import com.academy.orders.infrastructure.account.repository.AccountJpaAdapter;
 import com.academy.orders.infrastructure.common.PageableMapper;
 import com.academy.orders.infrastructure.order.OrderMapper;
@@ -18,7 +19,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
-
 import static com.academy.orders.infrastructure.ModelUtils.getAccountEntity;
 import static com.academy.orders.infrastructure.ModelUtils.getOrder;
 import static com.academy.orders.infrastructure.ModelUtils.getOrderEntity;
@@ -28,6 +28,7 @@ import static com.academy.orders.infrastructure.ModelUtils.getPageOf;
 import static com.academy.orders.infrastructure.ModelUtils.getPageable;
 import static com.academy.orders.infrastructure.ModelUtils.getPostAddressEntity;
 import static com.academy.orders.infrastructure.ModelUtils.getProductEntity;
+import static com.academy.orders.infrastructure.TestConstants.TEST_UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.any;
@@ -107,7 +108,7 @@ class OrderRepositoryImplTest {
 		var products = List.of(getProductEntity());
 
 		when(pageableMapper.fromDomain(pageable)).thenReturn(springPageable);
-		when(jpaAdapter.findAllByAccount_Id(userId, springPageable)).thenReturn(orderEntityPage);
+		when(jpaAdapter.findAllByAccountId(userId, springPageable)).thenReturn(orderEntityPage);
 		when(productJpaAdapter.findAllByIdAndLanguageCode(productIds, language)).thenReturn(products);
 		when(pageMapper.toDomain(orderEntityPage)).thenReturn(orderDomainPage);
 
@@ -117,8 +118,17 @@ class OrderRepositoryImplTest {
 		// Then
 		assertEquals(orderDomainPage, actual);
 		verify(pageableMapper).fromDomain(pageable);
-		verify(jpaAdapter).findAllByAccount_Id(userId, springPageable);
+		verify(jpaAdapter).findAllByAccountId(userId, springPageable);
 		verify(productJpaAdapter).findAllByIdAndLanguageCode(productIds, language);
 		verify(pageMapper).toDomain(orderEntityPage);
+	}
+
+	@Test
+	void updateOrderStatusTest() {
+		UUID orderId = TEST_UUID;
+		OrderStatus status = OrderStatus.COMPLETED;
+
+		orderRepository.updateOrderStatus(orderId, status);
+		verify(jpaAdapter).updateOrderStatus(orderId, status);
 	}
 }
