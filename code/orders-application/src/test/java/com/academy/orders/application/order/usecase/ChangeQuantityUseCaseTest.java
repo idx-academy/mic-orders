@@ -31,7 +31,7 @@ class ChangeQuantityUseCaseTest {
 
 	@ParameterizedTest
 	@MethodSource("testChangeQuantityDataProvider")
-	void testChangeQuantity(Product product, int quantity) {
+	void changeQuantityTest(Product product, int quantity) {
 		var quantityDifference = product.quantity() - quantity;
 		doNothing().when(productRepository).setNewProductQuantity(product.id(), quantityDifference);
 
@@ -46,7 +46,7 @@ class ChangeQuantityUseCaseTest {
 
 	@ParameterizedTest
 	@MethodSource("testChangeQuantityThrowsExceptionProvider")
-	void testChangeQuantityThrowsInsufficientProductQuantityException(Product product, int quantity) {
+	void changeQuantityThrowsInsufficientProductQuantityExceptionTest(Product product, int quantity) {
 		assertThrows(InsufficientProductQuantityException.class,
 				() -> changeQuantityUseCase.changeQuantityOfProduct(product, quantity));
 

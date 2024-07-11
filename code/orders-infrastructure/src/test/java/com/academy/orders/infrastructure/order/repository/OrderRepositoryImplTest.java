@@ -52,7 +52,7 @@ class OrderRepositoryImplTest {
 	@Mock
 	private OrderPageMapper pageMapper;
 	@Test
-	void testSave() {
+	void saveTest() {
 		var orderEntity = createOrderEntityWithDependencies();
 		var postAddressEntity = orderEntity.getPostAddress();
 		var accountEntity = orderEntity.getAccount();

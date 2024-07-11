@@ -64,7 +64,7 @@ class CreateOrderUseCaseTest {
 	}
 
 	@Test
-	void testCreateOrder() {
+	void createOrderTest() {
 		var expectedOrderId = UUID.randomUUID();
 		var order = Order.builder().receiver(getOrderReceiver()).postAddress(getPostAddress())
 				.orderStatus(OrderStatus.IN_PROGRESS)
@@ -99,7 +99,7 @@ class CreateOrderUseCaseTest {
 	}
 
 	@Test
-	void testCreateOrderThrowsInsufficientProductQuantityException() {
+	void createOrderThrowsInsufficientProductQuantityExceptionTest() {
 		when(cartItemRepository.findCartItemsByAccountId(anyLong())).thenReturn(singletonList(cartItem));
 		when(calculatePriceUseCase.calculateCartItemPrice(any(CartItem.class))).thenReturn(calculatedPrice);
 		doThrow(InsufficientProductQuantityException.class).when(changeQuantityUseCase)
@@ -114,7 +114,7 @@ class CreateOrderUseCaseTest {
 	}
 
 	@Test
-	void testCreateOrderThrowsEmptyCartException() {
+	void createOrderThrowsEmptyCartExceptionTest() {
 		when(cartItemRepository.findCartItemsByAccountId(anyLong())).thenReturn(emptyList());
 
 		assertThrows(EmptyCartException.class, () -> createOrderUseCase.createOrder(createOrderDto, 1L));

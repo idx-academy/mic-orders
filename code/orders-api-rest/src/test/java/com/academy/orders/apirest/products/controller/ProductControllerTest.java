@@ -44,7 +44,7 @@ class ProductControllerTest {
 	private PageableDTOMapper pageableDTOMapper;
 
 	@Test
-	void testGetProducts() throws Exception {
+	void getProductsTest() throws Exception {
 		var pageableDTO = getPageableDTO();
 		var productPreviewDTO = getProductPreviewDTO();
 

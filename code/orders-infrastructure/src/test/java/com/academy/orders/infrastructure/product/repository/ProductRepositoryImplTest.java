@@ -34,7 +34,7 @@ class ProductRepositoryImplTest {
 
 	@ParameterizedTest
 	@CsvSource({"true", "false"})
-	void testExistsById(Boolean response) {
+	void existsByIdTest(Boolean response) {
 
 		when(productJpaAdapter.existsById(any(UUID.class))).thenReturn(response);
 
@@ -43,13 +43,13 @@ class ProductRepositoryImplTest {
 	}
 
 	@Test
-	void testSetNewProductQuantity() {
+	void setNewProductQuantityTest() {
 		doNothing().when(productJpaAdapter).setNewProductQuantity(any(UUID.class), anyInt());
 		assertDoesNotThrow(() -> productRepository.setNewProductQuantity(UUID.randomUUID(), 1));
 	}
 
 	@Test
-	void testGetAllProducts() {
+	void getAllProductsTest() {
 		var pageable = getPageable();
 		String sort = String.join(",", pageable.sort());
 		var productEntity = getProductEntity();

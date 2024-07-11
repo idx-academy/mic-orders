@@ -26,7 +26,7 @@ class DeleteProductFromCartUseCaseImplTest {
 	private CartItemRepository cartItemRepository;
 
 	@Test
-	void deleteProductFromCart() {
+	void deleteProductFromCartTest() {
 		var accountId = 1L;
 		var productId = UUID.randomUUID();
 
@@ -39,7 +39,7 @@ class DeleteProductFromCartUseCaseImplTest {
 	}
 
 	@Test
-	void deleteProductFromCartThrowsCartItemNotFoundException() {
+	void deleteProductFromCartThrowsCartItemNotFoundExceptionTest() {
 		var accountId = 1L;
 		var productId = UUID.randomUUID();
 
