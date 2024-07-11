@@ -30,6 +30,7 @@ import java.util.UUID;
 import org.springframework.data.domain.PageImpl;
 
 import static com.academy.orders.domain.order.entity.enumerated.DeliveryMethod.NOVA;
+import static com.academy.orders.infrastructure.TestConstants.TEST_UUID;
 
 public class ModelUtils {
 	private static final LocalDateTime DATE_TIME = LocalDateTime.of(1, 1, 1, 1, 1);
@@ -64,7 +65,7 @@ public class ModelUtils {
 	}
 
 	public static OrderEntity getOrderEntity() {
-		return OrderEntity.builder().id(UUID.fromString("4602edda-6e9f-4a35-a472-2f6eac06e203")).createdAt(DATE_TIME)
+		return OrderEntity.builder().id(UUID.fromString(String.valueOf(TEST_UUID))).createdAt(DATE_TIME)
 				.editedAt(DATE_TIME).isPaid(false).orderStatus(OrderStatus.IN_PROGRESS).receiver(getOrderReceiverVO())
 				.build();
 	}

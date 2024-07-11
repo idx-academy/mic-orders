@@ -15,7 +15,7 @@ class LocalDateTimeMapperTest {
 	};
 
 	@Test
-	void testMap() {
+	void mapTest() {
 		// Given
 		LocalDateTime localDateTime = LocalDateTime.of(2023, 7, 3, 12, 0);
 

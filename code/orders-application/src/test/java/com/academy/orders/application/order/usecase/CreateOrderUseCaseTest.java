@@ -64,7 +64,7 @@ class CreateOrderUseCaseTest {
 	}
 
 	@Test
-	void testCreateOrder() {
+	void createOrderTest() {
 		var expectedOrderId = UUID.randomUUID();
 		var order = Order.builder().receiver(getOrderReceiver()).postAddress(getPostAddress())
 				.orderStatus(OrderStatus.IN_PROGRESS)
@@ -72,7 +72,7 @@ class CreateOrderUseCaseTest {
 				.isPaid(false).build();
 
 		when(cartItemRepository.findCartItemsByAccountId(anyLong())).thenReturn(singletonList(cartItem));
-		when(calculatePriceUseCase.calculateTotalPrice(any(Product.class), anyInt())).thenReturn(calculatedPrice);
+		when(calculatePriceUseCase.calculateCartItemPrice(any(CartItem.class))).thenReturn(calculatedPrice);
 		doNothing().when(changeQuantityUseCase).changeQuantityOfProduct(any(Product.class), anyInt());
 		when(orderRepository.save(eq(order), anyLong())).thenReturn(expectedOrderId);
 		doNothing().when(cartItemRepository).deleteCartItemsByAccountId(anyLong());
@@ -82,7 +82,7 @@ class CreateOrderUseCaseTest {
 		assertEquals(expectedOrderId, actualOrderId);
 
 		verify(cartItemRepository).findCartItemsByAccountId(anyLong());
-		verify(calculatePriceUseCase).calculateTotalPrice(any(Product.class), anyInt());
+		verify(calculatePriceUseCase).calculateCartItemPrice(any(CartItem.class));
 		verify(changeQuantityUseCase).changeQuantityOfProduct(any(Product.class), anyInt());
 		verify(orderRepository).save(any(Order.class), anyLong());
 		verify(cartItemRepository).deleteCartItemsByAccountId(anyLong());
@@ -99,9 +99,9 @@ class CreateOrderUseCaseTest {
 	}
 
 	@Test
-	void testCreateOrderThrowsInsufficientProductQuantityException() {
+	void createOrderThrowsInsufficientProductQuantityExceptionTest() {
 		when(cartItemRepository.findCartItemsByAccountId(anyLong())).thenReturn(singletonList(cartItem));
-		when(calculatePriceUseCase.calculateTotalPrice(any(Product.class), anyInt())).thenReturn(calculatedPrice);
+		when(calculatePriceUseCase.calculateCartItemPrice(any(CartItem.class))).thenReturn(calculatedPrice);
 		doThrow(InsufficientProductQuantityException.class).when(changeQuantityUseCase)
 				.changeQuantityOfProduct(any(Product.class), anyInt());
 
@@ -109,12 +109,12 @@ class CreateOrderUseCaseTest {
 				() -> createOrderUseCase.createOrder(createOrderDto, 1L));
 
 		verify(cartItemRepository).findCartItemsByAccountId(anyLong());
-		verify(calculatePriceUseCase).calculateTotalPrice(any(Product.class), anyInt());
+		verify(calculatePriceUseCase).calculateCartItemPrice(any(CartItem.class));
 		verify(changeQuantityUseCase).changeQuantityOfProduct(any(Product.class), anyInt());
 	}
 
 	@Test
-	void testCreateOrderThrowsEmptyCartException() {
+	void createOrderThrowsEmptyCartExceptionTest() {
 		when(cartItemRepository.findCartItemsByAccountId(anyLong())).thenReturn(emptyList());
 
 		assertThrows(EmptyCartException.class, () -> createOrderUseCase.createOrder(createOrderDto, 1L));

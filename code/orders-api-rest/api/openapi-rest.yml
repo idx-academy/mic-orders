@@ -99,6 +99,42 @@ paths:
                 $ref: '#/components/schemas/Order'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
+
+  /v1/orders/{orderId}/status:
+    patch:
+      tags:
+        - Orders
+      summary: Update order status
+      operationId: updateOrderStatus
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: path
+          name: orderId
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: The ID of the order to update
+          example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
+        - in: query
+          name: orderStatus
+          required: true
+          schema:
+            $ref: '#/components/schemas/OrderStatus'
+          description: The new status for the order
+      responses:
+        '200':
+          description: Order status updated successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+
   /v1/users/{userId}/orders:
     post:
       tags:
@@ -234,12 +270,36 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
 
+  /v1/users/{userId}/cart/items:
+    get:
+      tags:
+        - Cart
+      summary: Get user`s cart items
+      description: The endpoint retrieves user`s cart items
+      operationId: getCartItems
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+        - $ref: '#/components/parameters/Language'
+      responses:
+        '200':
+          description: Information about cart items
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartItemsResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+
+
 #COMPONENTS
 #=======================================================================================================================
 components:
 
-  #PARAMETERS
-  #=======================================================================================================================
+#PARAMETERS
+#=======================================================================================================================
   parameters:
     Pageable:
       name: pageable
@@ -281,8 +341,8 @@ components:
       scheme: bearer
       bearerFormat: JWT
 
-  #RESPONSES
-  #=======================================================================================================================
+#RESPONSES
+#=======================================================================================================================
   responses:
     CreatedResponse:
       description: Resource created
@@ -335,8 +395,19 @@ components:
             title: Unauthorized
             detail: Unauthorized access to the resource
 
-  #SCHEMAS
-  #=======================================================================================================================
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorObject'
+          example:
+            status: 403
+            title: Forbidden
+            detail: User does not have success to this resource
+
+#SCHEMAS
+#=======================================================================================================================
   schemas:
     Pageable:
       type: object
@@ -731,3 +802,56 @@ components:
           description: id of recently created order
       required:
         - orderId
+
+    CartItemsResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItem'
+        totalPrice:
+          type: number
+          format: double
+          example: 1000.45
+          description: total price of products in the cart
+      required:
+        - items
+        - totalPrice
+
+    CartItem:
+      type: object
+      properties:
+        productId:
+          type: string
+          format: uuid
+          description: id of the product
+          example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
+        image:
+          type: string
+          example: https://example.com/image.jpg
+          description: Image URL associated with the product.
+        name:
+          type: string
+          example: Iphone
+        productPrice:
+          type: number
+          format: double
+          example: 100.45
+          description: price of products in the cart
+        quantity:
+          type: integer
+          example: 2
+          description: Quantity of the product in the cart.
+        calculatedPrice:
+          type: number
+          format: double
+          example: 200.90
+          description: Price that include quantity of the product
+      required:
+        - productId
+        - image
+        - name
+        - productPrice
+        - quantity
+        - calculatedPrice

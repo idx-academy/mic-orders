@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
@@ -58,7 +59,7 @@ class CartItemRepositoryImplTest {
 
 	@ParameterizedTest
 	@CsvSource({"true", "false"})
-	void testExistsByProductAndUserId(Boolean response) {
+	void existsByProductAndUserIdTest(Boolean response) {
 
 		when(cartItemJpaAdapter.existsById(any(CartItemId.class))).thenReturn(response);
 
@@ -67,7 +68,7 @@ class CartItemRepositoryImplTest {
 	}
 
 	@Test
-	void testSaveCartItem() {
+	void saveCartItemTest() {
 		var productEntity = getProduct();
 		var expected = CartItem.builder().product(productEntity).quantity(1).build();
 
@@ -91,7 +92,7 @@ class CartItemRepositoryImplTest {
 	}
 
 	@Test
-	void testIncrementQuantity() {
+	void saveIncrementQuantityTest() {
 		doNothing().when(cartItemJpaAdapter).increaseQuantity(any(CartItemId.class), anyInt());
 
 		assertDoesNotThrow(() -> cartItemRepository.incrementQuantity(UUID.randomUUID(), 1L));
@@ -99,7 +100,7 @@ class CartItemRepositoryImplTest {
 	}
 
 	@Test
-	void testFindCartItemsByAccountId() {
+	void findCartItemsByAccountIdTest() {
 		var cartItemEntities = singletonList(getCartItemEntity());
 		var cartItems = singletonList(getCartItem());
 
@@ -115,7 +116,7 @@ class CartItemRepositoryImplTest {
 	}
 
 	@Test
-	void testDeleteCartItemsByAccountId() {
+	void deleteCartItemsByAccountIdTest() {
 		doNothing().when(cartItemJpaAdapter).deleteAllByAccountId(anyLong());
 
 		assertDoesNotThrow(() -> cartItemRepository.deleteCartItemsByAccountId(1L));
@@ -123,7 +124,7 @@ class CartItemRepositoryImplTest {
 	}
 
 	@Test
-	void testDeleteCartItemByAccountAndProductIds() {
+	void deleteCartItemByAccountAndProductIdsTest() {
 		var productId = UUID.randomUUID();
 		var accountId = 1L;
 
@@ -131,5 +132,21 @@ class CartItemRepositoryImplTest {
 
 		assertDoesNotThrow(() -> cartItemRepository.deleteCartItemByAccountAndProductIds(accountId, productId));
 		verify(cartItemJpaAdapter).deleteByAccountIdAndProductId(anyLong(), any(UUID.class));
+	}
+
+	@Test
+	void findCartItemsByAccountIdAndLangTest() {
+		var lang = "ua";
+		var accountId = 1L;
+		var cartItemEntities = singletonList(getCartItemEntity());
+		var cartItems = singletonList(getCartItem());
+
+		when(cartItemJpaAdapter.findAllByAccountIdAndProductLang(accountId, lang)).thenReturn(cartItemEntities);
+		when(cartItemMapper.fromEntitiesWithProductsTranslations(cartItemEntities)).thenReturn(cartItems);
+		var actualItems = cartItemRepository.findCartItemsByAccountIdAndLang(accountId, lang);
+
+		assertEquals(cartItems, actualItems);
+		verify(cartItemJpaAdapter).findAllByAccountIdAndProductLang(anyLong(), anyString());
+		verify(cartItemMapper).fromEntitiesWithProductsTranslations(any());
 	}
 }

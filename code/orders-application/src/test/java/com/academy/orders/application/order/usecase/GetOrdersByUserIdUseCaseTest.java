@@ -29,7 +29,7 @@ class GetOrdersByUserIdUseCaseTest {
 	private CalculateOrderTotalPriceUseCase calculateOrderTotalPriceUseCase;
 
 	@Test
-	void getOrdersByUserId() {
+	void getOrdersByUserIdTest() {
 		// Given
 		Long userId = 1L;
 		String language = "ua";

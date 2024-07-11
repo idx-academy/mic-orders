@@ -23,13 +23,13 @@ class PageableMapperTest {
 	private final Pageable pageable = ModelUtils.getPageable();
 
 	@Test
-	void fromDomainTest_withNullPageable() {
+	void fromDomainWithNullPageableTest() {
 		PageRequest result = pageableMapper.fromDomain(null);
 		assertNull(result);
 	}
 
 	@Test
-	void fromDomainTest_withValidPageable() {
+	void fromDomainWithValidPageableTest() {
 		Sort sort = Sort.by(pageable.sort().toArray(new String[0]));
 
 		PageRequest result = pageableMapper.fromDomain(pageable);
@@ -41,7 +41,7 @@ class PageableMapperTest {
 	}
 
 	@Test
-	void mapTest_withValidList() {
+	void mapWithValidListTest() {
 		List<String> sort = pageable.sort();
 		Sort result = pageableMapper.map(sort);
 
@@ -50,7 +50,7 @@ class PageableMapperTest {
 	}
 
 	@Test
-	void mapTest_withEmptyList() {
+	void mapWithEmptyListTest() {
 		List<String> sortProperties = List.of();
 		Sort result = pageableMapper.map(sortProperties);
 

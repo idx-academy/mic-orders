@@ -76,8 +76,4 @@ public class OrderEntity {
 	@Builder.Default
 	private List<OrderItemEntity> orderItems = new ArrayList<>();
 
-	public void addOrderItems(List<OrderItemEntity> orderItems) {
-		this.orderItems.addAll(orderItems);
-		orderItems.forEach(o -> o.setOrder(this));
-	}
 }

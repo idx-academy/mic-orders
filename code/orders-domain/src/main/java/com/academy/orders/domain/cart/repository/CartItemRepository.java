@@ -76,4 +76,15 @@ public interface CartItemRepository {
 	 * @author Denys Ryhal
 	 */
 	void deleteCartItemByAccountAndProductIds(Long accountId, UUID productId);
+
+	/**
+	 * Method finds List of {@link CartItem cartItem} by accountId and language
+	 *
+	 * @param accountId
+	 *            id of the logged-in user.
+	 * @param lang
+	 *            translation of the product.
+	 * @author Denys Ryhal
+	 */
+	List<CartItem> findCartItemsByAccountIdAndLang(Long accountId, String lang);
 }

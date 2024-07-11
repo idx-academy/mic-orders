@@ -5,4 +5,5 @@ import lombok.Builder;
 
 @Builder
 public record CartItem(Product product, Integer quantity) {
+
 }
