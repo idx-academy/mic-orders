@@ -15,11 +15,11 @@ import com.academy.orders.domain.product.entity.Tag;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders_api_rest.generated.model.CartItemDTO;
 import com.academy.orders_api_rest.generated.model.CartItemsResponseDTO;
-import com.academy.orders_api_rest.generated.model.OrderDTO;
+import com.academy.orders_api_rest.generated.model.UserOrderDTO;
 import com.academy.orders_api_rest.generated.model.OrderItemDTO;
 import com.academy.orders_api_rest.generated.model.OrderReceiverDTO;
 import com.academy.orders_api_rest.generated.model.OrderStatusDTO;
-import com.academy.orders_api_rest.generated.model.PageOrderDTO;
+import com.academy.orders_api_rest.generated.model.PageUserOrderDTO;
 import com.academy.orders_api_rest.generated.model.PageableDTO;
 import com.academy.orders_api_rest.generated.model.PlaceOrderRequestDTO;
 import com.academy.orders_api_rest.generated.model.PostAddressDTO;
@@ -160,8 +160,8 @@ public class ModelUtils {
 				.numberOfElements(10).totalPages(10).totalElements(100L).size(1).build();
 	}
 
-	public static PageOrderDTO getPageOrderDTO() {
-		PageOrderDTO pageOrderDTO = new PageOrderDTO();
+	public static PageUserOrderDTO getPageOrderDTO() {
+		PageUserOrderDTO pageOrderDTO = new PageUserOrderDTO();
 		pageOrderDTO.setEmpty(false);
 		pageOrderDTO.setTotalElements(100L);
 		pageOrderDTO.setTotalPages(10);
@@ -174,8 +174,8 @@ public class ModelUtils {
 		return pageOrderDTO;
 	}
 
-	public static OrderDTO getOrderDTO() {
-		OrderDTO orderDTO = new OrderDTO();
+	public static UserOrderDTO getOrderDTO() {
+		UserOrderDTO orderDTO = new UserOrderDTO();
 		orderDTO.setId(TEST_UUID);
 		orderDTO.setOrderStatus(OrderStatusDTO.IN_PROGRESS);
 		orderDTO.setCreatedAt(OffsetDateTime.of(1, 1, 1, 1, 1, 1, 1, ZoneOffset.UTC));

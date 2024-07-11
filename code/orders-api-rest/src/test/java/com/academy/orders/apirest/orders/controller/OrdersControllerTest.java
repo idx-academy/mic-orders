@@ -15,10 +15,10 @@ import com.academy.orders.domain.order.dto.CreateOrderDto;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.exception.InsufficientProductQuantityException;
 import com.academy.orders.domain.order.usecase.CreateOrderUseCase;
+import com.academy.orders.domain.order.usecase.GetOrdersByUserIdUseCase;
+import com.academy.orders_api_rest.generated.model.PageUserOrderDTO;
 import com.academy.orders.domain.order.usecase.UpdateOrderStatusUseCase;
-import com.academy.orders.domain.product.usecase.GetOrdersByUserIdUseCase;
 import com.academy.orders_api_rest.generated.model.OrderStatusDTO;
-import com.academy.orders_api_rest.generated.model.PageOrderDTO;
 import com.academy.orders_api_rest.generated.model.PageableDTO;
 import com.academy.orders_api_rest.generated.model.PlaceOrderRequestDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -144,11 +144,11 @@ class OrdersControllerTest {
 		PageableDTO pageableDTO = new PageableDTO();
 		Pageable pageable = getPageable();
 		Page<Order> orderPage = getPageOf(getOrder());
-		PageOrderDTO pageOrderDTO = getPageOrderDTO();
+		PageUserOrderDTO pageOrderDTO = getPageOrderDTO();
 
 		when(pageableDTOMapper.fromDto(pageableDTO)).thenReturn(pageable);
 		when(getOrdersByUserIdUseCase.getOrdersByUserId(userId, language, pageable)).thenReturn(orderPage);
-		when(pageOrderDTOMapper.toDto(orderPage)).thenReturn(pageOrderDTO);
+		when(pageOrderDTOMapper.toUserDto(orderPage)).thenReturn(pageOrderDTO);
 
 		// When
 		MvcResult result = mockMvc
@@ -159,10 +159,10 @@ class OrdersControllerTest {
 		String contentAsString = result.getResponse().getContentAsString();
 
 		// Then
-		assertEquals(pageOrderDTO, objectMapper.readValue(contentAsString, PageOrderDTO.class));
+		assertEquals(pageOrderDTO, objectMapper.readValue(contentAsString, PageUserOrderDTO.class));
 		verify(pageableDTOMapper).fromDto(pageableDTO);
 		verify(getOrdersByUserIdUseCase).getOrdersByUserId(userId, language, pageable);
-		verify(pageOrderDTOMapper).toDto(orderPage);
+		verify(pageOrderDTOMapper).toUserDto(orderPage);
 	}
 
 	@Test

@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.academy.orders.boot.apirest.orders.common.AbstractControllerIT;
-import com.academy.orders_api_rest.generated.model.OrderDTO;
+import com.academy.orders_api_rest.generated.model.UserOrderDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -23,7 +23,7 @@ class OrdersControllerIT extends AbstractControllerIT {
 		final var requestEntity = new HttpEntity<>(headers);
 
 		// When
-		final var result = this.restTemplate.exchange(url, HttpMethod.GET, requestEntity, OrderDTO.class);
+		final var result = this.restTemplate.exchange(url, HttpMethod.GET, requestEntity, UserOrderDTO.class);
 
 		// Then
 		assertNotNull(result);

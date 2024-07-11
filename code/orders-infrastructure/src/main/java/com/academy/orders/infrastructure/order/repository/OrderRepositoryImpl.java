@@ -3,6 +3,7 @@ package com.academy.orders.infrastructure.order.repository;
 import com.academy.colors_api.generated.api.ColorsApi;
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
+import com.academy.orders.domain.order.dto.OrderFilterParametersDto;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import com.academy.orders.domain.order.repository.OrderRepository;
@@ -16,6 +17,7 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,8 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Transactional(readOnly = true)
 public class OrderRepositoryImpl implements OrderRepository {
-
 	private final OrderJpaAdapter jpaAdapter;
+	private final CustomOrderRepository customOrderRepository;
 	private final ProductJpaAdapter productJpaAdapter;
 	private final AccountJpaAdapter accountJpaAdapter;
 	private final OrderMapper mapper;
@@ -53,10 +55,7 @@ public class OrderRepositoryImpl implements OrderRepository {
 	public Page<Order> findAllByUserId(Long userId, String language, Pageable pageable) {
 		var springPageable = pageableMapper.fromDomain(pageable);
 		var orderEntityPage = jpaAdapter.findAllByAccountId(userId, springPageable);
-		var productIds = orderEntityPage.getContent().stream()
-				.flatMap(orderEntity -> orderEntity.getOrderItems().stream())
-				.map(orderItemEntity -> orderItemEntity.getProduct().getId()).toList();
-		productJpaAdapter.findAllByIdAndLanguageCode(productIds, language);
+		loadProducts(language, orderEntityPage);
 		return pageMapper.toDomain(orderEntityPage);
 	}
 
@@ -68,6 +67,14 @@ public class OrderRepositoryImpl implements OrderRepository {
 		mapOrderItemsWithProductsAndOrder(orderEntity);
 
 		return jpaAdapter.save(orderEntity).getId();
+	}
+
+	@Override
+	public Page<Order> findAll(OrderFilterParametersDto filterParametersDto, String language, Pageable pageable) {
+		var springPageable = pageableMapper.fromDomain(pageable);
+		var orderEntityPage = customOrderRepository.findAllByFilterParameters(filterParametersDto, springPageable);
+		loadProducts(language, orderEntityPage);
+		return pageMapper.toDomain(orderEntityPage);
 	}
 
 	@Override
@@ -91,5 +98,12 @@ public class OrderRepositoryImpl implements OrderRepository {
 			item.setProduct(productJpaAdapter.getReferenceById(item.getProduct().getId()));
 			item.setOrder(orderEntity);
 		});
+	}
+
+	private void loadProducts(String language, PageImpl<OrderEntity> orderEntityPage) {
+		var productIds = orderEntityPage.getContent().stream()
+				.flatMap(orderEntity -> orderEntity.getOrderItems().stream())
+				.map(orderItemEntity -> orderItemEntity.getProduct().getId()).toList();
+		productJpaAdapter.findAllByIdAndLanguageCode(productIds, language);
 	}
 }

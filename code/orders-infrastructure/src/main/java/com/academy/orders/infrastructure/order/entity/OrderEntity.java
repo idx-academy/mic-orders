@@ -68,7 +68,7 @@ public class OrderEntity {
 	@JoinColumn(name = "account_id", nullable = false)
 	private AccountEntity account;
 
-	@OneToOne(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToOne(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
 	private PostAddressEntity postAddress;
 
 	@Setter(AccessLevel.PRIVATE)
@@ -76,4 +76,8 @@ public class OrderEntity {
 	@Builder.Default
 	private List<OrderItemEntity> orderItems = new ArrayList<>();
 
+	public void addOrderItems(List<OrderItemEntity> orderItems) {
+		this.orderItems.addAll(orderItems);
+		orderItems.forEach(o -> o.setOrder(this));
+	}
 }

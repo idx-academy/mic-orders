@@ -1,4 +1,4 @@
-package com.academy.orders.domain.product.usecase;
+package com.academy.orders.domain.order.usecase;
 
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
