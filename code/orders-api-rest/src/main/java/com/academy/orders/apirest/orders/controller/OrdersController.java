@@ -1,4 +1,4 @@
-package com.academy.orders.apirest.orders;
+package com.academy.orders.apirest.orders.controller;
 
 import com.academy.orders.apirest.common.mapper.PageableDTOMapper;
 import com.academy.orders.apirest.orders.mapper.OrderDTOMapper;
@@ -37,14 +37,14 @@ public class OrdersController implements OrdersApi {
 	private final OrderStatusMapper orderStatusMapper;
 
 	@Override
-	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN') || (hasAnyAuthority('ROLE_USER') && @checkAccountIdUseCaseImpl.hasSameId(#userId))")
+	@PreAuthorize("hasAuthority('ROLE_ADMIN') || (hasAuthority('ROLE_USER') && @checkAccountIdUseCaseImpl.hasSameId(#userId))")
 	public PlaceOrderResponseDTO placeOrder(Long userId, PlaceOrderRequestDTO placeOrderRequestDTO) {
 		var id = createOrderUseCase.createOrder(mapper.toCreateOrderDto(placeOrderRequestDTO), userId);
 		return new PlaceOrderResponseDTO().orderId(id);
 	}
 
 	@Override
-	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN') || (hasAnyAuthority('ROLE_USER') && @checkAccountIdUseCaseImpl.hasSameId(#userId))")
+	@PreAuthorize("hasAuthority('ROLE_ADMIN') || (hasAuthority('ROLE_USER') && @checkAccountIdUseCaseImpl.hasSameId(#userId))")
 	public PageOrderDTO getOrdersByUser(Long userId, String language, PageableDTO pageable) {
 		Pageable pageableDomain = pageableDTOMapper.fromDto(pageable);
 		Page<Order> ordersByUserId = getOrdersByUserIdUseCase.getOrdersByUserId(userId, language, pageableDomain);
@@ -52,7 +52,7 @@ public class OrdersController implements OrdersApi {
 	}
 
 	@Override
-	@PreAuthorize("hasAnyAuthority('ROLE_MANAGER')")
+	@PreAuthorize("hasAuthority('ROLE_MANAGER')")
 	public void updateOrderStatus(UUID orderId, OrderStatusDTO orderStatusDTO) {
 		updateOrderStatusUseCase.updateOrderStatus(orderId, orderStatusMapper.fromDTO(orderStatusDTO));
 	}

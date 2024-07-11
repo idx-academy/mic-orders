@@ -18,7 +18,7 @@ class CalculatePriceUseCaseTest {
 	private CalculatePriceUseCaseImpl calculatePriceUseCase;
 
 	@Test
-	void testCalculatePrice() {
+	void calculatePriceTest() {
 		var cartItem = ModelUtils.getCartItem();
 		var expectedResult = cartItem.product().price().multiply(BigDecimal.valueOf(cartItem.quantity()));
 
@@ -27,7 +27,7 @@ class CalculatePriceUseCaseTest {
 	}
 
 	@Test
-	void testCalculateCartTotalPrice() {
+	void calculateCartTotalPriceTest() {
 		var actualPrice = calculatePriceUseCase.calculateCartTotalPrice(cartItems());
 
 		assertEquals(BigDecimal.valueOf(25_200), actualPrice);

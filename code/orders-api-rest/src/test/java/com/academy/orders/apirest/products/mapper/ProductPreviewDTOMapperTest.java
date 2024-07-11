@@ -21,7 +21,7 @@ class ProductPreviewDTOMapperTest {
 	}
 
 	@Test
-	void testToDtoWithValidProduct() {
+	void toDtoWithValidProductTest() {
 		var product = getProduct();
 		var dto = productPreviewDTOMapper.toDto(product);
 
@@ -32,7 +32,7 @@ class ProductPreviewDTOMapperTest {
 	}
 
 	@Test
-	void testToDtoWithEmptyTranslations() {
+	void toDtoWithEmptyTranslationsTest() {
 		var product = getProductWithEmptyTranslations();
 		var dto = productPreviewDTOMapper.toDto(product);
 
@@ -43,7 +43,7 @@ class ProductPreviewDTOMapperTest {
 	}
 
 	@Test
-	void testToDtoWithEmptyTags() {
+	void toDtoWithEmptyTagsTest() {
 		var product = getProductWithEmptyTags();
 		var dto = productPreviewDTOMapper.toDto(product);
 
@@ -53,7 +53,7 @@ class ProductPreviewDTOMapperTest {
 	}
 
 	@Test
-	void testToDtoWithNullTranslations() {
+	void toDtoWithNullTranslationsTest() {
 		var product = getProductWithNullTranslations();
 		var dto = productPreviewDTOMapper.toDto(product);
 

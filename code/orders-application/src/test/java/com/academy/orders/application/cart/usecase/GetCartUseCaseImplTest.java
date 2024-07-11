@@ -32,7 +32,7 @@ class GetCartUseCaseImplTest {
 	private CalculatePriceUseCase calculatePriceUseCase;
 
 	@Test
-	void testGetCartItems() {
+	void getCartItemsTest() {
 		var accountId = 1L;
 		var lang = "ua";
 		var cartItem = getCartItem();

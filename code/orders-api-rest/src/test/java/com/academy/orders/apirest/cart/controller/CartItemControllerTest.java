@@ -69,7 +69,7 @@ class CartItemControllerTest {
 
 	@Test
 	@SneakyThrows
-	void testAddProductToCart() {
+	void addProductToCartTest() {
 		doNothing().when(cartItemByUserUseCase).create(any(CreateCartItemDTO.class));
 
 		mockMvc.perform(post("/v1/users/{userId}/cart/{productId}", userId, productId)
@@ -81,7 +81,7 @@ class CartItemControllerTest {
 
 	@Test
 	@SneakyThrows
-	void testAddProductToCartThrowsNotFoundException() {
+	void addProductToCartThrowsNotFoundExceptionTest() {
 		doThrow(ProductNotFoundException.class).when(cartItemByUserUseCase).create(any(CreateCartItemDTO.class));
 
 		mockMvc.perform(post("/v1/users/{userId}/cart/{productId}", userId, productId)
@@ -93,7 +93,7 @@ class CartItemControllerTest {
 
 	@Test
 	@SneakyThrows
-	void testDeleteProductFromCart() {
+	void deleteProductFromCartTest() {
 		doNothing().when(deleteProductFromCartUseCase).deleteProductFromCart(userId, productId);
 
 		mockMvc.perform(delete("/v1/users/{userId}/cart/items/{productId}", userId, productId)
@@ -103,7 +103,7 @@ class CartItemControllerTest {
 	}
 	@Test
 	@SneakyThrows
-	void testDeleteProductFromCartThrowsNotFoundException() {
+	void deleteProductFromCartThrowsNotFoundExceptionTest() {
 		doThrow(CartItemNotFoundException.class).when(deleteProductFromCartUseCase).deleteProductFromCart(userId,
 				productId);
 
@@ -115,7 +115,7 @@ class CartItemControllerTest {
 
 	@Test
 	@SneakyThrows
-	void testGetCartItems() {
+	void getCartItemsTest() {
 		var lang = "ua";
 		var cartResponseDto = CartResponseDto.builder().build();
 		var cartItemsResponseDTO = ModelUtils.getCartItemResponseDto();

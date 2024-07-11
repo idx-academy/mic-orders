@@ -4,7 +4,6 @@ import com.academy.orders.apirest.auth.validator.CheckAccountIdUseCaseImpl;
 import com.academy.orders.apirest.common.ErrorHandler;
 import com.academy.orders.apirest.common.TestSecurityConfig;
 import com.academy.orders.apirest.common.mapper.PageableDTOMapper;
-import com.academy.orders.apirest.orders.OrdersController;
 import com.academy.orders.apirest.orders.mapper.OrderDTOMapper;
 import com.academy.orders.apirest.orders.mapper.OrderDTOMapperImpl;
 import com.academy.orders.apirest.orders.mapper.OrderStatusMapper;
@@ -82,7 +81,7 @@ class OrdersControllerTest {
 
 	@Test
 	@SneakyThrows
-	void testCreateOrderTest() {
+	void createOrderTest() {
 		Long userId = 1L;
 		String role = "ROLE_ADMIN";
 		var orderId = UUID.randomUUID();
