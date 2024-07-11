@@ -9,6 +9,7 @@ import com.academy.orders.infrastructure.cart.entity.CartItemEntity;
 import com.academy.orders.infrastructure.cart.entity.CartItemId;
 import com.academy.orders.infrastructure.product.repository.ProductJpaAdapter;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -78,4 +79,8 @@ public class CartItemRepositoryImpl implements CartItemRepository {
 		return cartItemMapper.fromEntitiesWithProductsTranslations(cartItems);
 	}
 
+	@Override
+	public Optional<CartItem> findByProductIdAndUserId(UUID productId, Long userId) {
+		return cartItemJpaAdapter.findById(new CartItemId(productId, userId)).map(cartItemMapper::fromEntity);
+	}
 }

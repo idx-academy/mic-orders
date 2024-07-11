@@ -3,6 +3,8 @@ package com.academy.orders.domain.product.repository;
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.product.entity.Product;
+
+import java.util.Optional;
 import java.util.UUID;
 
 public interface ProductRepository {
@@ -30,4 +32,13 @@ public interface ProductRepository {
 	 * @author Denys Ryhal
 	 */
 	boolean existById(UUID id);
+
+	/**
+	 * Method to get the quantity of a product by its ID.
+	 *
+	 * @param productId
+	 *            UUID of the product.
+	 * @return Optional<Integer> containing the quantity if found.
+	 */
+	Optional<Integer> findQuantityById(UUID productId);
 }

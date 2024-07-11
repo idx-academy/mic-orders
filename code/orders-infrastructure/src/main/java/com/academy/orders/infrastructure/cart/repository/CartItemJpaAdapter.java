@@ -3,6 +3,7 @@ package com.academy.orders.infrastructure.cart.repository;
 import com.academy.orders.infrastructure.cart.entity.CartItemEntity;
 import com.academy.orders.infrastructure.cart.entity.CartItemId;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -27,4 +28,6 @@ public interface CartItemJpaAdapter extends CrudRepository<CartItemEntity, CartI
 	@Query("SELECT c FROM CartItemEntity c JOIN FETCH c.product p JOIN FETCH p.productTranslations t "
 			+ " WHERE c.account.id = :accountId AND t.language.code= :lang")
 	List<CartItemEntity> findAllByAccountIdAndProductLang(Long accountId, String lang);
+
+	Optional<CartItemEntity> findByCartItemId(CartItemId cartItemId);
 }

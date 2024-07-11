@@ -4,6 +4,7 @@ import com.academy.orders.domain.cart.entity.CartItem;
 import com.academy.orders.domain.cart.entity.CreateCartItemDTO;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface CartItemRepository {
@@ -87,4 +88,15 @@ public interface CartItemRepository {
 	 * @author Denys Ryhal
 	 */
 	List<CartItem> findCartItemsByAccountIdAndLang(Long accountId, String lang);
+
+	/**
+	 * Method to get the quantity of a product in the cart for a specific user.
+	 *
+	 * @param productId
+	 *            UUID of the product.
+	 * @param userId
+	 *            Long ID of the user.
+	 * @return Optional<CartItem>
+	 */
+	Optional<CartItem> findByProductIdAndUserId(UUID productId, Long userId);
 }
