@@ -3,7 +3,7 @@ package com.academy.orders.application.order.usecase;
 import com.academy.orders.application.ModelUtils;
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
-import com.academy.orders.domain.order.dto.OrderFilterParametersDto;
+import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.repository.OrderRepository;
 import com.academy.orders.domain.order.usecase.CalculateOrderTotalPriceUseCase;
@@ -33,7 +33,7 @@ public class GetAllOrdersUseCaseTest {
 	@Test
 	void getOrdersByUserId() {
 		// Given
-		OrderFilterParametersDto filterParametersDto = ModelUtils.getOrderFilterParametersDto();
+		OrdersFilterParametersDto filterParametersDto = ModelUtils.getOrdersFilterParametersDto();
 		String language = "ua";
 		Pageable pageable = getPageable();
 		Order withoutTotal = getOrderWithoutTotal();

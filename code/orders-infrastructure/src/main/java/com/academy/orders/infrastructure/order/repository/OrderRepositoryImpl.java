@@ -3,7 +3,7 @@ package com.academy.orders.infrastructure.order.repository;
 import com.academy.colors_api.generated.api.ColorsApi;
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
-import com.academy.orders.domain.order.dto.OrderFilterParametersDto;
+import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import com.academy.orders.domain.order.repository.OrderRepository;
@@ -70,7 +70,7 @@ public class OrderRepositoryImpl implements OrderRepository {
 	}
 
 	@Override
-	public Page<Order> findAll(OrderFilterParametersDto filterParametersDto, String language, Pageable pageable) {
+	public Page<Order> findAll(OrdersFilterParametersDto filterParametersDto, String language, Pageable pageable) {
 		var springPageable = pageableMapper.fromDomain(pageable);
 		var orderEntityPage = customOrderRepository.findAllByFilterParameters(filterParametersDto, springPageable);
 		loadProducts(language, orderEntityPage);

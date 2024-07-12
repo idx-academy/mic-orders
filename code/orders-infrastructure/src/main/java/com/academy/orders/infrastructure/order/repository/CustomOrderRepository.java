@@ -1,6 +1,6 @@
 package com.academy.orders.infrastructure.order.repository;
 
-import com.academy.orders.domain.order.dto.OrderFilterParametersDto;
+import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
 import com.academy.orders.infrastructure.order.entity.OrderEntity;
 import com.academy.orders.infrastructure.order.entity.OrderItemEntity;
 import com.academy.orders.infrastructure.order.entity.PostAddressEntity;
@@ -33,25 +33,25 @@ public class CustomOrderRepository {
 		cb = em.getCriteriaBuilder();
 	}
 
-	public PageImpl<OrderEntity> findAllByFilterParameters(OrderFilterParametersDto filterParametersDto,
+	public PageImpl<OrderEntity> findAllByFilterParameters(OrdersFilterParametersDto filterParametersDto,
 			Pageable pageable) {
-		var countTotalQuery = cb.createQuery(OrderEntity.class);
-		var countTotalRoot = countTotalQuery.from(OrderEntity.class);
+		var mainQuery = cb.createQuery(OrderEntity.class);
+		var mainRoot = mainQuery.from(OrderEntity.class);
 
-		Join<OrderEntity, OrderItemEntity> oij = countTotalRoot.join("orderItems", JoinType.LEFT);
-		Join<OrderEntity, PostAddressEntity> paj = countTotalRoot.join("postAddress", JoinType.LEFT);
+		Join<OrderEntity, OrderItemEntity> oij = mainRoot.join("orderItems", JoinType.LEFT);
+		Join<OrderEntity, PostAddressEntity> paj = mainRoot.join("postAddress", JoinType.LEFT);
 
-		List<Order> order = getOrder(pageable, countTotalRoot, oij);
-		List<Predicate> predicates = getAllPredicates(countTotalRoot, paj, filterParametersDto);
+		List<Order> order = getOrder(pageable, mainRoot, oij);
+		List<Predicate> predicates = getAllPredicates(mainRoot, paj, filterParametersDto);
 		List<Predicate> totalPredicates = getTotalPredicates(oij, filterParametersDto);
 
-		countTotalQuery.where(predicates.toArray(new Predicate[0])).groupBy(countTotalRoot.get("id")).orderBy(order);
+		mainQuery.where(predicates.toArray(new Predicate[0])).groupBy(mainRoot.get("id")).orderBy(order);
 
 		if (!totalPredicates.isEmpty()) {
-			countTotalQuery.having(totalPredicates.toArray(new Predicate[0]));
+			mainQuery.having(totalPredicates.toArray(new Predicate[0]));
 		}
 
-		TypedQuery<OrderEntity> countTotalTypedQuery = em.createQuery(countTotalQuery);
+		TypedQuery<OrderEntity> countTotalTypedQuery = em.createQuery(mainQuery);
 		List<OrderEntity> firstResults = countTotalTypedQuery.getResultList();
 
 		if (firstResults.isEmpty()) {
@@ -71,12 +71,12 @@ public class CustomOrderRepository {
 		var query = cb.createQuery(OrderEntity.class);
 		var root = query.from(OrderEntity.class);
 
-		var orderItemJoin = root.fetch("orderItems", JoinType.LEFT);
-		orderItemJoin.fetch("product", JoinType.LEFT);
+		var orderItemFetch = root.fetch("orderItems", JoinType.LEFT);
+		orderItemFetch.fetch("product", JoinType.LEFT);
 		root.fetch("postAddress", JoinType.LEFT);
 		root.fetch("account", JoinType.LEFT);
 
-		query.select(root).where(root.get("id").in(ids.toArray()));
+		query.where(root.get("id").in(ids.toArray()));
 
 		em.createQuery(query).getResultList();
 	}
@@ -101,7 +101,7 @@ public class CustomOrderRepository {
 		return orders;
 	}
 
-	private Long getTotalCount(OrderFilterParametersDto filterParametersDto) {
+	private Long getTotalCount(OrdersFilterParametersDto filterParametersDto) {
 		var countQuery = cb.createQuery(Long.class);
 		var countRoot = countQuery.from(OrderEntity.class);
 
@@ -122,7 +122,7 @@ public class CustomOrderRepository {
 	}
 
 	private List<Predicate> getTotalPredicates(Join<OrderEntity, OrderItemEntity> oij,
-			OrderFilterParametersDto filterParametersDto) {
+			OrdersFilterParametersDto filterParametersDto) {
 		List<Predicate> predicates = new LinkedList<>();
 		if (filterParametersDto.totalLess() != null) {
 			predicates.add(cb.le(cb.sum(oij.get("price")), filterParametersDto.totalLess()));
@@ -134,7 +134,7 @@ public class CustomOrderRepository {
 	}
 
 	private List<Predicate> getAllPredicates(Root<OrderEntity> root, Join<OrderEntity, PostAddressEntity> paj,
-			OrderFilterParametersDto filterParametersDto) {
+			OrdersFilterParametersDto filterParametersDto) {
 		List<Predicate> predicates = new LinkedList<>();
 		if (filterParametersDto.isPaid() != null) {
 			predicates.add(cb.equal(root.get("isPaid"), filterParametersDto.isPaid()));

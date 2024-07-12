@@ -6,7 +6,7 @@ import com.academy.orders.apirest.orders.mapper.OrderStatusMapper;
 import com.academy.orders.apirest.orders.mapper.PageOrderDTOMapper;
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
-import com.academy.orders.domain.order.dto.OrderFilterParametersDto;
+import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.usecase.GetAllOrdersUseCase;
 import com.academy.orders.domain.order.usecase.UpdateOrderStatusUseCase;
@@ -38,7 +38,7 @@ public class OrdersManagementController implements OrdersManagementApi {
 	@PreAuthorize("hasAnyAuthority('ROLE_MANAGER')")
 	public PageManagerOrderDTO getAllOrders(OrdersFilterParametersDTO ordersFilter, String lang, PageableDTO pageable) {
 		Pageable pageableDomain = pageableDTOMapper.fromDto(pageable);
-		OrderFilterParametersDto filterParametersDto = orderFilterParametersDTOMapper.fromDTO(ordersFilter);
+		OrdersFilterParametersDto filterParametersDto = orderFilterParametersDTOMapper.fromDTO(ordersFilter);
 		Page<Order> ordersByUserId = getAllOrdersUseCase.getAllOrders(filterParametersDto, lang, pageableDomain);
 		return pageOrderDTOMapper.toManagerDto(ordersByUserId);
 	}

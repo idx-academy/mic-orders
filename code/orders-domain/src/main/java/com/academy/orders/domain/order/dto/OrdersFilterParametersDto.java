@@ -8,6 +8,7 @@ import java.util.List;
 import lombok.Builder;
 
 @Builder
-public record OrderFilterParametersDto(List<DeliveryMethod> deliveryMethods, List<OrderStatus> statuses, Boolean isPaid,
-		LocalDateTime createdBefore, LocalDateTime createdAfter, BigDecimal totalMore, BigDecimal totalLess) {
+public record OrdersFilterParametersDto(List<DeliveryMethod> deliveryMethods, List<OrderStatus> statuses,
+		Boolean isPaid, LocalDateTime createdBefore, LocalDateTime createdAfter, BigDecimal totalMore,
+		BigDecimal totalLess) {
 }

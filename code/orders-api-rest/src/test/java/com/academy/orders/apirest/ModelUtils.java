@@ -2,6 +2,7 @@ package com.academy.orders.apirest;
 
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
+import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.entity.OrderItem;
 import com.academy.orders.domain.order.entity.OrderReceiver;
@@ -13,8 +14,12 @@ import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.ProductTranslation;
 import com.academy.orders.domain.product.entity.Tag;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
+import com.academy.orders_api_rest.generated.model.AccountResponseDTO;
 import com.academy.orders_api_rest.generated.model.CartItemDTO;
 import com.academy.orders_api_rest.generated.model.CartItemsResponseDTO;
+import com.academy.orders_api_rest.generated.model.ManagerOrderDTO;
+import com.academy.orders_api_rest.generated.model.OrdersFilterParametersDTO;
+import com.academy.orders_api_rest.generated.model.PageManagerOrderDTO;
 import com.academy.orders_api_rest.generated.model.UserOrderDTO;
 import com.academy.orders_api_rest.generated.model.OrderItemDTO;
 import com.academy.orders_api_rest.generated.model.OrderReceiverDTO;
@@ -61,6 +66,7 @@ import static java.util.Collections.singletonList;
 
 public class ModelUtils {
 	private static final LocalDateTime DATE_TIME = LocalDateTime.of(1, 1, 1, 1, 1);
+	public static final OffsetDateTime OFFSET_DATE_TIME = OffsetDateTime.of(1, 1, 1, 1, 1, 1, 1, ZoneOffset.UTC);
 
 	public static Product getProduct() {
 		return Product.builder().id(TEST_UUID).status(ProductStatus.AVAILABLE).image(IMAGE_URL).createdAt(DATE_TIME)
@@ -160,7 +166,7 @@ public class ModelUtils {
 				.numberOfElements(10).totalPages(10).totalElements(100L).size(1).build();
 	}
 
-	public static PageUserOrderDTO getPageOrderDTO() {
+	public static PageUserOrderDTO getPageUserOrderDTO() {
 		PageUserOrderDTO pageOrderDTO = new PageUserOrderDTO();
 		pageOrderDTO.setEmpty(false);
 		pageOrderDTO.setTotalElements(100L);
@@ -170,20 +176,77 @@ public class ModelUtils {
 		pageOrderDTO.setNumber(1);
 		pageOrderDTO.setNumberOfElements(10);
 		pageOrderDTO.setSize(10);
-		pageOrderDTO.content(List.of(getOrderDTO()));
+		pageOrderDTO.content(List.of(getUserOrderDTO()));
 		return pageOrderDTO;
 	}
 
-	public static UserOrderDTO getOrderDTO() {
+	public static OrdersFilterParametersDTO getOrdersFilterParametersDTO() {
+		OrdersFilterParametersDTO ordersFilterParametersDTO = new OrdersFilterParametersDTO();
+		ordersFilterParametersDTO.addDeliveryMethodsItem(NOVA);
+		ordersFilterParametersDTO.addStatusesItem(OrderStatusDTO.IN_PROGRESS);
+		ordersFilterParametersDTO.createdBefore(OFFSET_DATE_TIME);
+		ordersFilterParametersDTO.createdAfter(OFFSET_DATE_TIME);
+		ordersFilterParametersDTO.setIsPaid(false);
+		ordersFilterParametersDTO.setTotalLess(BigDecimal.ZERO);
+		ordersFilterParametersDTO.setTotalMore(BigDecimal.TEN);
+		return ordersFilterParametersDTO;
+	}
+
+	public static OrdersFilterParametersDto getOrdersFilterParametersDto() {
+		return OrdersFilterParametersDto.builder().deliveryMethods(List.of(DeliveryMethod.NOVA))
+				.statuses(List.of(OrderStatus.IN_PROGRESS)).isPaid(false).createdBefore(DATE_TIME)
+				.createdAfter(DATE_TIME).totalMore(BigDecimal.ZERO).totalLess(BigDecimal.TEN).build();
+	}
+
+	public static PageManagerOrderDTO getPageManagerOrderDTO() {
+		PageManagerOrderDTO pageOrderDTO = new PageManagerOrderDTO();
+		pageOrderDTO.setEmpty(false);
+		pageOrderDTO.setTotalElements(100L);
+		pageOrderDTO.setTotalPages(10);
+		pageOrderDTO.setFirst(true);
+		pageOrderDTO.setLast(false);
+		pageOrderDTO.setNumber(1);
+		pageOrderDTO.setNumberOfElements(10);
+		pageOrderDTO.setSize(10);
+		pageOrderDTO.content(List.of(getManagerOrderDTO()));
+		return pageOrderDTO;
+	}
+
+	public static UserOrderDTO getUserOrderDTO() {
 		UserOrderDTO orderDTO = new UserOrderDTO();
 		orderDTO.setId(TEST_UUID);
 		orderDTO.setOrderStatus(OrderStatusDTO.IN_PROGRESS);
-		orderDTO.setCreatedAt(OffsetDateTime.of(1, 1, 1, 1, 1, 1, 1, ZoneOffset.UTC));
+		orderDTO.setCreatedAt(OFFSET_DATE_TIME);
+		orderDTO.total(BigDecimal.TEN);
 		orderDTO.setIsPaid(false);
 		orderDTO.setPostAddress(getPostAddressDTO());
 		orderDTO.setReceiver(getOrderReceiverDTO());
 		orderDTO.setOrderItems(List.of(getOrderItemDTO()));
 		return orderDTO;
+	}
+
+	public static ManagerOrderDTO getManagerOrderDTO() {
+		ManagerOrderDTO orderDTO = new ManagerOrderDTO();
+		orderDTO.setId(TEST_UUID);
+		orderDTO.setOrderStatus(OrderStatusDTO.IN_PROGRESS);
+		orderDTO.setCreatedAt(OFFSET_DATE_TIME);
+		orderDTO.total(BigDecimal.TEN);
+		orderDTO.setIsPaid(false);
+		orderDTO.editedAt(OFFSET_DATE_TIME);
+		orderDTO.account(getAccountResponseDTO());
+		orderDTO.setPostAddress(getPostAddressDTO());
+		orderDTO.setReceiver(getOrderReceiverDTO());
+		orderDTO.setOrderItems(List.of(getOrderItemDTO()));
+		return orderDTO;
+	}
+
+	private static AccountResponseDTO getAccountResponseDTO() {
+		AccountResponseDTO accountResponseDTO = new AccountResponseDTO();
+		accountResponseDTO.id(TEST_ID);
+		accountResponseDTO.email(TEST_EMAIL);
+		accountResponseDTO.firstName(TEST_FIRST_NAME);
+		accountResponseDTO.lastName(TEST_LAST_NAME);
+		return accountResponseDTO;
 	}
 
 	public static OrderItemDTO getOrderItemDTO() {
@@ -216,6 +279,18 @@ public class ModelUtils {
 		pageableParams.add("size", size.toString());
 		pageableParams.addAll("sort", sort);
 		return pageableParams;
+	}
+
+	public static MultiValueMap<String, String> getOrdersFilterParametersDTOParams(OrdersFilterParametersDTO dto) {
+		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+		dto.getDeliveryMethods().forEach(deliveryMethod -> params.add("deliveryMethods", deliveryMethod.toString()));
+		dto.getStatuses().forEach(status -> params.add("statuses", status.toString()));
+		params.add("isPaid", String.valueOf(dto.getIsPaid()));
+		params.add("createdBefore", String.valueOf(dto.getCreatedBefore()));
+		params.add("createdAfter", String.valueOf(dto.getCreatedAfter()));
+		params.add("totalMore", String.valueOf(dto.getTotalMore()));
+		params.add("totalLess", String.valueOf(dto.getTotalLess()));
+		return params;
 	}
 
 	public static Pageable getPageable() {

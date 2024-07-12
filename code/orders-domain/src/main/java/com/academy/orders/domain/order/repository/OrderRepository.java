@@ -2,7 +2,7 @@ package com.academy.orders.domain.order.repository;
 
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
-import com.academy.orders.domain.order.dto.OrderFilterParametersDto;
+import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
 import java.util.Optional;
 import java.util.UUID;
 import com.academy.orders.domain.order.entity.Order;
@@ -71,5 +71,5 @@ public interface OrderRepository {
 	 *
 	 * @author Denys Liubchenko
 	 */
-	Page<Order> findAll(OrderFilterParametersDto filterParametersDto, String language, Pageable pageable);
+	Page<Order> findAll(OrdersFilterParametersDto filterParametersDto, String language, Pageable pageable);
 }

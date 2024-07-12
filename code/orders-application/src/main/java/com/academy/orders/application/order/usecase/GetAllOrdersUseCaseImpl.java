@@ -2,7 +2,7 @@ package com.academy.orders.application.order.usecase;
 
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
-import com.academy.orders.domain.order.dto.OrderFilterParametersDto;
+import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.repository.OrderRepository;
 import com.academy.orders.domain.order.usecase.CalculateOrderTotalPriceUseCase;
@@ -17,7 +17,7 @@ public class GetAllOrdersUseCaseImpl implements GetAllOrdersUseCase {
 	private final CalculateOrderTotalPriceUseCase calculateOrderTotalPriceUseCase;
 
 	@Override
-	public Page<Order> getAllOrders(OrderFilterParametersDto filterParametersDto, String language, Pageable pageable) {
+	public Page<Order> getAllOrders(OrdersFilterParametersDto filterParametersDto, String language, Pageable pageable) {
 		Page<Order> orderPage = orderRepository.findAll(filterParametersDto, language, pageable);
 
 		return Page.<Order>builder().totalElements(orderPage.totalElements()).totalPages(orderPage.totalPages())

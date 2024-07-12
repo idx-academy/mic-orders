@@ -9,7 +9,7 @@ import com.academy.orders.domain.cart.entity.CartItem;
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.order.dto.CreateOrderDto;
-import com.academy.orders.domain.order.dto.OrderFilterParametersDto;
+import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.entity.OrderItem;
 import com.academy.orders.domain.order.entity.OrderReceiver;
@@ -121,10 +121,9 @@ public class ModelUtils {
 		return CartResponseDto.builder().items(cartItemDtos).totalPrice(totalPrice).build();
 	}
 
-	public static OrderFilterParametersDto getOrderFilterParametersDto() {
-		return OrderFilterParametersDto.builder().isPaid(false).createdAfter(DATE_TIME)
-				.createdBefore(DATE_TIME.plusYears(20)).deliveryMethods(List.of(NOVA))
-				.statuses(List.of(OrderStatus.IN_PROGRESS)).totalLess(BigDecimal.valueOf(200))
-				.totalMore(BigDecimal.valueOf(0)).build();
+	public static OrdersFilterParametersDto getOrdersFilterParametersDto() {
+		return OrdersFilterParametersDto.builder().deliveryMethods(List.of(DeliveryMethod.NOVA))
+				.statuses(List.of(OrderStatus.IN_PROGRESS)).isPaid(false).createdBefore(DATE_TIME)
+				.createdAfter(DATE_TIME).totalMore(BigDecimal.ZERO).totalLess(BigDecimal.TEN).build();
 	}
 }

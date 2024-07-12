@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ExtendWith(MockitoExtension.class)
 class CalculateOrderTotalPriceUseCaseTest {
@@ -55,5 +56,14 @@ class CalculateOrderTotalPriceUseCaseTest {
 
 		// Then
 		assertEquals(ordersWithTotal, actual);
+	}
+
+	@Test
+	void calculateTotalPriceForOrderListIfNullTest() {
+		// When
+		List<Order> actual = calculateOrderTotalPriceUseCase.calculateTotalPriceFor((List<Order>) null);
+
+		// Then
+		assertNull(actual);
 	}
 }

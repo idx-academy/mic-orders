@@ -56,11 +56,8 @@ public class SecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http, HandlerExceptionResolver handlerExceptionResolver)
 			throws Exception {
 		return http.cors(Customizer.withDefaults()).csrf(AbstractHttpConfigurer::disable)
-				.authorizeHttpRequests(auth -> {
-					auth.requestMatchers("/v1/management/orders", "/auth/sign-in", "/auth/sign-up", "/swagger-ui/**",
-							"/v3/api-docs/**", "/v1/products").permitAll();
-					auth.anyRequest().authenticated();
-				}).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults())
 						.authenticationEntryPoint(authenticationEntryPoint(handlerExceptionResolver)))
 				.build();
