@@ -300,7 +300,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CartItem'
+                $ref: '#/components/schemas/UpdatedCartItem'
         '400':
           $ref: '#/components/responses/BadRequestResponse'
         '401':
@@ -835,6 +835,35 @@ components:
         - productId
         - image
         - name
+        - productPrice
+        - quantity
+        - calculatedPrice
+
+    UpdatedCartItem:
+      type: object
+      properties:
+        productId:
+          type: string
+          format: uuid
+          description: id of the product
+          example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
+        quantity:
+          type: integer
+          example: 2
+          description: Quantity of the product in the cart.
+        productPrice:
+          type: number
+          format: bigDecimal
+          example: 100.45
+          description: price of products in the cart
+
+        calculatedPrice:
+          type: number
+          format: bigDecimal
+          example: 200.90
+          description: Price that includes quantity of the product
+      required:
+        - productId
         - productPrice
         - quantity
         - calculatedPrice
