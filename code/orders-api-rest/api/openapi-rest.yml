@@ -275,13 +275,13 @@ paths:
         '403':
           $ref: '#/components/responses/Forbidden'
 
-  /v1/users/{userId}/cart/{productId}/quantitycheck:
-    get:
+  /v1/users/{userId}/cart/{productId}/setquantity:
+    patch:
       tags:
         - Cart
-      summary: Check available quantity of a product in stock
-      description: The endpoint checks the available quantity in stock for a specific product in the user's cart.
-      operationId: checkProductQuantity
+      summary: Set new quantity of the cart item
+      description: The endpoint sets a new quantity for a specific product in the user's cart.
+      operationId: setCartItemQuantity
       security:
         - bearerAuth: [ ]
       parameters:
@@ -296,11 +296,11 @@ paths:
           example: 5
       responses:
         '200':
-          description: The available quantity in stock
+          description: The quantity of the product in the cart was updated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/QuantityCheckResponse'
+                $ref: '#/components/schemas/CartItem'
         '400':
           $ref: '#/components/responses/BadRequestResponse'
         '401':
@@ -838,14 +838,3 @@ components:
         - productPrice
         - quantity
         - calculatedPrice
-
-    QuantityCheckResponse:
-      type: object
-      properties:
-        isAvailable:
-          type: boolean
-        availableQuantity:
-          type: integer
-      required:
-        - isAvailable
-        - availableQuantity

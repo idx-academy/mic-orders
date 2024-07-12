@@ -28,6 +28,4 @@ public interface CartItemJpaAdapter extends CrudRepository<CartItemEntity, CartI
 	@Query("SELECT c FROM CartItemEntity c JOIN FETCH c.product p JOIN FETCH p.productTranslations t "
 			+ " WHERE c.account.id = :accountId AND t.language.code= :lang")
 	List<CartItemEntity> findAllByAccountIdAndProductLang(Long accountId, String lang);
-
-	Optional<CartItemEntity> findByCartItemId(CartItemId cartItemId);
 }

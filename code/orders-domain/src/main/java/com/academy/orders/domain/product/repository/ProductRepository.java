@@ -41,4 +41,6 @@ public interface ProductRepository {
 	 * @return Optional<Integer> containing the quantity if found.
 	 */
 	Optional<Integer> findQuantityById(UUID productId);
+
+	Optional<Object> findById(UUID productId);
 }
