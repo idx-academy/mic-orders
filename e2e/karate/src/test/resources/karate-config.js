@@ -13,8 +13,16 @@ function fn() {
   // Config - Environment
   karate.set(read(`classpath:config-${karate.env}.yml`));
   // Config - Environment Secrets
-  karate.set(read(`classpath:config-${karate.env}-secrets.yml`));
 
+  let secretConfig = read(`classpath:config-${karate.env}-secrets.yml`);
+  karate.set(secretConfig);
+
+  //Config datasource
+  let datasource = {
+    url: secretConfig.datasource.url,
+    username: secretConfig.datasource.username,
+    password: secretConfig.datasource.password
+  };
 
   // Reporting Flags
   let showLogOption = false;
