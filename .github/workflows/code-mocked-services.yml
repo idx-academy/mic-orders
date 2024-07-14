@@ -85,7 +85,7 @@ jobs:
 
       - name: Update Kubernetes resources
         run: |
-          cd k8s-app-manifests/apps/env/${{ ENV }}/mocked-services
+          cd k8s-app-manifests/apps/env/${ENV}/mocked-services
           kustomize edit set image ${{ env.ACR_REGISTRY }}/${{ env.APP_NAME }}=${{ env.ACR_REGISTRY }}/${{ env.IMAGE }}
 
       - name: Commit files
@@ -93,5 +93,5 @@ jobs:
           cd k8s-app-manifests
           git config --global user.email "github-actions@github.com"
           git config --global user.name "github-actions"
-          git commit -am "Update backend image ${{ env.IMAGE }}"
+          git commit -am "Update mocked-services image ${{ env.IMAGE }}"
           git push -u origin main
