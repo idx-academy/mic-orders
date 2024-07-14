@@ -44,12 +44,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 	}
 
 	@Override
-	public Optional<Integer> findQuantityById(UUID productId) {
-		return productJpaAdapter.findById(productId).map(productMapper::fromEntity).map(Product::quantity);
-	}
-
-	@Override
-	public Optional<Object> findById(UUID productId) {
-		return Optional.of(productJpaAdapter.findById(productId));
+	public Optional<Product> findById(UUID productId) {
+		return productJpaAdapter.findById(productId).map(productMapper::fromEntity);
 	}
 }

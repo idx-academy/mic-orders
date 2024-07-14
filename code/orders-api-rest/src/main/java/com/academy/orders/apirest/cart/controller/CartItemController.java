@@ -52,7 +52,7 @@ public class CartItemController implements CartApi {
 	public UpdatedCartItemDTO setCartItemQuantity(Long userId, UUID productId, Integer quantity) {
 		var updatedCartItemDto = setCartItemQuantityUseCase.setQuantity(productId, userId, quantity);
 		return new UpdatedCartItemDTO().productId(updatedCartItemDto.productId())
-				.quantity(updatedCartItemDto.quantity()).productPrice(updatedCartItemDto.cartItemsPrice())
+				.quantity(updatedCartItemDto.quantity()).productPrice(updatedCartItemDto.cartItemPrice())
 				.calculatedPrice(updatedCartItemDto.totalPrice());
 	}
 }

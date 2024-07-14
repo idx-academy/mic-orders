@@ -34,13 +34,11 @@ public interface ProductRepository {
 	boolean existById(UUID id);
 
 	/**
-	 * Method to get the quantity of a product by its ID.
+	 * Finds a product by its ID.
 	 *
 	 * @param productId
-	 *            UUID of the product.
-	 * @return Optional<Integer> containing the quantity if found.
+	 *            the ID of the product to find
+	 * @return an {@code Optional} containing the product if found, otherwise empty
 	 */
-	Optional<Integer> findQuantityById(UUID productId);
-
-	Optional<Object> findById(UUID productId);
+	Optional<Product> findById(UUID productId);
 }

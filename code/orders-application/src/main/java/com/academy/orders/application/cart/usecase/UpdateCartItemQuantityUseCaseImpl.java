@@ -37,21 +37,19 @@ public class UpdateCartItemQuantityUseCaseImpl implements SetCartItemQuantityUse
 
 		updateQuantityOfCartItem(quantity, productId, userId);
 
-		Product product = (Product) productRepository.findById(productId).orElseThrow();
+		Product product = productRepository.findById(productId).orElseThrow();
+
 		if (quantity > product.quantity()) {
 			throw new ExceedsAvailableException(productId, quantity);
 		}
 
-		// Update the quantity of the cart item
 		updateQuantityOfCartItem(quantity, productId, userId);
 
-		// Fetch all cart items for the user
 		List<CartItem> cartItems = getAll(userId);
 
-		// Calculate prices
-		var cartItemsPrice = calculatePriceUseCase.calculateCartItemPrice(cartItem);
+		var cartItemPrice = calculatePriceUseCase.calculateCartItemPrice(cartItem);
 		var totalPrice = calculatePriceUseCase.calculateCartTotalPrice(cartItems);
-		return new UpdatedCartItemDto(productId, quantity, cartItemsPrice, totalPrice);
+		return new UpdatedCartItemDto(productId, quantity, cartItemPrice, totalPrice);
 	}
 
 	private List<CartItem> getAll(Long userId) {
