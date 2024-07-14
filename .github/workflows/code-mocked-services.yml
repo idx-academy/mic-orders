@@ -21,7 +21,7 @@ jobs:
       ENV: dev
       # ${{ github.ref == 'refs/heads/main' && 'prod' || github.ref == 'refs/heads/develop' && 'dev' || 'test'}}
       APP_NAME: mocked-services
-      MOCKS_PATH: code/orders-boot/src/test/resources/compose/mocks
+      MOCKS_PATH: "code/orders-boot/src/test/resources/compose/mocks"
       ACR_REGISTRY: ${{ secrets.AZURE_ACR_NAME }}.azurecr.io
       
     steps:
