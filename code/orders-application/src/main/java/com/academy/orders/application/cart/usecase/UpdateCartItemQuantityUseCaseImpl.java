@@ -14,7 +14,7 @@ import com.academy.orders.domain.product.usecase.CalculatePriceUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -47,9 +47,9 @@ public class UpdateCartItemQuantityUseCaseImpl implements SetCartItemQuantityUse
 
 		List<CartItem> cartItems = getAll(userId);
 
-		var cartItemPrice = calculatePriceUseCase.calculateCartItemPrice(cartItem);
+		var cartItemPrice = cartItem.product().price().multiply(new BigDecimal(quantity));
 		var totalPrice = calculatePriceUseCase.calculateCartTotalPrice(cartItems);
-		return new UpdatedCartItemDto(productId, quantity, cartItemPrice, totalPrice);
+		return new UpdatedCartItemDto(productId, quantity, product.price(), cartItemPrice, totalPrice);
 	}
 
 	private List<CartItem> getAll(Long userId) {
@@ -59,10 +59,8 @@ public class UpdateCartItemQuantityUseCaseImpl implements SetCartItemQuantityUse
 	private void updateQuantityOfCartItem(Integer quantity, UUID productId, Long userId) {
 		CartItem cartItem = cartItemRepository.findByProductIdAndUserId(productId, userId)
 				.orElseThrow(() -> new CartItemNotFoundException(productId));
-		// Create a new cart item with the updated quantity
 		CartItem updatedCartItem = new CartItem(cartItem.product(), quantity);
 
-		// Save the new cart item
 		cartItemRepository
 				.save(new CreateCartItemDTO(updatedCartItem.product().id(), userId, updatedCartItem.quantity()));
 	}

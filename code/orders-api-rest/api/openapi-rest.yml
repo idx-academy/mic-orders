@@ -861,8 +861,14 @@ components:
           format: bigDecimal
           example: 200.90
           description: Price that includes quantity of the product
+        totalPrice:
+          type: number
+          format: bigDecimal
+          example: 1000.45
+          description: total price of products in the cart
       required:
         - productId
         - quantity
         - productPrice
         - calculatedPrice
+        - totalPrice

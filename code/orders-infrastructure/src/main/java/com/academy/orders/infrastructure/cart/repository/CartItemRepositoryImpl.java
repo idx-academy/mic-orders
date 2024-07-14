@@ -35,17 +35,16 @@ public class CartItemRepositoryImpl implements CartItemRepository {
 	@Transactional
 	public CartItem save(CreateCartItemDTO cartItem) {
 		log.info("Saving cart item {}:", cartItem);
-		var cartItemEntity = cartItemMapper.toEntity(cartItem);
 
 		CartItemId cartItemId = new CartItemId(cartItem.productId(), cartItem.userId());
 		Optional<CartItemEntity> existingCartItemEntity = cartItemJpaAdapter.findById(cartItemId);
 
+		CartItemEntity cartItemEntity;
+
 		if (existingCartItemEntity.isPresent()) {
-			// Update the existing entity
 			cartItemEntity = existingCartItemEntity.get();
 			cartItemEntity.setQuantity(cartItem.quantity());
 		} else {
-			// Create a new entity
 			cartItemEntity = cartItemMapper.toEntity(cartItem);
 			setProduct(cartItemEntity, cartItem.productId());
 			setAccount(cartItemEntity, cartItem.userId());
