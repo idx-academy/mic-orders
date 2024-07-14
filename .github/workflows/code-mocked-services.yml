@@ -6,9 +6,6 @@ on:
       - 'code/orders-boot/src/test/resources/compose/mocks/**'
     branches:
       - develop
-      - main
-  pull_request:
-    types: [opened, synchronize, reopened]
 
 permissions:
   id-token: write
@@ -19,11 +16,9 @@ jobs:
     name: Build mocked services and deploy
     runs-on: ubuntu-latest
     environment:
-      name: dev
-      #name: ${{ github.ref == 'refs/heads/main' && 'prod' || github.ref == 'refs/heads/develop' && 'dev' || 'test'}}
+      name: ${{ github.ref == 'refs/heads/main' && 'prod' || github.ref == 'refs/heads/develop' && 'dev' || 'test'}}
     env:
-      ENV: dev
-      # ${{ github.ref == 'refs/heads/main' && 'prod' || github.ref == 'refs/heads/develop' && 'dev' || 'test'}}
+      ENV: ${{ github.ref == 'refs/heads/main' && 'prod' || github.ref == 'refs/heads/develop' && 'dev' || 'test'}}
       APP_NAME: mocked-services
       MOCKS_PATH: code/orders-boot/src/test/resources/compose/mocks
       ACR_REGISTRY: ${{ secrets.AZURE_ACR_NAME }}.azurecr.io
