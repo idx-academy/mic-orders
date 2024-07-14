@@ -21,7 +21,7 @@ jobs:
       ENV: dev
       # ${{ github.ref == 'refs/heads/main' && 'prod' || github.ref == 'refs/heads/develop' && 'dev' || 'test'}}
       APP_NAME: mocked-services
-      MOCKS_PATH: "code/orders-boot/src/test/resources/compose/mocks"
+      MOCKS_PATH: code/orders-boot/src/test/resources/compose/mocks
       ACR_REGISTRY: ${{ secrets.AZURE_ACR_NAME }}.azurecr.io
       
     steps:
@@ -53,7 +53,7 @@ jobs:
       - name: Create Dockerfile dynamically
         run: |
           echo "FROM wiremock/wiremock:3.6.0
-          COPY ${{ MOCKS_PATH }} /home/wiremock" > Dockerfile
+          COPY ${MOCKS_PATH} /home/wiremock" > Dockerfile
 
       - name: Build and export to Docker
         uses: docker/build-push-action@v5
