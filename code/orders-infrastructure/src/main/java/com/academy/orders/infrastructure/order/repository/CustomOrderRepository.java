@@ -33,6 +33,16 @@ public class CustomOrderRepository {
 		cb = em.getCriteriaBuilder();
 	}
 
+	/**
+	 * Retrieves a paginated list of order entities based on the specified filter
+	 * parameters.
+	 *
+	 * @param filterParametersDto
+	 *            the filter parameters to apply when retrieving the order entities
+	 * @param pageable
+	 *            the pagination information
+	 * @return a paginated list of order entities that match the filter parameters
+	 */
 	public PageImpl<OrderEntity> findAllByFilterParameters(OrdersFilterParametersDto filterParametersDto,
 			Pageable pageable) {
 		var mainQuery = cb.createQuery(OrderEntity.class);

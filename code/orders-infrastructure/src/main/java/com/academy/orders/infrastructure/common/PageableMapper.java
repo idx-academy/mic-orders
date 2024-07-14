@@ -30,7 +30,7 @@ public interface PageableMapper {
 
 	default Sort map(List<String> value) {
 		List<Sort.Order> orderList = new LinkedList<>();
-		if(value.isEmpty()) {
+		if (value.isEmpty()) {
 			return Sort.unsorted();
 		}
 
