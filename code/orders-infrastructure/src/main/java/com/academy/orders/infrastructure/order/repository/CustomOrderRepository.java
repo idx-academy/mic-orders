@@ -24,6 +24,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class CustomOrderRepository {
+	public static final String ORDER_ITEMS = "orderItems";
+	public static final String POST_ADDRESS = "postAddress";
+	public static final String PRICE = "price";
 	private final EntityManager em;
 	private final CriteriaBuilder cb;
 
@@ -48,8 +51,8 @@ public class CustomOrderRepository {
 		var mainQuery = cb.createQuery(OrderEntity.class);
 		var mainRoot = mainQuery.from(OrderEntity.class);
 
-		Join<OrderEntity, OrderItemEntity> oij = mainRoot.join("orderItems", JoinType.LEFT);
-		Join<OrderEntity, PostAddressEntity> paj = mainRoot.join("postAddress", JoinType.LEFT);
+		Join<OrderEntity, OrderItemEntity> oij = mainRoot.join(ORDER_ITEMS, JoinType.LEFT);
+		Join<OrderEntity, PostAddressEntity> paj = mainRoot.join(POST_ADDRESS, JoinType.LEFT);
 
 		List<Order> order = getOrder(pageable, mainRoot, oij);
 		List<Predicate> predicates = getAllPredicates(mainRoot, paj, filterParametersDto);
@@ -81,9 +84,9 @@ public class CustomOrderRepository {
 		var query = cb.createQuery(OrderEntity.class);
 		var root = query.from(OrderEntity.class);
 
-		var orderItemFetch = root.fetch("orderItems", JoinType.LEFT);
+		var orderItemFetch = root.fetch(ORDER_ITEMS, JoinType.LEFT);
 		orderItemFetch.fetch("product", JoinType.LEFT);
-		root.fetch("postAddress", JoinType.LEFT);
+		root.fetch(POST_ADDRESS, JoinType.LEFT);
 		root.fetch("account", JoinType.LEFT);
 
 		query.where(root.get("id").in(ids.toArray()));
@@ -98,7 +101,7 @@ public class CustomOrderRepository {
 
 		pageableSort.forEach(order -> {
 			if (order.getProperty().equals("total")) {
-				var totalPriceExpression = cb.sum(orderItemJoin.get("price"));
+				var totalPriceExpression = cb.sum(orderItemJoin.get(PRICE));
 				Order totalOrder = order.getDirection().isAscending()
 						? cb.asc(totalPriceExpression)
 						: cb.desc(totalPriceExpression);
@@ -115,8 +118,8 @@ public class CustomOrderRepository {
 		var countQuery = cb.createQuery(Long.class);
 		var countRoot = countQuery.from(OrderEntity.class);
 
-		Join<OrderEntity, OrderItemEntity> oij = countRoot.join("orderItems", JoinType.LEFT);
-		Join<OrderEntity, PostAddressEntity> paj = countRoot.join("postAddress", JoinType.LEFT);
+		Join<OrderEntity, OrderItemEntity> oij = countRoot.join(ORDER_ITEMS, JoinType.LEFT);
+		Join<OrderEntity, PostAddressEntity> paj = countRoot.join(POST_ADDRESS, JoinType.LEFT);
 
 		List<Predicate> predicatesCount = getAllPredicates(countRoot, paj, filterParametersDto);
 		List<Predicate> totalCountPredicates = getTotalPredicates(oij, filterParametersDto);
@@ -135,10 +138,10 @@ public class CustomOrderRepository {
 			OrdersFilterParametersDto filterParametersDto) {
 		List<Predicate> predicates = new LinkedList<>();
 		if (filterParametersDto.totalLess() != null) {
-			predicates.add(cb.le(cb.sum(oij.get("price")), filterParametersDto.totalLess()));
+			predicates.add(cb.le(cb.sum(oij.get(PRICE)), filterParametersDto.totalLess()));
 		}
 		if (filterParametersDto.totalMore() != null) {
-			predicates.add(cb.ge(cb.sum(oij.get("price")), filterParametersDto.totalMore()));
+			predicates.add(cb.ge(cb.sum(oij.get(PRICE)), filterParametersDto.totalMore()));
 		}
 		return predicates;
 	}

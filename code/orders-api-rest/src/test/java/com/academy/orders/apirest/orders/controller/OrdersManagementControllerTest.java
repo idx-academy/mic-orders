@@ -52,7 +52,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(OrdersManagementController.class)
 @ContextConfiguration(classes = {OrdersManagementController.class})
 @Import(value = {AopAutoConfiguration.class, TestSecurityConfig.class, ErrorHandler.class})
-public class OrdersManagementControllerTest {
+class OrdersManagementControllerTest {
 	@Autowired
 	private ObjectMapper objectMapper;
 	@Autowired
