@@ -14,7 +14,7 @@ public interface PageableMapper {
 			return null;
 		}
 
-		Sort sort = null;
+		Sort sort;
 
 		sort = map(pageable.sort());
 
@@ -36,17 +36,18 @@ public interface PageableMapper {
 
 		for (int i = 0; i < value.size() - 1; i++) {
 			String param = value.get(i);
-			String nextValue = value.get(i + 1);
-			Sort.Direction direction = Sort.Direction.ASC;
+			if (!param.equalsIgnoreCase("asc") && !param.equalsIgnoreCase("desc")) {
+				String nextValue = value.get(i + 1);
+				Sort.Direction direction = Sort.Direction.ASC;
 
-			if (nextValue.equalsIgnoreCase("desc")) {
-				direction = Sort.Direction.DESC;
-			} else if (!nextValue.equalsIgnoreCase("asc")) {
-				orderList.add(Sort.Order.asc(param));
-				continue;
+				if (nextValue.equalsIgnoreCase("desc")) {
+					direction = Sort.Direction.DESC;
+				} else if (!nextValue.equalsIgnoreCase("asc")) {
+					orderList.add(Sort.Order.asc(param));
+					continue;
+				}
+				orderList.add(new Sort.Order(direction, param));
 			}
-			orderList.add(new Sort.Order(direction, param));
-			i++;
 		}
 
 		String last = value.get(value.size() - 1);
