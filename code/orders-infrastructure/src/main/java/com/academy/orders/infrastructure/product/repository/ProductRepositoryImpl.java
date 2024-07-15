@@ -6,7 +6,6 @@ import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.repository.ProductRepository;
 import com.academy.orders.infrastructure.product.ProductMapper;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

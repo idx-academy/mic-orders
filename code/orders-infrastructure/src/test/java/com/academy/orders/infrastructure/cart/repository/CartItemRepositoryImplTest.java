@@ -9,7 +9,9 @@ import com.academy.orders.infrastructure.cart.entity.CartItemEntity;
 import com.academy.orders.infrastructure.cart.entity.CartItemId;
 import com.academy.orders.infrastructure.product.entity.ProductEntity;
 import com.academy.orders.infrastructure.product.repository.ProductJpaAdapter;
+import java.util.Optional;
 import java.util.UUID;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +20,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import static com.academy.orders.infrastructure.ModelUtils.getCartItem;
 import static com.academy.orders.infrastructure.ModelUtils.getCartItemEntity;
 import static com.academy.orders.infrastructure.ModelUtils.getProduct;
@@ -92,6 +93,26 @@ class CartItemRepositoryImplTest {
 	}
 
 	@Test
+	void saveCartItemWithExistingTest() {
+		var existingCartItemEntity = getCartItemEntity();
+		var updatedQuantity = 2;
+
+		when(cartItemJpaAdapter.findById(any(CartItemId.class))).thenReturn(Optional.of(existingCartItemEntity));
+		when(cartItemJpaAdapter.save(any(CartItemEntity.class))).thenReturn(existingCartItemEntity);
+		when(cartItemMapper.fromEntity(existingCartItemEntity)).thenReturn(getCartItem());
+
+		createCartItemDto = new CreateCartItemDTO(existingCartItemEntity.getProduct().getId(),
+				existingCartItemEntity.getAccount().getId(), updatedQuantity);
+
+		cartItemRepository.save(createCartItemDto);
+
+		assertEquals(updatedQuantity, existingCartItemEntity.getQuantity());
+		verify(cartItemJpaAdapter).findById(any(CartItemId.class));
+		verify(cartItemJpaAdapter).save(existingCartItemEntity);
+		verify(cartItemMapper).fromEntity(existingCartItemEntity);
+	}
+
+	@Test
 	void saveIncrementQuantityTest() {
 		doNothing().when(cartItemJpaAdapter).increaseQuantity(any(CartItemId.class), anyInt());
 
@@ -148,5 +169,24 @@ class CartItemRepositoryImplTest {
 		assertEquals(cartItems, actualItems);
 		verify(cartItemJpaAdapter).findAllByAccountIdAndProductLang(anyLong(), anyString());
 		verify(cartItemMapper).fromEntitiesWithProductsTranslations(any());
+	}
+
+	@Test
+	void findByProductIdAndUserIdTest() {
+		var productId = UUID.randomUUID();
+		var userId = 1L;
+		var cartItem = getCartItemEntity();
+		var expectedCartItem = getCartItem();
+
+		when(cartItemJpaAdapter.findById(new CartItemId(productId, userId))).thenReturn(Optional.of(cartItem));
+		when(cartItemMapper.fromEntity(cartItem)).thenReturn(expectedCartItem);
+
+		var actualCartItem = cartItemRepository.findByProductIdAndUserId(productId, userId);
+
+		Assertions.assertTrue(actualCartItem.isPresent());
+		assertEquals(expectedCartItem, actualCartItem.get());
+
+		verify(cartItemJpaAdapter).findById(new CartItemId(productId, userId));
+		verify(cartItemMapper).fromEntity(cartItem);
 	}
 }
