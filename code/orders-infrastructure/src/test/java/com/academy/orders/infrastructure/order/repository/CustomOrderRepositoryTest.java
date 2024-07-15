@@ -16,7 +16,7 @@ import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,7 +39,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class CustomOrderRepositoryTest {
+class CustomOrderRepositoryTest {
 
 	@Mock
 	private EntityManager entityManager;
@@ -90,12 +90,12 @@ public class CustomOrderRepositoryTest {
 	}
 
 	@Test
-	public void testFindAllByFilterParameters() {
+	void testFindAllByFilterParameters() {
 		// Given
 		OrdersFilterParametersDto filterParametersDto = ModelUtils.getOrdersFilterParametersDto();
 		Pageable pageable = PageRequest.of(1, 2, Sort.by("total"));
 		OrderEntity orderEntity = ModelUtils.getOrderEntity();
-		List<OrderEntity> orderEntities = Arrays.asList(orderEntity);
+		List<OrderEntity> orderEntities = Collections.singletonList(orderEntity);
 		PageImpl<OrderEntity> expected = new PageImpl<>(orderEntities, pageable, 1L);
 
 		when(criteriaBuilder.createQuery(OrderEntity.class)).thenReturn(criteriaQuery);
