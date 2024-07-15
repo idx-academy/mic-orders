@@ -4,6 +4,7 @@ import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.entity.OrderItem;
 import com.academy.orders.domain.order.entity.OrderReceiver;
 import com.academy.orders.domain.order.entity.PostAddress;
+import com.academy.orders.infrastructure.account.AccountMapper;
 import com.academy.orders.infrastructure.order.entity.OrderEntity;
 import com.academy.orders.infrastructure.order.entity.OrderItemEntity;
 import com.academy.orders.infrastructure.order.entity.OrderReceiverVO;
@@ -11,7 +12,7 @@ import com.academy.orders.infrastructure.order.entity.PostAddressEntity;
 import java.util.List;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {AccountMapper.class})
 public interface OrderMapper {
 	Order fromEntity(OrderEntity orderEntity);
 	OrderEntity toEntity(Order order);
