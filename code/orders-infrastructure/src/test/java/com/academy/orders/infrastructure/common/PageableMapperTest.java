@@ -23,13 +23,13 @@ class PageableMapperTest {
 	private final Pageable pageable = ModelUtils.getPageable();
 
 	@Test
-	void fromDomainTest_withNullPageable() {
+	void fromDomainWithNullPageableTest() {
 		PageRequest result = pageableMapper.fromDomain(null);
 		assertNull(result);
 	}
 
 	@Test
-	void fromDomainTest_withValidPageable() {
+	void fromDomainWithValidPageableTest() {
 		Sort sort = Sort.by(pageable.sort().toArray(new String[0]));
 
 		PageRequest result = pageableMapper.fromDomain(pageable);
@@ -41,20 +41,33 @@ class PageableMapperTest {
 	}
 
 	@Test
-	void mapTest_withValidList() {
-		List<String> sort = pageable.sort();
-		Sort result = pageableMapper.map(sort);
+	void mapWithValidListTest() {
+		Sort expected = Sort.by(
+				List.of(Sort.Order.asc("pr1"), Sort.Order.asc("pr2"), Sort.Order.desc("pr3"), Sort.Order.asc("pr4")));
+		List<String> sort = List.of("pr1", "pr2", "asc", "pr3", "desc", "pr4");
 
-		assertNotNull(result);
-		assertNotNull(result.getOrderFor(sort.get(0)));
+		Sort actual = pageableMapper.map(sort);
+
+		assertEquals(expected, actual);
 	}
 
 	@Test
-	void mapTest_withEmptyList() {
-		List<String> sortProperties = List.of();
-		Sort result = pageableMapper.map(sortProperties);
+	void mapWithEmptyListTest() {
+		Sort expected = Sort.unsorted();
+		List<String> sort = List.of();
 
-		assertNotNull(result);
-		assertEquals(Sort.unsorted(), result);
+		Sort actual = pageableMapper.map(sort);
+
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	void mapWithValidSortTest() {
+		Sort sort = Sort.by(Sort.Direction.ASC, "value");
+		List<String> expected = sort.get().map(o -> o.getProperty() + " " + o.getDirection()).toList();
+
+		List<String> actual = pageableMapper.map(sort);
+
+		assertEquals(expected, actual);
 	}
 }

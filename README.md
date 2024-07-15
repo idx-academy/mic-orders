@@ -7,6 +7,7 @@
 - [Run Karate Tests](#run-karate-tests)
 - [Run Tests (Mutation + Code Coverage)](#run-tests-mutation--code-coverage)
 - [Obtain JWT Locally](#obtain-jwt-locally)
+- [Default users of the application](#default-users-of-the-application)
 - [References](#references)
 
 ### Prerequisites:
@@ -99,6 +100,14 @@ curl --location 'http://localhost:8080/retail/auth/token' \
     "password":  "<PASSWORD>"
 }'
 ```
+
+### Default users of the application
+
+|  Email            | Role          | Password       |
+|-------------------|---------------|----------------|
+| user@mail.com     | ROLE_USER     | User_1234      |
+| admin@mail.com    | ROLE_ADMIN    | Admin_1234     |
+| manager@mail.com  | ROLE_MANAGER  | Manager_1234   |
 
 ### References
 

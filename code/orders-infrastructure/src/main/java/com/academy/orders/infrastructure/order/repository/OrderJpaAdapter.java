@@ -3,7 +3,6 @@ package com.academy.orders.infrastructure.order.repository;
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import com.academy.orders.infrastructure.order.entity.OrderEntity;
 import java.util.UUID;
-import jakarta.transaction.Transactional;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
@@ -37,10 +36,10 @@ public interface OrderJpaAdapter extends CrudRepository<OrderEntity, UUID> {
 	 *            the unique identifier of the order to be updated.
 	 * @param orderStatus
 	 *            the new status to be set for the order.
+	 *
 	 * @author Anton Bondar
 	 */
 	@Modifying
-	@Transactional
 	@Query("update OrderEntity set orderStatus = :orderStatus where id = :orderId")
 	void updateOrderStatus(UUID orderId, OrderStatus orderStatus);
 }
