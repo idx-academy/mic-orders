@@ -10,7 +10,7 @@ public class ExceedsAvailableException extends QuantityExceedsAvailableException
 	private final Integer quantity;
 
 	public ExceedsAvailableException(UUID product, Integer quantity) {
-		super(String.format("Product with id: %s exceeded available quantity ", product));
+		super(String.format("Product with id: %s exceeded available quantity", product));
 		this.product = product;
 		this.quantity = quantity;
 	}

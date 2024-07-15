@@ -126,4 +126,13 @@ public class ModelUtils {
 				.statuses(List.of(OrderStatus.IN_PROGRESS)).isPaid(false).createdBefore(DATE_TIME)
 				.createdAfter(DATE_TIME).totalMore(BigDecimal.ZERO).totalLess(BigDecimal.TEN).build();
 	}
+
+	public static Product getProductWithQuantity(int quantity) {
+		return Product.builder().id(TEST_UUID).status(ProductStatus.AVAILABLE).image(IMAGE_URL).quantity(quantity)
+				.price(TEST_PRICE).tags(Set.of(getTag())).productTranslations(Set.of(getProductTranslation())).build();
+	}
+
+	public static CartItem getCartItem(Product product, int quantity) {
+		return CartItem.builder().product(product).quantity(quantity).build();
+	}
 }
