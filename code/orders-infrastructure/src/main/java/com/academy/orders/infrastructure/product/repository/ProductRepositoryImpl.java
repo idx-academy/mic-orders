@@ -42,9 +42,4 @@ public class ProductRepositoryImpl implements ProductRepository {
 	public boolean existById(UUID id) {
 		return productJpaAdapter.existsById(id);
 	}
-
-	@Override
-	public Optional<Product> findById(UUID productId) {
-		return productJpaAdapter.findById(productId).map(productMapper::fromEntity);
-	}
 }

@@ -32,13 +32,4 @@ public interface ProductRepository {
 	 * @author Denys Ryhal
 	 */
 	boolean existById(UUID id);
-
-	/**
-	 * Finds a product by its ID.
-	 *
-	 * @param productId
-	 *            the ID of the product to find
-	 * @return an {@code Optional} containing the product if found, otherwise empty
-	 */
-	Optional<Product> findById(UUID productId);
 }
