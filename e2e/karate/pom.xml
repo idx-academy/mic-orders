@@ -17,7 +17,6 @@
         <cucumber-reporting.version>5.7.5</cucumber-reporting.version>
         <logback-classic.version>1.5.6</logback-classic.version>
         <slf4j-api.version>2.0.13</slf4j-api.version>
-        <spring-jdbc.version>6.1.8</spring-jdbc.version>
         <postgresql.version>42.7.3</postgresql.version>
     </properties>
 
@@ -47,11 +46,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j-api.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-            <version>${spring-jdbc.version}</version>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
