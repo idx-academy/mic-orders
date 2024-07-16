@@ -1,5 +1,6 @@
 package com.academy.orders.apirest;
 
+import com.academy.orders.domain.cart.dto.UpdatedCartItemDto;
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
@@ -20,6 +21,7 @@ import com.academy.orders_api_rest.generated.model.CartItemsResponseDTO;
 import com.academy.orders_api_rest.generated.model.ManagerOrderDTO;
 import com.academy.orders_api_rest.generated.model.OrdersFilterParametersDTO;
 import com.academy.orders_api_rest.generated.model.PageManagerOrderDTO;
+import com.academy.orders_api_rest.generated.model.UpdatedCartItemDTO;
 import com.academy.orders_api_rest.generated.model.UserOrderDTO;
 import com.academy.orders_api_rest.generated.model.OrderItemDTO;
 import com.academy.orders_api_rest.generated.model.OrderReceiverDTO;
@@ -303,6 +305,21 @@ public class ModelUtils {
 
 	public static CartItemsResponseDTO getCartItemResponseDto() {
 		return new CartItemsResponseDTO(singletonList(getCartItemDTO()), TEST_PRICE.doubleValue());
+	}
+
+	public static UpdatedCartItemDto getUpdatedCartItemDto() {
+		return UpdatedCartItemDto.builder().productId(TEST_UUID).quantity(1).productPrice(BigDecimal.valueOf(1))
+				.calculatedPrice(BigDecimal.valueOf(1)).totalPrice(BigDecimal.valueOf(1)).build();
+	}
+
+	public static UpdatedCartItemDTO getUpdatedCartItemDTO() {
+		UpdatedCartItemDTO updatedCartItemDTO = new UpdatedCartItemDTO();
+		updatedCartItemDTO.setProductId(TEST_UUID);
+		updatedCartItemDTO.setQuantity(1);
+		updatedCartItemDTO.setProductPrice(BigDecimal.valueOf(1));
+		updatedCartItemDTO.setCalculatedPrice(BigDecimal.valueOf(1));
+		updatedCartItemDTO.setTotalPrice(BigDecimal.valueOf(1));
+		return updatedCartItemDTO;
 	}
 
 	private static CartItemDTO getCartItemDTO() {

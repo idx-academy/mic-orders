@@ -302,6 +302,43 @@ paths:
         '403':
           $ref: '#/components/responses/Forbidden'
 
+  /v1/users/{userId}/cart/{productId}/setquantity:
+    patch:
+      tags:
+        - Cart
+      summary: Set new quantity of the cart item
+      description: The endpoint sets a new quantity for a specific product in the user's cart.
+      operationId: setCartItemQuantity
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+        - $ref: '#/components/parameters/ProductId'
+        - in: query
+          name: quantity
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          example: 5
+      responses:
+        '200':
+          description: The quantity of the product in the cart was updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdatedCartItem'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
 
 
 #COMPONENTS
@@ -935,3 +972,37 @@ components:
         - productPrice
         - quantity
         - calculatedPrice
+
+    UpdatedCartItem:
+      type: object
+      properties:
+        productId:
+          type: string
+          format: uuid
+          description: id of the product
+          example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
+        quantity:
+          type: integer
+          example: 2
+          description: Quantity of the product in the cart.
+        productPrice:
+          type: number
+          format: bigDecimal
+          example: 100.45
+          description: price of products in the cart
+        calculatedPrice:
+          type: number
+          format: bigDecimal
+          example: 200.90
+          description: Price that includes quantity of the product
+        totalPrice:
+          type: number
+          format: bigDecimal
+          example: 1000.45
+          description: total price of products in the cart
+      required:
+        - productId
+        - quantity
+        - productPrice
+        - calculatedPrice
+        - totalPrice

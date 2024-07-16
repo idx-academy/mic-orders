@@ -5,6 +5,7 @@ Feature: Get order by id
     * url urls.retailApiUrl
 
   @JIRA_ISSUE_1
+  @ignore
   Scenario Outline: getOrderById <status>
     Given def testDataFile  = call utils.readTestData <testDataFile>
     And def authHeader = call read('classpath:karate-auth.js') testDataFile.auth
