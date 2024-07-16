@@ -1,4 +1,4 @@
 urls:
-  retailApiUrl: "#('http://api.idxacademy.xyz/retail')"
+  retailApiUrl: "#('http://localhost:' + (karate.properties['APP_PORT'] || 8080) + '/retail')"
 
 defaultAuthMode: token
