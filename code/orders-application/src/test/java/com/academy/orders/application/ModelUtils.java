@@ -9,6 +9,7 @@ import com.academy.orders.domain.cart.entity.CartItem;
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.order.dto.CreateOrderDto;
+import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.entity.OrderItem;
 import com.academy.orders.domain.order.entity.OrderReceiver;
@@ -96,7 +97,13 @@ public class ModelUtils {
 		return Order.builder().id(TEST_UUID).createdAt(DATE_TIME).isPaid(false).orderStatus(OrderStatus.IN_PROGRESS)
 				.postAddress(PostAddress.builder().city("Kyiv").deliveryMethod(NOVA).department("1").build())
 				.receiver(OrderReceiver.builder().firstName("John").lastName("Doe").email("test@mail.com").build())
-				.orderItems(List.of(getOrderItem())).editedAt(DATE_TIME).total(BigDecimal.TEN).build();
+				.orderItems(List.of(getOrderItem())).editedAt(DATE_TIME).total(BigDecimal.valueOf(200)).build();
+	}
+	public static Order getOrderWithoutTotal() {
+		return Order.builder().id(TEST_UUID).createdAt(DATE_TIME).isPaid(false).orderStatus(OrderStatus.IN_PROGRESS)
+				.postAddress(PostAddress.builder().city("Kyiv").deliveryMethod(NOVA).department("1").build())
+				.receiver(OrderReceiver.builder().firstName("John").lastName("Doe").email("test@mail.com").build())
+				.orderItems(List.of(getOrderItem())).editedAt(DATE_TIME).build();
 	}
 
 	public static OrderItem getOrderItem() {
@@ -112,5 +119,11 @@ public class ModelUtils {
 
 	public static CartResponseDto getCartResponseDto(List<CartItemDto> cartItemDtos, BigDecimal totalPrice) {
 		return CartResponseDto.builder().items(cartItemDtos).totalPrice(totalPrice).build();
+	}
+
+	public static OrdersFilterParametersDto getOrdersFilterParametersDto() {
+		return OrdersFilterParametersDto.builder().deliveryMethods(List.of(DeliveryMethod.NOVA))
+				.statuses(List.of(OrderStatus.IN_PROGRESS)).isPaid(false).createdBefore(DATE_TIME)
+				.createdAfter(DATE_TIME).totalMore(BigDecimal.ZERO).totalLess(BigDecimal.TEN).build();
 	}
 }

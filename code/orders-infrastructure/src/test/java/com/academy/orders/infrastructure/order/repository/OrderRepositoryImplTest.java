@@ -22,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import static com.academy.orders.infrastructure.ModelUtils.getAccountEntity;
 import static com.academy.orders.infrastructure.ModelUtils.getOrder;
 import static com.academy.orders.infrastructure.ModelUtils.getOrderEntity;
+import static com.academy.orders.infrastructure.ModelUtils.getOrdersFilterParametersDto;
 import static com.academy.orders.infrastructure.ModelUtils.getOrderItemEntity;
 import static com.academy.orders.infrastructure.ModelUtils.getPageImplOf;
 import static com.academy.orders.infrastructure.ModelUtils.getPageOf;
@@ -51,6 +52,9 @@ class OrderRepositoryImplTest {
 	private PageableMapper pageableMapper;
 	@Mock
 	private OrderPageMapper pageMapper;
+	@Mock
+	private CustomOrderRepository customOrderRepository;
+
 	@Test
 	void saveTest() {
 		var orderEntity = createOrderEntityWithDependencies();
@@ -91,6 +95,37 @@ class OrderRepositoryImplTest {
 		var accountEntity = getAccountEntity();
 		orderEntity.setAccount(accountEntity);
 		return orderEntity;
+	}
+
+	@Test
+	void findAllTest() {
+		// Given
+		String language = "ua";
+		Pageable pageable = getPageable();
+		var orderDomainPage = getPageOf(getOrder());
+		var springPageable = PageRequest.of(pageable.page(), pageable.size());
+		var orderEntityPage = getPageImplOf(getOrderEntity());
+		var productIds = orderEntityPage.getContent().stream()
+				.flatMap(orderEntity -> orderEntity.getOrderItems().stream())
+				.map(orderItemEntity -> orderItemEntity.getProduct().getId()).toList();
+		var products = List.of(getProductEntity());
+		var filterParametersDto = getOrdersFilterParametersDto();
+
+		when(pageableMapper.fromDomain(pageable)).thenReturn(springPageable);
+		when(customOrderRepository.findAllByFilterParameters(filterParametersDto, springPageable))
+				.thenReturn(orderEntityPage);
+		when(productJpaAdapter.findAllByIdAndLanguageCode(productIds, language)).thenReturn(products);
+		when(pageMapper.toDomain(orderEntityPage)).thenReturn(orderDomainPage);
+
+		// When
+		Page<Order> actual = orderRepository.findAll(filterParametersDto, language, pageable);
+
+		// Then
+		assertEquals(orderDomainPage, actual);
+		verify(pageableMapper).fromDomain(pageable);
+		verify(customOrderRepository).findAllByFilterParameters(filterParametersDto, springPageable);
+		verify(productJpaAdapter).findAllByIdAndLanguageCode(productIds, language);
+		verify(pageMapper).toDomain(orderEntityPage);
 	}
 
 	@Test

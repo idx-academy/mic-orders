@@ -1,6 +1,7 @@
 package com.academy.orders.application.order.usecase;
 
 import com.academy.orders.application.ModelUtils;
+import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.entity.OrderItem;
 import java.math.BigDecimal;
 import java.util.List;
@@ -10,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
 class CalculateOrderTotalPriceUseCaseTest {
@@ -17,7 +19,7 @@ class CalculateOrderTotalPriceUseCaseTest {
 	private CalculateOrderTotalPriceUseCaseImpl calculateOrderTotalPriceUseCase;
 
 	@Test
-	void calculateTotalTest() {
+	void calculateTotalPriceTest() {
 		// Given
 		OrderItem orderItem = ModelUtils.getOrderItem();
 
@@ -26,5 +28,42 @@ class CalculateOrderTotalPriceUseCaseTest {
 
 		// Then
 		assertEquals(orderItem.price().add(orderItem.price()), actual);
+	}
+
+	@Test
+	void calculateTotalPriceForOrderTest() {
+		// Given
+		Order orderWithoutTotal = ModelUtils.getOrderWithoutTotal();
+		Order orderWithTotal = ModelUtils.getOrder();
+
+		// When
+		Order actual = calculateOrderTotalPriceUseCase.calculateTotalPriceFor(orderWithoutTotal);
+
+		// Then
+		assertEquals(orderWithTotal, actual);
+	}
+
+	@Test
+	void calculateTotalPriceForOrderListTest() {
+		// Given
+		Order orderWithoutTotal = ModelUtils.getOrderWithoutTotal();
+		Order orderWithTotal = ModelUtils.getOrder();
+		List<Order> ordersWithoutTotal = List.of(orderWithoutTotal, orderWithoutTotal);
+		List<Order> ordersWithTotal = List.of(orderWithTotal, orderWithTotal);
+
+		// When
+		List<Order> actual = calculateOrderTotalPriceUseCase.calculateTotalPriceFor(ordersWithoutTotal);
+
+		// Then
+		assertEquals(ordersWithTotal, actual);
+	}
+
+	@Test
+	void calculateTotalPriceForOrderListIfNullTest() {
+		// When
+		List<Order> actual = calculateOrderTotalPriceUseCase.calculateTotalPriceFor((List<Order>) null);
+
+		// Then
+		assertTrue(actual.isEmpty());
 	}
 }
