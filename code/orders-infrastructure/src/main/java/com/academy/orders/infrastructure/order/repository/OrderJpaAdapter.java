@@ -26,7 +26,7 @@ public interface OrderJpaAdapter extends CrudRepository<OrderEntity, UUID> {
 	 * @author Denys Liubchenko
 	 */
 	@Query("select o from OrderEntity o left join fetch o.postAddress pa left join fetch o.orderItems oa "
-			+ "left join fetch oa.product p where o.account.id = :accountId")
+			+ "left join fetch oa.product p left join o.account a where a.id = :accountId")
 	PageImpl<OrderEntity> findAllByAccountId(Long accountId, Pageable pageable);
 
 	/**
