@@ -131,7 +131,7 @@ public class CustomOrderRepository {
 		}
 		TypedQuery<Long> countTypedQuery = em.createQuery(countQuery);
 
-		return countTypedQuery.getSingleResult();
+		return countTypedQuery.setMaxResults(1).getSingleResult();
 	}
 
 	private List<Predicate> getTotalPredicates(Join<OrderEntity, OrderItemEntity> oij,
