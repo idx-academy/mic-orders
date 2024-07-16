@@ -1,0 +1,5 @@
+{
+  "status": "#number",
+  "title": "#string",
+  "detail": "#string"
+}
