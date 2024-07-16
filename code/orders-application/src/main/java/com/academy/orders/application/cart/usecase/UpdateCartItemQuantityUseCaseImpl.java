@@ -12,7 +12,6 @@ import com.academy.orders.domain.product.usecase.CalculatePriceUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -28,6 +27,7 @@ public class UpdateCartItemQuantityUseCaseImpl implements SetCartItemQuantityUse
 		checkCartItemExists(productId, userId);
 
 		var updatedCartItem = updateQuantityOfCartItem(quantity, productId, userId);
+		var getAll = cartItemRepository.findCartItemsByAccountId(userId);
 
 		Product product = updatedCartItem.product();
 
@@ -35,16 +35,10 @@ public class UpdateCartItemQuantityUseCaseImpl implements SetCartItemQuantityUse
 			throw new ExceedsAvailableException(productId, quantity);
 		}
 
-		List<CartItem> cartItems = getAll(userId);
-
 		var cartItemPrice = calculatePriceUseCase.calculateCartItemPrice(updatedCartItem);
-		var totalPrice = calculatePriceUseCase.calculateCartTotalPrice(cartItems);
+		var totalPrice = calculatePriceUseCase.calculateCartTotalPrice(getAll);
 
 		return new UpdatedCartItemDto(productId, quantity, product.price(), cartItemPrice, totalPrice);
-	}
-
-	private List<CartItem> getAll(Long userId) {
-		return cartItemRepository.findCartItemsByAccountId(userId);
 	}
 
 	private void checkCartItemExists(UUID productId, Long userId) {

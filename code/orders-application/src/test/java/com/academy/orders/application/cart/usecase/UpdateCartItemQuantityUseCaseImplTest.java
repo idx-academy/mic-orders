@@ -112,4 +112,57 @@ class UpdateCartItemQuantityUseCaseImplTest {
 		verify(calculatePriceUseCase, never()).calculateCartItemPrice(any(CartItem.class));
 		verify(calculatePriceUseCase, never()).calculateCartTotalPrice(anyList());
 	}
+
+	@Test
+	void setQuantityEqualProductQuantity() {
+		UUID productId = UUID.randomUUID();
+		Long userId = 1L;
+		Integer quantity = 5;
+
+		Product product = getProductWithQuantity(5);
+
+		CartItem cartItem = getCartItem(product, 1);
+		List<CartItem> cartItems = List.of(cartItem);
+
+		when(cartItemRepository.existsByProductIdAndUserId(productId, userId)).thenReturn(true);
+		when(cartItemRepository.findByProductIdAndUserId(productId, userId)).thenReturn(Optional.of(cartItem));
+		when(cartItemRepository.save(any(CreateCartItemDTO.class))).thenReturn(new CartItem(product, quantity));
+		when(cartItemRepository.findCartItemsByAccountId(userId)).thenReturn(cartItems);
+		when(calculatePriceUseCase.calculateCartItemPrice(any(CartItem.class))).thenReturn(BigDecimal.TEN);
+		when(calculatePriceUseCase.calculateCartTotalPrice(anyList())).thenReturn(BigDecimal.valueOf(100));
+
+		UpdatedCartItemDto updatedCartItemDto = updateCartItemQuantityUseCase.setQuantity(productId, userId, quantity);
+
+		Assertions.assertEquals(productId, updatedCartItemDto.productId());
+		Assertions.assertEquals(quantity, updatedCartItemDto.quantity());
+		Assertions.assertEquals(product.price(), updatedCartItemDto.productPrice());
+		Assertions.assertEquals(BigDecimal.TEN, updatedCartItemDto.calculatedPrice());
+		Assertions.assertEquals(BigDecimal.valueOf(100), updatedCartItemDto.totalPrice());
+
+		verify(cartItemRepository).existsByProductIdAndUserId(productId, userId);
+		verify(cartItemRepository).findByProductIdAndUserId(productId, userId);
+		verify(cartItemRepository).save(any(CreateCartItemDTO.class));
+		verify(cartItemRepository).findCartItemsByAccountId(userId);
+		verify(calculatePriceUseCase).calculateCartItemPrice(any(CartItem.class));
+		verify(calculatePriceUseCase).calculateCartTotalPrice(anyList());
+	}
+
+	@Test
+	void setQuantityUpdateQuantityOfCartItemReturnsNull() {
+		UUID productId = UUID.randomUUID();
+		Long userId = 1L;
+		Integer quantity = 2;
+
+		when(cartItemRepository.existsByProductIdAndUserId(productId, userId)).thenReturn(true);
+		when(cartItemRepository.findByProductIdAndUserId(productId, userId)).thenReturn(Optional.empty());
+
+		assertThrows(CartItemNotFoundException.class,
+				() -> updateCartItemQuantityUseCase.setQuantity(productId, userId, quantity));
+
+		verify(cartItemRepository).existsByProductIdAndUserId(productId, userId);
+		verify(cartItemRepository).findByProductIdAndUserId(productId, userId);
+		verify(cartItemRepository, never()).save(any(CreateCartItemDTO.class));
+		verify(calculatePriceUseCase, never()).calculateCartItemPrice(any(CartItem.class));
+		verify(calculatePriceUseCase, never()).calculateCartTotalPrice(anyList());
+	}
 }
