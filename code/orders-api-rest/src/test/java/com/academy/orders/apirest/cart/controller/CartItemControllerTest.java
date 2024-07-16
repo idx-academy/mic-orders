@@ -11,6 +11,7 @@ import com.academy.orders.domain.cart.exception.CartItemNotFoundException;
 import com.academy.orders.domain.cart.usecase.CreateCartItemByUserUseCase;
 import com.academy.orders.domain.cart.usecase.DeleteProductFromCartUseCase;
 import com.academy.orders.domain.cart.usecase.GetCartItemsUseCase;
+import com.academy.orders.domain.cart.usecase.SetCartItemQuantityUseCase;
 import com.academy.orders.domain.product.exception.ProductNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.UUID;
@@ -26,8 +27,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static com.academy.orders.apirest.ModelUtils.getJwtRequest;
+import static com.academy.orders.apirest.ModelUtils.getUpdatedCartItemDTO;
+import static com.academy.orders.apirest.ModelUtils.getUpdatedCartItemDto;
 import static com.academy.orders.apirest.TestConstants.ROLE_ADMIN;
 import static com.academy.orders.apirest.TestConstants.ROLE_USER;
+import static com.academy.orders.apirest.TestConstants.TEST_UUID;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
@@ -38,6 +42,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -63,6 +68,9 @@ class CartItemControllerTest {
 
 	@MockBean
 	private GetCartItemsUseCase getCartItemsUseCase;
+
+	@MockBean
+	private SetCartItemQuantityUseCase setCartItemQuantityUseCase;
 
 	@MockBean
 	private CartItemDTOMapper cartItemDTOMapper;
@@ -130,5 +138,22 @@ class CartItemControllerTest {
 
 		verify(getCartItemsUseCase).getCartItems(anyLong(), anyString());
 		verify(cartItemDTOMapper).toCartItemsResponseDTO(any(CartResponseDto.class));
+	}
+
+	@Test
+	@SneakyThrows
+	void setCartItemQuantityTest() {
+		var updateCartItemDto = getUpdatedCartItemDto();
+		var updateCartItemDTO = getUpdatedCartItemDTO();
+
+		when(setCartItemQuantityUseCase.setQuantity(TEST_UUID, 1L, 1)).thenReturn(updateCartItemDto);
+		when(cartItemDTOMapper.toUpdatedCartItemDTO(updateCartItemDto)).thenReturn(updateCartItemDTO);
+
+		mockMvc.perform(patch("/v1/users/{userId}/cart/{productId}/setquantity", 1L, TEST_UUID).param("quantity", "1")
+				.with(getJwtRequest(1L, ROLE_ADMIN)).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(content().json(objectMapper.writeValueAsString(updateCartItemDto)));
+
+		verify(setCartItemQuantityUseCase).setQuantity(TEST_UUID, 1L, 1);
+		verify(cartItemDTOMapper).toUpdatedCartItemDTO(updateCartItemDto);
 	}
 }
