@@ -1,4 +1,3 @@
-@op.getOrdersHistoryByUserId
 Feature: Get all orders
   Background:
     * url urls.retailApiUrl
@@ -19,7 +18,7 @@ Feature: Get all orders
 
     Examples:
       | status |  role   | testDataFile                       |
-      | 200    | 'MANAGER' |'classpath:apis/orders/test-data/getOrders_200.json'|
+      | 200    | 'MANAGER' |'classpath:apis/orders/test-data/page_200.json'|
       | 403    | 'USER'  |'classpath:apis/orders/test-data/response_4xx.json'|
       | 403    | 'USER'  |'classpath:apis/orders/test-data/response_4xx.json'|
       | 403    | 'ADMIN' |'classpath:apis/orders/test-data/response_4xx.json'|

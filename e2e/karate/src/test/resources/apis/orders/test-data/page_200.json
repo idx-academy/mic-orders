@@ -7,5 +7,5 @@
   "numberOfElements": "#number",
   "size": "#number",
   "empty": "#boolean",
-  "content": null ||
+  "content": "##array"
 }
