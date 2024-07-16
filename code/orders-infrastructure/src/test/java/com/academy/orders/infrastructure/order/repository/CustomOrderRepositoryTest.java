@@ -125,6 +125,7 @@ class CustomOrderRepositoryTest {
 		when(countCriteriaQuery.where(any(Predicate[].class))).thenReturn(countCriteriaQuery);
 		when(countCriteriaQuery.select(any(Expression.class))).thenReturn(countCriteriaQuery);
 		when(typedQuery.getResultList()).thenReturn(orderEntities);
+		when(countTypedQuery.setMaxResults(1)).thenReturn(countTypedQuery);
 		when(countTypedQuery.getSingleResult()).thenReturn(1L);
 
 		// When
@@ -160,6 +161,7 @@ class CustomOrderRepositoryTest {
 		verify(countCriteriaQuery).where(any(Predicate[].class));
 		verify(countCriteriaQuery).select(any(Expression.class));
 		verify(typedQuery, times(2)).getResultList();
+		verify(countTypedQuery).setMaxResults(1);
 		verify(countTypedQuery).getSingleResult();
 	}
 }
