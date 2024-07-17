@@ -8,7 +8,7 @@ Feature: Update Order Status
     * if (<role> == 'MANAGER') {karate.set('credentials.username', 'manager@mail.com'); karate.set('credentials.password', 'Manager_1234');}
     * if (<role> == 'USER') {karate.set('credentials.username', 'user@mail.com'); karate.set('credentials.password', 'User_1234');}
     Given def authHeader = call read('classpath:karate-auth.js')
-    And path '/v1/management/orders', <orderId>, 'status'
+    And path '/v1/orders', <orderId>, 'status'
     And param orderStatus = <status>
     And headers authHeader
     When method PATCH

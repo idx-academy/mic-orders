@@ -103,7 +103,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
 
-  /v1/management/orders/{orderId}/status:
+  /v1/orders/{orderId}/status:
     patch:
       tags:
         - OrdersManagement
