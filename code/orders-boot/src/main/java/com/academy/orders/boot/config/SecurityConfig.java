@@ -7,6 +7,7 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Arrays;
 import java.util.function.Supplier;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,8 +30,10 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 @Configuration
@@ -55,8 +58,15 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http, HandlerExceptionResolver handlerExceptionResolver)
 			throws Exception {
-		return http.cors(Customizer.withDefaults()).csrf(AbstractHttpConfigurer::disable)
-				.authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+		return http.cors(cors -> {
+			UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+			CorsConfiguration config = new CorsConfiguration();
+			config.setAllowedOrigins(Arrays.asList("*"));
+			config.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS", "DELETE", "PUT", "PATCH"));
+			config.setAllowedHeaders(Arrays.asList("*"));
+			source.registerCorsConfiguration("/**", config);
+			cors.configurationSource(source);
+		}).csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults())
 						.authenticationEntryPoint(authenticationEntryPoint(handlerExceptionResolver)))

@@ -79,7 +79,7 @@ paths:
   /v1/orders/{orderId}:
     get:
       tags:
-        - OrdersManagement
+        - Orders
       summary: Get order by id
       operationId: getOrderById
       security:
@@ -191,7 +191,6 @@ paths:
     get:
       tags:
         - OrdersManagement
-        - Orders
       summary: View all orders
       operationId: getAllOrders
       security:
@@ -345,8 +344,8 @@ paths:
 #=======================================================================================================================
 components:
 
-#PARAMETERS
-#=======================================================================================================================
+  #PARAMETERS
+  #=======================================================================================================================
   parameters:
     Pageable:
       name: pageable
@@ -388,8 +387,8 @@ components:
       scheme: bearer
       bearerFormat: JWT
 
-#RESPONSES
-#=======================================================================================================================
+  #RESPONSES
+  #=======================================================================================================================
   responses:
     CreatedResponse:
       description: Resource created
@@ -453,8 +452,8 @@ components:
             title: Forbidden
             detail: User does not have success to this resource
 
-#SCHEMAS
-#=======================================================================================================================
+  #SCHEMAS
+  #=======================================================================================================================
   schemas:
     Pageable:
       type: object
