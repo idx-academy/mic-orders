@@ -55,14 +55,14 @@ public class ModelUtils {
 
 	public static ProductEntity getProductEntity() {
 		return ProductEntity.builder().id(UUID.fromString("c39314ce-b659-4776-86b9-8201b05bb339"))
-				.status(ProductStatus.AVAILABLE).image("http://localhost:8080/image-1").createdAt(DATE_TIME)
-				.quantity(100).price(BigDecimal.valueOf(100.00)).build();
+				.status(ProductStatus.VISIBLE).image("http://localhost:8080/image-1").createdAt(DATE_TIME).quantity(100)
+				.price(BigDecimal.valueOf(100.00)).build();
 	}
 
 	public static Product getProduct() {
 		return Product.builder().id(UUID.fromString("c39314ce-b659-4776-86b9-8201b05bb339"))
-				.status(ProductStatus.AVAILABLE).image("http://localhost:8080/image-1").createdAt(DATE_TIME)
-				.quantity(100).price(BigDecimal.valueOf(100.00)).build();
+				.status(ProductStatus.VISIBLE).image("http://localhost:8080/image-1").createdAt(DATE_TIME).quantity(100)
+				.price(BigDecimal.valueOf(100.00)).build();
 	}
 
 	public static OrderEntity getOrderEntity() {
@@ -123,8 +123,7 @@ public class ModelUtils {
 		return Order.builder().id(UUID.fromString("4602edda-6e9f-4a35-a472-2f6eac06e203"))
 				.createdAt(LocalDateTime.of(1, 1, 1, 1, 1)).isPaid(false).orderStatus(OrderStatus.IN_PROGRESS)
 				.postAddress(PostAddress.builder().city("Kyiv").deliveryMethod(NOVA).department("1").build())
-				.receiver(OrderReceiver.builder().firstName("John").lastName("Doe").email("test@mail.com").build())
-				.orderItems(List.of(getOrderItem())).build();
+				.receiver(getOrderReceiver()).orderItems(List.of(getOrderItem())).build();
 	}
 
 	public static OrderItem getOrderItem() {

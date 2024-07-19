@@ -71,7 +71,7 @@ public class ModelUtils {
 	public static final OffsetDateTime OFFSET_DATE_TIME = OffsetDateTime.of(1, 1, 1, 1, 1, 1, 1, ZoneOffset.UTC);
 
 	public static Product getProduct() {
-		return Product.builder().id(TEST_UUID).status(ProductStatus.AVAILABLE).image(IMAGE_URL).createdAt(DATE_TIME)
+		return Product.builder().id(TEST_UUID).status(ProductStatus.VISIBLE).image(IMAGE_URL).createdAt(DATE_TIME)
 				.quantity(TEST_QUANTITY).price(TEST_PRICE).tags(Set.of(getTag()))
 				.productTranslations(Set.of(getProductTranslation())).build();
 	}
@@ -82,18 +82,18 @@ public class ModelUtils {
 	}
 
 	public static Product getProductWithEmptyTranslations() {
-		return Product.builder().id(TEST_UUID).status(ProductStatus.AVAILABLE).image(IMAGE_URL).createdAt(DATE_TIME)
+		return Product.builder().id(TEST_UUID).status(ProductStatus.VISIBLE).image(IMAGE_URL).createdAt(DATE_TIME)
 				.quantity(TEST_QUANTITY).price(TEST_PRICE).tags(Set.of(getTag())).productTranslations(emptySet())
 				.build();
 	}
 
 	public static Product getProductWithNullTranslations() {
-		return Product.builder().id(TEST_UUID).status(ProductStatus.AVAILABLE).image(IMAGE_URL).createdAt(DATE_TIME)
+		return Product.builder().id(TEST_UUID).status(ProductStatus.VISIBLE).image(IMAGE_URL).createdAt(DATE_TIME)
 				.quantity(TEST_QUANTITY).price(TEST_PRICE).tags(Set.of(getTag())).productTranslations(null).build();
 	}
 
 	public static Product getProductWithEmptyTags() {
-		return Product.builder().id(TEST_UUID).status(ProductStatus.AVAILABLE).image(IMAGE_URL).createdAt(DATE_TIME)
+		return Product.builder().id(TEST_UUID).status(ProductStatus.VISIBLE).image(IMAGE_URL).createdAt(DATE_TIME)
 				.quantity(TEST_QUANTITY).price(TEST_PRICE).tags(emptySet())
 				.productTranslations(Set.of(getProductTranslation())).build();
 	}

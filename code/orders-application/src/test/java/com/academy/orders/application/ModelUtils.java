@@ -41,7 +41,7 @@ public class ModelUtils {
 	private static final LocalDateTime DATE_TIME = LocalDateTime.of(1, 1, 1, 1, 1, 1);
 
 	public static Product getProduct() {
-		return Product.builder().id(TEST_UUID).status(ProductStatus.AVAILABLE).image(IMAGE_URL).quantity(TEST_QUANTITY)
+		return Product.builder().id(TEST_UUID).status(ProductStatus.VISIBLE).image(IMAGE_URL).quantity(TEST_QUANTITY)
 				.price(TEST_PRICE).tags(Set.of(getTag())).productTranslations(Set.of(getProductTranslation())).build();
 	}
 
@@ -128,7 +128,7 @@ public class ModelUtils {
 	}
 
 	public static Product getProductWithQuantity(int quantity) {
-		return Product.builder().id(TEST_UUID).status(ProductStatus.AVAILABLE).image(IMAGE_URL).quantity(quantity)
+		return Product.builder().id(TEST_UUID).status(ProductStatus.VISIBLE).image(IMAGE_URL).quantity(quantity)
 				.price(TEST_PRICE).tags(Set.of(getTag())).productTranslations(Set.of(getProductTranslation())).build();
 	}
 
