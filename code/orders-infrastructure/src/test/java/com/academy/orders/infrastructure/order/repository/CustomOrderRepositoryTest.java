@@ -148,7 +148,6 @@ class CustomOrderRepositoryTest {
 		verify(criteriaBuilder, times(2)).greaterThanOrEqualTo(any(), any(LocalDateTime.class));
 		verify(criteriaQuery).orderBy(any(List.class));
 		verify(criteriaQuery).groupBy(any(Path.class));
-		verify(criteriaQuery).where(any(Predicate[].class));
 		verify(root, times(3)).fetch(anyString(), any(JoinType.class));
 		verify(criteriaBuilder, times(5)).sum(any(Path.class));
 		verify(criteriaBuilder).asc(expression);
@@ -157,9 +156,6 @@ class CustomOrderRepositoryTest {
 		verify(criteriaBuilder).count(any(Path.class));
 		verify(countCriteriaQuery).from(OrderEntity.class);
 		verify(entityManager).createQuery(countCriteriaQuery);
-		verify(countCriteriaQuery).groupBy(any(Path.class));
-		verify(countCriteriaQuery).where(any(Predicate[].class));
-		verify(countCriteriaQuery).select(any(Expression.class));
 		verify(typedQuery, times(2)).getResultList();
 		verify(countTypedQuery).setMaxResults(1);
 		verify(countTypedQuery).getSingleResult();

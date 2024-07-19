@@ -23,7 +23,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 	public Page<Product> getAllProducts(String language, Pageable pageable) {
 		log.debug("Fetching all products by language code with pagination and sorting");
 		String sort = String.join(",", pageable.sort());
-		var productEntities = productJpaAdapter.findAllByLanguageCode(language,
+		var productEntities = productJpaAdapter.findAllByLanguageCodeAndStatusVisible(language,
 				PageRequest.of(pageable.page(), pageable.size()), sort);
 		List<Product> products = productMapper.fromEntities(productEntities.getContent());
 
