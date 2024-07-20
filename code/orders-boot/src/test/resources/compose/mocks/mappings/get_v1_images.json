@@ -1,0 +1,222 @@
+{
+  "mappings": [
+    {
+      "scenarioName": "Get picture URL",
+      "requiredScenarioState": "Started",
+      "newScenarioState": "Second",
+      "request": {
+        "urlPathTemplate": "/storage/v1/images/{imageName}",
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": {
+          "imageUrl": "https://j65jb0fdkxuua0go.public.blob.vercel-storage.com/{{request.path.imageName}}"
+        },
+        "transformers": ["response-template"],
+        "delayDistribution": {
+          "type": "uniform",
+          "lower": 500,
+          "upper": 2000
+        }
+      }
+    },
+    {
+      "scenarioName": "Get picture URL",
+      "requiredScenarioState": "Second",
+      "newScenarioState": "Third",
+      "request": {
+        "urlPathTemplate": "/storage/v1/images/{imageName}",
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": {
+          "imageUrl": "https://j65jb0fdkxuua0go.public.blob.vercel-storage.com/{{request.path.imageName}}"
+        },
+        "transformers": ["response-template"],
+        "delayDistribution": {
+          "type": "uniform",
+          "lower": 500,
+          "upper": 1000
+        }
+      }
+    },
+    {
+      "scenarioName": "Get picture URL",
+      "requiredScenarioState": "Third",
+      "newScenarioState": "Fourth",
+      "request": {
+        "urlPathTemplate": "/storage/v1/images/{imageName}",
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": {
+          "imageUrl": "https://j65jb0fdkxuua0go.public.blob.vercel-storage.com/{{request.path.imageName}}"
+        },
+        "transformers": ["response-template"],
+        "delayDistribution": {
+          "type": "uniform",
+          "lower": 100,
+          "upper": 600
+        }
+      }
+    },
+    {
+      "scenarioName": "Get picture URL",
+      "requiredScenarioState": "Fourth",
+      "newScenarioState": "Fifth",
+      "request": {
+        "urlPathTemplate": "/storage/v1/images/{imageName}",
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": {
+          "imageUrl": "https://j65jb0fdkxuua0go.public.blob.vercel-storage.com/{{request.path.imageName}}"
+        },
+        "transformers": ["response-template"]
+      }
+    },
+    {
+      "scenarioName": "Get picture URL",
+      "requiredScenarioState": "Fifth",
+      "newScenarioState": "Sixth",
+      "request": {
+        "urlPathTemplate": "/storage/v1/images/{imageName}",
+        "method": "GET"
+      },
+      "response": {
+        "status": 503
+      }
+    },
+    {
+      "scenarioName": "Get picture URL",
+      "requiredScenarioState": "Sixth",
+      "newScenarioState": "Seventh",
+      "request": {
+        "urlPathTemplate": "/storage/v1/images/{imageName}",
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": {
+          "imageUrl": "https://j65jb0fdkxuua0go.public.blob.vercel-storage.com/{{request.path.imageName}}"
+        },
+        "transformers": ["response-template"],
+        "delayDistribution": {
+          "type": "uniform",
+          "lower": 500,
+          "upper": 2000
+        }
+      }
+    },
+    {
+      "scenarioName": "Get picture URL",
+      "requiredScenarioState": "Seventh",
+      "newScenarioState": "Eighth",
+      "request": {
+        "urlPathTemplate": "/storage/v1/images/{imageName}",
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": {
+          "imageUrl": "https://j65jb0fdkxuua0go.public.blob.vercel-storage.com/{{request.path.imageName}}"
+        },
+        "transformers": ["response-template"],
+        "delayDistribution": {
+          "type": "uniform",
+          "lower": 500,
+          "upper": 2000
+        }
+      }
+    },
+    {
+      "scenarioName": "Get picture URL",
+      "requiredScenarioState": "Eighth",
+      "newScenarioState": "Ninth",
+      "request": {
+        "urlPathTemplate": "/storage/v1/images/{imageName}",
+        "method": "GET"
+      },
+      "response": {
+        "status": 503
+      }
+    },
+    {
+      "scenarioName": "Get picture URL",
+      "requiredScenarioState": "Ninth",
+      "newScenarioState": "Tenth",
+      "request": {
+        "urlPathTemplate": "/storage/v1/images/{imageName}",
+        "method": "GET"
+      },
+      "response": {
+        "status": 503
+      }
+    },
+    {
+      "scenarioName": "Get picture URL",
+      "requiredScenarioState": "Tenth",
+      "newScenarioState": "Eleventh",
+      "request": {
+        "urlPathTemplate": "/storage/v1/images/{imageName}",
+        "method": "GET"
+      },
+      "response": {
+        "status": 404,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": {
+          "status": "404",
+          "detail": "Not found"
+        }
+      }
+    },
+    {
+      "scenarioName": "Get picture URL",
+      "requiredScenarioState": "Eleventh",
+      "newScenarioState": "Started",
+      "request": {
+        "urlPathTemplate": "/storage/v1/images/{imageName}",
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": {
+          "imageUrl": "https://j65jb0fdkxuua0go.public.blob.vercel-storage.com/{{request.path.imageName}}"
+        },
+        "transformers": ["response-template"],
+        "delayDistribution": {
+          "type": "uniform",
+          "lower": 100,
+          "upper": 500
+        }
+      }
+    }
+  ]
+}
