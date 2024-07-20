@@ -27,10 +27,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(ProductController.class)
-@ContextConfiguration(classes = {ProductController.class})
-@Import(value = {ProductPreviewDTOMapper.class, AopAutoConfiguration.class, TestSecurityConfig.class})
-class ProductControllerTest {
+@WebMvcTest(ProductsController.class)
+@ContextConfiguration(classes = {ProductsController.class})
+@Import(value = {AopAutoConfiguration.class, TestSecurityConfig.class})
+class ProductsControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
 

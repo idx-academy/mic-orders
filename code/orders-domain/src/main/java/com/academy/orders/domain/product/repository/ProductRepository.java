@@ -3,6 +3,7 @@ package com.academy.orders.domain.product.repository;
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.product.entity.Product;
+import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import java.util.UUID;
 
 public interface ProductRepository {
@@ -30,4 +31,6 @@ public interface ProductRepository {
 	 * @author Denys Ryhal
 	 */
 	boolean existById(UUID id);
+
+	void updateStatus(UUID productId, ProductStatus status);
 }

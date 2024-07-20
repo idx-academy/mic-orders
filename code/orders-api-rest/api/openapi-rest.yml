@@ -16,11 +16,14 @@ tags:
   - name: Products
     description: Products endpoint
 
+  - name: ProductsManagement
+    description: Endpoints for products management page
+
   - name: Orders
     description: Orders endpoints
 
   - name: OrdersManagement
-    description: Endpoints for management page
+    description: Endpoints for orders management page
 
   - name: Cart
     description: Cart management endpoints
@@ -216,6 +219,34 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
+
+  /v1/management/products/{productId}/status:
+    patch:
+      tags:
+        - ProductsManagement
+      summary: Change visibility status for product
+      operationId: updateStatus
+#      security:
+#        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/ProductId'
+        - in: query
+          name: status
+          required: true
+          description: Visibility status for product
+          schema:
+            $ref: '#/components/schemas/ProductStatus'
+      responses:
+        '201':
+          description: successful operation
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
 
   /v1/products:
     get:
@@ -865,6 +896,14 @@ components:
           format: float
           example: 999.99
           description: Price of the product
+
+    ProductStatus:
+      type: string
+      enum:
+        - VISIBLE
+        - HIDDEN
+      example: VISIBLE
+      description: Status of the product's visibility for users
 
     PlaceOrderRequest:
       type: object
