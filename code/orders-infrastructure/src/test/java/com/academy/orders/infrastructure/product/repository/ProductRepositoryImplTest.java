@@ -55,14 +55,15 @@ class ProductRepositoryImplTest {
 		var productEntity = getProductEntity();
 		var product = getProduct();
 		var page = new PageImpl<>(List.of(productEntity));
-		when(productJpaAdapter.findAllByLanguageCode("en", PageRequest.of(pageable.page(), pageable.size()), sort))
-				.thenReturn(page);
+		when(productJpaAdapter.findAllByLanguageCodeAndStatusVisible("en",
+				PageRequest.of(pageable.page(), pageable.size()), sort)).thenReturn(page);
 
 		when(productMapper.fromEntities(page.getContent())).thenReturn(List.of(product));
 		var products = productRepository.getAllProducts("en", pageable);
 		assertEquals(1, products.size());
 
-		verify(productJpaAdapter).findAllByLanguageCode("en", PageRequest.of(pageable.page(), pageable.size()), sort);
+		verify(productJpaAdapter).findAllByLanguageCodeAndStatusVisible("en",
+				PageRequest.of(pageable.page(), pageable.size()), sort);
 		verify(productMapper).fromEntities(page.getContent());
 	}
 }

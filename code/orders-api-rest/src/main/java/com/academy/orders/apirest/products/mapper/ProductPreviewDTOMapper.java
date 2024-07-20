@@ -16,6 +16,7 @@ public interface ProductPreviewDTOMapper {
 	@Mapping(target = "name", source = "product.productTranslations", qualifiedByName = "mapProductName")
 	@Mapping(target = "description", source = "product.productTranslations", qualifiedByName = "mapProductDescription")
 	@Mapping(source = "product.tags", target = "tags", qualifiedByName = "mapTags")
+	@Mapping(target = "status", ignore = true) // Ignoring status until impl calculating amount statuses
 	ProductPreviewDTO toDto(Product product);
 
 	@Named("mapProductName")

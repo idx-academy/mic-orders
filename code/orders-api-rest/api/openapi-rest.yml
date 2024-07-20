@@ -842,6 +842,7 @@ components:
           description: Product description
         status:
           type: string
+          default: AVAILABLE
           enum:
             - AVAILABLE
             - END_SOON
