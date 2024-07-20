@@ -25,6 +25,9 @@ tags:
   - name: Cart
     description: Cart management endpoints
 
+  - name: ProductsManagement
+    description: Endpoints for management page
+
 #ENDPOINTS
 #=======================================================================================================================
 paths:
@@ -234,6 +237,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PageProducts'
+  /v1/management/products:
+    get:
+      tags:
+        - ProductsManagement
+      summary: Get all information about products
+      description: The endpoint retrieves all information about products
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: query
+          name: productFilter
+          schema:
+            $ref: '#/components/schemas/ProductManagementFilter'
+          description: filter for products
+        - $ref: '#/components/parameters/Language'
+        - $ref: '#/components/parameters/Pageable'
+      responses:
+        '200':
+          description: Products
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ProductManagementPage'
+
+
 
   /v1/users/{userId}/cart/{productId}:
     post:
@@ -377,7 +405,7 @@ components:
       required: false
       schema:
         type: string
-        default: en
+        default: ua
         nullable: false
         example: ua
       description: The language code for the product information (e.g., 'ua' for Ukrainian).
@@ -1006,3 +1034,119 @@ components:
         - productPrice
         - calculatedPrice
         - totalPrice
+
+    ProductStatus:
+      type: string
+      enum:
+        - VISIBLE
+        - HIDDEN
+      example: VISIBLE
+      description: Status of the product
+
+    ProductTags:
+      type: array
+      items:
+        type: string
+        description: categories of the product
+        example: 'category:computer'
+
+    ProductManagementFilter:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/ProductStatus'
+        searchByName:
+          type: string
+          description: field for searching products by name
+          example: Laptop
+        priceMore:
+          type: number
+          format: double
+          example: 100.20
+          minimum: 0
+          description: The price of the product is more than
+        priceLess:
+          type: number
+          format: double
+          example: 200.20
+          description: The price of the product is less than
+        quantityMore:
+          type: number
+          format: int64
+          example: 10
+          minimum: 0
+          description: The quantity of the product is more than
+        quantityLess:
+          type: number
+          format: int64
+          example: 20
+          description: The quantity of the product is less than
+        createdAfter:
+          type: string
+          format: date-time
+          description: The date of product creation is after
+        createdBefore:
+          type: string
+          format: date-time
+          description:  The date of product creation is before
+        tags:
+          $ref: '#/components/schemas/ProductTags'
+
+    ProductManagementPage:
+      allOf:
+        - $ref: '#/components/schemas/AbstractPage'
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/ProductManagementContent'
+              description: List of orders in the page
+
+    ProductManagementContent:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
+          description: id of the product
+        name:
+          type: string
+          description: name of the product
+          example: Iphone
+        description:
+          type: string
+          description: name of the product
+          example: Some description
+        imageLink:
+          type: string
+          description: name of the product
+          example: https://images.org/image.png
+        quantity:
+          type: number
+          format: int64
+          example: 10
+          minimum: 0
+        price:
+          type: number
+          format: double
+          example: 100.45
+          minimum: 0
+        createdAt:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/ProductStatus'
+        tags:
+          $ref: '#/components/schemas/ProductTags'
+      required:
+        - id
+        - name
+        - description
+        - imageLink
+        - quantity
+        - price
+        - createdAt
+        - status
+        - tags
