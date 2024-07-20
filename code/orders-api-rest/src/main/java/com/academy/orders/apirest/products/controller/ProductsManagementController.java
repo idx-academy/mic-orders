@@ -20,6 +20,7 @@ public class ProductsManagementController implements ProductsManagementApi {
 	private final UpdateStatusUseCase updateStatusUseCase;
 	private final ProductStatusDTOMapper productStatusDTOMapper;
 
+	@Override
 	@PreAuthorize("hasAnyAuthority('ROLE_MANAGER')")
 	public void updateStatus(UUID productId, ProductStatusDTO status) {
 		ProductStatus productStatus = productStatusDTOMapper.fromDTO(status);

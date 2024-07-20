@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ProductsManagementController.class)
 @ContextConfiguration(classes = {ProductsManagementController.class})
 @Import(value = {AopAutoConfiguration.class, TestSecurityConfig.class})
-public class ProductsManagementControllerTest {
+class ProductsManagementControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
 
