@@ -2,7 +2,9 @@ package com.academy.orders.apirest.products.controller;
 
 import com.academy.orders.apirest.common.TestSecurityConfig;
 import com.academy.orders.apirest.products.mapper.ProductStatusDTOMapper;
+import com.academy.orders.apirest.products.mapper.UpdateProductRequestDTOMapper;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
+import com.academy.orders.domain.product.usecase.UpdateProductUseCase;
 import com.academy.orders.domain.product.usecase.UpdateStatusUseCase;
 import com.academy.orders_api_rest.generated.model.ProductStatusDTO;
 import java.util.UUID;
@@ -36,7 +38,13 @@ class ProductsManagementControllerTest {
 	private UpdateStatusUseCase updateStatusUseCase;
 
 	@MockBean
+	private UpdateProductUseCase updateProductUseCase;
+
+	@MockBean
 	private ProductStatusDTOMapper productStatusDTOMapper;
+
+	@MockBean
+	private UpdateProductRequestDTOMapper updateProductRequestDTOMapper;
 
 	@Test
 	@WithMockUser(authorities = {"ROLE_MANAGER"})
