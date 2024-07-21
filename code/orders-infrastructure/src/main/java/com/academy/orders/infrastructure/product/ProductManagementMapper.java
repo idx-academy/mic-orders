@@ -7,7 +7,6 @@ import com.academy.orders.infrastructure.product.entity.ProductTranslationEntity
 import com.academy.orders.infrastructure.product.entity.ProductTranslationId;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -16,7 +15,7 @@ public interface ProductManagementMapper {
 
 	ProductManagement fromEntity(ProductEntity productEntity);
 
-	@Mappings({@Mapping(source = "productTranslationManagement", target = "productTranslations")})
+	@Mapping(source = "productTranslationManagement", target = "productTranslations")
 	ProductEntity toEntity(ProductManagement productWithId);
 
 	default Set<ProductTranslationEntity> mapProductTranslationManagement(

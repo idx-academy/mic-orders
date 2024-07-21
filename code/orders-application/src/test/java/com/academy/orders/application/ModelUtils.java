@@ -19,7 +19,9 @@ import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import com.academy.orders.domain.product.entity.Language;
 import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.ProductTranslation;
+import com.academy.orders.domain.product.entity.ProductTranslationManagement;
 import com.academy.orders.domain.product.entity.Tag;
+import com.academy.orders.domain.product.entity.UpdateProduct;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -27,6 +29,7 @@ import java.util.List;
 import java.util.Set;
 
 import static com.academy.orders.application.TestConstants.IMAGE_URL;
+import static com.academy.orders.application.TestConstants.LANGUAGE_EN;
 import static com.academy.orders.application.TestConstants.LANGUAGE_UA;
 import static com.academy.orders.application.TestConstants.PRODUCT_DESCRIPTION;
 import static com.academy.orders.application.TestConstants.PRODUCT_NAME;
@@ -51,6 +54,10 @@ public class ModelUtils {
 
 	public static Language getLanguage() {
 		return Language.builder().id(TEST_ID).code(LANGUAGE_UA).build();
+	}
+
+	public static Language getLanguageEn() {
+		return Language.builder().id(TEST_ID).code(LANGUAGE_EN).build();
 	}
 
 	public static ProductTranslation getProductTranslation() {
@@ -134,5 +141,16 @@ public class ModelUtils {
 
 	public static CartItem getCartItem(Product product, int quantity) {
 		return CartItem.builder().product(product).quantity(quantity).build();
+	}
+
+	public static UpdateProduct getUpdateProduct() {
+		return UpdateProduct.builder().id(TEST_UUID).name("Name").description("Description")
+				.status(String.valueOf(ProductStatus.VISIBLE)).image(IMAGE_URL).quantity(10)
+				.price(BigDecimal.valueOf(100)).tags(Set.of(getTag())).createdAt(DATE_TIME).build();
+	}
+
+	public static ProductTranslationManagement getProductTranslationManagement() {
+		return ProductTranslationManagement.builder().productId(TEST_UUID).languageId(TEST_ID).name("Name")
+				.description("Description").language(getLanguageEn()).build();
 	}
 }

@@ -15,6 +15,8 @@ import com.academy.orders.domain.order.entity.PostAddress;
 import com.academy.orders.domain.order.entity.enumerated.DeliveryMethod;
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import com.academy.orders.domain.product.entity.Product;
+import com.academy.orders.domain.product.entity.ProductManagement;
+import com.academy.orders.domain.product.entity.ProductTranslationManagement;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders.infrastructure.account.entity.AccountEntity;
 import com.academy.orders.infrastructure.cart.entity.CartItemEntity;
@@ -28,6 +30,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+
+import com.academy.orders.infrastructure.product.entity.ProductTranslationEntity;
 import org.springframework.data.domain.PageImpl;
 
 import static com.academy.orders.domain.order.entity.enumerated.DeliveryMethod.NOVA;
@@ -139,5 +143,17 @@ public class ModelUtils {
 	@SafeVarargs
 	public static <T> PageImpl<T> getPageImplOf(T... elements) {
 		return new PageImpl<>(List.of(elements));
+	}
+
+	public static ProductTranslationEntity getProductTranslationEntity() {
+		return ProductTranslationEntity.builder().build();
+	}
+
+	public static ProductTranslationManagement getProductTranslationManagement() {
+		return ProductTranslationManagement.builder().build();
+	}
+
+	public static ProductManagement getProductManagement() {
+		return ProductManagement.builder().build();
 	}
 }

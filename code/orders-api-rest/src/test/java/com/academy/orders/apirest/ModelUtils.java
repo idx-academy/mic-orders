@@ -14,6 +14,7 @@ import com.academy.orders.domain.product.entity.Language;
 import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.ProductTranslation;
 import com.academy.orders.domain.product.entity.Tag;
+import com.academy.orders.domain.product.entity.UpdateProduct;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders_api_rest.generated.model.AccountResponseDTO;
 import com.academy.orders_api_rest.generated.model.CartItemDTO;
@@ -21,6 +22,9 @@ import com.academy.orders_api_rest.generated.model.CartItemsResponseDTO;
 import com.academy.orders_api_rest.generated.model.ManagerOrderDTO;
 import com.academy.orders_api_rest.generated.model.OrdersFilterParametersDTO;
 import com.academy.orders_api_rest.generated.model.PageManagerOrderDTO;
+import com.academy.orders_api_rest.generated.model.ProductStatusDTO;
+import com.academy.orders_api_rest.generated.model.TagDTO;
+import com.academy.orders_api_rest.generated.model.UpdateProductRequestDTO;
 import com.academy.orders_api_rest.generated.model.UpdatedCartItemDTO;
 import com.academy.orders_api_rest.generated.model.UserOrderDTO;
 import com.academy.orders_api_rest.generated.model.OrderItemDTO;
@@ -332,5 +336,30 @@ public class ModelUtils {
 		cartItemDTO.setImage(IMAGE_URL);
 
 		return cartItemDTO;
+	}
+
+	public static UpdateProductRequestDTO getUpdateProductRequestDTO() {
+		UpdateProductRequestDTO updateProductRequestDTO = new UpdateProductRequestDTO();
+		updateProductRequestDTO.setName("Name");
+		updateProductRequestDTO.setDescription("Description");
+		updateProductRequestDTO.setStatus(ProductStatusDTO.VISIBLE);
+		updateProductRequestDTO.setImage("image");
+		updateProductRequestDTO.setQuantity(10);
+		updateProductRequestDTO.setPrice(BigDecimal.valueOf(100));
+		updateProductRequestDTO.setTags(List.of(getTagDTO()));
+		return updateProductRequestDTO;
+	}
+
+	public static TagDTO getTagDTO() {
+		TagDTO tagDTO = new TagDTO();
+		tagDTO.setId(TEST_ID);
+		tagDTO.setName(TAG_NAME);
+		return tagDTO;
+	}
+
+	public static UpdateProduct getUpdateProduct() {
+		return UpdateProduct.builder().id(TEST_UUID).name("Name").description("Description")
+				.status(String.valueOf(ProductStatusDTO.VISIBLE)).image(IMAGE_URL).quantity(10)
+				.price(BigDecimal.valueOf(100)).tags(Set.of(getTag())).createdAt(LocalDateTime.now()).build();
 	}
 }
