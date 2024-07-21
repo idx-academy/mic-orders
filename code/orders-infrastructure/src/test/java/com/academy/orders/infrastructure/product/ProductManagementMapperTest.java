@@ -56,4 +56,17 @@ class ProductManagementMapperTest {
 		Assertions.assertEquals(productTranslationManagement.name(), translationEntity.getName());
 		Assertions.assertEquals(productTranslationManagement.description(), translationEntity.getDescription());
 	}
+
+	@Test
+	public void mapProductTranslationManagementWithNullTest() {
+		Set<ProductTranslationEntity> result = productManagementMapper.mapProductTranslationManagement(null);
+		Assertions.assertNotNull(result);
+		Assertions.assertTrue(result.isEmpty());
+	}
+
+	@Test
+	public void productTranslationManagementWithNullTest() {
+		ProductTranslationEntity result = productManagementMapper.productTranslationManagement(null);
+		Assertions.assertNull(result);
+	}
 }
