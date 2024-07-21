@@ -17,12 +17,12 @@ class ProductManagementMapperTest {
 	private ProductManagementMapper productManagementMapper;
 
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		productManagementMapper = Mappers.getMapper(ProductManagementMapper.class);
 	}
 
 	@Test
-	public void testFromEntity() {
+	void testFromEntity() {
 		var productEntity = new ProductEntity();
 		productEntity.setId(UUID.randomUUID());
 
@@ -39,7 +39,7 @@ class ProductManagementMapperTest {
 	}
 
 	@Test
-	public void testToEntity() {
+	void testToEntity() {
 		var productTranslationManagement = getProductTranslationManagement();
 		var productManagement = getProductManagement();
 		var productEntity = productManagementMapper.toEntity(productManagement);
@@ -58,14 +58,14 @@ class ProductManagementMapperTest {
 	}
 
 	@Test
-	public void mapProductTranslationManagementWithNullTest() {
+	void mapProductTranslationManagementWithNullTest() {
 		Set<ProductTranslationEntity> result = productManagementMapper.mapProductTranslationManagement(null);
 		Assertions.assertNotNull(result);
 		Assertions.assertTrue(result.isEmpty());
 	}
 
 	@Test
-	public void productTranslationManagementWithNullTest() {
+	void productTranslationManagementWithNullTest() {
 		ProductTranslationEntity result = productManagementMapper.productTranslationManagement(null);
 		Assertions.assertNull(result);
 	}
