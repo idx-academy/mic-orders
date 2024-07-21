@@ -49,8 +49,10 @@ class ProductManagementMapperTest {
 		Assertions.assertEquals(productManagement.id(), productEntity.getId());
 		Assertions.assertNotNull(productEntity.getProductTranslations());
 		Assertions.assertEquals(1, productEntity.getProductTranslations().size());
-        Assertions.assertEquals(productTranslationManagement.productId(), translationEntity.getProductTranslationId().getProductId());
-		Assertions.assertEquals(productTranslationManagement.languageId(), translationEntity.getProductTranslationId().getLanguageId());
+		Assertions.assertEquals(productTranslationManagement.productId(),
+				translationEntity.getProductTranslationId().getProductId());
+		Assertions.assertEquals(productTranslationManagement.languageId(),
+				translationEntity.getProductTranslationId().getLanguageId());
 		Assertions.assertEquals(productTranslationManagement.name(), translationEntity.getName());
 		Assertions.assertEquals(productTranslationManagement.description(), translationEntity.getDescription());
 	}

@@ -154,24 +154,13 @@ public class ModelUtils {
 	}
 
 	public static ProductTranslationManagement getProductTranslationManagement() {
-		return ProductTranslationManagement.builder()
-				.productId(TEST_UUID)
-				.languageId(1L)
-				.name("Name")
-				.description("Description")
-				.language(new Language(1L, LANGUAGE_EN))
-				.build();
+		return ProductTranslationManagement.builder().productId(TEST_UUID).languageId(1L).name("Name")
+				.description("Description").language(new Language(1L, LANGUAGE_EN)).build();
 	}
 
 	public static ProductManagement getProductManagement() {
-		return ProductManagement.builder()
-				.id(TEST_UUID)
-				.status(ProductStatus.VISIBLE)
-				.createdAt(LocalDateTime.now())
-				.quantity(10)
-				.price(BigDecimal.valueOf(100.00))
-				.tags(Set.of(new Tag(1L, "tag")))
-				.productTranslationManagement(Set.of(getProductTranslationManagement()))
-				.build();
+		return ProductManagement.builder().id(TEST_UUID).status(ProductStatus.VISIBLE).createdAt(LocalDateTime.now())
+				.quantity(10).price(BigDecimal.valueOf(100.00)).tags(Set.of(new Tag(1L, "tag")))
+				.productTranslationManagement(Set.of(getProductTranslationManagement())).build();
 	}
 }
