@@ -35,10 +35,12 @@ import java.util.Set;
 import java.util.UUID;
 
 import com.academy.orders.infrastructure.product.entity.ProductTranslationEntity;
+import com.academy.orders.infrastructure.tag.entity.TagEntity;
 import org.springframework.data.domain.PageImpl;
 
 import static com.academy.orders.domain.order.entity.enumerated.DeliveryMethod.NOVA;
 import static com.academy.orders.infrastructure.TestConstants.LANGUAGE_EN;
+import static com.academy.orders.infrastructure.TestConstants.TEST_ID;
 import static com.academy.orders.infrastructure.TestConstants.TEST_UUID;
 
 public class ModelUtils {
@@ -162,5 +164,13 @@ public class ModelUtils {
 		return ProductManagement.builder().id(TEST_UUID).status(ProductStatus.VISIBLE).createdAt(LocalDateTime.now())
 				.quantity(10).price(BigDecimal.valueOf(100.00)).tags(Set.of(new Tag(1L, "tag")))
 				.productTranslationManagement(Set.of(getProductTranslationManagement())).build();
+	}
+
+	public static TagEntity getTagEntity() {
+		return TagEntity.builder().id(TEST_ID).name("category:mobile").build();
+	}
+
+	public static Tag getTag() {
+		return Tag.builder().id(TEST_ID).name("category:mobile").build();
 	}
 }

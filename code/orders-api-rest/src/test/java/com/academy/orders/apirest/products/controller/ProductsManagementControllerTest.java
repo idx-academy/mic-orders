@@ -29,7 +29,6 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ProductsManagementController.class)
@@ -85,7 +84,7 @@ class ProductsManagementControllerTest {
 
 		ObjectMapper objectMapper = new ObjectMapper();
 
-		mockMvc.perform(put(UPDATE_PRODUCT, TEST_UUID).param("lang", LANGUAGE_EN).contentType("application/json")
+		mockMvc.perform(patch(UPDATE_PRODUCT, TEST_UUID).param("lang", LANGUAGE_EN).contentType("application/json")
 				.content(objectMapper.writeValueAsString(dto))).andExpect(status().isOk());
 
 		verify(updateProductRequestDTOMapper).fromDTO(dto);

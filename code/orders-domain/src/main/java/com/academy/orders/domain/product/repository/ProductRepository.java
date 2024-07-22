@@ -9,6 +9,18 @@ import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import java.util.UUID;
 
 public interface ProductRepository {
+	/**
+	 * Retrieves a paginated list of products based on the provided language and
+	 * pageable information.
+	 *
+	 * @param language
+	 *            the language code to filter the products.
+	 * @param pageable
+	 *            the pageable information for pagination and sorting.
+	 * @return a page containing the products that match the criteria.
+	 *
+	 * @author Anton Bondar, Yurii Osovskyi
+	 */
 	Page<Product> getAllProducts(String language, Pageable pageable);
 
 	/**

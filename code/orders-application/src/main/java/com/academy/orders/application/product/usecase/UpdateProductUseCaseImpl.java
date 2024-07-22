@@ -2,11 +2,12 @@ package com.academy.orders.application.product.usecase;
 
 import com.academy.orders.domain.product.entity.ProductManagement;
 import com.academy.orders.domain.product.entity.ProductTranslationManagement;
-import com.academy.orders.domain.product.entity.UpdateProduct;
+import com.academy.orders.domain.product.dto.UpdateProductDto;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders.domain.product.exception.ProductNotFoundException;
 import com.academy.orders.domain.product.repository.ProductRepository;
 import com.academy.orders.domain.product.usecase.UpdateProductUseCase;
+import com.academy.orders.domain.tag.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,13 +20,16 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UpdateProductUseCaseImpl implements UpdateProductUseCase {
 	private final ProductRepository productRepository;
+	private final TagRepository tagRepository;
 
 	@Transactional
 	@Override
-	public void updateProduct(UUID productId, String lang, UpdateProduct updateProduct) {
+	public void updateProduct(UUID productId, String lang, UpdateProductDto updateProduct) {
 		if (!productRepository.existById(productId)) {
 			throw new ProductNotFoundException(productId);
 		}
+
+		var tags = tagRepository.getTagsByIds(updateProduct.tagIds());
 
 		var existingProductTranslation = productRepository.findByIdAndLanguageCode(productId, lang);
 
@@ -34,8 +38,8 @@ public class UpdateProductUseCaseImpl implements UpdateProductUseCase {
 				existingProductTranslation.language());
 
 		var product = new ProductManagement(productId, ProductStatus.valueOf(updateProduct.status().toUpperCase()),
-				updateProduct.image(), LocalDateTime.now(), updateProduct.quantity(), updateProduct.price(),
-				updateProduct.tags(), Set.of(updatedProductTranslation));
+				updateProduct.image(), LocalDateTime.now(), updateProduct.quantity(), updateProduct.price(), tags,
+				Set.of(updatedProductTranslation));
 		productRepository.update(product);
 	}
 }

@@ -10,11 +10,11 @@ import com.academy.orders.domain.order.entity.OrderReceiver;
 import com.academy.orders.domain.order.entity.PostAddress;
 import com.academy.orders.domain.order.entity.enumerated.DeliveryMethod;
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
+import com.academy.orders.domain.product.dto.UpdateProductDto;
 import com.academy.orders.domain.product.entity.Language;
 import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.ProductTranslation;
 import com.academy.orders.domain.product.entity.Tag;
-import com.academy.orders.domain.product.entity.UpdateProduct;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders_api_rest.generated.model.AccountResponseDTO;
 import com.academy.orders_api_rest.generated.model.CartItemDTO;
@@ -23,7 +23,6 @@ import com.academy.orders_api_rest.generated.model.ManagerOrderDTO;
 import com.academy.orders_api_rest.generated.model.OrdersFilterParametersDTO;
 import com.academy.orders_api_rest.generated.model.PageManagerOrderDTO;
 import com.academy.orders_api_rest.generated.model.ProductStatusDTO;
-import com.academy.orders_api_rest.generated.model.TagDTO;
 import com.academy.orders_api_rest.generated.model.UpdateProductRequestDTO;
 import com.academy.orders_api_rest.generated.model.UpdatedCartItemDTO;
 import com.academy.orders_api_rest.generated.model.UserOrderDTO;
@@ -346,20 +345,13 @@ public class ModelUtils {
 		updateProductRequestDTO.setImage("image");
 		updateProductRequestDTO.setQuantity(10);
 		updateProductRequestDTO.setPrice(BigDecimal.valueOf(100));
-		updateProductRequestDTO.setTags(List.of(getTagDTO()));
+		updateProductRequestDTO.setTagIds(List.of(TEST_ID));
 		return updateProductRequestDTO;
 	}
 
-	public static TagDTO getTagDTO() {
-		TagDTO tagDTO = new TagDTO();
-		tagDTO.setId(TEST_ID);
-		tagDTO.setName(TAG_NAME);
-		return tagDTO;
-	}
-
-	public static UpdateProduct getUpdateProduct() {
-		return UpdateProduct.builder().id(TEST_UUID).name("Name").description("Description")
+	public static UpdateProductDto getUpdateProduct() {
+		return UpdateProductDto.builder().id(TEST_UUID).name("Name").description("Description")
 				.status(String.valueOf(ProductStatusDTO.VISIBLE)).image(IMAGE_URL).quantity(10)
-				.price(BigDecimal.valueOf(100)).tags(Set.of(getTag())).createdAt(LocalDateTime.now()).build();
+				.price(BigDecimal.valueOf(100)).tagIds(List.of(TEST_ID)).createdAt(LocalDateTime.now()).build();
 	}
 }

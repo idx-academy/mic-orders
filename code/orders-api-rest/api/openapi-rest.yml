@@ -249,7 +249,7 @@ paths:
           $ref: '#/components/responses/NotFoundResponse'
 
   /v1/management/products/{productId}:
-    put:
+    patch:
       tags:
         - ProductsManagement
       summary: Update existing product details
@@ -959,24 +959,14 @@ components:
           format: bigDecimal
           example: 999.99
           description: Price of the product
-        tags:
+        tagIds:
           type: array
-          description: Set of tags associated with the product
+          description: Array of Tag IDs associated with the product
           items:
-            $ref: '#/components/schemas/Tag'
-
-    Tag:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-          example: 1
-          description: The unique identifier of the tag.
-        name:
-          type: string
-          example: category:electronics
-          description: The name of the tag.
+            type: integer
+            format: int64
+            example: 1, 2
+            description: The unique identifiers of the tags.
 
     PlaceOrderRequest:
       type: object
