@@ -1,10 +1,13 @@
 package com.academy.orders.apirest.products.controller;
 
 import com.academy.orders.apirest.common.TestSecurityConfig;
+import com.academy.orders.apirest.common.mapper.PageableDTOMapper;
+import com.academy.orders.apirest.products.mapper.ManagementProductMapper;
 import com.academy.orders.apirest.products.mapper.ProductStatusDTOMapper;
 import com.academy.orders.apirest.products.mapper.UpdateProductRequestDTOMapper;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders.domain.product.usecase.UpdateProductUseCase;
+import com.academy.orders.domain.product.usecase.GetManagerProductsUseCase;
 import com.academy.orders.domain.product.usecase.UpdateStatusUseCase;
 import com.academy.orders_api_rest.generated.model.ProductStatusDTO;
 import java.util.UUID;
@@ -49,6 +52,15 @@ class ProductsManagementControllerTest {
 
 	@MockBean
 	private UpdateProductRequestDTOMapper updateProductRequestDTOMapper;
+
+	@MockBean
+	private PageableDTOMapper pageableDTOMapper;
+
+	@MockBean
+	private ManagementProductMapper managementProductMapper;
+
+	@MockBean
+	private GetManagerProductsUseCase managerProductsUseCase;
 
 	@Test
 	@WithMockUser(authorities = {"ROLE_MANAGER"})

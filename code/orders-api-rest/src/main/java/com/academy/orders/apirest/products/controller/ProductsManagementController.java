@@ -1,14 +1,20 @@
 package com.academy.orders.apirest.products.controller;
 
 import com.academy.orders.apirest.products.mapper.UpdateProductRequestDTOMapper;
+import com.academy.orders.apirest.common.mapper.PageableDTOMapper;
+import com.academy.orders.apirest.products.mapper.ManagementProductMapper;
 import com.academy.orders.apirest.products.mapper.ProductStatusDTOMapper;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders.domain.product.usecase.UpdateProductUseCase;
+import com.academy.orders.domain.product.usecase.GetManagerProductsUseCase;
 import com.academy.orders.domain.product.usecase.UpdateStatusUseCase;
 import com.academy.orders_api_rest.generated.api.ProductsManagementApi;
 import com.academy.orders_api_rest.generated.model.ProductStatusDTO;
 import java.util.UUID;
 import com.academy.orders_api_rest.generated.model.UpdateProductRequestDTO;
+import com.academy.orders_api_rest.generated.model.PageableDTO;
+import com.academy.orders_api_rest.generated.model.ProductManagementFilterDTO;
+import com.academy.orders_api_rest.generated.model.ProductManagementPageDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,6 +30,9 @@ public class ProductsManagementController implements ProductsManagementApi {
 	private final UpdateProductUseCase updateProductUseCase;
 	private final ProductStatusDTOMapper productStatusDTOMapper;
 	private final UpdateProductRequestDTOMapper updateProductRequestDTOMapper;
+	private final PageableDTOMapper pageableDTOMapper;
+	private final ManagementProductMapper managementProductMapper;
+	private final GetManagerProductsUseCase managerProductsUseCase;
 
 	@Override
 	@PreAuthorize("hasAnyAuthority('ROLE_MANAGER')")
@@ -37,5 +46,14 @@ public class ProductsManagementController implements ProductsManagementApi {
 	public void updateProduct(UUID productId, String lang, UpdateProductRequestDTO updateProductRequestDTO) {
 		var updateProduct = updateProductRequestDTOMapper.fromDTO(updateProductRequestDTO);
 		updateProductUseCase.updateProduct(productId, lang, updateProduct);
+	}
+
+	@Override
+	public ProductManagementPageDTO v1ManagementProductsGet(ProductManagementFilterDTO productFilter, String lang,
+			PageableDTO pageable) {
+		var pageableDomain = pageableDTOMapper.fromDto(pageable);
+		var filter = managementProductMapper.fromProductManagementFilterDTO(productFilter);
+		var productTranslationPage = managerProductsUseCase.getManagerProducts(pageableDomain, filter, lang);
+		return managementProductMapper.fromProductPage(productTranslationPage);
 	}
 }
