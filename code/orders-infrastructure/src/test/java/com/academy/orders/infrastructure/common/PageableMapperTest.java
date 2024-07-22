@@ -19,41 +19,38 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ExtendWith(MockitoExtension.class)
 class PageableMapperTest {
-	 private final PageableMapper pageableMapper = new PageableMapper() {};
-	 private final Pageable pageable = ModelUtils.getPageable();
+	private final PageableMapper pageableMapper = new PageableMapper() {
+	};
+	private final Pageable pageable = ModelUtils.getPageable();
 
-	 @ParameterizedTest
-	 @NullSource
-	 void fromDomainWithNullPageableTest(Pageable pageable) {
-		 var result = pageableMapper.fromDomain(pageable);
-		 assertNull(result);
-	 }
+	@ParameterizedTest
+	@NullSource
+	void fromDomainWithNullPageableTest(Pageable pageable) {
+		var result = pageableMapper.fromDomain(pageable);
+		assertNull(result);
+	}
 
-	 @Test
-	 void fromDomainWithValidPageableTest() {
-		 var sort = Sort.by(pageable.sort().toArray(new String[0]));
-		 var result = pageableMapper.fromDomain(pageable);
+	@Test
+	void fromDomainWithValidPageableTest() {
+		var sort = Sort.by(pageable.sort().toArray(new String[0]));
+		var result = pageableMapper.fromDomain(pageable);
 
-		 assertNotNull(result);
-		 assertEquals(pageable.page(), result.getPageNumber());
-		 assertEquals(pageable.size(), result.getPageSize());
-		 assertEquals(sort, result.getSort());
-	 }
+		assertNotNull(result);
+		assertEquals(pageable.page(), result.getPageNumber());
+		assertEquals(pageable.size(), result.getPageSize());
+		assertEquals(sort, result.getSort());
+	}
 
-	 @ParameterizedTest
-	 @MethodSource("incorrectParametersProvider")
-	 void mapPropertiesToSortIncorrectDataTest(List<String> properties) {
-	 	var actual = pageableMapper.mapPropertiesToSort(properties);
-	 	assertEquals(Sort.unsorted(), actual);
-	 }
+	@ParameterizedTest
+	@MethodSource("incorrectParametersProvider")
+	void mapPropertiesToSortIncorrectDataTest(List<String> properties) {
+		var actual = pageableMapper.mapPropertiesToSort(properties);
+		assertEquals(Sort.unsorted(), actual);
+	}
 
-	 static Stream<List<String>>incorrectParametersProvider(){
-		 return Stream.of(
-			 Collections.emptyList(),
-			 null,
-			 List.of(""," ")
-		 );
-	 }
+	static Stream<List<String>> incorrectParametersProvider() {
+		return Stream.of(Collections.emptyList(), null, List.of("", " "));
+	}
 
 	@Test
 	void mapPropertiesToSortIfOneSplitByCommaTest() {
@@ -65,13 +62,13 @@ class PageableMapperTest {
 		assertEquals(expected, actual);
 	}
 
-	 @Test
-	 void mapPropertiesToSortTest() {
-	 	var properties = List.of("createdAt, ASC", "id", "status, DESC");
-	 	var expected = Sort.by(Sort.Order.asc("createdAt"), Sort.Order.asc("id"), Sort.Order.desc("status"));
+	@Test
+	void mapPropertiesToSortTest() {
+		var properties = List.of("createdAt, ASC", "id", "status, DESC");
+		var expected = Sort.by(Sort.Order.asc("createdAt"), Sort.Order.asc("id"), Sort.Order.desc("status"));
 
-	 	var actual = pageableMapper.mapPropertiesToSort(properties);
-	 	assertEquals(expected, actual);
-	 }
+		var actual = pageableMapper.mapPropertiesToSort(properties);
+		assertEquals(expected, actual);
+	}
 
 }

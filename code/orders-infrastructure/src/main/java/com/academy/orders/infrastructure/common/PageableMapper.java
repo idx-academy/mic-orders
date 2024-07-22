@@ -26,14 +26,12 @@ public interface PageableMapper {
 		if (isPropertiesIncorrect(values)) {
 			return Sort.unsorted();
 		}
-		if (isOnePropertySplitByComma(values)){
+		if (isOnePropertySplitByComma(values)) {
 			return mapSplitByCommaValueToSort(values);
 		}
 
-		return values.stream()
-			.filter(value -> !value.isBlank())
-			.map(this::mapToSort)
-			.collect(Collectors.collectingAndThen(Collectors.toList(), Sort::by));
+		return values.stream().filter(value -> !value.isBlank()).map(this::mapToSort)
+				.collect(Collectors.collectingAndThen(Collectors.toList(), Sort::by));
 	}
 
 	private static boolean isPropertiesIncorrect(List<String> values) {
@@ -51,7 +49,7 @@ public interface PageableMapper {
 	private Sort mapSplitByCommaValueToSort(List<String> values) {
 		var property = values.get(0).trim();
 		var direction = values.get(1).trim();
-		return Sort.by(Sort.Direction.fromString(direction),property);
+		return Sort.by(Sort.Direction.fromString(direction), property);
 	}
 
 	private Sort.Order mapToSort(String sortValue) {
