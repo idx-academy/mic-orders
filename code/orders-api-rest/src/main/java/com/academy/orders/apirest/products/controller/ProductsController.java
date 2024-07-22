@@ -20,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @CrossOrigin
-public class ProductController implements ProductsApi {
+public class ProductsController implements ProductsApi {
 	private final GetAllProductsUseCase getAllProductsUseCase;
 	private final ProductPreviewDTOMapper productPreviewDTOMapper;
 	private final PageableDTOMapper pageableDTOMapper;
