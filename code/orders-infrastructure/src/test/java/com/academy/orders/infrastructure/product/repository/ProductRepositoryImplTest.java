@@ -1,5 +1,6 @@
 package com.academy.orders.infrastructure.product.repository;
 
+import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import java.util.List;
 import java.util.UUID;
 import com.academy.orders.infrastructure.product.ProductMapper;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import static com.academy.orders.infrastructure.ModelUtils.getPageable;
 import static com.academy.orders.infrastructure.ModelUtils.getProduct;
 import static com.academy.orders.infrastructure.ModelUtils.getProductEntity;
+import static com.academy.orders.infrastructure.TestConstants.TEST_UUID;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
@@ -65,5 +67,17 @@ class ProductRepositoryImplTest {
 		verify(productJpaAdapter).findAllByLanguageCodeAndStatusVisible("en",
 				PageRequest.of(pageable.page(), pageable.size()), sort);
 		verify(productMapper).fromEntities(page.getContent());
+	}
+
+	@Test
+	void updateStatusTest() {
+		UUID productId = TEST_UUID;
+		ProductStatus status = ProductStatus.VISIBLE;
+
+		doNothing().when(productJpaAdapter).updateProductStatus(productId, status);
+
+		productRepository.updateStatus(productId, status);
+
+		verify(productJpaAdapter).updateProductStatus(productId, status);
 	}
 }

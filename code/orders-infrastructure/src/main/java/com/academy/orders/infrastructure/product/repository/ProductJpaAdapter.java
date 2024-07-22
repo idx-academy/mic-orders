@@ -1,5 +1,6 @@
 package com.academy.orders.infrastructure.product.repository;
 
+import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders.infrastructure.product.entity.ProductEntity;
 import java.util.List;
 import java.util.UUID;
@@ -9,7 +10,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
@@ -31,7 +31,10 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 	List<ProductEntity> findAllByIdAndLanguageCode(List<UUID> productIds, String language);
 
 	@Modifying
-	@Transactional
 	@Query(nativeQuery = true, value = "UPDATE products SET quantity = :quantity WHERE id = :id")
 	void setNewProductQuantity(UUID id, Integer quantity);
+
+	@Modifying
+	@Query(nativeQuery = true, value = "UPDATE products SET status = :status WHERE id = :id")
+	void updateProductStatus(UUID id, ProductStatus status);
 }
