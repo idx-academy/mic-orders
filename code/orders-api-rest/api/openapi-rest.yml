@@ -1035,14 +1035,6 @@ components:
         - calculatedPrice
         - totalPrice
 
-    ProductStatus:
-      type: string
-      enum:
-        - VISIBLE
-        - HIDDEN
-      example: VISIBLE
-      description: Status of the product
-
     ProductTags:
       type: array
       items:
@@ -1054,7 +1046,7 @@ components:
       type: object
       properties:
         status:
-          $ref: '#/components/schemas/ProductStatus'
+          $ref: '#/components/schemas/ProductManagementStatus'
         searchByName:
           type: string
           description: field for searching products by name
@@ -1137,7 +1129,7 @@ components:
           type: string
           format: date-time
         status:
-          $ref: '#/components/schemas/ProductStatus'
+          $ref: '#/components/schemas/ProductManagementStatus'
         tags:
           $ref: '#/components/schemas/ProductTags'
       required:
@@ -1150,3 +1142,11 @@ components:
         - createdAt
         - status
         - tags
+
+    ProductManagementStatus:
+      type: string
+      enum:
+        - VISIBLE
+        - HIDDEN
+      example: VISIBLE
+      description: Status of the product
