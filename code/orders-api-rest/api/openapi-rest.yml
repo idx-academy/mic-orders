@@ -248,6 +248,34 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
 
+  /v1/management/products/{productId}:
+    patch:
+      tags:
+        - ProductsManagement
+      summary: Update existing product details
+      operationId: updateProduct
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/Language'
+        - $ref: '#/components/parameters/ProductId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProductRequest'
+      responses:
+        '200':
+          description: Product updated successfully
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+
   /v1/products:
     get:
       tags:
@@ -375,8 +403,8 @@ paths:
 #=======================================================================================================================
 components:
 
-  #PARAMETERS
-  #=======================================================================================================================
+#PARAMETERS
+#=======================================================================================================================
   parameters:
     Pageable:
       name: pageable
@@ -410,7 +438,7 @@ components:
         type: string
         default: en
         nullable: false
-        example: ua
+        example: en
       description: The language code for the product information (e.g., 'ua' for Ukrainian).
   securitySchemes:
     bearerAuth:
@@ -418,8 +446,8 @@ components:
       scheme: bearer
       bearerFormat: JWT
 
-  #RESPONSES
-  #=======================================================================================================================
+#RESPONSES
+#=======================================================================================================================
   responses:
     CreatedResponse:
       description: Resource created
@@ -483,8 +511,8 @@ components:
             title: Forbidden
             detail: User does not have success to this resource
 
-  #SCHEMAS
-  #=======================================================================================================================
+#SCHEMAS
+#=======================================================================================================================
   schemas:
     Pageable:
       type: object
@@ -890,7 +918,7 @@ components:
         image:
           type: string
           example: https://example.com/image.jpg
-          description: List of image URLs associated with the product.
+          description: Image URLs associated with the product.
         price:
           type: number
           format: float
@@ -904,6 +932,41 @@ components:
         - HIDDEN
       example: VISIBLE
       description: Status of the product's visibility for users
+
+    UpdateProductRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: APPLE iPhone
+          description: Name of the product
+        description:
+          type: string
+          example: Device type, operation system, etc.
+          description: Product description
+        status:
+          $ref: '#/components/schemas/ProductStatus'
+        image:
+          type: string
+          example: https://example.com/image.jpg
+          description: Image URLs associated with the product
+        quantity:
+          type: integer
+          example: 10
+          description: Quantity of the product
+        price:
+          type: number
+          format: bigDecimal
+          example: 999.99
+          description: Price of the product
+        tagIds:
+          type: array
+          description: Array of Tag IDs associated with the product
+          items:
+            type: integer
+            format: int64
+            example: 1, 2
+            description: The unique identifiers of the tags.
 
     PlaceOrderRequest:
       type: object

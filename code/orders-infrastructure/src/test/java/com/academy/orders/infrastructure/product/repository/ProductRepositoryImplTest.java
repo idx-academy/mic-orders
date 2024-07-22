@@ -3,7 +3,9 @@ package com.academy.orders.infrastructure.product.repository;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import java.util.List;
 import java.util.UUID;
+import com.academy.orders.infrastructure.product.ProductManagementMapper;
 import com.academy.orders.infrastructure.product.ProductMapper;
+import com.academy.orders.infrastructure.product.ProductTranslationManagementMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,10 +18,16 @@ import org.springframework.data.domain.PageRequest;
 import static com.academy.orders.infrastructure.ModelUtils.getPageable;
 import static com.academy.orders.infrastructure.ModelUtils.getProduct;
 import static com.academy.orders.infrastructure.ModelUtils.getProductEntity;
+import static com.academy.orders.infrastructure.ModelUtils.getProductManagement;
+import static com.academy.orders.infrastructure.ModelUtils.getProductTranslationEntity;
+import static com.academy.orders.infrastructure.ModelUtils.getProductTranslationManagement;
+import static com.academy.orders.infrastructure.TestConstants.LANGUAGE_EN;
 import static com.academy.orders.infrastructure.TestConstants.TEST_UUID;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -33,6 +41,12 @@ class ProductRepositoryImplTest {
 
 	@Mock
 	private ProductMapper productMapper;
+
+	@Mock
+	private ProductTranslationManagementMapper productTranslationManagementMapper;
+
+	@Mock
+	private ProductManagementMapper productManagementMapper;
 
 	@ParameterizedTest
 	@CsvSource({"true", "false"})
@@ -79,5 +93,36 @@ class ProductRepositoryImplTest {
 		productRepository.updateStatus(productId, status);
 
 		verify(productJpaAdapter).updateProductStatus(productId, status);
+	}
+
+	@Test
+	void findByIdAndLanguageCodeTest() {
+		UUID productId = UUID.randomUUID();
+		var productTranslationEntity = getProductTranslationEntity();
+		var productTranslationManagement = getProductTranslationManagement();
+
+		when(productJpaAdapter.findByIdAndLanguageCode(productId, LANGUAGE_EN)).thenReturn(productTranslationEntity);
+		when(productTranslationManagementMapper.fromEntity(productTranslationEntity))
+				.thenReturn(productTranslationManagement);
+
+		var result = productRepository.findByIdAndLanguageCode(productId, LANGUAGE_EN);
+		assertEquals(productTranslationManagement, result);
+
+		verify(productJpaAdapter).findByIdAndLanguageCode(productId, LANGUAGE_EN);
+		verify(productTranslationManagementMapper).fromEntity(productTranslationEntity);
+	}
+
+	@Test
+	void updateTest() {
+		var productManagement = getProductManagement();
+		var productEntity = getProductEntity();
+
+		when(productManagementMapper.toEntity(productManagement)).thenReturn(productEntity);
+		doAnswer(invocation -> null).when(productJpaAdapter).save(productEntity);
+
+		productRepository.update(productManagement);
+
+		verify(productManagementMapper).toEntity(productManagement);
+		verify(productJpaAdapter).save(productEntity);
 	}
 }

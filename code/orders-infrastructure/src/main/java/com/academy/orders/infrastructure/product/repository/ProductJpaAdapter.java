@@ -4,6 +4,7 @@ import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders.infrastructure.product.entity.ProductEntity;
 import java.util.List;
 import java.util.UUID;
+import com.academy.orders.infrastructure.product.entity.ProductTranslationEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -25,8 +26,8 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 					+ "JOIN pt.language l WHERE l.code = :language AND p.status = 'VISIBLE'")
 	Page<ProductEntity> findAllByLanguageCodeAndStatusVisible(String language, Pageable pageable, String sort);
 
-	@Query("SELECT p FROM ProductEntity p " + "LEFT JOIN FETCH p.productTranslations pt "
-			+ "LEFT JOIN FETCH pt.language l " + "LEFT JOIN FETCH p.tags t "
+	@Query("SELECT p FROM ProductEntity p LEFT JOIN FETCH p.productTranslations pt "
+			+ "LEFT JOIN FETCH pt.language l LEFT JOIN FETCH p.tags t "
 			+ "WHERE p.id in (:productIds) and l.code = :language")
 	List<ProductEntity> findAllByIdAndLanguageCode(List<UUID> productIds, String language);
 
@@ -37,4 +38,8 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 	@Modifying
 	@Query(nativeQuery = true, value = "UPDATE products SET status = :status WHERE id = :id")
 	void updateProductStatus(UUID id, ProductStatus status);
+
+	@Query("SELECT pt FROM ProductTranslationEntity pt LEFT JOIN FETCH pt.product p "
+			+ "LEFT JOIN FETCH pt.language l LEFT JOIN FETCH p.tags t WHERE p.id = :id AND l.code = :languageCode")
+	ProductTranslationEntity findByIdAndLanguageCode(UUID id, String languageCode);
 }

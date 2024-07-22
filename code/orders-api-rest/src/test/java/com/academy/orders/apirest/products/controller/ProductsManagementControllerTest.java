@@ -2,7 +2,9 @@ package com.academy.orders.apirest.products.controller;
 
 import com.academy.orders.apirest.common.TestSecurityConfig;
 import com.academy.orders.apirest.products.mapper.ProductStatusDTOMapper;
+import com.academy.orders.apirest.products.mapper.UpdateProductRequestDTOMapper;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
+import com.academy.orders.domain.product.usecase.UpdateProductUseCase;
 import com.academy.orders.domain.product.usecase.UpdateStatusUseCase;
 import com.academy.orders_api_rest.generated.model.ProductStatusDTO;
 import java.util.UUID;
@@ -17,8 +19,12 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+import static com.academy.orders.apirest.ModelUtils.getUpdateProduct;
+import static com.academy.orders.apirest.ModelUtils.getUpdateProductRequestDTO;
+import static com.academy.orders.apirest.TestConstants.LANGUAGE_EN;
 import static com.academy.orders.apirest.TestConstants.TEST_UUID;
+import static com.academy.orders.apirest.TestConstants.UPDATE_PRODUCT;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -36,7 +42,13 @@ class ProductsManagementControllerTest {
 	private UpdateStatusUseCase updateStatusUseCase;
 
 	@MockBean
+	private UpdateProductUseCase updateProductUseCase;
+
+	@MockBean
 	private ProductStatusDTOMapper productStatusDTOMapper;
+
+	@MockBean
+	private UpdateProductRequestDTOMapper updateProductRequestDTOMapper;
 
 	@Test
 	@WithMockUser(authorities = {"ROLE_MANAGER"})
@@ -58,5 +70,24 @@ class ProductsManagementControllerTest {
 		// Then
 		verify(productStatusDTOMapper).fromDTO(productStatusDTO);
 		verify(updateStatusUseCase).updateStatus(productId, productStatus);
+	}
+
+	@Test
+	@WithMockUser(authorities = {"ROLE_MANAGER"})
+	@SneakyThrows
+	void updateProductTest() {
+		var dto = getUpdateProductRequestDTO();
+		var updateProduct = getUpdateProduct();
+
+		when(updateProductRequestDTOMapper.fromDTO(dto)).thenReturn(updateProduct);
+		doNothing().when(updateProductUseCase).updateProduct(TEST_UUID, LANGUAGE_EN, updateProduct);
+
+		ObjectMapper objectMapper = new ObjectMapper();
+
+		mockMvc.perform(patch(UPDATE_PRODUCT, TEST_UUID).param("lang", LANGUAGE_EN).contentType("application/json")
+				.content(objectMapper.writeValueAsString(dto))).andExpect(status().isOk());
+
+		verify(updateProductRequestDTOMapper).fromDTO(dto);
+		verify(updateProductUseCase).updateProduct(TEST_UUID, LANGUAGE_EN, updateProduct);
 	}
 }
