@@ -16,7 +16,7 @@ public class GetOrderByIdUseCaseImpl implements GetOrderByIdUseCase {
 	private final OrderRepository orderRepository;
 
 	@Override
-	public Order getOrderById(UUID id) {
-		return orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
+	public Order getOrderById(UUID id, String language) {
+		return orderRepository.findById(id, language).orElseThrow(() -> new OrderNotFoundException(id));
 	}
 }

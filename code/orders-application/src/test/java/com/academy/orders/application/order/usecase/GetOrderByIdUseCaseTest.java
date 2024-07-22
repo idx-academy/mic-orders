@@ -31,31 +31,34 @@ class GetOrderByIdUseCaseTest {
 
 	private UUID orderId;
 	private Order order;
+	private String language;
 
 	@BeforeEach
 	public void setUp() {
 		orderId = UUID.randomUUID();
 		order = Order.builder().id(orderId).build();
+		language = "ua";
 	}
 
 	@Test
 	void testGetOrderById_OrderExists() {
-		when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
+		when(orderRepository.findById(orderId, language)).thenReturn(Optional.of(order));
 
-		Order result = getOrderByIdUseCase.getOrderById(orderId);
+		Order result = getOrderByIdUseCase.getOrderById(orderId, language);
 
 		assertNotNull(result);
 		assertEquals(order, result);
-		verify(orderRepository, times(1)).findById(orderId);
+		verify(orderRepository, times(1)).findById(orderId, language);
 	}
 
 	@Test
 	void testGetOrderById_OrderNotFound() {
-		when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
+		when(orderRepository.findById(orderId, language)).thenReturn(Optional.empty());
 
-		var exception = assertThrows(OrderNotFoundException.class, () -> getOrderByIdUseCase.getOrderById(orderId));
+		var exception = assertThrows(OrderNotFoundException.class,
+				() -> getOrderByIdUseCase.getOrderById(orderId, language));
 
 		assertEquals(orderId, exception.getOrderId());
-		verify(orderRepository, times(1)).findById(orderId);
+		verify(orderRepository, times(1)).findById(orderId, language);
 	}
 }

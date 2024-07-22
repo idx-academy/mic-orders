@@ -82,7 +82,7 @@ paths:
   /v1/orders/{orderId}:
     get:
       tags:
-        - Orders
+        - OrdersManagement
       summary: Get order by id
       operationId: getOrderById
       security:
@@ -96,13 +96,20 @@ paths:
             description: Id of the order
             format: uuid
           example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
+        - $ref: '#/components/parameters/Language'
       responses:
         '200':
           description: Order
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserOrder'
+                $ref: '#/components/schemas/ManagerOrder'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
 
