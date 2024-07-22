@@ -28,9 +28,6 @@ tags:
   - name: Cart
     description: Cart management endpoints
 
-  - name: ProductManagement
-    description: Endpoints for management products
-
 #ENDPOINTS
 #=======================================================================================================================
 paths:
@@ -271,7 +268,7 @@ paths:
   /v1/management/products:
     get:
       tags:
-        - ProductManagement
+        - ProductsManagement
       summary: Get all information about products
       description: The endpoint retrieves all information about products
       security:
