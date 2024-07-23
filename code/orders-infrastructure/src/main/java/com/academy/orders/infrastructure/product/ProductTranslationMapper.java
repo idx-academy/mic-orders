@@ -1,11 +1,12 @@
 package com.academy.orders.infrastructure.product;
 
 import com.academy.orders.domain.product.entity.ProductTranslation;
-import com.academy.orders.infrastructure.language.LanguageMapper;
 import com.academy.orders.infrastructure.product.entity.ProductTranslationEntity;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = {LanguageMapper.class})
+@Mapper(componentModel = "spring")
 public interface ProductTranslationMapper {
-	ProductTranslation fromEntity(ProductTranslationEntity productTranslationEntity);
+	@Mapping(target = "language", ignore = true)
+	ProductTranslation fromEntity(ProductTranslationEntity translationEntity);
 }

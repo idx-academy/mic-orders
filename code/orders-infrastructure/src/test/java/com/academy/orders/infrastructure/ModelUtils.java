@@ -14,6 +14,7 @@ import com.academy.orders.domain.order.entity.OrderReceiver;
 import com.academy.orders.domain.order.entity.PostAddress;
 import com.academy.orders.domain.order.entity.enumerated.DeliveryMethod;
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
+import com.academy.orders.domain.product.dto.ProductManagementFilterDto;
 import com.academy.orders.domain.product.entity.Language;
 import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.ProductManagement;
@@ -28,14 +29,13 @@ import com.academy.orders.infrastructure.order.entity.OrderItemEntity;
 import com.academy.orders.infrastructure.order.entity.OrderReceiverVO;
 import com.academy.orders.infrastructure.order.entity.PostAddressEntity;
 import com.academy.orders.infrastructure.product.entity.ProductEntity;
+import com.academy.orders.infrastructure.product.entity.ProductTranslationEntity;
+import com.academy.orders.infrastructure.tag.entity.TagEntity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-
-import com.academy.orders.infrastructure.product.entity.ProductTranslationEntity;
-import com.academy.orders.infrastructure.tag.entity.TagEntity;
 import org.springframework.data.domain.PageImpl;
 
 import static com.academy.orders.domain.order.entity.enumerated.DeliveryMethod.NOVA;
@@ -144,6 +144,11 @@ public class ModelUtils {
 		return OrdersFilterParametersDto.builder().deliveryMethods(List.of(DeliveryMethod.NOVA))
 				.statuses(List.of(OrderStatus.IN_PROGRESS)).isPaid(false).createdBefore(DATE_TIME)
 				.createdAfter(DATE_TIME).totalMore(BigDecimal.ZERO).totalLess(BigDecimal.TEN).build();
+	}
+
+	public static ProductManagementFilterDto getManagementFilterDto() {
+		return ProductManagementFilterDto.builder().status(ProductStatus.VISIBLE).createdBefore(DATE_TIME)
+				.createdAfter(DATE_TIME).priceMore(BigDecimal.ZERO).priceLess(BigDecimal.TEN).build();
 	}
 
 	@SafeVarargs

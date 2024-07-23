@@ -39,11 +39,11 @@ public interface PageableMapper {
 	}
 
 	private boolean isOnePropertySplitByComma(List<String> values) {
-		if (values.size() == 2) {
-			var second = values.get(1).trim();
-			return second.equalsIgnoreCase("ASC") || second.equalsIgnoreCase("DESC");
-		}
-		return false;
+		return values.size() == 2 && isDirectionString(values);
+	}
+
+	private boolean isDirectionString(List<String> values) {
+		return values.get(1).trim().equalsIgnoreCase("ASC") || values.get(1).trim().equalsIgnoreCase("DESC");
 	}
 
 	private Sort mapSplitByCommaValueToSort(List<String> values) {

@@ -2,11 +2,13 @@ package com.academy.orders.domain.product.repository;
 
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
+import com.academy.orders.domain.product.dto.ProductManagementFilterDto;
 import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.ProductManagement;
 import com.academy.orders.domain.product.entity.ProductTranslationManagement;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import java.util.UUID;
+import org.springframework.lang.NonNull;
 
 public interface ProductRepository {
 	/**
@@ -79,4 +81,7 @@ public interface ProductRepository {
 	 * @author Anton Bondar
 	 */
 	void update(ProductManagement product);
+
+	Page<Product> findAllByLanguageWithFilter(String language, @NonNull ProductManagementFilterDto filter,
+			Pageable pageable);
 }
