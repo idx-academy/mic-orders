@@ -1,11 +1,13 @@
 package com.academy.orders.infrastructure.product.repository;
 
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
-import java.util.List;
-import java.util.UUID;
+import com.academy.orders.infrastructure.common.PageableMapper;
 import com.academy.orders.infrastructure.product.ProductManagementMapper;
 import com.academy.orders.infrastructure.product.ProductMapper;
+import com.academy.orders.infrastructure.product.ProductPageMapper;
 import com.academy.orders.infrastructure.product.ProductTranslationManagementMapper;
+import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -15,6 +17,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+
+import static com.academy.orders.infrastructure.ModelUtils.getManagementFilterDto;
+import static com.academy.orders.infrastructure.ModelUtils.getPageImplOf;
+import static com.academy.orders.infrastructure.ModelUtils.getPageOf;
 import static com.academy.orders.infrastructure.ModelUtils.getPageable;
 import static com.academy.orders.infrastructure.ModelUtils.getProduct;
 import static com.academy.orders.infrastructure.ModelUtils.getProductEntity;
@@ -23,6 +30,7 @@ import static com.academy.orders.infrastructure.ModelUtils.getProductTranslation
 import static com.academy.orders.infrastructure.ModelUtils.getProductTranslationManagement;
 import static com.academy.orders.infrastructure.TestConstants.LANGUAGE_EN;
 import static com.academy.orders.infrastructure.TestConstants.TEST_UUID;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -38,9 +46,12 @@ class ProductRepositoryImplTest {
 	private ProductRepositoryImpl productRepository;
 	@Mock
 	private ProductJpaAdapter productJpaAdapter;
-
 	@Mock
 	private ProductMapper productMapper;
+	@Mock
+	private ProductPageMapper productPageMapper;
+	@Mock
+	private PageableMapper pageableMapper;
 
 	@Mock
 	private ProductTranslationManagementMapper productTranslationManagementMapper;
@@ -125,4 +136,32 @@ class ProductRepositoryImplTest {
 		verify(productManagementMapper).toEntity(productManagement);
 		verify(productJpaAdapter).save(productEntity);
 	}
+
+	@Test
+	void findAllByLanguageWithFilterTest() {
+		var filter = getManagementFilterDto();
+		var pageableDomain = getPageable();
+		var lang = "en";
+		var sort = Sort.by(String.join(",", pageableDomain.sort()));
+		var pageable = PageRequest.of(pageableDomain.page(), pageableDomain.size(), sort);
+		var productEntity = getProductEntity();
+		var product = getProduct();
+		var ids = getPageImplOf(productEntity.getId());
+		var productPage = getPageOf(product);
+
+		when(pageableMapper.fromDomain(pageableDomain)).thenReturn(pageable);
+		when(productJpaAdapter.findProductsIdsByLangAndFilters(filter, lang, pageable)).thenReturn(ids);
+		when(productJpaAdapter.findProductsByIds(ids.getContent(), pageable.getSort()))
+				.thenReturn(singletonList(productEntity));
+		when(productPageMapper.toDomain(any(PageImpl.class))).thenReturn(productPage);
+
+		var actual = productRepository.findAllByLanguageWithFilter(lang, filter, pageableDomain);
+		assertEquals(productPage, actual);
+
+		verify(pageableMapper).fromDomain(pageableDomain);
+		verify(productJpaAdapter).findProductsIdsByLangAndFilters(filter, lang, pageable);
+		verify(productJpaAdapter).findProductsByIds(ids.getContent(), pageable.getSort());
+		verify(productPageMapper).toDomain(any(PageImpl.class));
+	}
+
 }
