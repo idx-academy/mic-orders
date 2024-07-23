@@ -16,7 +16,6 @@ public interface ManagementProductMapper extends ProductMapper {
 
 	@Mapping(target = "imageLink", source = "image")
 	@Mapping(target = "name", source = "productTranslations", qualifiedByName = "mapProductName")
-	@Mapping(target = "description", source = "productTranslations", qualifiedByName = "mapProductDescription")
 	@Mapping(target = "tags", source = "tags", qualifiedByName = "mapTags")
 	ProductManagementContentDTO fromProduct(Product product);
 

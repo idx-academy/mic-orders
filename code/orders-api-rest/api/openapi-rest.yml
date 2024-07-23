@@ -299,6 +299,7 @@ paths:
         - ProductsManagement
       summary: Get all information about products
       description: The endpoint retrieves all information about products
+      operationId: getProductsForManager
       security:
         - bearerAuth: [ ]
       parameters:
@@ -1206,10 +1207,6 @@ components:
           type: string
           description: name of the product
           example: Iphone
-        description:
-          type: string
-          description: name of the product
-          example: Some description
         imageLink:
           type: string
           description: name of the product
@@ -1234,7 +1231,6 @@ components:
       required:
         - id
         - name
-        - description
         - imageLink
         - quantity
         - price

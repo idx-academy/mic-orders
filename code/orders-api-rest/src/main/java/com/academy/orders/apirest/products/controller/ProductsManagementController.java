@@ -49,7 +49,7 @@ public class ProductsManagementController implements ProductsManagementApi {
 	}
 
 	@Override
-	public ProductManagementPageDTO v1ManagementProductsGet(ProductManagementFilterDTO productFilter, String lang,
+	public ProductManagementPageDTO getProductsForManager(ProductManagementFilterDTO productFilter, String lang,
 			PageableDTO pageable) {
 		var pageableDomain = pageableDTOMapper.fromDto(pageable);
 		var filter = managementProductMapper.fromProductManagementFilterDTO(productFilter);
