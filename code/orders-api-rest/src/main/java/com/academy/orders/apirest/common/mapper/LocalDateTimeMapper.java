@@ -10,6 +10,7 @@ public interface LocalDateTimeMapper {
 	default OffsetDateTime map(LocalDateTime value) {
 		return OffsetDateTime.of(value, ZoneOffset.UTC);
 	}
+
 	default LocalDateTime map(OffsetDateTime value) {
 		if (value == null)
 			return null;

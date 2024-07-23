@@ -9,8 +9,8 @@ server:
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/retail
-    username: ${DATASOURCE_USER}
-    password: ${DATASOURCE_PASSWORD}
+    username: pgusr
+    password: pgpwd
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate.ddl-auto: none
@@ -35,5 +35,7 @@ auth:
     - username: admin@mail.com
       roles: ROLE_ADMIN
       password: Admin_1234
-
+    - username: manager@mail.com
+      roles: ROLE_Manager
+      password: Manager_1234
 
