@@ -1,11 +1,13 @@
 package com.academy.orders.infrastructure.common;
 
 import com.academy.orders.domain.common.Pageable;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.mapstruct.Mapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+
+import static java.util.Objects.isNull;
 
 @Mapper(componentModel = "spring")
 public interface PageableMapper {
@@ -13,47 +15,47 @@ public interface PageableMapper {
 		if (pageable == null) {
 			return null;
 		}
-
-		Sort sort;
-
-		sort = map(pageable.sort());
-
+		Sort sort = mapPropertiesToSort(pageable.sort());
 		int pageNumber = pageable.page();
 		int pageSize = pageable.size();
 
 		return PageRequest.of(pageNumber, pageSize, sort);
 	}
 
-	default List<String> map(Sort value) {
-		return value.stream().map(o -> o.getProperty() + " " + o.getDirection()).toList();
-	}
-
-	default Sort map(List<String> value) {
-		List<Sort.Order> orderList = new LinkedList<>();
-		if (value.isEmpty()) {
+	default Sort mapPropertiesToSort(List<String> values) {
+		if (isPropertiesIncorrect(values)) {
 			return Sort.unsorted();
 		}
-
-		for (int i = 0; i < value.size() - 1; i++) {
-			String param = value.get(i);
-			if (!param.equalsIgnoreCase("asc") && !param.equalsIgnoreCase("desc")) {
-				String nextValue = value.get(i + 1);
-				Sort.Direction direction = Sort.Direction.ASC;
-
-				if (nextValue.equalsIgnoreCase("desc")) {
-					direction = Sort.Direction.DESC;
-				} else if (!nextValue.equalsIgnoreCase("asc")) {
-					orderList.add(Sort.Order.asc(param));
-					continue;
-				}
-				orderList.add(new Sort.Order(direction, param));
-			}
+		if (isOnePropertySplitByComma(values)) {
+			return mapSplitByCommaValueToSort(values);
 		}
 
-		String last = value.get(value.size() - 1);
-		if (!last.equalsIgnoreCase("asc") && !last.equalsIgnoreCase("desc")) {
-			orderList.add(Sort.Order.asc(last));
+		return values.stream().filter(value -> !value.isBlank()).map(this::mapToSort)
+				.collect(Collectors.collectingAndThen(Collectors.toList(), Sort::by));
+	}
+
+	private static boolean isPropertiesIncorrect(List<String> values) {
+		return isNull(values) || values.isEmpty() || values.stream().allMatch(String::isBlank);
+	}
+
+	private boolean isOnePropertySplitByComma(List<String> values) {
+		if (values.size() == 2) {
+			var second = values.get(1).trim();
+			return second.equalsIgnoreCase("ASC") || second.equalsIgnoreCase("DESC");
 		}
-		return Sort.by(orderList);
+		return false;
+	}
+
+	private Sort mapSplitByCommaValueToSort(List<String> values) {
+		var property = values.get(0).trim();
+		var direction = values.get(1).trim();
+		return Sort.by(Sort.Direction.fromString(direction), property);
+	}
+
+	private Sort.Order mapToSort(String sortValue) {
+		var sortElements = sortValue.split(",");
+		var property = sortElements[0].trim();
+		var direction = sortElements.length > 1 ? sortElements[1].trim().toUpperCase() : "ASC";
+		return new Sort.Order(Sort.Direction.fromString(direction), property);
 	}
 }

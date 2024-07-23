@@ -255,6 +255,34 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
 
+  /v1/management/products/{productId}:
+    patch:
+      tags:
+        - ProductsManagement
+      summary: Update existing product details
+      operationId: updateProduct
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/Language'
+        - $ref: '#/components/parameters/ProductId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProductRequest'
+      responses:
+        '200':
+          description: Product updated successfully
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+
   /v1/products:
     get:
       tags:
@@ -272,6 +300,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PageProducts'
+  /v1/management/products:
+    get:
+      tags:
+        - ProductsManagement
+      summary: Get all information about products
+      description: The endpoint retrieves all information about products
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: query
+          name: productFilter
+          schema:
+            $ref: '#/components/schemas/ProductManagementFilter'
+          description: filter for products
+        - $ref: '#/components/parameters/Language'
+        - $ref: '#/components/parameters/Pageable'
+      responses:
+        '200':
+          description: Products
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ProductManagementPage'
+
+
 
   /v1/users/{userId}/cart/{productId}:
     post:
@@ -382,8 +435,8 @@ paths:
 #=======================================================================================================================
 components:
 
-  #PARAMETERS
-  #=======================================================================================================================
+#PARAMETERS
+#=======================================================================================================================
   parameters:
     Pageable:
       name: pageable
@@ -415,9 +468,9 @@ components:
       required: false
       schema:
         type: string
-        default: en
+        default: ua
         nullable: false
-        example: ua
+        example: en
       description: The language code for the product information (e.g., 'ua' for Ukrainian).
   securitySchemes:
     bearerAuth:
@@ -425,8 +478,8 @@ components:
       scheme: bearer
       bearerFormat: JWT
 
-  #RESPONSES
-  #=======================================================================================================================
+#RESPONSES
+#=======================================================================================================================
   responses:
     CreatedResponse:
       description: Resource created
@@ -490,8 +543,8 @@ components:
             title: Forbidden
             detail: User does not have success to this resource
 
-  #SCHEMAS
-  #=======================================================================================================================
+#SCHEMAS
+#=======================================================================================================================
   schemas:
     Pageable:
       type: object
@@ -897,7 +950,7 @@ components:
         image:
           type: string
           example: https://example.com/image.jpg
-          description: List of image URLs associated with the product.
+          description: Image URLs associated with the product.
         price:
           type: number
           format: float
@@ -911,6 +964,41 @@ components:
         - HIDDEN
       example: VISIBLE
       description: Status of the product's visibility for users
+
+    UpdateProductRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: APPLE iPhone
+          description: Name of the product
+        description:
+          type: string
+          example: Device type, operation system, etc.
+          description: Product description
+        status:
+          $ref: '#/components/schemas/ProductStatus'
+        image:
+          type: string
+          example: https://example.com/image.jpg
+          description: Image URLs associated with the product
+        quantity:
+          type: integer
+          example: 10
+          description: Quantity of the product
+        price:
+          type: number
+          format: bigDecimal
+          example: 999.99
+          description: Price of the product
+        tagIds:
+          type: array
+          description: Array of Tag IDs associated with the product
+          items:
+            type: integer
+            format: int64
+            example: 1, 2
+            description: The unique identifiers of the tags.
 
     PlaceOrderRequest:
       type: object
@@ -1052,3 +1140,119 @@ components:
         - productPrice
         - calculatedPrice
         - totalPrice
+
+    ProductTags:
+      type: array
+      items:
+        type: string
+        description: categories of the product
+        example: 'category:computer'
+
+    ProductManagementFilter:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/ProductManagementStatus'
+        searchByName:
+          type: string
+          description: field for searching products by name
+          example: Laptop
+        priceMore:
+          type: number
+          format: double
+          example: 100.20
+          minimum: 0
+          description: The price of the product is more than
+        priceLess:
+          type: number
+          format: double
+          example: 200.20
+          description: The price of the product is less than
+        quantityMore:
+          type: number
+          format: int64
+          example: 10
+          minimum: 0
+          description: The quantity of the product is more than
+        quantityLess:
+          type: number
+          format: int64
+          example: 20
+          description: The quantity of the product is less than
+        createdAfter:
+          type: string
+          format: date-time
+          description: The date of product creation is after
+        createdBefore:
+          type: string
+          format: date-time
+          description:  The date of product creation is before
+        tags:
+          $ref: '#/components/schemas/ProductTags'
+
+    ProductManagementPage:
+      allOf:
+        - $ref: '#/components/schemas/AbstractPage'
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/ProductManagementContent'
+              description: List of orders in the page
+
+    ProductManagementContent:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
+          description: id of the product
+        name:
+          type: string
+          description: name of the product
+          example: Iphone
+        description:
+          type: string
+          description: name of the product
+          example: Some description
+        imageLink:
+          type: string
+          description: name of the product
+          example: https://images.org/image.png
+        quantity:
+          type: number
+          format: int64
+          example: 10
+          minimum: 0
+        price:
+          type: number
+          format: double
+          example: 100.45
+          minimum: 0
+        createdAt:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/ProductManagementStatus'
+        tags:
+          $ref: '#/components/schemas/ProductTags'
+      required:
+        - id
+        - name
+        - description
+        - imageLink
+        - quantity
+        - price
+        - createdAt
+        - status
+        - tags
+
+    ProductManagementStatus:
+      type: string
+      enum:
+        - VISIBLE
+        - HIDDEN
+      example: VISIBLE
+      description: Status of the product

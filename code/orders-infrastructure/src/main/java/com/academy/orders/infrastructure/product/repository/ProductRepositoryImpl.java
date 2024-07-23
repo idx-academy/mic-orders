@@ -3,16 +3,20 @@ package com.academy.orders.infrastructure.product.repository;
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.product.entity.Product;
+import com.academy.orders.domain.product.entity.ProductManagement;
+import com.academy.orders.domain.product.entity.ProductTranslationManagement;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders.domain.product.repository.ProductRepository;
+import com.academy.orders.infrastructure.product.ProductManagementMapper;
 import com.academy.orders.infrastructure.product.ProductMapper;
 import java.util.List;
 import java.util.UUID;
+
+import com.academy.orders.infrastructure.product.ProductTranslationManagementMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @RequiredArgsConstructor
@@ -20,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductRepositoryImpl implements ProductRepository {
 	private final ProductJpaAdapter productJpaAdapter;
 	private final ProductMapper productMapper;
+	private final ProductManagementMapper productManagementMapper;
+	private final ProductTranslationManagementMapper productTranslationManagementMapper;
 
 	@Override
 	public Page<Product> getAllProducts(String language, Pageable pageable) {
@@ -47,5 +53,17 @@ public class ProductRepositoryImpl implements ProductRepository {
 	@Override
 	public void updateStatus(UUID productId, ProductStatus status) {
 		productJpaAdapter.updateProductStatus(productId, status);
+	}
+
+	@Override
+	public ProductTranslationManagement findByIdAndLanguageCode(UUID id, String languageCode) {
+		var productEntity = productJpaAdapter.findByIdAndLanguageCode(id, languageCode);
+		return productTranslationManagementMapper.fromEntity(productEntity);
+	}
+
+	@Override
+	public void update(ProductManagement product) {
+		var productEntity = productManagementMapper.toEntity(product);
+		productJpaAdapter.save(productEntity);
 	}
 }

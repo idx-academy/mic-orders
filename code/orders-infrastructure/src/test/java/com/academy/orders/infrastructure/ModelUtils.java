@@ -14,7 +14,11 @@ import com.academy.orders.domain.order.entity.OrderReceiver;
 import com.academy.orders.domain.order.entity.PostAddress;
 import com.academy.orders.domain.order.entity.enumerated.DeliveryMethod;
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
+import com.academy.orders.domain.product.entity.Language;
 import com.academy.orders.domain.product.entity.Product;
+import com.academy.orders.domain.product.entity.ProductManagement;
+import com.academy.orders.domain.product.entity.ProductTranslationManagement;
+import com.academy.orders.domain.product.entity.Tag;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders.infrastructure.account.entity.AccountEntity;
 import com.academy.orders.infrastructure.cart.entity.CartItemEntity;
@@ -27,10 +31,16 @@ import com.academy.orders.infrastructure.product.entity.ProductEntity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+
+import com.academy.orders.infrastructure.product.entity.ProductTranslationEntity;
+import com.academy.orders.infrastructure.tag.entity.TagEntity;
 import org.springframework.data.domain.PageImpl;
 
 import static com.academy.orders.domain.order.entity.enumerated.DeliveryMethod.NOVA;
+import static com.academy.orders.infrastructure.TestConstants.LANGUAGE_EN;
+import static com.academy.orders.infrastructure.TestConstants.TEST_ID;
 import static com.academy.orders.infrastructure.TestConstants.TEST_UUID;
 
 public class ModelUtils {
@@ -139,5 +149,28 @@ public class ModelUtils {
 	@SafeVarargs
 	public static <T> PageImpl<T> getPageImplOf(T... elements) {
 		return new PageImpl<>(List.of(elements));
+	}
+
+	public static ProductTranslationEntity getProductTranslationEntity() {
+		return ProductTranslationEntity.builder().build();
+	}
+
+	public static ProductTranslationManagement getProductTranslationManagement() {
+		return ProductTranslationManagement.builder().productId(TEST_UUID).languageId(1L).name("Name")
+				.description("Description").language(new Language(1L, LANGUAGE_EN)).build();
+	}
+
+	public static ProductManagement getProductManagement() {
+		return ProductManagement.builder().id(TEST_UUID).status(ProductStatus.VISIBLE).createdAt(LocalDateTime.now())
+				.quantity(10).price(BigDecimal.valueOf(100.00)).tags(Set.of(new Tag(1L, "tag")))
+				.productTranslationManagement(Set.of(getProductTranslationManagement())).build();
+	}
+
+	public static TagEntity getTagEntity() {
+		return TagEntity.builder().id(TEST_ID).name("category:mobile").build();
+	}
+
+	public static Tag getTag() {
+		return Tag.builder().id(TEST_ID).name("category:mobile").build();
 	}
 }
