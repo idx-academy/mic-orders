@@ -31,4 +31,4 @@ spring:
 rest:
   client:
     colors:
-      base-url: http://${COLOR_API_HOST:localhost}:${COLOR_API_PORT:8081}/colors
+      base-url: http://${COLOR_API_HOST:localhost}:${COLOR_API_PORT:8081}/
