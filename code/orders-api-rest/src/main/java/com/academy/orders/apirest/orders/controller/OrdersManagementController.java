@@ -55,7 +55,7 @@ public class OrdersManagementController implements OrdersManagementApi {
 	}
 
 	@Override
-	// @PreAuthorize("hasAuthority('ROLE_MANAGER')")
+	@PreAuthorize("hasAuthority('ROLE_MANAGER')")
 	public ManagerOrderDTO getOrderById(UUID id, String lang) {
 		Order order = getOrderByIdUseCase.getOrderById(id, lang);
 		return orderDTOMapper.toManagerDto(order);
