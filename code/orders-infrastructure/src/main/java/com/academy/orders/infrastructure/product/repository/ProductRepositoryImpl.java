@@ -2,6 +2,7 @@ package com.academy.orders.infrastructure.product.repository;
 
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
+import com.academy.orders.domain.product.dto.CreateProductRequestDto;
 import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.ProductManagement;
 import com.academy.orders.domain.product.entity.ProductTranslationManagement;
@@ -9,14 +10,18 @@ import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders.domain.product.repository.ProductRepository;
 import com.academy.orders.infrastructure.product.ProductManagementMapper;
 import com.academy.orders.infrastructure.product.ProductMapper;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 import com.academy.orders.infrastructure.product.ProductTranslationManagementMapper;
+import com.academy.orders.infrastructure.product.entity.ProductEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @RequiredArgsConstructor
@@ -65,5 +70,12 @@ public class ProductRepositoryImpl implements ProductRepository {
 	public void update(ProductManagement product) {
 		var productEntity = productManagementMapper.toEntity(product);
 		productJpaAdapter.save(productEntity);
+	}
+
+	@Override
+	public Product save(CreateProductRequestDto product) {
+		var entity = productMapper.toEntity(product);
+		var savedEntity = productJpaAdapter.save(entity);
+		return productMapper.fromEntity(savedEntity);
 	}
 }

@@ -1,11 +1,17 @@
 package com.academy.orders.apirest.products.controller;
 
 import com.academy.orders.apirest.products.mapper.UpdateProductRequestDTOMapper;
+import com.academy.orders.apirest.products.mapper.CreateProductRequestDTOMapper;
+import com.academy.orders.apirest.products.mapper.ProductResponseDTOMapper;
 import com.academy.orders.apirest.products.mapper.ProductStatusDTOMapper;
+import com.academy.orders.domain.product.usecase.CreateProductUseCase;
+import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders.domain.product.usecase.UpdateProductUseCase;
 import com.academy.orders.domain.product.usecase.UpdateStatusUseCase;
 import com.academy.orders_api_rest.generated.api.ProductsManagementApi;
+import com.academy.orders_api_rest.generated.model.CreateProductRequestDTO;
+import com.academy.orders_api_rest.generated.model.ProductResponseDTO;
 import com.academy.orders_api_rest.generated.model.ProductStatusDTO;
 import java.util.UUID;
 import com.academy.orders_api_rest.generated.model.UpdateProductRequestDTO;
@@ -24,6 +30,9 @@ public class ProductsManagementController implements ProductsManagementApi {
 	private final UpdateProductUseCase updateProductUseCase;
 	private final ProductStatusDTOMapper productStatusDTOMapper;
 	private final UpdateProductRequestDTOMapper updateProductRequestDTOMapper;
+	private final CreateProductUseCase createProductUseCase;
+	private final ProductResponseDTOMapper productResponseDTOMapper;
+	private final CreateProductRequestDTOMapper createProductRequestDTOMapper;
 
 	@Override
 	@PreAuthorize("hasAnyAuthority('ROLE_MANAGER')")
@@ -37,5 +46,13 @@ public class ProductsManagementController implements ProductsManagementApi {
 	public void updateProduct(UUID productId, String lang, UpdateProductRequestDTO updateProductRequestDTO) {
 		var updateProduct = updateProductRequestDTOMapper.fromDTO(updateProductRequestDTO);
 		updateProductUseCase.updateProduct(productId, lang, updateProduct);
+	}
+
+	@Override
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGER')")
+	public ProductResponseDTO createProduct(CreateProductRequestDTO createProductRequestDTO) {
+		var createProductRequest = createProductRequestDTOMapper.fromDTO(createProductRequestDTO);
+		Product product = createProductUseCase.createProduct(createProductRequest);
+		return productResponseDTOMapper.toDTO(product);
 	}
 }

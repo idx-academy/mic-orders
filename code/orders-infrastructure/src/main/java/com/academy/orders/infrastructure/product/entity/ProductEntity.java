@@ -39,7 +39,8 @@ import java.util.UUID;
 @Builder
 @Entity
 @EqualsAndHashCode(exclude = {"tags", "productTranslations"})
-@ToString(exclude = {"tags", "productTranslations"})
+// @ToString(exclude = {"tags", "productTranslations"})
+@ToString
 public class ProductEntity {
 	@Id
 	@Column(name = "id")
@@ -53,7 +54,8 @@ public class ProductEntity {
 	@Column(name = "image_link", nullable = false)
 	private String image;
 
-	@Setter(AccessLevel.PRIVATE)
+	// @Setter(AccessLevel.PRIVATE)
+	@Setter
 	@CreationTimestamp
 	@Column(name = "created_at")
 	private LocalDateTime createdAt;

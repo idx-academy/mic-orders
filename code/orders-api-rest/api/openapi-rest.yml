@@ -226,8 +226,8 @@ paths:
         - ProductsManagement
       summary: Change visibility status for product
       operationId: updateStatus
-#      security:
-#        - bearerAuth: [ ]
+      #      security:
+      #        - bearerAuth: [ ]
       parameters:
         - $ref: '#/components/parameters/ProductId'
         - in: query
@@ -397,6 +397,35 @@ paths:
         '409':
           $ref: '#/components/responses/Conflict'
 
+  /v1/management/products:
+    post:
+      tags:
+        - ProductsManagement
+      summary: Create a new product
+      description: The endpoint for creating a new product in the management page
+      operationId: createProduct
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductRequest'
+      responses:
+        '201':
+          description: Product created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
 
 
 #COMPONENTS
@@ -653,6 +682,131 @@ components:
           type: string
           description: Creation status message
           example: Resource successfully created
+
+    CreateProductRequest:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/ProductStatus'
+        image:
+          type: string
+          example: https://example.com/image.jpg
+          description: Image URL associated with the product.
+        quantity:
+          type: number
+          format: integer
+          example: 10
+        price:
+          type: number
+          format: bigDecimal
+          example: 999.99
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+        productTranslations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductTranslation'
+
+    ProductResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/ProductStatus'
+        image:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        quantity:
+          type: integer
+        price:
+          type: number
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+        productTranslations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductTranslation'
+
+    Tag:
+      type: object
+      properties:
+        id:
+          type: number
+          format: id
+          example: 1
+        name:
+          type: string
+          example: category:mobile
+          description: The name of the tag.
+
+    ProductTranslation:
+      type: object
+      properties:
+        name:
+          type: string
+          example: APPLE iPhone
+          description: Name of the product.
+        description:
+          type: string
+          example: Screen 6.1 Super Retina XDR, 2532x1170 / A16 Bionic chip
+#          $ref: '#/components/schemas/Product'
+        language:
+          $ref: '#/components/schemas/Language'
+
+    ProductTranslationId:
+      type: object
+      properties:
+        productId:
+          type: string
+          format: id
+        languageId:
+          type: number
+          format: id
+
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/ProductStatus'
+        image:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        quantity:
+          type: integer
+        price:
+          type: number
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+        productTranslations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductTranslation'
+
+    Language:
+      type: object
+      properties:
+        id:
+          type: number
+          format: id
+          example: 1
+        code:
+          type: string
+          example: en
 
     ErrorObject:
       title: Unauthorized

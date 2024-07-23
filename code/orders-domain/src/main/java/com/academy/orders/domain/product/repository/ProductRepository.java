@@ -2,6 +2,7 @@ package com.academy.orders.domain.product.repository;
 
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
+import com.academy.orders.domain.product.dto.CreateProductRequestDto;
 import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.ProductManagement;
 import com.academy.orders.domain.product.entity.ProductTranslationManagement;
@@ -70,6 +71,18 @@ public interface ProductRepository {
 	 * @author Anton Bondar
 	 */
 	ProductTranslationManagement findByIdAndLanguageCode(UUID productId, String languageCode);
+
+	/**
+	 * Saves a new product using the provided product creation request data transfer
+	 * object (DTO). Returns the saved product entity.
+	 *
+	 * @param product
+	 *            the DTO containing the information necessary to create a new
+	 *            product
+	 * @return the saved product entity
+	 * @author Yurii Osovskyi
+	 */
+	Product save(CreateProductRequestDto product);
 
 	/**
 	 * Update an {@link ProductManagement} entity.
