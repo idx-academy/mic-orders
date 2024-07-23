@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -73,12 +74,11 @@ public class ProductRepositoryImpl implements ProductRepository {
 	}
 
 	@Override
-	public Page<Product> findAllByLanguageWithFilter(String language, ProductManagementFilterDto filter,
+	public Page<Product> findAllByLanguageWithFilter(String language, @NonNull ProductManagementFilterDto filter,
 			Pageable pageableDomain) {
-
 		var pageable = pageableMapper.fromDomain(pageableDomain);
-		var ids = productJpaAdapter.findProductsIdsByLangAndFilters(filter, language, pageable);
-		var productEntityPage = productJpaAdapter.findProductsByIds(ids.getContent(), pageable.getSort());
+		var ids = productJpaAdapter.findProductsIdsByLangAndFilters(language, filter, pageable);
+		var productEntityPage = productJpaAdapter.findProductsByIds(language, ids.getContent(), pageable.getSort());
 		return productPageMapper.toDomain(new PageImpl<>(productEntityPage, pageable, ids.getTotalElements()));
 	}
 }

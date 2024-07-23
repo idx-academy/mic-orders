@@ -8,6 +8,7 @@ import com.academy.orders.domain.product.entity.ProductManagement;
 import com.academy.orders.domain.product.entity.ProductTranslationManagement;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import java.util.UUID;
+import org.springframework.lang.NonNull;
 
 public interface ProductRepository {
 	/**
@@ -81,5 +82,6 @@ public interface ProductRepository {
 	 */
 	void update(ProductManagement product);
 
-	Page<Product> findAllByLanguageWithFilter(String language, ProductManagementFilterDto filter, Pageable pageable);
+	Page<Product> findAllByLanguageWithFilter(String language, @NonNull ProductManagementFilterDto filter,
+			Pageable pageable);
 }

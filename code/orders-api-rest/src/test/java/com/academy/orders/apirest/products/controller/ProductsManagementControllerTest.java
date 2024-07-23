@@ -1,5 +1,6 @@
 package com.academy.orders.apirest.products.controller;
 
+import com.academy.orders.apirest.ModelUtils;
 import com.academy.orders.apirest.common.TestSecurityConfig;
 import com.academy.orders.apirest.common.mapper.PageableDTOMapper;
 import com.academy.orders.apirest.products.mapper.ManagementProductMapper;
@@ -9,6 +10,8 @@ import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders.domain.product.usecase.UpdateProductUseCase;
 import com.academy.orders.domain.product.usecase.GetManagerProductsUseCase;
 import com.academy.orders.domain.product.usecase.UpdateStatusUseCase;
+import com.academy.orders_api_rest.generated.model.PageableDTO;
+import com.academy.orders_api_rest.generated.model.ProductManagementFilterDTO;
 import com.academy.orders_api_rest.generated.model.ProductStatusDTO;
 import java.util.UUID;
 import lombok.SneakyThrows;
@@ -22,22 +25,31 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import static com.academy.orders.apirest.ModelUtils.getProduct;
+import static com.academy.orders.apirest.ModelUtils.getProductManagementPageDTO;
 import static com.academy.orders.apirest.ModelUtils.getUpdateProduct;
 import static com.academy.orders.apirest.ModelUtils.getUpdateProductRequestDTO;
 import static com.academy.orders.apirest.TestConstants.LANGUAGE_EN;
 import static com.academy.orders.apirest.TestConstants.TEST_UUID;
 import static com.academy.orders.apirest.TestConstants.UPDATE_PRODUCT;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ProductsManagementController.class)
 @ContextConfiguration(classes = {ProductsManagementController.class})
 @Import(value = {AopAutoConfiguration.class, TestSecurityConfig.class})
 class ProductsManagementControllerTest {
+	@Autowired
+	private ObjectMapper objectMapper;
+
 	@Autowired
 	private MockMvc mockMvc;
 
@@ -94,12 +106,36 @@ class ProductsManagementControllerTest {
 		when(updateProductRequestDTOMapper.fromDTO(dto)).thenReturn(updateProduct);
 		doNothing().when(updateProductUseCase).updateProduct(TEST_UUID, LANGUAGE_EN, updateProduct);
 
-		ObjectMapper objectMapper = new ObjectMapper();
-
 		mockMvc.perform(patch(UPDATE_PRODUCT, TEST_UUID).param("lang", LANGUAGE_EN).contentType("application/json")
 				.content(objectMapper.writeValueAsString(dto))).andExpect(status().isOk());
 
 		verify(updateProductRequestDTOMapper).fromDTO(dto);
 		verify(updateProductUseCase).updateProduct(TEST_UUID, LANGUAGE_EN, updateProduct);
+	}
+
+	@Test
+	@WithMockUser(authorities = {"ROLE_MANAGER"})
+	@SneakyThrows
+	void getProductsForManagerTest() {
+		var lang = "ua";
+		var pageable = ModelUtils.getPageable();
+		var filter = ModelUtils.getManagementFilterDto();
+		var pageOfProducts = ModelUtils.getPageOf(getProduct());
+		var productManagementPageDTO = getProductManagementPageDTO();
+
+		when(pageableDTOMapper.fromDto(any(PageableDTO.class))).thenReturn(pageable);
+		when(managementProductMapper.fromProductManagementFilterDTO(any(ProductManagementFilterDTO.class)))
+				.thenReturn(filter);
+		when(managerProductsUseCase.getManagerProducts(pageable, filter, lang)).thenReturn(pageOfProducts);
+		when(managementProductMapper.fromProductPage(pageOfProducts)).thenReturn(productManagementPageDTO);
+
+		mockMvc.perform(get("/v1/management/products").queryParam("lang", lang)).andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(content().json(objectMapper.writeValueAsString(productManagementPageDTO)));
+
+		verify(pageableDTOMapper).fromDto(any(PageableDTO.class));
+		verify(managementProductMapper).fromProductManagementFilterDTO(any(ProductManagementFilterDTO.class));
+		verify(managerProductsUseCase).getManagerProducts(pageable, filter, lang);
+		verify(managementProductMapper).fromProductPage(pageOfProducts);
 	}
 }

@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -47,12 +48,13 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 			+ "AND (:#{#filter.priceMore} IS NULL OR p.price >= :#{#filter.priceMore}) "
 			+ "AND (coalesce(:#{#filter.createdBefore}, NULL) IS NULL OR p.createdAt <= :#{#filter.createdBefore}) "
 			+ "AND (coalesce(:#{#filter.createdAfter}, NULL) IS NULL OR p.createdAt >= :#{#filter.createdAfter})"
-			+ "AND (:#{#filter.tags} IS NULL OR:#{#filter.tags.isEmpty()} = true OR t.name IN :#{#filter.tags})")
-	Page<UUID> findProductsIdsByLangAndFilters(ProductManagementFilterDto filter, String lang, Pageable pageable);
+			+ "AND (:#{#filter.tags.isEmpty()} = true OR t.name IN :#{#filter.tags})")
+	Page<UUID> findProductsIdsByLangAndFilters(String lang, @NonNull ProductManagementFilterDto filter,
+			Pageable pageable);
 
 	@Query("SELECT p FROM ProductEntity p JOIN FETCH p.productTranslations pt "
-			+ "JOIN FETCH pt.language l LEFT JOIN FETCH p.tags t WHERE (p.id IN :ids)")
-	List<ProductEntity> findProductsByIds(List<UUID> ids, Sort sort);
+			+ "JOIN pt.language l LEFT JOIN FETCH p.tags t WHERE (p.id IN :ids) AND pt.language.code = :lang")
+	List<ProductEntity> findProductsByIds(String lang, List<UUID> ids, Sort sort);
 
 	@Modifying
 	@Query(nativeQuery = true, value = "UPDATE products SET status = :status WHERE id = :id")

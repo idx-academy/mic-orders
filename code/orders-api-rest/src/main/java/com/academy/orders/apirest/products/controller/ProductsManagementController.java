@@ -49,6 +49,7 @@ public class ProductsManagementController implements ProductsManagementApi {
 	}
 
 	@Override
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGER')")
 	public ProductManagementPageDTO getProductsForManager(ProductManagementFilterDTO productFilter, String lang,
 			PageableDTO pageable) {
 		var pageableDomain = pageableDTOMapper.fromDto(pageable);

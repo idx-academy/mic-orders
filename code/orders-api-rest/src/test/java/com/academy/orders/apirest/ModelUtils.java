@@ -10,6 +10,7 @@ import com.academy.orders.domain.order.entity.OrderReceiver;
 import com.academy.orders.domain.order.entity.PostAddress;
 import com.academy.orders.domain.order.entity.enumerated.DeliveryMethod;
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
+import com.academy.orders.domain.product.dto.ProductManagementFilterDto;
 import com.academy.orders.domain.product.dto.UpdateProductDto;
 import com.academy.orders.domain.product.entity.Language;
 import com.academy.orders.domain.product.entity.Product;
@@ -22,6 +23,9 @@ import com.academy.orders_api_rest.generated.model.CartItemsResponseDTO;
 import com.academy.orders_api_rest.generated.model.ManagerOrderDTO;
 import com.academy.orders_api_rest.generated.model.OrdersFilterParametersDTO;
 import com.academy.orders_api_rest.generated.model.PageManagerOrderDTO;
+import com.academy.orders_api_rest.generated.model.ProductManagementContentDTO;
+import com.academy.orders_api_rest.generated.model.ProductManagementPageDTO;
+import com.academy.orders_api_rest.generated.model.ProductManagementStatusDTO;
 import com.academy.orders_api_rest.generated.model.ProductStatusDTO;
 import com.academy.orders_api_rest.generated.model.UpdateProductRequestDTO;
 import com.academy.orders_api_rest.generated.model.UpdatedCartItemDTO;
@@ -66,6 +70,7 @@ import static com.academy.orders.apirest.TestConstants.TEST_PRICE;
 import static com.academy.orders.apirest.TestConstants.TEST_QUANTITY;
 import static com.academy.orders.apirest.TestConstants.TEST_UUID;
 import static com.academy.orders_api_rest.generated.model.DeliveryMethodDTO.NOVA;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.singletonList;
 
@@ -353,5 +358,37 @@ public class ModelUtils {
 		return UpdateProductDto.builder().id(TEST_UUID).name("Name").description("Description")
 				.status(String.valueOf(ProductStatusDTO.VISIBLE)).image(IMAGE_URL).quantity(10)
 				.price(BigDecimal.valueOf(100)).tagIds(List.of(TEST_ID)).createdAt(LocalDateTime.now()).build();
+	}
+
+	public static ProductManagementFilterDto getManagementFilterDto() {
+		return ProductManagementFilterDto.builder().status(ProductStatus.VISIBLE).createdBefore(DATE_TIME)
+				.createdAfter(DATE_TIME).priceMore(BigDecimal.ZERO).priceLess(BigDecimal.TEN).build();
+	}
+
+	public static ProductManagementContentDTO getProductManagementContentDTO() {
+		var content = new ProductManagementContentDTO();
+		content.setId(TEST_UUID);
+		content.setName(PRODUCT_NAME);
+		content.setImageLink(IMAGE_URL);
+		content.setQuantity(BigDecimal.valueOf(TEST_QUANTITY));
+		content.setPrice(TEST_PRICE.doubleValue());
+		content.setStatus(ProductManagementStatusDTO.VISIBLE);
+		content.createdAt(OFFSET_DATE_TIME);
+		content.setTags(emptyList());
+		return content;
+	}
+
+	public static ProductManagementPageDTO getProductManagementPageDTO() {
+		ProductManagementPageDTO pageOrderDTO = new ProductManagementPageDTO();
+		pageOrderDTO.setEmpty(false);
+		pageOrderDTO.setTotalElements(100L);
+		pageOrderDTO.setTotalPages(10);
+		pageOrderDTO.setFirst(true);
+		pageOrderDTO.setLast(false);
+		pageOrderDTO.setNumber(1);
+		pageOrderDTO.setNumberOfElements(10);
+		pageOrderDTO.setSize(10);
+		pageOrderDTO.content(singletonList(getProductManagementContentDTO()));
+		return pageOrderDTO;
 	}
 }

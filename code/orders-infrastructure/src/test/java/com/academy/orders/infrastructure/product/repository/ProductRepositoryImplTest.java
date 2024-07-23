@@ -138,6 +138,7 @@ class ProductRepositoryImplTest {
 	}
 
 	@Test
+	@SuppressWarnings("unchecked")
 	void findAllByLanguageWithFilterTest() {
 		var filter = getManagementFilterDto();
 		var pageableDomain = getPageable();
@@ -150,8 +151,8 @@ class ProductRepositoryImplTest {
 		var productPage = getPageOf(product);
 
 		when(pageableMapper.fromDomain(pageableDomain)).thenReturn(pageable);
-		when(productJpaAdapter.findProductsIdsByLangAndFilters(filter, lang, pageable)).thenReturn(ids);
-		when(productJpaAdapter.findProductsByIds(ids.getContent(), pageable.getSort()))
+		when(productJpaAdapter.findProductsIdsByLangAndFilters(lang, filter, pageable)).thenReturn(ids);
+		when(productJpaAdapter.findProductsByIds(lang, ids.getContent(), pageable.getSort()))
 				.thenReturn(singletonList(productEntity));
 		when(productPageMapper.toDomain(any(PageImpl.class))).thenReturn(productPage);
 
@@ -159,8 +160,8 @@ class ProductRepositoryImplTest {
 		assertEquals(productPage, actual);
 
 		verify(pageableMapper).fromDomain(pageableDomain);
-		verify(productJpaAdapter).findProductsIdsByLangAndFilters(filter, lang, pageable);
-		verify(productJpaAdapter).findProductsByIds(ids.getContent(), pageable.getSort());
+		verify(productJpaAdapter).findProductsIdsByLangAndFilters(lang, filter, pageable);
+		verify(productJpaAdapter).findProductsByIds(lang, ids.getContent(), pageable.getSort());
 		verify(productPageMapper).toDomain(any(PageImpl.class));
 	}
 
