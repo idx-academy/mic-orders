@@ -1,6 +1,5 @@
 package com.academy.orders.infrastructure.order.repository;
 
-import com.academy.colors_api.generated.api.ColorsApi;
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
@@ -34,20 +33,8 @@ public class OrderRepositoryImpl implements OrderRepository {
 	private final PageableMapper pageableMapper;
 	private final OrderPageMapper pageMapper;
 
-	// TODO remove, added for example. It should be created separate repo
-	// ColorsRepository
-	private final ColorsApi colorsApi;
-
 	@Override
 	public Optional<Order> findById(UUID id) {
-		try {
-			// TODO delete me
-			final var colors = colorsApi.getColors();
-			log.info("Retrieved colors {}", colors);
-		} catch (Exception e) {
-			log.error("Ops", e);
-		}
-
 		return jpaAdapter.findById(id).map(mapper::fromEntity);
 	}
 
