@@ -191,13 +191,15 @@ public class ModelUtils {
 		ordersFilterParametersDTO.setIsPaid(false);
 		ordersFilterParametersDTO.setTotalLess(BigDecimal.ZERO);
 		ordersFilterParametersDTO.setTotalMore(BigDecimal.TEN);
+		ordersFilterParametersDTO.setAccountEmail(TEST_EMAIL);
 		return ordersFilterParametersDTO;
 	}
 
 	public static OrdersFilterParametersDto getOrdersFilterParametersDto() {
 		return OrdersFilterParametersDto.builder().deliveryMethods(List.of(DeliveryMethod.NOVA))
 				.statuses(List.of(OrderStatus.IN_PROGRESS)).isPaid(false).createdBefore(DATE_TIME)
-				.createdAfter(DATE_TIME).totalMore(BigDecimal.ZERO).totalLess(BigDecimal.TEN).build();
+				.createdAfter(DATE_TIME).totalMore(BigDecimal.ZERO).accountEmail(TEST_EMAIL).totalLess(BigDecimal.TEN)
+				.build();
 	}
 
 	public static PageManagerOrderDTO getPageManagerOrderDTO() {
@@ -292,6 +294,7 @@ public class ModelUtils {
 		params.add("createdAfter", String.valueOf(dto.getCreatedAfter()));
 		params.add("totalMore", String.valueOf(dto.getTotalMore()));
 		params.add("totalLess", String.valueOf(dto.getTotalLess()));
+		params.add("accountEmail", String.valueOf(dto.getAccountEmail()));
 		return params;
 	}
 

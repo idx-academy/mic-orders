@@ -63,6 +63,9 @@ class CustomOrderRepositoryTest {
 	private Join<Object, Object> postAddressJoin;
 
 	@Mock
+	private Join<Object, Object> accountJoin;
+
+	@Mock
 	private TypedQuery<OrderEntity> typedQuery;
 
 	@Mock
@@ -103,10 +106,12 @@ class CustomOrderRepositoryTest {
 		when(root.join("orderItems", JoinType.LEFT)).thenReturn(orderItemJoin);
 		when(orderItemJoin.get(anyString())).thenReturn(path);
 		when(root.join("postAddress", JoinType.LEFT)).thenReturn(postAddressJoin);
+		when(root.join("account", JoinType.LEFT)).thenReturn(accountJoin);
 		when(entityManager.createQuery(criteriaQuery)).thenReturn(typedQuery);
 		when(root.get(anyString())).thenReturn(path);
 		when(criteriaBuilder.equal(any(Path.class), any(Boolean.class))).thenReturn(predicate);
 		when(postAddressJoin.get(anyString())).thenReturn(path);
+		when(accountJoin.get(anyString())).thenReturn(path);
 		when(path.in(ArgumentMatchers.<Object>any())).thenReturn(predicate);
 		when(criteriaBuilder.lessThanOrEqualTo(any(), any(LocalDateTime.class))).thenReturn(predicate);
 		when(criteriaBuilder.greaterThanOrEqualTo(any(), any(LocalDateTime.class))).thenReturn(predicate);

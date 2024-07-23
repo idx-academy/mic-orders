@@ -1,6 +1,7 @@
 package com.academy.orders.infrastructure.order.repository;
 
 import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
+import com.academy.orders.infrastructure.account.entity.AccountEntity;
 import com.academy.orders.infrastructure.order.entity.OrderEntity;
 import com.academy.orders.infrastructure.order.entity.OrderItemEntity;
 import com.academy.orders.infrastructure.order.entity.PostAddressEntity;
@@ -27,6 +28,7 @@ public class CustomOrderRepository {
 	public static final String ORDER_ITEMS = "orderItems";
 	public static final String POST_ADDRESS = "postAddress";
 	public static final String PRICE = "price";
+	public static final String ACCOUNT = "account";
 	private final EntityManager em;
 	private final CriteriaBuilder cb;
 
@@ -53,9 +55,10 @@ public class CustomOrderRepository {
 
 		Join<OrderEntity, OrderItemEntity> oij = mainRoot.join(ORDER_ITEMS, JoinType.LEFT);
 		Join<OrderEntity, PostAddressEntity> paj = mainRoot.join(POST_ADDRESS, JoinType.LEFT);
+		Join<OrderEntity, AccountEntity> aj = mainRoot.join(ACCOUNT, JoinType.LEFT);
 
 		List<Order> order = getOrder(pageable, mainRoot, oij);
-		List<Predicate> predicates = getAllPredicates(mainRoot, paj, filterParametersDto);
+		List<Predicate> predicates = getAllPredicates(mainRoot, aj, paj, filterParametersDto);
 		List<Predicate> totalPredicates = getTotalPredicates(oij, filterParametersDto);
 
 		mainQuery.where(predicates.toArray(new Predicate[0])).groupBy(mainRoot.get("id")).orderBy(order);
@@ -87,7 +90,7 @@ public class CustomOrderRepository {
 		var orderItemFetch = root.fetch(ORDER_ITEMS, JoinType.LEFT);
 		orderItemFetch.fetch("product", JoinType.LEFT);
 		root.fetch(POST_ADDRESS, JoinType.LEFT);
-		root.fetch("account", JoinType.LEFT);
+		root.fetch(ACCOUNT, JoinType.LEFT);
 
 		query.where(root.get("id").in(ids.toArray()));
 
@@ -120,8 +123,9 @@ public class CustomOrderRepository {
 
 		Join<OrderEntity, OrderItemEntity> oij = countRoot.join(ORDER_ITEMS, JoinType.LEFT);
 		Join<OrderEntity, PostAddressEntity> paj = countRoot.join(POST_ADDRESS, JoinType.LEFT);
+		Join<OrderEntity, AccountEntity> aj = countRoot.join(ACCOUNT, JoinType.LEFT);
 
-		List<Predicate> predicatesCount = getAllPredicates(countRoot, paj, filterParametersDto);
+		List<Predicate> predicatesCount = getAllPredicates(countRoot, aj, paj, filterParametersDto);
 		List<Predicate> totalCountPredicates = getTotalPredicates(oij, filterParametersDto);
 		countQuery.select(cb.count(countRoot.get("id"))).where(predicatesCount.toArray(new Predicate[0]))
 				.groupBy(countRoot.get("id"));
@@ -146,8 +150,8 @@ public class CustomOrderRepository {
 		return predicates;
 	}
 
-	private List<Predicate> getAllPredicates(Root<OrderEntity> root, Join<OrderEntity, PostAddressEntity> paj,
-			OrdersFilterParametersDto filterParametersDto) {
+	private List<Predicate> getAllPredicates(Root<OrderEntity> root, Join<OrderEntity, AccountEntity> aj,
+			Join<OrderEntity, PostAddressEntity> paj, OrdersFilterParametersDto filterParametersDto) {
 		List<Predicate> predicates = new LinkedList<>();
 		if (filterParametersDto.isPaid() != null) {
 			predicates.add(cb.equal(root.get("isPaid"), filterParametersDto.isPaid()));
@@ -163,6 +167,9 @@ public class CustomOrderRepository {
 		}
 		if (filterParametersDto.createdAfter() != null) {
 			predicates.add(cb.greaterThanOrEqualTo(root.get("createdAt"), filterParametersDto.createdAfter()));
+		}
+		if (filterParametersDto.accountEmail() != null) {
+			predicates.add(cb.equal(aj.get("email"), filterParametersDto.accountEmail()));
 		}
 		return predicates;
 	}
