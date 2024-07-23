@@ -7,6 +7,7 @@ import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.repository.OrderRepository;
 import com.academy.orders.domain.order.usecase.CalculateOrderTotalPriceUseCase;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -31,7 +32,7 @@ class GetAllOrdersUseCaseTest {
 	private CalculateOrderTotalPriceUseCase calculateOrderTotalPriceUseCase;
 
 	@Test
-	void getOrdersByUserId() {
+	void getOrdersByUserIdTest() {
 		// Given
 		OrdersFilterParametersDto filterParametersDto = ModelUtils.getOrdersFilterParametersDto();
 		String language = "ua";
@@ -51,5 +52,29 @@ class GetAllOrdersUseCaseTest {
 		// Then
 		assertEquals(expected, ordersByUserId);
 		verify(orderRepository).findAll(filterParametersDto, language, pageable);
+	}
+
+	@Test
+	void getOrdersByUserIdWithEmptySortTest() {
+		// Given
+		OrdersFilterParametersDto filterParametersDto = ModelUtils.getOrdersFilterParametersDto();
+		String language = "ua";
+		Pageable pageable = new Pageable(0, 8, List.of());
+		Pageable defaultPageable = new Pageable(0, 8, List.of("createdAt,desc"));
+		Order withoutTotal = getOrderWithoutTotal();
+		Order withTotal = getOrder();
+		Page<Order> orderPage = getPageOf(withoutTotal);
+		Page<Order> expected = getPageOf(withTotal);
+
+		when(orderRepository.findAll(filterParametersDto, language, defaultPageable)).thenReturn(orderPage);
+		when(calculateOrderTotalPriceUseCase.calculateTotalPriceFor(orderPage.content()))
+				.thenReturn(expected.content());
+
+		// When
+		Page<Order> ordersByUserId = getAllOrdersUseCase.getAllOrders(filterParametersDto, language, pageable);
+
+		// Then
+		assertEquals(expected, ordersByUserId);
+		verify(orderRepository).findAll(filterParametersDto, language, defaultPageable);
 	}
 }
