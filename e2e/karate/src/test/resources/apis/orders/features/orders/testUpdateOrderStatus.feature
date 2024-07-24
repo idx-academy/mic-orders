@@ -16,7 +16,7 @@ Feature: Update Order Status
 
     Examples:
       | response   | status         | orderId                                 | role      |
-      | 200        | 'COMPLETED'    | '6fa459ea-ee8a-3ca4-894e-db77e160355e'  | 'MANAGER' |
+      | 204        | 'COMPLETED'    | '6fa459ea-ee8a-3ca4-894e-db77e160355e'  | 'MANAGER' |
       | 400        | 'COMPLETEDDD'  | '6fa459ea-ee8a-3ca4-894e-db77e160355e'  | 'MANAGER' |
       | 403        | 'COMPLETED'    | '6fa459ea-ee8a-3ca4-894e-db77e160355e'  | 'USER'    |
       | 404        | 'COMPLETED'    | '84b7e490-0dcf-44c3-beb6-7496dc6ef3b0'  | 'MANAGER' |
