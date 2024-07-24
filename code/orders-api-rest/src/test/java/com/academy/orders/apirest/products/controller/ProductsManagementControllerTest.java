@@ -7,12 +7,13 @@ import com.academy.orders.apirest.products.mapper.ManagementProductMapper;
 import com.academy.orders.apirest.products.mapper.ProductStatusDTOMapper;
 import com.academy.orders.apirest.products.mapper.UpdateProductRequestDTOMapper;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
-import com.academy.orders.domain.product.usecase.UpdateProductUseCase;
 import com.academy.orders.domain.product.usecase.GetManagerProductsUseCase;
+import com.academy.orders.domain.product.usecase.UpdateProductUseCase;
 import com.academy.orders.domain.product.usecase.UpdateStatusUseCase;
 import com.academy.orders_api_rest.generated.model.PageableDTO;
 import com.academy.orders_api_rest.generated.model.ProductManagementFilterDTO;
 import com.academy.orders_api_rest.generated.model.ProductStatusDTO;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.UUID;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
@@ -25,7 +26,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static com.academy.orders.apirest.ModelUtils.getProduct;
 import static com.academy.orders.apirest.ModelUtils.getProductManagementPageDTO;
@@ -89,7 +89,7 @@ class ProductsManagementControllerTest {
 		// When
 		mockMvc.perform(patch("/v1/management/products/{productId}/status", productId)
 				.param("status", productStatusDTO.getValue()).contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isCreated());
+				.andExpect(status().isOk());
 
 		// Then
 		verify(productStatusDTOMapper).fromDTO(productStatusDTO);
