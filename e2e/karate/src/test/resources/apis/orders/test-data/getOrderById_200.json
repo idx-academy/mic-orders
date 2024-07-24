@@ -1,5 +1,25 @@
 {
-  "expectedResponse": {
-    "id": "8efbee82-8a0c-407a-a4c0-16bbad40a23e"
-  }
+  "id": "#string",
+  "isPaid": "#boolean",
+  "orderStatus": "#string",
+  "createdAt": "#string",
+  "editedAt": "#string",
+  "account": {
+    "id": "#number",
+    "email": "#string",
+    "firstName": "#string",
+    "lastName": "#string"
+  },
+  "total": "#number",
+  "receiver": {
+    "email": "#string",
+    "firstName": "#string",
+    "lastName": "#string"
+  },
+  "postAddress": {
+    "deliveryMethod": "#string",
+    "city": "#string",
+    "department": "#string"
+  },
+  "orderItems": "#array"
 }
