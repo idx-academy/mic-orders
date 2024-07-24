@@ -15,7 +15,6 @@ import com.academy.orders.infrastructure.product.ProductPageMapper;
 import com.academy.orders.infrastructure.product.ProductTranslationManagementMapper;
 import java.util.List;
 import java.util.UUID;
-import com.academy.orders.infrastructure.product.ProductTranslationManagementMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageImpl;

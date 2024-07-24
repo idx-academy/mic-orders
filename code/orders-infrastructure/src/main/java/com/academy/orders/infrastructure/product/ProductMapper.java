@@ -1,7 +1,6 @@
 package com.academy.orders.infrastructure.product;
 
 import com.academy.orders.domain.product.dto.CreateProductRequestDto;
-import com.academy.orders.domain.product.dto.ProductResponse;
 import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.infrastructure.product.entity.ProductEntity;
 import com.academy.orders.infrastructure.tag.TagMapper;
@@ -15,10 +14,6 @@ public interface ProductMapper {
 	List<Product> fromEntities(List<ProductEntity> productEntities);
 
 	ProductEntity toEntity(Product product);
-
-	Product fromDto(CreateProductRequestDto dto);
-
-	ProductResponse toDto(Product product);
 
 	@Mapping(target = "id", ignore = true)
 	ProductEntity toEntity(CreateProductRequestDto dto);

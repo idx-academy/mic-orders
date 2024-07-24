@@ -330,6 +330,34 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
+    post:
+      tags:
+        - ProductsManagement
+      summary: Create a new product
+      description: The endpoint for creating a new product in the management page
+      operationId: createProduct
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductRequest'
+      responses:
+        '201':
+          description: Product created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
 
   /v1/users/{userId}/cart/{productId}:
     post:
@@ -434,35 +462,6 @@ paths:
         '409':
           $ref: '#/components/responses/Conflict'
 
-  /v1/management/products/create:
-    post:
-      tags:
-        - ProductsManagement
-      summary: Create a new product
-      description: The endpoint for creating a new product in the management page
-      operationId: createProduct
-      security:
-        - bearerAuth: [ ]
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateProductRequest'
-      responses:
-        '201':
-          description: Product created successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProductResponse'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '409':
-          $ref: '#/components/responses/Conflict'
 
 
 #COMPONENTS
