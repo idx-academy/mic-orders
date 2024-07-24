@@ -12,18 +12,21 @@ import com.academy.orders.infrastructure.order.entity.OrderEntity;
 import com.academy.orders.infrastructure.product.entity.ProductEntity;
 import com.academy.orders.infrastructure.product.repository.ProductJpaAdapter;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
+
 import static com.academy.orders.infrastructure.ModelUtils.getAccountEntity;
 import static com.academy.orders.infrastructure.ModelUtils.getOrder;
 import static com.academy.orders.infrastructure.ModelUtils.getOrderEntity;
-import static com.academy.orders.infrastructure.ModelUtils.getOrdersFilterParametersDto;
 import static com.academy.orders.infrastructure.ModelUtils.getOrderItemEntity;
+import static com.academy.orders.infrastructure.ModelUtils.getOrdersFilterParametersDto;
 import static com.academy.orders.infrastructure.ModelUtils.getPageImplOf;
 import static com.academy.orders.infrastructure.ModelUtils.getPageOf;
 import static com.academy.orders.infrastructure.ModelUtils.getPageable;
@@ -33,6 +36,7 @@ import static com.academy.orders.infrastructure.TestConstants.TEST_UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -163,7 +167,54 @@ class OrderRepositoryImplTest {
 		UUID orderId = TEST_UUID;
 		OrderStatus status = OrderStatus.COMPLETED;
 
+		doNothing().when(jpaAdapter).updateOrderStatus(orderId, status);
+
 		orderRepository.updateOrderStatus(orderId, status);
 		verify(jpaAdapter).updateOrderStatus(orderId, status);
+	}
+
+	@Test
+	void findByIdFetchDataTest() {
+		// Given
+		String language = "ua";
+		OrderEntity order = getOrderEntity();
+		UUID orderId = order.getId();
+		Optional<OrderEntity> optionalOrderEntity = Optional.of(order);
+		Order orderDomain = getOrder();
+		Optional<Order> optionalOrder = Optional.of(orderDomain);
+		var productIds = Stream.of(order).flatMap(orderEntity -> orderEntity.getOrderItems().stream())
+				.map(orderItemEntity -> orderItemEntity.getProduct().getId()).toList();
+		var products = List.of(getProductEntity());
+
+		when(jpaAdapter.findByIdFetchData(orderId)).thenReturn(optionalOrderEntity);
+		when(productJpaAdapter.findAllByIdAndLanguageCode(productIds, language)).thenReturn(products);
+		when(mapper.fromEntity(order)).thenReturn(orderDomain);
+
+		// When
+		Optional<Order> result = orderRepository.findById(orderId, language);
+
+		// Then
+		assertEquals(optionalOrder, result);
+		verify(jpaAdapter).findByIdFetchData(orderId);
+		verify(productJpaAdapter).findAllByIdAndLanguageCode(productIds, language);
+		verify(mapper).fromEntity(order);
+	}
+
+	@Test
+	void findByIdFetchDataWhenOrderNotFoundTest() {
+		// Given
+		String language = "ua";
+		UUID orderId = TEST_UUID;
+		Optional<OrderEntity> optionalOrderEntity = Optional.empty();
+		Optional<Order> optionalOrder = Optional.empty();
+
+		when(jpaAdapter.findByIdFetchData(orderId)).thenReturn(optionalOrderEntity);
+
+		// When
+		Optional<Order> result = orderRepository.findById(orderId, language);
+
+		// Then
+		assertEquals(optionalOrder, result);
+		verify(jpaAdapter).findByIdFetchData(orderId);
 	}
 }

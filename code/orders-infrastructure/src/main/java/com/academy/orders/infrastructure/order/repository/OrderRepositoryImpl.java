@@ -12,11 +12,11 @@ import com.academy.orders.infrastructure.order.OrderMapper;
 import com.academy.orders.infrastructure.order.OrderPageMapper;
 import com.academy.orders.infrastructure.order.entity.OrderEntity;
 import com.academy.orders.infrastructure.product.repository.ProductJpaAdapter;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,10 +39,17 @@ public class OrderRepositoryImpl implements OrderRepository {
 	}
 
 	@Override
+	public Optional<Order> findById(UUID id, String language) {
+		Optional<OrderEntity> order = jpaAdapter.findByIdFetchData(id);
+		order.ifPresent(orderEntity -> loadProducts(language, orderEntity));
+		return order.map(mapper::fromEntity);
+	}
+
+	@Override
 	public Page<Order> findAllByUserId(Long userId, String language, Pageable pageable) {
 		var springPageable = pageableMapper.fromDomain(pageable);
 		var orderEntityPage = jpaAdapter.findAllByAccountId(userId, springPageable);
-		loadProducts(language, orderEntityPage);
+		loadProducts(language, orderEntityPage.getContent().toArray(new OrderEntity[0]));
 		return pageMapper.toDomain(orderEntityPage);
 	}
 
@@ -60,7 +67,7 @@ public class OrderRepositoryImpl implements OrderRepository {
 	public Page<Order> findAll(OrdersFilterParametersDto filterParametersDto, String language, Pageable pageable) {
 		var springPageable = pageableMapper.fromDomain(pageable);
 		var orderEntityPage = customOrderRepository.findAllByFilterParameters(filterParametersDto, springPageable);
-		loadProducts(language, orderEntityPage);
+		loadProducts(language, orderEntityPage.getContent().toArray(new OrderEntity[0]));
 		return pageMapper.toDomain(orderEntityPage);
 	}
 
@@ -87,9 +94,8 @@ public class OrderRepositoryImpl implements OrderRepository {
 		});
 	}
 
-	private void loadProducts(String language, PageImpl<OrderEntity> orderEntityPage) {
-		var productIds = orderEntityPage.getContent().stream()
-				.flatMap(orderEntity -> orderEntity.getOrderItems().stream())
+	private void loadProducts(String language, OrderEntity... orderEntities) {
+		var productIds = Arrays.stream(orderEntities).flatMap(orderEntity -> orderEntity.getOrderItems().stream())
 				.map(orderItemEntity -> orderItemEntity.getProduct().getId()).toList();
 		productJpaAdapter.findAllByIdAndLanguageCode(productIds, language);
 	}

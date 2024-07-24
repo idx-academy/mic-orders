@@ -63,6 +63,9 @@ class CustomOrderRepositoryTest {
 	private Join<Object, Object> postAddressJoin;
 
 	@Mock
+	private Join<Object, Object> accountJoin;
+
+	@Mock
 	private TypedQuery<OrderEntity> typedQuery;
 
 	@Mock
@@ -103,6 +106,8 @@ class CustomOrderRepositoryTest {
 		when(root.join("orderItems", JoinType.LEFT)).thenReturn(orderItemJoin);
 		when(orderItemJoin.get(anyString())).thenReturn(path);
 		when(root.join("postAddress", JoinType.LEFT)).thenReturn(postAddressJoin);
+		when(root.join("account", JoinType.LEFT)).thenReturn(accountJoin);
+		when(accountJoin.get("id")).thenReturn(path);
 		when(entityManager.createQuery(criteriaQuery)).thenReturn(typedQuery);
 		when(root.get(anyString())).thenReturn(path);
 		when(criteriaBuilder.equal(any(Path.class), any(Boolean.class))).thenReturn(predicate);
@@ -111,7 +116,7 @@ class CustomOrderRepositoryTest {
 		when(criteriaBuilder.lessThanOrEqualTo(any(), any(LocalDateTime.class))).thenReturn(predicate);
 		when(criteriaBuilder.greaterThanOrEqualTo(any(), any(LocalDateTime.class))).thenReturn(predicate);
 		when(criteriaQuery.orderBy(any(List.class))).thenReturn(criteriaQuery);
-		when(criteriaQuery.groupBy(any(Path.class))).thenReturn(criteriaQuery);
+		when(criteriaQuery.groupBy(path, path, path)).thenReturn(criteriaQuery);
 		when(criteriaQuery.where(any(Predicate[].class))).thenReturn(criteriaQuery);
 		when(root.fetch(anyString(), any(JoinType.class))).thenReturn(fetch);
 		when(criteriaBuilder.sum(any(Path.class))).thenReturn(expression);
@@ -142,12 +147,11 @@ class CustomOrderRepositoryTest {
 		verify(entityManager, times(2)).createQuery(criteriaQuery);
 		verify(root, times(12)).get(anyString());
 		verify(criteriaBuilder, times(2)).equal(any(Path.class), any(Boolean.class));
-		verify(postAddressJoin, times(2)).get(anyString());
+		verify(postAddressJoin, times(3)).get(anyString());
 		verify(path, times(5)).in(ArgumentMatchers.<Object>any());
 		verify(criteriaBuilder, times(2)).lessThanOrEqualTo(any(), any(LocalDateTime.class));
 		verify(criteriaBuilder, times(2)).greaterThanOrEqualTo(any(), any(LocalDateTime.class));
 		verify(criteriaQuery).orderBy(any(List.class));
-		verify(criteriaQuery).groupBy(any(Path.class));
 		verify(root, times(3)).fetch(anyString(), any(JoinType.class));
 		verify(criteriaBuilder, times(5)).sum(any(Path.class));
 		verify(criteriaBuilder).asc(expression);
