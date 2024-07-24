@@ -129,7 +129,7 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 	 * @author Denys Liubchenko
 	 */
 	@Modifying
-	@Query(nativeQuery = true, value = "UPDATE products SET status = :status WHERE id = :id")
+	@Query("UPDATE ProductEntity SET status = :status WHERE id = :id")
 	void updateProductStatus(UUID id, ProductStatus status);
 
 	/**
