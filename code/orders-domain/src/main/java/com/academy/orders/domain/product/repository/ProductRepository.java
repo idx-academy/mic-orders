@@ -2,7 +2,6 @@ package com.academy.orders.domain.product.repository;
 
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
-import com.academy.orders.domain.product.dto.CreateProductRequestDto;
 import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.ProductManagement;
 import com.academy.orders.domain.product.entity.ProductTranslationManagement;
@@ -82,7 +81,7 @@ public interface ProductRepository {
 	 * @return the saved product entity
 	 * @author Yurii Osovskyi
 	 */
-	Product save(CreateProductRequestDto product);
+	Product save(ProductManagement product);
 
 	/**
 	 * Update an {@link ProductManagement} entity.

@@ -693,17 +693,22 @@ components:
           example: https://example.com/image.jpg
           description: Image URL associated with the product.
         quantity:
-          type: number
-          format: integer
+          type: integer
           example: 10
+          description: Quantity of the product
         price:
           type: number
           format: bigDecimal
           example: 999.99
-        tags:
+          description: Price of the product
+        tagIds:
           type: array
+          description: Array of Tag IDs associated with the product
           items:
-            $ref: '#/components/schemas/Tag'
+            type: integer
+            format: int64
+            example: 1, 2
+            description: The unique identifiers of the tags.
         productTranslations:
           type: array
           items:
@@ -724,8 +729,10 @@ components:
           format: date-time
         quantity:
           type: integer
+          example: 10
         price:
           type: number
+          example: 999.99
         tags:
           type: array
           items:
@@ -757,9 +764,10 @@ components:
         description:
           type: string
           example: Screen 6.1 Super Retina XDR, 2532x1170 / A16 Bionic chip
-#          $ref: '#/components/schemas/Product'
-        language:
-          $ref: '#/components/schemas/Language'
+        languageCode:
+          type: string
+          example: en
+          description: language
 
     ProductTranslationId:
       type: object
@@ -796,17 +804,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ProductTranslation'
-
-    Language:
-      type: object
-      properties:
-        id:
-          type: number
-          format: id
-          example: 1
-        code:
-          type: string
-          example: en
 
     ErrorObject:
       title: Unauthorized

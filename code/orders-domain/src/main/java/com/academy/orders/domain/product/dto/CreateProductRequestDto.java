@@ -1,13 +1,11 @@
 package com.academy.orders.domain.product.dto;
 
-import com.academy.orders.domain.product.entity.Tag;
 import lombok.Builder;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 @Builder
-public record CreateProductRequestDto(UUID productId, String status, String image, LocalDateTime createdAt,
-		Integer quantity, BigDecimal price, Set<Tag> tags, Set<ProductTranslationDto> productTranslations) {
+public record CreateProductRequestDto(String status, String image, Integer quantity, BigDecimal price,
+		List<Long> tagIds, Set<ProductTranslationDto> productTranslations) {
 }
