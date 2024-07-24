@@ -366,7 +366,7 @@ paths:
         - $ref: "#/components/parameters/UserId"
         - $ref: "#/components/parameters/ProductId"
       responses:
-        '200':
+        '204':
           description: Product successfully deleted form user`s cart
         '401':
           $ref: '#/components/responses/Unauthorized'
