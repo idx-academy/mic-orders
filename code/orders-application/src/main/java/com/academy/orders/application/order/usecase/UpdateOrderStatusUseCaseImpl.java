@@ -7,9 +7,11 @@ import com.academy.orders.domain.order.usecase.UpdateOrderStatusUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.UUID;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UpdateOrderStatusUseCaseImpl implements UpdateOrderStatusUseCase {
 	private final OrderRepository orderRepository;
 

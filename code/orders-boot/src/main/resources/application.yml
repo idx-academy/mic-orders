@@ -32,3 +32,19 @@ rest:
   client:
     colors:
       base-url: http://${COLOR_API_HOST:localhost}:${COLOR_API_PORT:8081}/
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      imagesCircuit:
+        minimumNumberOfCalls: 4
+        slowCallRateThreshold: 34
+        slowCallDurationThreshold: 1000
+        failureRateThreshold: 34
+        permittedNumberOfCallsInHalfOpenState: 3
+
+  retry:
+    instances:
+      imagesRetry:
+        maxAttempts: 4
+        waitDuration: 1000

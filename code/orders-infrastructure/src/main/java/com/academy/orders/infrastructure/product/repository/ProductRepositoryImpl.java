@@ -9,10 +9,12 @@ import com.academy.orders.domain.product.entity.ProductTranslationManagement;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders.domain.product.repository.ProductRepository;
 import com.academy.orders.infrastructure.common.PageableMapper;
+import com.academy.orders.infrastructure.common.repository.ImagesRepositoryImpl;
 import com.academy.orders.infrastructure.product.ProductManagementMapper;
 import com.academy.orders.infrastructure.product.ProductMapper;
 import com.academy.orders.infrastructure.product.ProductPageMapper;
 import com.academy.orders.infrastructure.product.ProductTranslationManagementMapper;
+import com.academy.orders.infrastructure.product.entity.ProductEntity;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +34,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 	private final ProductTranslationManagementMapper productTranslationManagementMapper;
 	private final ProductPageMapper productPageMapper;
 	private final PageableMapper pageableMapper;
+	private final ImagesRepositoryImpl imagesRepository;
 
 	@Override
 	public Page<Product> getAllProducts(String language, Pageable pageable) {
@@ -39,11 +42,22 @@ public class ProductRepositoryImpl implements ProductRepository {
 		String sort = String.join(",", pageable.sort());
 		var productEntities = productJpaAdapter.findAllByLanguageCodeAndStatusVisible(language,
 				PageRequest.of(pageable.page(), pageable.size()), sort);
+
+		addLinks(productEntities.getContent());
+
 		List<Product> products = productMapper.fromEntities(productEntities.getContent());
 
 		return new Page<>(productEntities.getTotalElements(), productEntities.getTotalPages(),
 				productEntities.isFirst(), productEntities.isLast(), productEntities.getNumber(),
 				productEntities.getNumberOfElements(), productEntities.getSize(), productEntities.isEmpty(), products);
+	}
+
+	private void addLinks(List<ProductEntity> productEntities) {
+
+		productEntities.forEach(productEntity -> {
+			var name = productEntity.getImage().substring(productEntity.getImage().lastIndexOf("/") + 1);
+			productEntity.setImage(imagesRepository.getImageLinkByName(name));
+		});
 	}
 
 	@Override
