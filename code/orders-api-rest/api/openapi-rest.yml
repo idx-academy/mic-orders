@@ -306,6 +306,7 @@ paths:
         - ProductsManagement
       summary: Get all information about products
       description: The endpoint retrieves all information about products
+      operationId: getProductsForManager
       security:
         - bearerAuth: [ ]
       parameters:
@@ -323,8 +324,12 @@ paths:
             'application/json':
               schema:
                 $ref: '#/components/schemas/ProductManagementPage'
-
-
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
 
   /v1/users/{userId}/cart/{productId}:
     post:
@@ -1213,10 +1218,6 @@ components:
           type: string
           description: name of the product
           example: Iphone
-        description:
-          type: string
-          description: name of the product
-          example: Some description
         imageLink:
           type: string
           description: name of the product
@@ -1241,7 +1242,6 @@ components:
       required:
         - id
         - name
-        - description
         - imageLink
         - quantity
         - price

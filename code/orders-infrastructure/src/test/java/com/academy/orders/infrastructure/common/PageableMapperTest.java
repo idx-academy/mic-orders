@@ -8,14 +8,18 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.springframework.data.domain.Sort.Order.asc;
 
 @ExtendWith(MockitoExtension.class)
 class PageableMapperTest {
@@ -52,20 +56,22 @@ class PageableMapperTest {
 		return Stream.of(Collections.emptyList(), null, List.of("", " "));
 	}
 
-	@Test
-	void mapPropertiesToSortIfOneSplitByCommaTest() {
-		var properties = List.of("createdAt", "DESC");
-		var expected = Sort.by(Sort.Order.desc("createdAt"));
-
+	@ParameterizedTest
+	@MethodSource("sortIfOneSplitByCommaProvider")
+	void mapPropertiesToSortIfOneSplitByCommaTest(List<String> properties, Sort expected) {
 		var actual = pageableMapper.mapPropertiesToSort(properties);
-
 		assertEquals(expected, actual);
+	}
+
+	static Stream<Arguments> sortIfOneSplitByCommaProvider() {
+		return Stream.of(arguments(List.of("createdAt", "DESC"), Sort.by(Order.desc("createdAt"))),
+				arguments(List.of("createdAt", "id"), Sort.by(asc("createdAt"), asc("id"))));
 	}
 
 	@Test
 	void mapPropertiesToSortTest() {
-		var properties = List.of("createdAt, ASC", "id", "status, DESC");
-		var expected = Sort.by(Sort.Order.asc("createdAt"), Sort.Order.asc("id"), Sort.Order.desc("status"));
+		var properties = List.of("createdAt, ASC", " ", "status, DESC");
+		var expected = Sort.by(asc("createdAt"), Order.desc("status"));
 
 		var actual = pageableMapper.mapPropertiesToSort(properties);
 		assertEquals(expected, actual);
