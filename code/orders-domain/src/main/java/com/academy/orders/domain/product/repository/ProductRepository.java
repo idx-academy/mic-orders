@@ -2,11 +2,13 @@ package com.academy.orders.domain.product.repository;
 
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
+import com.academy.orders.domain.product.dto.ProductManagementFilterDto;
 import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.ProductManagement;
 import com.academy.orders.domain.product.entity.ProductTranslationManagement;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import java.util.UUID;
+import org.springframework.lang.NonNull;
 
 public interface ProductRepository {
 	/**
@@ -91,4 +93,22 @@ public interface ProductRepository {
 	 * @author Anton Bondar
 	 */
 	void update(ProductManagement product);
+
+	/**
+	 * Retrieves a paginated list of products filtered by language and additional
+	 * criteria.
+	 *
+	 * @param language
+	 *            the language filter to apply to the products.
+	 * @param filter
+	 *            the additional criteria to filter the products.
+	 * @param pageable
+	 *            the pagination information.
+	 * @return a {@link Page} containing the filtered list of {@link Product}
+	 *         objects.
+	 *
+	 * @author Denys Ryhal
+	 */
+	Page<Product> findAllByLanguageWithFilter(String language, @NonNull ProductManagementFilterDto filter,
+			Pageable pageable);
 }

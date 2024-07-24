@@ -20,6 +20,18 @@ public interface OrderRepository {
 	Optional<Order> findById(UUID id);
 
 	/**
+	 * Method find {@link Order} by order's id fetch all data
+	 *
+	 * @param id
+	 *            with type {@link UUID}
+	 * @param language
+	 *            language of fetched products in order items
+	 *
+	 * @return {@link Optional} of {@link Order}
+	 */
+	Optional<Order> findById(UUID id, String language);
+
+	/**
 	 * Method saves order to the DB.
 	 *
 	 * @param accountId

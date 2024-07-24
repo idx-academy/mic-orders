@@ -2,6 +2,7 @@ package com.academy.orders.infrastructure.order.repository;
 
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import com.academy.orders.infrastructure.order.entity.OrderEntity;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +15,8 @@ import org.springframework.stereotype.Repository;
 public interface OrderJpaAdapter extends CrudRepository<OrderEntity, UUID> {
 	/**
 	 * Retrieves a paginated list of OrderEntity objects for a specific account,
-	 * including related entities such as post addresses, order items, and products.
+	 * including related entities such as post addresses, order items, and product
+	 * ids.
 	 *
 	 * @param accountId
 	 *            the ID of the account for which orders are to be retrieved.
@@ -28,6 +30,20 @@ public interface OrderJpaAdapter extends CrudRepository<OrderEntity, UUID> {
 	@Query("select o from OrderEntity o left join fetch o.postAddress pa left join fetch o.orderItems oa "
 			+ "left join fetch oa.product p left join o.account a where a.id = :accountId")
 	PageImpl<OrderEntity> findAllByAccountId(Long accountId, Pageable pageable);
+
+	/**
+	 * Retrieves an OrderEntity by his id, including related entities such as post
+	 * addresses, order items, and product ids.
+	 *
+	 * @param id
+	 *            the ID of the account for which orders are to be retrieved.
+	 * @return {@link Optional} containing the {@link OrderEntity} if it is present.
+	 *
+	 * @author Denys Liubchenko
+	 */
+	@Query("select o from OrderEntity o left join fetch o.postAddress pa left join fetch o.orderItems oa "
+			+ "left join fetch oa.product p left join o.account a where o.id = :id")
+	Optional<OrderEntity> findByIdFetchData(UUID id);
 
 	/**
 	 * Updates the status of an order identified by its ID.

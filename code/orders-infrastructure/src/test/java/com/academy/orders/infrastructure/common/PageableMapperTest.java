@@ -2,37 +2,42 @@ package com.academy.orders.infrastructure.common;
 
 import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.infrastructure.ModelUtils;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.NullSource;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.springframework.data.domain.Sort.Order.asc;
 
 @ExtendWith(MockitoExtension.class)
 class PageableMapperTest {
-	@InjectMocks
 	private final PageableMapper pageableMapper = new PageableMapper() {
 	};
-
 	private final Pageable pageable = ModelUtils.getPageable();
 
-	@Test
-	void fromDomainWithNullPageableTest() {
-		PageRequest result = pageableMapper.fromDomain(null);
+	@ParameterizedTest
+	@NullSource
+	void fromDomainWithNullPageableTest(Pageable pageable) {
+		var result = pageableMapper.fromDomain(pageable);
 		assertNull(result);
 	}
 
 	@Test
 	void fromDomainWithValidPageableTest() {
-		Sort sort = Sort.by(pageable.sort().toArray(new String[0]));
-
-		PageRequest result = pageableMapper.fromDomain(pageable);
+		var sort = Sort.by(pageable.sort().toArray(new String[0]));
+		var result = pageableMapper.fromDomain(pageable);
 
 		assertNotNull(result);
 		assertEquals(pageable.page(), result.getPageNumber());
@@ -40,34 +45,36 @@ class PageableMapperTest {
 		assertEquals(sort, result.getSort());
 	}
 
-	@Test
-	void mapWithValidListTest() {
-		Sort expected = Sort.by(
-				List.of(Sort.Order.asc("pr1"), Sort.Order.asc("pr2"), Sort.Order.desc("pr3"), Sort.Order.asc("pr4")));
-		List<String> sort = List.of("pr1", "pr2", "asc", "pr3", "desc", "pr4");
+	@ParameterizedTest
+	@MethodSource("incorrectParametersProvider")
+	void mapPropertiesToSortIncorrectDataTest(List<String> properties) {
+		var actual = pageableMapper.mapPropertiesToSort(properties);
+		assertEquals(Sort.unsorted(), actual);
+	}
 
-		Sort actual = pageableMapper.map(sort);
+	static Stream<List<String>> incorrectParametersProvider() {
+		return Stream.of(Collections.emptyList(), null, List.of("", " "));
+	}
 
+	@ParameterizedTest
+	@MethodSource("sortIfOneSplitByCommaProvider")
+	void mapPropertiesToSortIfOneSplitByCommaTest(List<String> properties, Sort expected) {
+		var actual = pageableMapper.mapPropertiesToSort(properties);
 		assertEquals(expected, actual);
 	}
 
-	@Test
-	void mapWithEmptyListTest() {
-		Sort expected = Sort.unsorted();
-		List<String> sort = List.of();
-
-		Sort actual = pageableMapper.map(sort);
-
-		assertEquals(expected, actual);
+	static Stream<Arguments> sortIfOneSplitByCommaProvider() {
+		return Stream.of(arguments(List.of("createdAt", "DESC"), Sort.by(Order.desc("createdAt"))),
+				arguments(List.of("createdAt", "id"), Sort.by(asc("createdAt"), asc("id"))));
 	}
 
 	@Test
-	void mapWithValidSortTest() {
-		Sort sort = Sort.by(Sort.Direction.ASC, "value");
-		List<String> expected = sort.get().map(o -> o.getProperty() + " " + o.getDirection()).toList();
+	void mapPropertiesToSortTest() {
+		var properties = List.of("createdAt, ASC", " ", "status, DESC");
+		var expected = Sort.by(asc("createdAt"), Order.desc("status"));
 
-		List<String> actual = pageableMapper.map(sort);
-
+		var actual = pageableMapper.mapPropertiesToSort(properties);
 		assertEquals(expected, actual);
 	}
+
 }
