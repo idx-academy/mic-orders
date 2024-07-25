@@ -124,7 +124,7 @@ class CartItemControllerTest {
 	@Test
 	@SneakyThrows
 	void getCartItemsTest() {
-		var lang = "ua";
+		var lang = "uk";
 		var cartResponseDto = CartResponseDto.builder().build();
 		var cartItemsResponseDTO = ModelUtils.getCartItemResponseDto();
 

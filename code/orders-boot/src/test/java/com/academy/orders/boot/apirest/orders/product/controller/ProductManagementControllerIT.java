@@ -18,7 +18,7 @@ class ProductManagementControllerIT extends AbstractControllerIT {
 
 	@Test
 	void getProductForManagerTest() {
-		final var url = baseUrl() + "/v1/management/products?lang=ua&page=0&size=10&sort=createdAt, DESC";
+		final var url = baseUrl() + "/v1/management/products?lang=uk&page=0&size=10&sort=createdAt, DESC";
 		final HttpHeaders headers = buildAuthHeaders(username);
 		final var requestEntity = new HttpEntity<>(headers);
 
