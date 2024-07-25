@@ -33,7 +33,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import static com.academy.orders.apirest.TestConstants.IMAGE_URL;
-import static com.academy.orders.apirest.TestConstants.LANGUAGE_UA;
+import static com.academy.orders.apirest.TestConstants.LANGUAGE_UK;
 import static com.academy.orders.apirest.TestConstants.PRODUCT_DESCRIPTION;
 import static com.academy.orders.apirest.TestConstants.PRODUCT_NAME;
 import static com.academy.orders.apirest.TestConstants.TAG_NAME;
@@ -89,7 +89,7 @@ public class ModelUtils {
 	}
 
 	public static Language getLanguage() {
-		return Language.builder().id(TEST_ID).code(LANGUAGE_UA).build();
+		return Language.builder().id(TEST_ID).code(LANGUAGE_UK).build();
 	}
 
 	public static ProductTranslation getProductTranslation() {

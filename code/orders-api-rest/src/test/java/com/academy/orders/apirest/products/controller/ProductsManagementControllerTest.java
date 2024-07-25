@@ -31,6 +31,7 @@ import static com.academy.orders.apirest.ModelUtils.getProductManagementPageDTO;
 import static com.academy.orders.apirest.ModelUtils.getUpdateProduct;
 import static com.academy.orders.apirest.ModelUtils.getUpdateProductRequestDTO;
 import static com.academy.orders.apirest.TestConstants.LANGUAGE_EN;
+import static com.academy.orders.apirest.TestConstants.ROLE_MANAGER;
 import static com.academy.orders.apirest.TestConstants.TEST_UUID;
 import static com.academy.orders.apirest.TestConstants.UPDATE_PRODUCT;
 import static org.mockito.ArgumentMatchers.any;
@@ -82,7 +83,7 @@ class ProductsManagementControllerTest {
 	private CreateProductRequestDTOMapper createProductRequestDTOMapper;
 
 	@Test
-	@WithMockUser(authorities = {"ROLE_MANAGER"})
+	@WithMockUser(authorities = ROLE_MANAGER)
 	@SneakyThrows
 	void updateStatusTest() {
 		// Given
@@ -104,7 +105,7 @@ class ProductsManagementControllerTest {
 	}
 
 	@Test
-	@WithMockUser(authorities = {"ROLE_MANAGER"})
+	@WithMockUser(authorities = ROLE_MANAGER)
 	@SneakyThrows
 	void updateProductTest() {
 		var dto = getUpdateProductRequestDTO();
@@ -121,10 +122,10 @@ class ProductsManagementControllerTest {
 	}
 
 	@Test
-	@WithMockUser(authorities = {"ROLE_MANAGER"})
+	@WithMockUser(authorities = ROLE_MANAGER)
 	@SneakyThrows
 	void getProductsForManagerTest() {
-		var lang = "ua";
+		var lang = "uk";
 		var pageable = ModelUtils.getPageable();
 		var filter = ModelUtils.getManagementFilterDto();
 		var pageOfProducts = ModelUtils.getPageOf(getProduct());
