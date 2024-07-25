@@ -14,9 +14,9 @@ Feature: Update Product Status
     Then match responseStatus == <response>
 
     Examples:
-      | response   | status         | productId                                 | role      |
-      | 204        | 'VISIBLE'    | '52d4f45c-70a8-4f36-99d0-d645c5f704b2'  | 'MANAGER' |
-      | 204        | 'HIDDEN'    | '52d4f45c-70a8-4f36-99d0-d645c5f704b2'  | 'MANAGER' |
-      | 400        | 'COMPLETEDDD'  | '52d4f45c-70a8-4f36-99d0-d645c5f704b2'  | 'MANAGER' |
-      | 403        | 'VISIBLE'    | '52d4f45c-70a8-4f36-99d0-d645c5f704b2'  | 'USER'    |
-      | 404        | 'VISIBLE'    | '84b7e490-0dcf-44c3-beb6-7496dc6ef3b2'  | 'MANAGER' |
+      | response   | status         | productId                                | role      |
+      | 200        | 'VISIBLE'      | '52d4f45c-70a8-4f36-99d0-d645c5f704b2'   | 'MANAGER' |
+      | 200        | 'HIDDEN'       | '52d4f45c-70a8-4f36-99d0-d645c5f704b2'   | 'MANAGER' |
+      | 400        | 'COMPLETEDDD'  | '52d4f45c-70a8-4f36-99d0-d645c5f704b2'   | 'MANAGER' |
+      | 403        | 'VISIBLE'      | '52d4f45c-70a8-4f36-99d0-d645c5f704b2'   | 'USER'    |
+      | 404        | 'VISIBLE'      | '84b7e490-0dcf-44c3-beb6-7496dc6ef3b2'   | 'MANAGER' |
