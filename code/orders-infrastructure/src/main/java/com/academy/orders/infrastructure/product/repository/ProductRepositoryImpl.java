@@ -23,6 +23,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @RequiredArgsConstructor
@@ -37,6 +38,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 	private final ImagesRepositoryImpl imagesRepository;
 
 	@Override
+	@Transactional(readOnly = true)
 	public Page<Product> getAllProducts(String language, Pageable pageable) {
 		log.debug("Fetching all products by language code with pagination and sorting");
 		String sort = String.join(",", pageable.sort());
@@ -53,7 +55,6 @@ public class ProductRepositoryImpl implements ProductRepository {
 	}
 
 	private void addLinks(List<ProductEntity> productEntities) {
-
 		productEntities.forEach(productEntity -> {
 			var name = productEntity.getImage().substring(productEntity.getImage().lastIndexOf("/") + 1);
 			productEntity.setImage(imagesRepository.getImageLinkByName(name));

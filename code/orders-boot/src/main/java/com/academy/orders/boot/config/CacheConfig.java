@@ -1,4 +1,4 @@
-package com.academy.orders.boot.config.security;
+package com.academy.orders.boot.config;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import java.util.concurrent.TimeUnit;
