@@ -35,11 +35,7 @@ class CreateProductUseCaseImplTest {
 	@Test
 	void createProductTest() {
 		UUID productId = UUID.randomUUID();
-		CreateProductRequestDto request = CreateProductRequestDto.builder().status("VISIBLE").image("image.jpg")
-				.quantity(10).price(BigDecimal.valueOf(100)).tagIds(List.of(1L))
-				.productTranslations(Set.of(ProductTranslationDto.builder().name("Name").description("Description")
-						.languageCode("en").build()))
-				.build();
+		CreateProductRequestDto request = ModelUtils.getCreateProductRequestDto();
 
 		Product product = Product.builder().id(productId).status(ProductStatus.valueOf(request.status()))
 				.image(request.image()).createdAt(LocalDateTime.now()).quantity(request.quantity())
@@ -64,17 +60,13 @@ class CreateProductUseCaseImplTest {
 	}
 
 	@Test
-	void createProduct_NullRequestTest() {
+	void createProductNullRequestTest() {
 		assertThrows(IllegalArgumentException.class, () -> createProductUseCase.createProduct(null));
 	}
 
 	@Test
-	void createProduct_productRepositorySaveReturnsNullTest() {
-		CreateProductRequestDto request = CreateProductRequestDto.builder().status("VISIBLE").image("image.jpg")
-				.quantity(10).price(BigDecimal.valueOf(100)).tagIds(List.of(1L))
-				.productTranslations(Set.of(ProductTranslationDto.builder().name("Name").description("Description")
-						.languageCode("en").build()))
-				.build();
+	void createProductProductRepositorySaveReturnsNullTest() {
+		CreateProductRequestDto request = ModelUtils.getCreateProductRequestDto();
 
 		when(productRepository.save(any(ProductManagement.class))).thenReturn(null);
 
@@ -82,7 +74,7 @@ class CreateProductUseCaseImplTest {
 	}
 
 	@Test
-	void createProduct_LanguageNotFoundTest() {
+	void createProductLanguageNotFoundTest() {
 		CreateProductRequestDto request = CreateProductRequestDto.builder().status("VISIBLE").image("image.jpg")
 				.quantity(10).price(BigDecimal.valueOf(100)).tagIds(List.of(1L))
 				.productTranslations(Set.of(ProductTranslationDto.builder().name("Name").description("Description")
