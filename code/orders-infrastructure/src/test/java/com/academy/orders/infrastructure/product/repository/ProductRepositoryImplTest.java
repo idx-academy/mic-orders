@@ -1,5 +1,6 @@
 package com.academy.orders.infrastructure.product.repository;
 
+import com.academy.orders.domain.common.respository.ImagesRepository;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders.infrastructure.common.PageableMapper;
 import com.academy.orders.infrastructure.product.ProductManagementMapper;
@@ -52,6 +53,8 @@ class ProductRepositoryImplTest {
 	private ProductPageMapper productPageMapper;
 	@Mock
 	private PageableMapper pageableMapper;
+	@Mock
+	private ImagesRepository imagesRepository;
 
 	@Mock
 	private ProductTranslationManagementMapper productTranslationManagementMapper;
@@ -77,21 +80,27 @@ class ProductRepositoryImplTest {
 
 	@Test
 	void getAllProductsTest() {
+		var lang = "en";
 		var pageable = getPageable();
-		String sort = String.join(",", pageable.sort());
+		var sort = String.join(",", pageable.sort());
 		var productEntity = getProductEntity();
 		var product = getProduct();
+		var imageName = productEntity.getImage().substring(productEntity.getImage().lastIndexOf("/") + 1);
+		var imageLink = productEntity.getImage();
+
 		var page = new PageImpl<>(List.of(productEntity));
-		when(productJpaAdapter.findAllByLanguageCodeAndStatusVisible("en",
+		when(productJpaAdapter.findAllByLanguageCodeAndStatusVisible(lang,
 				PageRequest.of(pageable.page(), pageable.size()), sort)).thenReturn(page);
+		when(imagesRepository.getImageLinkByName(imageName)).thenReturn(imageLink);
 
 		when(productMapper.fromEntities(page.getContent())).thenReturn(List.of(product));
-		var products = productRepository.getAllProducts("en", pageable);
+		var products = productRepository.getAllProducts(lang, pageable);
 		assertEquals(1, products.size());
 
-		verify(productJpaAdapter).findAllByLanguageCodeAndStatusVisible("en",
+		verify(productJpaAdapter).findAllByLanguageCodeAndStatusVisible(lang,
 				PageRequest.of(pageable.page(), pageable.size()), sort);
 		verify(productMapper).fromEntities(page.getContent());
+		verify(imagesRepository).getImageLinkByName(imageName);
 	}
 
 	@Test
@@ -100,9 +109,7 @@ class ProductRepositoryImplTest {
 		ProductStatus status = ProductStatus.VISIBLE;
 
 		doNothing().when(productJpaAdapter).updateProductStatus(productId, status);
-
 		productRepository.updateStatus(productId, status);
-
 		verify(productJpaAdapter).updateProductStatus(productId, status);
 	}
 
@@ -149,11 +156,14 @@ class ProductRepositoryImplTest {
 		var product = getProduct();
 		var ids = getPageImplOf(productEntity.getId());
 		var productPage = getPageOf(product);
+		var imageName = productEntity.getImage().substring(productEntity.getImage().lastIndexOf("/") + 1);
+		var imageLink = productEntity.getImage();
 
 		when(pageableMapper.fromDomain(pageableDomain)).thenReturn(pageable);
 		when(productJpaAdapter.findProductsIdsByLangAndFilters(lang, filter, pageable)).thenReturn(ids);
 		when(productJpaAdapter.findProductsByIds(lang, ids.getContent(), pageable.getSort()))
 				.thenReturn(singletonList(productEntity));
+		when(imagesRepository.getImageLinkByName(imageName)).thenReturn(imageLink);
 		when(productPageMapper.toDomain(any(PageImpl.class))).thenReturn(productPage);
 
 		var actual = productRepository.findAllByLanguageWithFilter(lang, filter, pageableDomain);
@@ -163,6 +173,7 @@ class ProductRepositoryImplTest {
 		verify(productJpaAdapter).findProductsIdsByLangAndFilters(lang, filter, pageable);
 		verify(productJpaAdapter).findProductsByIds(lang, ids.getContent(), pageable.getSort());
 		verify(productPageMapper).toDomain(any(PageImpl.class));
+		verify(imagesRepository).getImageLinkByName(imageName);
 	}
 
 }
