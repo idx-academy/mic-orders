@@ -1,6 +1,6 @@
 package com.academy.orders.domain.common.respository;
 
-public interface ImagesRepository {
+public interface ImageRepository {
 	/**
 	 * Method get image's url by imag`s name using third-party
 	 *

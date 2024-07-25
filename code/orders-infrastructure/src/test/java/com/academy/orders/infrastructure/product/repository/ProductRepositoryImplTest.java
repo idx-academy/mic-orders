@@ -1,6 +1,6 @@
 package com.academy.orders.infrastructure.product.repository;
 
-import com.academy.orders.domain.common.respository.ImagesRepository;
+import com.academy.orders.domain.common.respository.ImageRepository;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders.infrastructure.common.PageableMapper;
 import com.academy.orders.infrastructure.product.ProductManagementMapper;
@@ -54,7 +54,7 @@ class ProductRepositoryImplTest {
 	@Mock
 	private PageableMapper pageableMapper;
 	@Mock
-	private ImagesRepository imagesRepository;
+	private ImageRepository imageRepository;
 
 	@Mock
 	private ProductTranslationManagementMapper productTranslationManagementMapper;
@@ -91,7 +91,7 @@ class ProductRepositoryImplTest {
 		var page = new PageImpl<>(List.of(productEntity));
 		when(productJpaAdapter.findAllByLanguageCodeAndStatusVisible(lang,
 				PageRequest.of(pageable.page(), pageable.size()), sort)).thenReturn(page);
-		when(imagesRepository.getImageLinkByName(imageName)).thenReturn(imageLink);
+		when(imageRepository.getImageLinkByName(imageName)).thenReturn(imageLink);
 
 		when(productMapper.fromEntities(page.getContent())).thenReturn(List.of(product));
 		var products = productRepository.getAllProducts(lang, pageable);
@@ -100,7 +100,7 @@ class ProductRepositoryImplTest {
 		verify(productJpaAdapter).findAllByLanguageCodeAndStatusVisible(lang,
 				PageRequest.of(pageable.page(), pageable.size()), sort);
 		verify(productMapper).fromEntities(page.getContent());
-		verify(imagesRepository).getImageLinkByName(imageName);
+		verify(imageRepository).getImageLinkByName(imageName);
 	}
 
 	@Test
@@ -163,7 +163,7 @@ class ProductRepositoryImplTest {
 		when(productJpaAdapter.findProductsIdsByLangAndFilters(lang, filter, pageable)).thenReturn(ids);
 		when(productJpaAdapter.findProductsByIds(lang, ids.getContent(), pageable.getSort()))
 				.thenReturn(singletonList(productEntity));
-		when(imagesRepository.getImageLinkByName(imageName)).thenReturn(imageLink);
+		when(imageRepository.getImageLinkByName(imageName)).thenReturn(imageLink);
 		when(productPageMapper.toDomain(any(PageImpl.class))).thenReturn(productPage);
 
 		var actual = productRepository.findAllByLanguageWithFilter(lang, filter, pageableDomain);
@@ -173,7 +173,7 @@ class ProductRepositoryImplTest {
 		verify(productJpaAdapter).findProductsIdsByLangAndFilters(lang, filter, pageable);
 		verify(productJpaAdapter).findProductsByIds(lang, ids.getContent(), pageable.getSort());
 		verify(productPageMapper).toDomain(any(PageImpl.class));
-		verify(imagesRepository).getImageLinkByName(imageName);
+		verify(imageRepository).getImageLinkByName(imageName);
 	}
 
 }

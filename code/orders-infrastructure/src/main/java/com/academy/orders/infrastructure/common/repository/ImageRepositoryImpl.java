@@ -1,7 +1,7 @@
 package com.academy.orders.infrastructure.common.repository;
 
 import com.academy.colors_api.generated.api.ImagesApi;
-import com.academy.orders.domain.common.respository.ImagesRepository;
+import com.academy.orders.domain.common.respository.ImageRepository;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Component
 @Slf4j
-public class ImagesRepositoryImpl implements ImagesRepository {
+public class ImageRepositoryImpl implements ImageRepository {
 	private final ImagesApi imagesApi;
 
 	@Value("${images.default.url}")
