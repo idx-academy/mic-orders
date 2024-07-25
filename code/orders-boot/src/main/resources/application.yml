@@ -40,7 +40,7 @@ resilience4j:
         minimumNumberOfCalls: 4
         slowCallRateThreshold: 34
         slowCallDurationThreshold: 1000
-        failureRateThreshold: 34
+        failureRateThreshold: 40
         permittedNumberOfCallsInHalfOpenState: 3
         waitDurationInOpenState: 30000
 
@@ -49,3 +49,7 @@ resilience4j:
       imagesRetry:
         maxAttempts: 4
         waitDuration: 1000
+
+images:
+  default:
+    url: https://www.demyhealth.com/storage/media/2/default-product-image.png

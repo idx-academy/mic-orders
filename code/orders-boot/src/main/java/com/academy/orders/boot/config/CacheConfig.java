@@ -13,16 +13,14 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @Slf4j
 public class CacheConfig {
-    @Bean
-    public CacheManager cacheManager() {
-        CaffeineCacheManager cacheManager = new CaffeineCacheManager();
-        cacheManager.setCaffeine(caffeineCacheBuilder());
-        return cacheManager;
-    }
+	@Bean
+	public CacheManager cacheManager() {
+		CaffeineCacheManager cacheManager = new CaffeineCacheManager();
+		cacheManager.setCaffeine(caffeineCacheBuilder());
+		return cacheManager;
+	}
 
-    Caffeine<Object, Object> caffeineCacheBuilder() {
-        return Caffeine.newBuilder()
-            .maximumSize(500)
-            .expireAfterWrite(5, TimeUnit.MINUTES);
-    }
+	Caffeine<Object, Object> caffeineCacheBuilder() {
+		return Caffeine.newBuilder().maximumSize(500).expireAfterWrite(5, TimeUnit.MINUTES);
+	}
 }
