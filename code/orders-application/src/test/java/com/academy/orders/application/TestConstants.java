@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 public class TestConstants {
-	public static final String LANGUAGE_UA = "ua";
+	public static final String LANGUAGE_UK = "uk";
 	public static final String LANGUAGE_EN = "en";
 	public static final String IMAGE_URL = "https://example.com/image.jpg";
 	public static final Long TEST_ID = 1L;

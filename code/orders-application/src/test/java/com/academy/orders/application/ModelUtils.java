@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Set;
 import static com.academy.orders.application.TestConstants.IMAGE_URL;
 import static com.academy.orders.application.TestConstants.LANGUAGE_EN;
-import static com.academy.orders.application.TestConstants.LANGUAGE_UA;
+import static com.academy.orders.application.TestConstants.LANGUAGE_UK;
 import static com.academy.orders.application.TestConstants.PRODUCT_DESCRIPTION;
 import static com.academy.orders.application.TestConstants.PRODUCT_NAME;
 import static com.academy.orders.application.TestConstants.TAG_NAME;
@@ -53,7 +53,7 @@ public class ModelUtils {
 	}
 
 	public static Language getLanguage() {
-		return Language.builder().id(TEST_ID).code(LANGUAGE_UA).build();
+		return Language.builder().id(TEST_ID).code(LANGUAGE_UK).build();
 	}
 
 	public static Language getLanguageEn() {

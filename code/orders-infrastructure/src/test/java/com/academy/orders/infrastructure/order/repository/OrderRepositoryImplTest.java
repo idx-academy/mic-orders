@@ -104,7 +104,7 @@ class OrderRepositoryImplTest {
 	@Test
 	void findAllTest() {
 		// Given
-		String language = "ua";
+		String language = "uk";
 		Pageable pageable = getPageable();
 		var orderDomainPage = getPageOf(getOrder());
 		var springPageable = PageRequest.of(pageable.page(), pageable.size());
@@ -136,7 +136,7 @@ class OrderRepositoryImplTest {
 	void findAllByUserIdTest() {
 		// Given
 		Long userId = 1L;
-		String language = "ua";
+		String language = "uk";
 		Pageable pageable = getPageable();
 		var orderDomainPage = getPageOf(getOrder());
 		var springPageable = PageRequest.of(pageable.page(), pageable.size());
@@ -176,7 +176,7 @@ class OrderRepositoryImplTest {
 	@Test
 	void findByIdFetchDataTest() {
 		// Given
-		String language = "ua";
+		String language = "uk";
 		OrderEntity order = getOrderEntity();
 		UUID orderId = order.getId();
 		Optional<OrderEntity> optionalOrderEntity = Optional.of(order);
@@ -203,7 +203,7 @@ class OrderRepositoryImplTest {
 	@Test
 	void findByIdFetchDataWhenOrderNotFoundTest() {
 		// Given
-		String language = "ua";
+		String language = "uk";
 		UUID orderId = TEST_UUID;
 		Optional<OrderEntity> optionalOrderEntity = Optional.empty();
 		Optional<Order> optionalOrder = Optional.empty();
