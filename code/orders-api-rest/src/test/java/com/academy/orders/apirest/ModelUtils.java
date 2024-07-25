@@ -17,35 +17,13 @@ import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.ProductTranslation;
 import com.academy.orders.domain.product.entity.Tag;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
-import com.academy.orders_api_rest.generated.model.AccountResponseDTO;
-import com.academy.orders_api_rest.generated.model.CartItemDTO;
-import com.academy.orders_api_rest.generated.model.CartItemsResponseDTO;
-import com.academy.orders_api_rest.generated.model.ManagerOrderDTO;
-import com.academy.orders_api_rest.generated.model.OrdersFilterParametersDTO;
-import com.academy.orders_api_rest.generated.model.PageManagerOrderDTO;
-import com.academy.orders_api_rest.generated.model.ProductManagementContentDTO;
-import com.academy.orders_api_rest.generated.model.ProductManagementPageDTO;
-import com.academy.orders_api_rest.generated.model.ProductManagementStatusDTO;
-import com.academy.orders_api_rest.generated.model.ProductStatusDTO;
-import com.academy.orders_api_rest.generated.model.UpdateProductRequestDTO;
-import com.academy.orders_api_rest.generated.model.UpdatedCartItemDTO;
-import com.academy.orders_api_rest.generated.model.UserOrderDTO;
-import com.academy.orders_api_rest.generated.model.OrderItemDTO;
-import com.academy.orders_api_rest.generated.model.OrderReceiverDTO;
-import com.academy.orders_api_rest.generated.model.OrderStatusDTO;
-import com.academy.orders_api_rest.generated.model.PageUserOrderDTO;
-import com.academy.orders_api_rest.generated.model.PageableDTO;
-import com.academy.orders_api_rest.generated.model.PlaceOrderRequestDTO;
-import com.academy.orders_api_rest.generated.model.PostAddressDTO;
-import com.academy.orders_api_rest.generated.model.ProductPreviewDTO;
+import com.academy.orders_api_rest.generated.model.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -390,5 +368,51 @@ public class ModelUtils {
 		pageOrderDTO.setSize(10);
 		pageOrderDTO.content(singletonList(getProductManagementContentDTO()));
 		return pageOrderDTO;
+	}
+
+	public static CreateProductRequestDTO getCreateProductRequestDTO() {
+		CreateProductRequestDTO createProductRequestDTO = new CreateProductRequestDTO();
+		createProductRequestDTO.setStatus(ProductStatusDTO.VISIBLE);
+		createProductRequestDTO.setImage("https://example.com/image.jpg");
+		createProductRequestDTO.setQuantity(10);
+		createProductRequestDTO.setPrice(new BigDecimal("999.99"));
+
+		List<Long> tagIds = new ArrayList<>();
+		tagIds.add(1L);
+		tagIds.add(2L);
+		createProductRequestDTO.setTagIds(tagIds);
+
+		List<ProductTranslationDTO> productTranslations = new ArrayList<>();
+		productTranslations.add(new ProductTranslationDTO().languageCode("en").name("Sample Product")
+				.description("Description in English"));
+		productTranslations
+				.add(new ProductTranslationDTO().languageCode("uk").name("Продукт").description("Опис Українською"));
+		createProductRequestDTO.setProductTranslations(productTranslations);
+
+		return createProductRequestDTO;
+	}
+
+	public static ProductResponseDTO getProductResponseDTO() {
+		ProductResponseDTO productResponseDTO = new ProductResponseDTO();
+		productResponseDTO.setId(UUID.randomUUID());
+		productResponseDTO.setStatus(ProductStatusDTO.VISIBLE);
+		productResponseDTO.setImage("https://example.com/image.jpg");
+		productResponseDTO.setCreatedAt(OffsetDateTime.now());
+		productResponseDTO.setQuantity(10);
+		productResponseDTO.setPrice(new BigDecimal("999.99"));
+
+		List<TagDTO> tags = new ArrayList<>();
+		tags.add(new TagDTO().id(BigDecimal.valueOf(1L)).name("Electronics"));
+		tags.add(new TagDTO().id(BigDecimal.valueOf(2L)).name("Gadgets"));
+		productResponseDTO.setTags(tags);
+
+		List<ProductTranslationDTO> productTranslations = new ArrayList<>();
+		productTranslations.add(new ProductTranslationDTO().languageCode("en").name("Sample Product")
+				.description("Description in English"));
+		productTranslations
+				.add(new ProductTranslationDTO().languageCode("uk").name("Продукт").description("Опис Українською"));
+		productResponseDTO.setProductTranslations(productTranslations);
+
+		return productResponseDTO;
 	}
 }

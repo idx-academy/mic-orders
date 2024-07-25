@@ -74,6 +74,18 @@ public interface ProductRepository {
 	ProductTranslationManagement findByIdAndLanguageCode(UUID productId, String languageCode);
 
 	/**
+	 * Saves a new product using the provided product creation request data transfer
+	 * object (DTO). Returns the saved product entity.
+	 *
+	 * @param product
+	 *            the DTO containing the information necessary to create a new
+	 *            product
+	 * @return the saved product entity
+	 * @author Yurii Osovskyi
+	 */
+	Product save(ProductManagement product);
+
+	/**
 	 * Update an {@link ProductManagement} entity.
 	 *
 	 * @param product

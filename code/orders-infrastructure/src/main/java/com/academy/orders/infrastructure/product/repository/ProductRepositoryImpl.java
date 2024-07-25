@@ -81,4 +81,10 @@ public class ProductRepositoryImpl implements ProductRepository {
 		var productEntityPage = productJpaAdapter.findProductsByIds(language, ids.getContent(), pageable.getSort());
 		return productPageMapper.toDomain(new PageImpl<>(productEntityPage, pageable, ids.getTotalElements()));
 	}
+
+	@Override
+	public Product save(ProductManagement product) {
+		var entity = productManagementMapper.toEntity(product);
+		return productMapper.fromEntity(productJpaAdapter.save(entity));
+	}
 }

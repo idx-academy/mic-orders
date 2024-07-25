@@ -4,8 +4,10 @@ import com.academy.orders.domain.product.entity.ProductManagement;
 import com.academy.orders.domain.product.exception.ProductNotFoundException;
 import com.academy.orders.domain.product.repository.ProductRepository;
 import com.academy.orders.domain.tag.repository.TagRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -14,9 +16,7 @@ import java.util.Set;
 import static com.academy.orders.application.ModelUtils.getProductTranslationManagement;
 import static com.academy.orders.application.ModelUtils.getTag;
 import static com.academy.orders.application.ModelUtils.getUpdateProduct;
-import static com.academy.orders.application.TestConstants.LANGUAGE_EN;
-import static com.academy.orders.application.TestConstants.TEST_ID;
-import static com.academy.orders.application.TestConstants.TEST_UUID;
+import static com.academy.orders.application.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -47,6 +47,12 @@ class UpdateProductUseCaseImplTest {
 		doNothing().when(productRepository).update(any(ProductManagement.class));
 
 		updateProductUseCase.updateProduct(TEST_UUID, LANGUAGE_EN, updateProduct);
+
+		var captor = ArgumentCaptor.forClass(ProductManagement.class);
+		verify(productRepository).update(captor.capture());
+
+		var productManagement = captor.getValue();
+		Assertions.assertEquals(IMAGE_NAME, productManagement.image());
 
 		verify(productRepository).existById(TEST_UUID);
 		verify(productRepository).findByIdAndLanguageCode(TEST_UUID, LANGUAGE_EN);
