@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.lang.NonNull;
@@ -79,6 +80,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 
 	@Override
 	@Transactional
+	@CacheEvict(value = "images", key = "product.image()")
 	public void update(ProductManagement product) {
 		var productEntity = productManagementMapper.toEntity(product);
 		productJpaAdapter.save(productEntity);
