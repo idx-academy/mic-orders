@@ -17,13 +17,6 @@ function fn() {
   let secretConfig = read(`classpath:config-${karate.env}-secrets.yml`);
   karate.set(secretConfig);
 
-  //Config datasource
-  let datasource = {
-    url: secretConfig.datasource.url,
-    username: secretConfig.datasource.username,
-    password: secretConfig.datasource.password
-  };
-
   // Reporting Flags
   let showLogOption = false;
   let showAllStepsOption = true;
