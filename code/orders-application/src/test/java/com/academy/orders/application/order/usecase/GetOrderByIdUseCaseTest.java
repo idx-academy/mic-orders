@@ -40,7 +40,7 @@ class GetOrderByIdUseCaseTest {
 		orderId = UUID.randomUUID();
 		orderWithoutTotal = ModelUtils.getOrderWithoutTotal();
 		order = ModelUtils.getOrder();
-		language = "ua";
+		language = "uk";
 	}
 
 	@Test
