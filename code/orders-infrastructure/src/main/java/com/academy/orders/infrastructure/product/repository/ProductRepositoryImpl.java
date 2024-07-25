@@ -73,6 +73,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 	@Override
 	public ProductTranslationManagement findByIdAndLanguageCode(UUID id, String languageCode) {
 		var productEntity = productJpaAdapter.findByIdAndLanguageCode(id, languageCode);
+		addLinks(productEntity.getProduct());
 		return productTranslationManagementMapper.fromEntity(productEntity);
 	}
 
@@ -99,5 +100,10 @@ public class ProductRepositoryImpl implements ProductRepository {
 			var name = productEntity.getImage();
 			productEntity.setImage(imageRepository.getImageLinkByName(name));
 		});
+	}
+
+	private void addLinks(ProductEntity productEntity) {
+		var name = productEntity.getImage();
+		productEntity.setImage(imageRepository.getImageLinkByName(name));
 	}
 }
