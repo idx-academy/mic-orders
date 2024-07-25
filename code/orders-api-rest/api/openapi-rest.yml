@@ -473,10 +473,10 @@ components:
       required: false
       schema:
         type: string
-        default: ua
+        default: uk
         nullable: false
         example: en
-      description: The language code for the product information (e.g., 'ua' for Ukrainian).
+      description: The language code for the product information (e.g., 'uk' for Ukrainian).
   securitySchemes:
     bearerAuth:
       type: http

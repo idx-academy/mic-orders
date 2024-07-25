@@ -34,7 +34,7 @@ class GetCartUseCaseImplTest {
 	@Test
 	void getCartItemsTest() {
 		var accountId = 1L;
-		var lang = "ua";
+		var lang = "uk";
 		var cartItem = getCartItem();
 		var cartItemPrice = BigDecimal.valueOf(100.00);
 		var totalPrice = BigDecimal.valueOf(1000.00);

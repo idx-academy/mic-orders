@@ -129,7 +129,7 @@ class OrdersControllerTest {
 		// Given
 		Long userId = 1L;
 		String role = "ROLE_USER";
-		String language = "ua";
+		String language = "uk";
 		PageableDTO pageableDTO = new PageableDTO();
 		Pageable pageable = getPageable();
 		Page<Order> orderPage = getPageOf(getOrder());

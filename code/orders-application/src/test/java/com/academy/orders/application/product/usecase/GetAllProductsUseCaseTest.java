@@ -12,7 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import static com.academy.orders.application.ModelUtils.getPage;
 import static com.academy.orders.application.ModelUtils.getProduct;
-import static com.academy.orders.application.TestConstants.LANGUAGE_UA;
+import static com.academy.orders.application.TestConstants.LANGUAGE_UK;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -29,11 +29,11 @@ class GetAllProductsUseCaseTest {
 		var expectedProducts = List.of(getProduct());
 		var expectedPage = getPage(expectedProducts, 1L, 1, 0, 10);
 
-		when(productRepository.getAllProducts(LANGUAGE_UA, pageable)).thenReturn(expectedPage);
-		var actualPage = getAllProductsUseCase.getAllProducts(LANGUAGE_UA, pageable);
+		when(productRepository.getAllProducts(LANGUAGE_UK, pageable)).thenReturn(expectedPage);
+		var actualPage = getAllProductsUseCase.getAllProducts(LANGUAGE_UK, pageable);
 
 		Assertions.assertEquals(expectedPage, actualPage);
-		verify(productRepository).getAllProducts(LANGUAGE_UA, pageable);
+		verify(productRepository).getAllProducts(LANGUAGE_UK, pageable);
 	}
 
 	@Test
@@ -41,10 +41,10 @@ class GetAllProductsUseCaseTest {
 		var pageable = Pageable.builder().page(0).size(10).sort(List.of("price,desc")).build();
 		var expectedPage = getPage(List.<Product>of(), 0L, 0, 0, 10);
 
-		when(productRepository.getAllProducts(LANGUAGE_UA, pageable)).thenReturn(expectedPage);
-		var actualPage = getAllProductsUseCase.getAllProducts(LANGUAGE_UA, pageable);
+		when(productRepository.getAllProducts(LANGUAGE_UK, pageable)).thenReturn(expectedPage);
+		var actualPage = getAllProductsUseCase.getAllProducts(LANGUAGE_UK, pageable);
 
 		Assertions.assertEquals(expectedPage, actualPage);
-		verify(productRepository).getAllProducts(LANGUAGE_UA, pageable);
+		verify(productRepository).getAllProducts(LANGUAGE_UK, pageable);
 	}
 }

@@ -42,6 +42,7 @@ import static com.academy.orders.apirest.ModelUtils.getPageManagerOrderDTO;
 import static com.academy.orders.apirest.ModelUtils.getPageOf;
 import static com.academy.orders.apirest.ModelUtils.getPageable;
 import static com.academy.orders.apirest.ModelUtils.getPageableParams;
+import static com.academy.orders.apirest.TestConstants.ROLE_MANAGER;
 import static com.academy.orders.apirest.TestConstants.TEST_UUID;
 import static com.academy.orders.apirest.TestConstants.UPDATE_ORDER_STATUS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -79,11 +80,11 @@ class OrdersManagementControllerTest {
 	private OrderDTOMapper orderDTOMapper;
 
 	@Test
-	@WithMockUser(authorities = "ROLE_MANAGER")
+	@WithMockUser(authorities = ROLE_MANAGER)
 	void getAllOrdersTest() throws Exception {
 		// Given
 		Long userId = 1L;
-		String language = "ua";
+		String language = "uk";
 		PageableDTO pageableDTO = new PageableDTO();
 		Pageable pageable = getPageable();
 		Page<Order> orderPage = getPageOf(getOrder());
@@ -114,7 +115,7 @@ class OrdersManagementControllerTest {
 	}
 
 	@Test
-	@WithMockUser(authorities = "ROLE_MANAGER")
+	@WithMockUser(authorities = ROLE_MANAGER)
 	void updateOrderStatusTest() throws Exception {
 		var orderId = UUID.randomUUID();
 		var status = OrderStatusDTO.COMPLETED;
@@ -128,11 +129,11 @@ class OrdersManagementControllerTest {
 	}
 
 	@Test
-	@WithMockUser(authorities = "ROLE_MANAGER")
+	@WithMockUser(authorities = ROLE_MANAGER)
 	void getOrderByIdTest() throws Exception {
 		// Given
 		UUID orderId = TEST_UUID;
-		String language = "ua";
+		String language = "uk";
 		Order order = getOrder();
 		ManagerOrderDTO orderDTO = getManagerOrderDTO();
 

@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ProductRepositoryIT extends AbstractRepository {
 	private final Pageable pageable = new Pageable(0, 10, emptyList());
-	private final String lang = "ua";
+	private final String lang = "uk";
 
 	@Autowired
 	private ProductRepository productRepository;

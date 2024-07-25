@@ -19,7 +19,7 @@ import static com.academy.orders.apirest.ModelUtils.getProduct;
 import static com.academy.orders.apirest.ModelUtils.getProductPreviewDTO;
 import static com.academy.orders.apirest.ModelUtils.getProductsPage;
 import static com.academy.orders.apirest.TestConstants.GET_ALL_PRODUCTS_URL;
-import static com.academy.orders.apirest.TestConstants.LANGUAGE_UA;
+import static com.academy.orders.apirest.TestConstants.LANGUAGE_UK;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -53,10 +53,10 @@ class ProductsControllerTest {
 		var product = getProduct();
 
 		when(pageableDTOMapper.fromDto(pageableDTO)).thenReturn(pageable);
-		when(getAllProductsUseCase.getAllProducts(LANGUAGE_UA, pageable)).thenReturn(pageProducts);
+		when(getAllProductsUseCase.getAllProducts(LANGUAGE_UK, pageable)).thenReturn(pageProducts);
 		when(productPreviewDTOMapper.toDto(product)).thenReturn(productPreviewDTO);
 
-		mockMvc.perform(get(GET_ALL_PRODUCTS_URL).param("lang", LANGUAGE_UA).contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get(GET_ALL_PRODUCTS_URL).param("lang", LANGUAGE_UK).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.content[0].id", is(productPreviewDTO.getId())))
 				.andExpect(jsonPath("$.content[0].name", is(productPreviewDTO.getName())))
 				.andExpect(jsonPath("$.totalElements", is(1)))
@@ -69,7 +69,7 @@ class ProductsControllerTest {
 				.andExpect(jsonPath("$.empty", is(pageProducts.empty())));
 
 		verify(pageableDTOMapper).fromDto(pageableDTO);
-		verify(getAllProductsUseCase).getAllProducts(LANGUAGE_UA, pageable);
+		verify(getAllProductsUseCase).getAllProducts(LANGUAGE_UK, pageable);
 		verify(productPreviewDTOMapper).toDto(product);
 	}
 }

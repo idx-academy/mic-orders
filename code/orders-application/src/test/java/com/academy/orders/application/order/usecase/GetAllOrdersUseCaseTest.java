@@ -35,7 +35,7 @@ class GetAllOrdersUseCaseTest {
 	void getOrdersByUserIdTest() {
 		// Given
 		OrdersFilterParametersDto filterParametersDto = ModelUtils.getOrdersFilterParametersDto();
-		String language = "ua";
+		String language = "uk";
 		Pageable pageable = getPageable();
 		Order withoutTotal = getOrderWithoutTotal();
 		Order withTotal = getOrder();
@@ -58,7 +58,7 @@ class GetAllOrdersUseCaseTest {
 	void getOrdersByUserIdWithEmptySortTest() {
 		// Given
 		OrdersFilterParametersDto filterParametersDto = ModelUtils.getOrdersFilterParametersDto();
-		String language = "ua";
+		String language = "uk";
 		Pageable pageable = new Pageable(0, 8, List.of());
 		Pageable defaultPageable = new Pageable(0, 8, List.of("createdAt,desc"));
 		Order withoutTotal = getOrderWithoutTotal();

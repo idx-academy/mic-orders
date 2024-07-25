@@ -157,7 +157,7 @@ class CartItemRepositoryImplTest {
 
 	@Test
 	void findCartItemsByAccountIdAndLangTest() {
-		var lang = "ua";
+		var lang = "uk";
 		var accountId = 1L;
 		var cartItemEntities = singletonList(getCartItemEntity());
 		var cartItems = singletonList(getCartItem());

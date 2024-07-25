@@ -26,7 +26,7 @@ class GetManagerProductsUseCaseImplTest {
 	void getManagerProductsTest() {
 		var product = getProduct();
 		var filter = getManagementFilterDto();
-		var lang = "ua";
+		var lang = "uk";
 		var pageable = getPageable();
 		var page = getPageOf(product);
 
