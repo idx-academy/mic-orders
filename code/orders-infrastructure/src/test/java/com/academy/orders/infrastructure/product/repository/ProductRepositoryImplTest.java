@@ -89,7 +89,7 @@ class ProductRepositoryImplTest {
 		var product = getProduct();
 		var imageName = productEntity.getImage();
 
-        var page = new PageImpl<>(List.of(productEntity));
+		var page = new PageImpl<>(List.of(productEntity));
 		when(productJpaAdapter.findAllByLanguageCodeAndStatusVisible(lang,
 				PageRequest.of(pageable.page(), pageable.size()), sort)).thenReturn(page);
 		when(imageRepository.getImageLinkByName(imageName)).thenReturn(TEST_IMAGE_LINK);
@@ -162,7 +162,7 @@ class ProductRepositoryImplTest {
 		var productPage = getPageOf(product);
 		var imageName = productEntity.getImage();
 
-        when(pageableMapper.fromDomain(pageableDomain)).thenReturn(pageable);
+		when(pageableMapper.fromDomain(pageableDomain)).thenReturn(pageable);
 		when(productJpaAdapter.findProductsIdsByLangAndFilters(lang, filter, pageable)).thenReturn(ids);
 		when(productJpaAdapter.findProductsByIds(lang, ids.getContent(), pageable.getSort()))
 				.thenReturn(singletonList(productEntity));

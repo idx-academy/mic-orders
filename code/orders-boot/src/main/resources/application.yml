@@ -43,7 +43,6 @@ resilience4j:
         failureRateThreshold: 40
         permittedNumberOfCallsInHalfOpenState: 3
         waitDurationInOpenState: 30000
-
   retry:
     instances:
       imagesRetry:

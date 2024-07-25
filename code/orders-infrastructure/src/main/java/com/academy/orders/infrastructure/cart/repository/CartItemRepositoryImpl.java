@@ -97,7 +97,7 @@ public class CartItemRepositoryImpl implements CartItemRepository {
 
 	@Override
 	public Optional<CartItem> findByProductIdAndUserId(UUID productId, Long userId) {
-		var cartItem =  cartItemJpaAdapter.findById(new CartItemId(productId, userId));
+		var cartItem = cartItemJpaAdapter.findById(new CartItemId(productId, userId));
 		cartItem.ifPresent(ci -> setLinksToProductsImages(ci.getProduct()));
 		return cartItem.map(cartItemMapper::fromEntity);
 	}

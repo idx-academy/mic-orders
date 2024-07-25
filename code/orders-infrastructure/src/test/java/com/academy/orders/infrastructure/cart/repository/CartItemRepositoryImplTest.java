@@ -129,7 +129,7 @@ class CartItemRepositoryImplTest {
 	void findCartItemsByAccountIdTest() {
 		var cartItem = getCartItemEntity();
 		var imageName = cartItem.getProduct().getImage();
-        var cartItemEntities = singletonList(cartItem);
+		var cartItemEntities = singletonList(cartItem);
 		var cartItems = singletonList(getCartItem());
 
 		when(cartItemJpaAdapter.findAllByAccountId(anyLong())).thenReturn(cartItemEntities);
@@ -170,7 +170,7 @@ class CartItemRepositoryImplTest {
 		var accountId = 1L;
 		var cartItem = getCartItemEntity();
 		var imageName = cartItem.getProduct().getImage();
-        var cartItemEntities = singletonList(cartItem);
+		var cartItemEntities = singletonList(cartItem);
 		var cartItems = singletonList(getCartItem());
 
 		when(cartItemJpaAdapter.findAllByAccountIdAndProductLang(accountId, lang)).thenReturn(cartItemEntities);
@@ -190,7 +190,7 @@ class CartItemRepositoryImplTest {
 		var userId = 1L;
 		var cartItem = getCartItemEntity();
 		var imageName = cartItem.getProduct().getImage();
-        var expectedCartItem = getCartItem();
+		var expectedCartItem = getCartItem();
 
 		when(cartItemJpaAdapter.findById(new CartItemId(productId, userId))).thenReturn(Optional.of(cartItem));
 		when(imageRepository.getImageLinkByName(imageName)).thenReturn(TEST_IMAGE_LINK);
