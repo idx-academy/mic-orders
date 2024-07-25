@@ -12,7 +12,6 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface ProductResponseDTOMapper {
@@ -27,7 +26,7 @@ public interface ProductResponseDTOMapper {
 
 	@Named("mapProductTranslations")
 	default List<ProductTranslationDTO> mapProductTranslations(Set<ProductTranslation> productTranslations) {
-		return productTranslations.stream().map(this::toProductTranslationDTO).collect(Collectors.toList());
+		return productTranslations.stream().map(this::toProductTranslationDTO).toList();
 	}
 
 	@Mapping(source = "language.code", target = "languageCode")

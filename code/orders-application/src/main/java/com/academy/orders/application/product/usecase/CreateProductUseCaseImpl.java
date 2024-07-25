@@ -24,20 +24,26 @@ public class CreateProductUseCaseImpl implements CreateProductUseCase {
 
 	@Override
 	public Product createProduct(CreateProductRequestDto request) {
-		var tags = tagRepository.getTagsByIds(request.tagIds());
+		if (request == null) {
+			throw new IllegalArgumentException("CreateProductRequestDto cannot be null");
+		}
 
-		var product = ProductManagement.builder().status(ProductStatus.valueOf(request.status())).image(request.image())
+		var tags = tagRepository.getTagsByIds(request.tagIds());
+		String imageName = request.image().substring(request.image().lastIndexOf('/') + 1);
+
+		var product = ProductManagement.builder().status(ProductStatus.valueOf(request.status())).image(imageName)
 				.createdAt(LocalDateTime.now()).quantity(request.quantity()).price(request.price()).tags(tags)
 				.productTranslationManagement(Set.of()).build();
-
 		var productWithoutTranslation = productRepository.save(product);
 
-		var productTranslations = request.productTranslations().stream()
-				.map(dto -> new ProductTranslationManagement(productWithoutTranslation.id(),
-						languageRepository.findByCode(dto.languageCode()).id(), dto.name(), dto.description(),
-						new Language(languageRepository.findByCode(dto.languageCode()).id(), dto.languageCode())))
-				.collect(Collectors.toSet());
-
+		var productTranslations = request.productTranslations().stream().map(dto -> {
+			var language = languageRepository.findByCode(dto.languageCode());
+			if (language == null) {
+				throw new IllegalArgumentException("Language not found for code: " + dto.languageCode());
+			}
+			return new ProductTranslationManagement(productWithoutTranslation.id(), language.id(), dto.name(),
+					dto.description(), new Language(language.id(), dto.languageCode()));
+		}).collect(Collectors.toSet());
 		var productWithTranslations = new ProductManagement(productWithoutTranslation.id(), product.status(),
 				product.image(), product.createdAt(), product.quantity(), product.price(), product.tags(),
 				productTranslations);

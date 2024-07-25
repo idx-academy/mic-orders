@@ -386,7 +386,7 @@ public class ModelUtils {
 		productTranslations.add(new ProductTranslationDTO().languageCode("en").name("Sample Product")
 				.description("Description in English"));
 		productTranslations
-				.add(new ProductTranslationDTO().languageCode("ua").name("Продукт").description("Опис Українською"));
+				.add(new ProductTranslationDTO().languageCode("uk").name("Продукт").description("Опис Українською"));
 		createProductRequestDTO.setProductTranslations(productTranslations);
 
 		return createProductRequestDTO;
@@ -410,7 +410,7 @@ public class ModelUtils {
 		productTranslations.add(new ProductTranslationDTO().languageCode("en").name("Sample Product")
 				.description("Description in English"));
 		productTranslations
-				.add(new ProductTranslationDTO().languageCode("ua").name("Продукт").description("Опис Українською"));
+				.add(new ProductTranslationDTO().languageCode("uk").name("Продукт").description("Опис Українською"));
 		productResponseDTO.setProductTranslations(productTranslations);
 
 		return productResponseDTO;
