@@ -30,17 +30,15 @@ public class UpdateProductUseCaseImpl implements UpdateProductUseCase {
 		}
 
 		var tags = tagRepository.getTagsByIds(updateProduct.tagIds());
-		var existingProductTranslation = productRepository.findByIdAndLanguageCode(productId, lang);
 
-		String imageUrl = updateProduct.image();
-		String imageName = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
+		var existingProductTranslation = productRepository.findByIdAndLanguageCode(productId, lang);
 
 		var updatedProductTranslation = new ProductTranslationManagement(existingProductTranslation.productId(),
 				existingProductTranslation.languageId(), updateProduct.name(), updateProduct.description(),
 				existingProductTranslation.language());
 
 		var product = new ProductManagement(productId, ProductStatus.valueOf(updateProduct.status().toUpperCase()),
-				imageName, LocalDateTime.now(), updateProduct.quantity(), updateProduct.price(), tags,
+				updateProduct.image(), LocalDateTime.now(), updateProduct.quantity(), updateProduct.price(), tags,
 				Set.of(updatedProductTranslation));
 		productRepository.update(product);
 	}
