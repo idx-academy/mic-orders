@@ -29,9 +29,8 @@ public class CreateProductUseCaseImpl implements CreateProductUseCase {
 		}
 
 		var tags = tagRepository.getTagsByIds(request.tagIds());
-		String imageName = request.image().substring(request.image().lastIndexOf('/') + 1);
 
-		var product = ProductManagement.builder().status(ProductStatus.valueOf(request.status())).image(imageName)
+		var product = ProductManagement.builder().status(ProductStatus.valueOf(request.status())).image(request.image())
 				.createdAt(LocalDateTime.now()).quantity(request.quantity()).price(request.price()).tags(tags)
 				.productTranslationManagement(Set.of()).build();
 		var productWithoutTranslation = productRepository.save(product);
