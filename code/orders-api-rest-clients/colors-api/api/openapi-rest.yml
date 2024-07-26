@@ -8,7 +8,7 @@ tags:
   - name: Images
     description: Image urls endpoints
 paths:
-  /storage/v1/images/{imageName}:
+  /v1/images/{imageName}:
     get:
       tags:
         - Images
