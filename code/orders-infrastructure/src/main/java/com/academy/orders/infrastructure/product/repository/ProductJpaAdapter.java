@@ -115,7 +115,7 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 	 * @author Denys Ryhal
 	 */
 	@Query("SELECT p FROM ProductEntity p JOIN FETCH p.productTranslations pt "
-			+ "JOIN pt.language l LEFT JOIN FETCH p.tags t WHERE (p.id IN :ids) AND pt.language.code = :lang")
+			+ "JOIN FETCH pt.language l LEFT JOIN FETCH p.tags t WHERE (p.id IN :ids) AND pt.language.code = :lang")
 	List<ProductEntity> findProductsByIds(String lang, List<UUID> ids, Sort sort);
 
 	/**

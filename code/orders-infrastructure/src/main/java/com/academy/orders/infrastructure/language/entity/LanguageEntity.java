@@ -10,8 +10,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
-import lombok.Data;
+import lombok.Builder;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.Data;
 
 import java.util.Set;
 
@@ -19,6 +22,9 @@ import java.util.Set;
 @Data
 @Setter
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class LanguageEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

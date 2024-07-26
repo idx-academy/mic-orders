@@ -108,4 +108,10 @@ public class ProductRepositoryImpl implements ProductRepository {
 		var name = productEntity.getImage();
 		productEntity.setImage(imageRepository.getImageLinkByName(name));
 	}
+
+	@Override
+	public Product save(ProductManagement product) {
+		var entity = productManagementMapper.toEntity(product);
+		return productMapper.fromEntity(productJpaAdapter.save(entity));
+	}
 }
