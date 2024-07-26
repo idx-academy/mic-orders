@@ -14,5 +14,4 @@ public class TestConstants {
 	public static final String TAG_NAME = "electronics";
 	public static final String PRODUCT_NAME = "IPhone";
 	public static final String PRODUCT_DESCRIPTION = "Phone";
-	public static final String IMAGE_NAME = "image.jpg";
 }
