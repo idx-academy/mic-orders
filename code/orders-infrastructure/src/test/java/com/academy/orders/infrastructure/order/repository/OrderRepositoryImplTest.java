@@ -2,7 +2,6 @@ package com.academy.orders.infrastructure.order.repository;
 
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
-import com.academy.orders.domain.common.respository.ImageRepository;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import com.academy.orders.infrastructure.account.repository.AccountJpaAdapter;
@@ -59,8 +58,6 @@ class OrderRepositoryImplTest {
 	private OrderPageMapper pageMapper;
 	@Mock
 	private CustomOrderRepository customOrderRepository;
-	@Mock
-	private ImageRepository imageRepository;
 
 	@Test
 	void saveTest() {
@@ -138,10 +135,8 @@ class OrderRepositoryImplTest {
 				.map(orderItemEntity -> orderItemEntity.getProduct().getId()).toList();
 		var products = List.of(getProductEntity());
 		var filterParametersDto = getOrdersFilterParametersDto();
-		String imageName = products.get(0).getImage();
 
 		when(pageableMapper.fromDomain(pageable)).thenReturn(springPageable);
-		when(imageRepository.getImageLinkByName(imageName)).thenReturn("http://link/" + imageName);
 		when(customOrderRepository.findAllByFilterParameters(filterParametersDto, springPageable))
 				.thenReturn(orderEntityPage);
 		when(productJpaAdapter.findAllByIdAndLanguageCode(productIds, language)).thenReturn(products);
@@ -153,7 +148,6 @@ class OrderRepositoryImplTest {
 		// Then
 		assertEquals(orderDomainPage, actual);
 		verify(pageableMapper).fromDomain(pageable);
-		verify(imageRepository).getImageLinkByName(imageName);
 		verify(customOrderRepository).findAllByFilterParameters(filterParametersDto, springPageable);
 		verify(productJpaAdapter).findAllByIdAndLanguageCode(productIds, language);
 		verify(pageMapper).toDomain(orderEntityPage);
@@ -172,10 +166,8 @@ class OrderRepositoryImplTest {
 				.flatMap(orderEntity -> orderEntity.getOrderItems().stream())
 				.map(orderItemEntity -> orderItemEntity.getProduct().getId()).toList();
 		var products = List.of(getProductEntity());
-		String imageName = products.get(0).getImage();
 
 		when(pageableMapper.fromDomain(pageable)).thenReturn(springPageable);
-		when(imageRepository.getImageLinkByName(imageName)).thenReturn("http://link/" + imageName);
 		when(jpaAdapter.findAllByAccountId(userId, springPageable)).thenReturn(orderEntityPage);
 		when(productJpaAdapter.findAllByIdAndLanguageCode(productIds, language)).thenReturn(products);
 		when(pageMapper.toDomain(orderEntityPage)).thenReturn(orderDomainPage);
@@ -187,7 +179,6 @@ class OrderRepositoryImplTest {
 		assertEquals(orderDomainPage, actual);
 		verify(pageableMapper).fromDomain(pageable);
 		verify(jpaAdapter).findAllByAccountId(userId, springPageable);
-		verify(imageRepository).getImageLinkByName(imageName);
 		verify(productJpaAdapter).findAllByIdAndLanguageCode(productIds, language);
 		verify(pageMapper).toDomain(orderEntityPage);
 	}
@@ -215,10 +206,8 @@ class OrderRepositoryImplTest {
 		var productIds = Stream.of(order).flatMap(orderEntity -> orderEntity.getOrderItems().stream())
 				.map(orderItemEntity -> orderItemEntity.getProduct().getId()).toList();
 		var products = List.of(getProductEntity());
-		String imageName = products.get(0).getImage();
 
 		when(jpaAdapter.findByIdFetchData(orderId)).thenReturn(optionalOrderEntity);
-		when(imageRepository.getImageLinkByName(imageName)).thenReturn("http://link/" + imageName);
 		when(productJpaAdapter.findAllByIdAndLanguageCode(productIds, language)).thenReturn(products);
 		when(mapper.fromEntity(order)).thenReturn(orderDomain);
 
@@ -228,7 +217,6 @@ class OrderRepositoryImplTest {
 		// Then
 		assertEquals(optionalOrder, result);
 		verify(jpaAdapter).findByIdFetchData(orderId);
-		verify(imageRepository).getImageLinkByName(imageName);
 		verify(productJpaAdapter).findAllByIdAndLanguageCode(productIds, language);
 		verify(mapper).fromEntity(order);
 	}

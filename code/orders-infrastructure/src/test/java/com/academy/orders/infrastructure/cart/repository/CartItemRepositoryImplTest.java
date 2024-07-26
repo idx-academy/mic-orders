@@ -2,7 +2,6 @@ package com.academy.orders.infrastructure.cart.repository;
 
 import com.academy.orders.domain.cart.entity.CartItem;
 import com.academy.orders.domain.cart.entity.CreateCartItemDTO;
-import com.academy.orders.domain.common.respository.ImageRepository;
 import com.academy.orders.infrastructure.account.entity.AccountEntity;
 import com.academy.orders.infrastructure.account.repository.AccountJpaAdapter;
 import com.academy.orders.infrastructure.cart.CartItemMapper;
@@ -22,7 +21,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static com.academy.orders.infrastructure.ModelUtils.TEST_IMAGE_LINK;
 import static com.academy.orders.infrastructure.ModelUtils.getCartItem;
 import static com.academy.orders.infrastructure.ModelUtils.getCartItemEntity;
 import static com.academy.orders.infrastructure.ModelUtils.getProduct;
@@ -51,8 +49,6 @@ class CartItemRepositoryImplTest {
 	private AccountJpaAdapter accountJpaAdapter;
 	@Mock
 	private ProductJpaAdapter productJpaAdapter;
-	@Mock
-	private ImageRepository imageRepository;
 
 	private CreateCartItemDTO createCartItemDto;
 	private CartItemEntity cartItemEntity;
@@ -128,12 +124,10 @@ class CartItemRepositoryImplTest {
 	@Test
 	void findCartItemsByAccountIdTest() {
 		var cartItem = getCartItemEntity();
-		var imageName = cartItem.getProduct().getImage();
 		var cartItemEntities = singletonList(cartItem);
 		var cartItems = singletonList(getCartItem());
 
 		when(cartItemJpaAdapter.findAllByAccountId(anyLong())).thenReturn(cartItemEntities);
-		when(imageRepository.getImageLinkByName(imageName)).thenReturn(TEST_IMAGE_LINK);
 		when(cartItemMapper.fromEntities(cartItemEntities)).thenReturn(cartItems);
 
 		var actualCartItems = cartItemRepository.findCartItemsByAccountId(anyLong());
@@ -142,7 +136,6 @@ class CartItemRepositoryImplTest {
 
 		verify(cartItemJpaAdapter).findAllByAccountId(anyLong());
 		verify(cartItemMapper).fromEntities(anyList());
-		verify(imageRepository).getImageLinkByName(imageName);
 	}
 
 	@Test
@@ -169,19 +162,17 @@ class CartItemRepositoryImplTest {
 		var lang = "uk";
 		var accountId = 1L;
 		var cartItem = getCartItemEntity();
-		var imageName = cartItem.getProduct().getImage();
 		var cartItemEntities = singletonList(cartItem);
 		var cartItems = singletonList(getCartItem());
 
 		when(cartItemJpaAdapter.findAllByAccountIdAndProductLang(accountId, lang)).thenReturn(cartItemEntities);
 		when(cartItemMapper.fromEntitiesWithProductsTranslations(cartItemEntities)).thenReturn(cartItems);
-		when(imageRepository.getImageLinkByName(imageName)).thenReturn(TEST_IMAGE_LINK);
 		var actualItems = cartItemRepository.findCartItemsByAccountIdAndLang(accountId, lang);
 
 		assertEquals(cartItems, actualItems);
 		verify(cartItemJpaAdapter).findAllByAccountIdAndProductLang(anyLong(), anyString());
 		verify(cartItemMapper).fromEntitiesWithProductsTranslations(any());
-		verify(imageRepository).getImageLinkByName(imageName);
+
 	}
 
 	@Test
@@ -189,11 +180,9 @@ class CartItemRepositoryImplTest {
 		var productId = UUID.randomUUID();
 		var userId = 1L;
 		var cartItem = getCartItemEntity();
-		var imageName = cartItem.getProduct().getImage();
 		var expectedCartItem = getCartItem();
 
 		when(cartItemJpaAdapter.findById(new CartItemId(productId, userId))).thenReturn(Optional.of(cartItem));
-		when(imageRepository.getImageLinkByName(imageName)).thenReturn(TEST_IMAGE_LINK);
 		when(cartItemMapper.fromEntity(cartItem)).thenReturn(expectedCartItem);
 
 		var actualCartItem = cartItemRepository.findByProductIdAndUserId(productId, userId);
@@ -203,7 +192,6 @@ class CartItemRepositoryImplTest {
 
 		verify(cartItemJpaAdapter).findById(new CartItemId(productId, userId));
 		verify(cartItemMapper).fromEntity(cartItem);
-		verify(imageRepository).getImageLinkByName(imageName);
-		verify(imageRepository).getImageLinkByName(imageName);
+
 	}
 }

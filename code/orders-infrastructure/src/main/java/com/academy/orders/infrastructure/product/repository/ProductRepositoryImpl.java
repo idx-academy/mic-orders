@@ -2,7 +2,6 @@ package com.academy.orders.infrastructure.product.repository;
 
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
-import com.academy.orders.domain.common.respository.ImageRepository;
 import com.academy.orders.domain.product.dto.ProductManagementFilterDto;
 import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.ProductManagement;
@@ -14,7 +13,6 @@ import com.academy.orders.infrastructure.product.ProductManagementMapper;
 import com.academy.orders.infrastructure.product.ProductMapper;
 import com.academy.orders.infrastructure.product.ProductPageMapper;
 import com.academy.orders.infrastructure.product.ProductTranslationManagementMapper;
-import com.academy.orders.infrastructure.product.entity.ProductEntity;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +35,6 @@ public class ProductRepositoryImpl implements ProductRepository {
 	private final ProductTranslationManagementMapper productTranslationManagementMapper;
 	private final ProductPageMapper productPageMapper;
 	private final PageableMapper pageableMapper;
-	private final ImageRepository imageRepository;
 
 	@Override
 	public Page<Product> getAllProducts(String language, Pageable pageable) {
@@ -45,7 +42,6 @@ public class ProductRepositoryImpl implements ProductRepository {
 		String sort = String.join(",", pageable.sort());
 		var productEntities = productJpaAdapter.findAllByLanguageCodeAndStatusVisible(language,
 				PageRequest.of(pageable.page(), pageable.size()), sort);
-		addLinks(productEntities.getContent());
 
 		List<Product> products = productMapper.fromEntities(productEntities.getContent());
 
@@ -74,7 +70,6 @@ public class ProductRepositoryImpl implements ProductRepository {
 	@Override
 	public ProductTranslationManagement findByIdAndLanguageCode(UUID id, String languageCode) {
 		var productEntity = productJpaAdapter.findByIdAndLanguageCode(id, languageCode);
-		addLinks(productEntity.getProduct());
 		return productTranslationManagementMapper.fromEntity(productEntity);
 	}
 
@@ -92,21 +87,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 		var pageable = pageableMapper.fromDomain(pageableDomain);
 		var ids = productJpaAdapter.findProductsIdsByLangAndFilters(lang, filter, pageable);
 		var products = productJpaAdapter.findProductsByIds(lang, ids.getContent(), pageable.getSort());
-		addLinks(products);
-
 		return productPageMapper.toDomain(new PageImpl<>(products, pageable, ids.getTotalElements()));
-	}
-
-	private void addLinks(List<ProductEntity> productEntities) {
-		productEntities.forEach(productEntity -> {
-			var name = productEntity.getImage();
-			productEntity.setImage(imageRepository.getImageLinkByName(name));
-		});
-	}
-
-	private void addLinks(ProductEntity productEntity) {
-		var name = productEntity.getImage();
-		productEntity.setImage(imageRepository.getImageLinkByName(name));
 	}
 
 	@Override
