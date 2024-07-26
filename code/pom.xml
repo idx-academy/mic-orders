@@ -43,7 +43,7 @@
 
     <caffeine.version>3.1.8</caffeine.version>
 
-    <spring-cloud-circuitbreaker-spring-retry.version>3.1.2</spring-cloud-circuitbreaker-spring-retry.version>
+    <spring-cloud-circuitbreaker>3.1.2</spring-cloud-circuitbreaker>
 
     <skipTests>false</skipTests>
     <skipUTs>${skipTests}</skipUTs>
@@ -107,8 +107,8 @@
 
       <dependency>
         <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-circuitbreaker-spring-retry</artifactId>
-        <version>${spring-cloud-circuitbreaker-spring-retry.version}</version>
+        <artifactId>spring-cloud-circuitbreaker-resilience4j</artifactId>
+        <version>3.1.2</version>
       </dependency>
 
     </dependencies>

@@ -3,10 +3,12 @@ package com.academy.orders.infrastructure.cart.repository;
 import com.academy.orders.domain.cart.entity.CartItem;
 import com.academy.orders.domain.cart.entity.CreateCartItemDTO;
 import com.academy.orders.domain.cart.repository.CartItemRepository;
+import com.academy.orders.domain.common.respository.ImageRepository;
 import com.academy.orders.infrastructure.account.repository.AccountJpaAdapter;
 import com.academy.orders.infrastructure.cart.CartItemMapper;
 import com.academy.orders.infrastructure.cart.entity.CartItemEntity;
 import com.academy.orders.infrastructure.cart.entity.CartItemId;
+import com.academy.orders.infrastructure.product.entity.ProductEntity;
 import com.academy.orders.infrastructure.product.repository.ProductJpaAdapter;
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +27,7 @@ public class CartItemRepositoryImpl implements CartItemRepository {
 	private final CartItemMapper cartItemMapper;
 	private final AccountJpaAdapter accountJpaAdapter;
 	private final ProductJpaAdapter productJpaAdapter;
+	private final ImageRepository imageRepository;
 
 	@Override
 	public Boolean existsByProductIdAndUserId(UUID productId, Long accountId) {
@@ -68,7 +71,9 @@ public class CartItemRepositoryImpl implements CartItemRepository {
 
 	@Override
 	public List<CartItem> findCartItemsByAccountId(Long accountId) {
-		return cartItemMapper.fromEntities(cartItemJpaAdapter.findAllByAccountId(accountId));
+		var cartItems = cartItemJpaAdapter.findAllByAccountId(accountId);
+		setLinksToProductsImages(cartItems);
+		return cartItemMapper.fromEntities(cartItems);
 	}
 
 	@Override
@@ -86,11 +91,25 @@ public class CartItemRepositoryImpl implements CartItemRepository {
 	@Override
 	public List<CartItem> findCartItemsByAccountIdAndLang(Long accountId, String lang) {
 		var cartItems = cartItemJpaAdapter.findAllByAccountIdAndProductLang(accountId, lang);
+		setLinksToProductsImages(cartItems);
 		return cartItemMapper.fromEntitiesWithProductsTranslations(cartItems);
 	}
 
 	@Override
 	public Optional<CartItem> findByProductIdAndUserId(UUID productId, Long userId) {
-		return cartItemJpaAdapter.findById(new CartItemId(productId, userId)).map(cartItemMapper::fromEntity);
+		var cartItem = cartItemJpaAdapter.findById(new CartItemId(productId, userId));
+		cartItem.ifPresent(ci -> setLinksToProductsImages(ci.getProduct()));
+		return cartItem.map(cartItemMapper::fromEntity);
+	}
+
+	private void setLinksToProductsImages(List<CartItemEntity> cartItems) {
+		cartItems.forEach(cartItem -> {
+			var product = cartItem.getProduct();
+			product.setImage(imageRepository.getImageLinkByName(product.getImage()));
+		});
+	}
+
+	private void setLinksToProductsImages(ProductEntity product) {
+		product.setImage(imageRepository.getImageLinkByName(product.getImage()));
 	}
 }

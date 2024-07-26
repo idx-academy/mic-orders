@@ -5,7 +5,7 @@
       "requiredScenarioState": "Started",
       "newScenarioState": "Second",
       "request": {
-        "urlPathTemplate": "/storage/v1/images/{imageName}",
+        "urlPathTemplate": "/colors/v1/images/{imageName}",
         "method": "GET"
       },
       "response": {
@@ -29,7 +29,7 @@
       "requiredScenarioState": "Second",
       "newScenarioState": "Third",
       "request": {
-        "urlPathTemplate": "/storage/v1/images/{imageName}",
+        "urlPathTemplate": "/colors/v1/images/{imageName}",
         "method": "GET"
       },
       "response": {
@@ -53,7 +53,7 @@
       "requiredScenarioState": "Third",
       "newScenarioState": "Fourth",
       "request": {
-        "urlPathTemplate": "/storage/v1/images/{imageName}",
+        "urlPathTemplate": "/colors/v1/images/{imageName}",
         "method": "GET"
       },
       "response": {
@@ -77,7 +77,7 @@
       "requiredScenarioState": "Fourth",
       "newScenarioState": "Fifth",
       "request": {
-        "urlPathTemplate": "/storage/v1/images/{imageName}",
+        "urlPathTemplate": "/colors/v1/images/{imageName}",
         "method": "GET"
       },
       "response": {
@@ -96,7 +96,7 @@
       "requiredScenarioState": "Fifth",
       "newScenarioState": "Sixth",
       "request": {
-        "urlPathTemplate": "/storage/v1/images/{imageName}",
+        "urlPathTemplate": "/colors/v1/images/{imageName}",
         "method": "GET"
       },
       "response": {
@@ -108,7 +108,7 @@
       "requiredScenarioState": "Sixth",
       "newScenarioState": "Seventh",
       "request": {
-        "urlPathTemplate": "/storage/v1/images/{imageName}",
+        "urlPathTemplate": "/colors/v1/images/{imageName}",
         "method": "GET"
       },
       "response": {
@@ -132,7 +132,7 @@
       "requiredScenarioState": "Seventh",
       "newScenarioState": "Eighth",
       "request": {
-        "urlPathTemplate": "/storage/v1/images/{imageName}",
+        "urlPathTemplate": "/colors/v1/images/{imageName}",
         "method": "GET"
       },
       "response": {
@@ -156,7 +156,7 @@
       "requiredScenarioState": "Eighth",
       "newScenarioState": "Ninth",
       "request": {
-        "urlPathTemplate": "/storage/v1/images/{imageName}",
+        "urlPathTemplate": "/colors/v1/images/{imageName}",
         "method": "GET"
       },
       "response": {
@@ -168,7 +168,7 @@
       "requiredScenarioState": "Ninth",
       "newScenarioState": "Tenth",
       "request": {
-        "urlPathTemplate": "/storage/v1/images/{imageName}",
+        "urlPathTemplate": "/colors/v1/images/{imageName}",
         "method": "GET"
       },
       "response": {
@@ -180,7 +180,7 @@
       "requiredScenarioState": "Tenth",
       "newScenarioState": "Eleventh",
       "request": {
-        "urlPathTemplate": "/storage/v1/images/{imageName}",
+        "urlPathTemplate": "/colors/v1/images/{imageName}",
         "method": "GET"
       },
       "response": {
@@ -199,7 +199,7 @@
       "requiredScenarioState": "Eleventh",
       "newScenarioState": "Started",
       "request": {
-        "urlPathTemplate": "/storage/v1/images/{imageName}",
+        "urlPathTemplate": "/colors/v1/images/{imageName}",
         "method": "GET"
       },
       "response": {

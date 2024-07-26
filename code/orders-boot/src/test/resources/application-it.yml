@@ -25,7 +25,7 @@ spring:
 rest:
   client:
     colors:
-      base-url: http://localhost:8081/colors
+      base-url: http://localhost:8081/
 
 auth:
   users:
@@ -39,3 +39,13 @@ auth:
       roles: ROLE_Manager
       password: Manager_1234
 
+resilience4j:
+  circuitbreaker:
+    instances:
+      imagesCircuit:
+        minimumNumberOfCalls: 4
+        slowCallRateThreshold: 34
+        slowCallDurationThreshold: 1000
+        failureRateThreshold: 40
+        permittedNumberOfCallsInHalfOpenState: 3
+        waitDurationInOpenState: 30000
