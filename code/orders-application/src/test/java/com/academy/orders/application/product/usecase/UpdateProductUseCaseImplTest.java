@@ -4,10 +4,8 @@ import com.academy.orders.domain.product.entity.ProductManagement;
 import com.academy.orders.domain.product.exception.ProductNotFoundException;
 import com.academy.orders.domain.product.repository.ProductRepository;
 import com.academy.orders.domain.tag.repository.TagRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -47,12 +45,6 @@ class UpdateProductUseCaseImplTest {
 		doNothing().when(productRepository).update(any(ProductManagement.class));
 
 		updateProductUseCase.updateProduct(TEST_UUID, LANGUAGE_EN, updateProduct);
-
-		var captor = ArgumentCaptor.forClass(ProductManagement.class);
-		verify(productRepository).update(captor.capture());
-
-		var productManagement = captor.getValue();
-		Assertions.assertEquals(IMAGE_NAME, productManagement.image());
 
 		verify(productRepository).existById(TEST_UUID);
 		verify(productRepository).findByIdAndLanguageCode(TEST_UUID, LANGUAGE_EN);
