@@ -16,7 +16,9 @@ import com.academy.orders.domain.order.entity.OrderReceiver;
 import com.academy.orders.domain.order.entity.PostAddress;
 import com.academy.orders.domain.order.entity.enumerated.DeliveryMethod;
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
+import com.academy.orders.domain.product.dto.CreateProductRequestDto;
 import com.academy.orders.domain.product.dto.ProductManagementFilterDto;
+import com.academy.orders.domain.product.dto.ProductTranslationDto;
 import com.academy.orders.domain.product.dto.UpdateProductDto;
 import com.academy.orders.domain.product.entity.Language;
 import com.academy.orders.domain.product.entity.Product;
@@ -157,5 +159,12 @@ public class ModelUtils {
 	public static ProductManagementFilterDto getManagementFilterDto() {
 		return ProductManagementFilterDto.builder().status(ProductStatus.VISIBLE).createdBefore(DATE_TIME)
 				.createdAfter(DATE_TIME).priceMore(BigDecimal.ZERO).priceLess(BigDecimal.TEN).build();
+	}
+
+	public static CreateProductRequestDto getCreateProductRequestDto() {
+		return CreateProductRequestDto.builder().status("VISIBLE").image(IMAGE_URL).quantity(10)
+				.price(BigDecimal.valueOf(100)).tagIds(List.of(1L)).productTranslations(Set.of(ProductTranslationDto
+						.builder().name("Name").description("Description").languageCode("en").build()))
+				.build();
 	}
 }

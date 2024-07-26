@@ -33,6 +33,7 @@ import static com.academy.orders.infrastructure.ModelUtils.getProductTranslation
 import static com.academy.orders.infrastructure.TestConstants.LANGUAGE_EN;
 import static com.academy.orders.infrastructure.TestConstants.TEST_UUID;
 import static java.util.Collections.singletonList;
+import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -179,4 +180,23 @@ class ProductRepositoryImplTest {
 		verify(imageRepository).getImageLinkByName(imageName);
 	}
 
+	@Test
+	void saveTest() {
+		var productManagement = getProductManagement();
+		var productEntity = getProductEntity();
+		var product = getProduct();
+
+		when(productManagementMapper.toEntity(productManagement)).thenReturn(productEntity);
+		when(productJpaAdapter.save(productEntity)).thenReturn(productEntity);
+		when(productMapper.fromEntity(productEntity)).thenReturn(product);
+
+		var result = productRepository.save(productManagement);
+
+		assertNotNull(result);
+		assertEquals(product, result);
+
+		verify(productManagementMapper).toEntity(productManagement);
+		verify(productJpaAdapter).save(productEntity);
+		verify(productMapper).fromEntity(productEntity);
+	}
 }

@@ -3,10 +3,9 @@ package com.academy.orders.apirest.products.controller;
 import com.academy.orders.apirest.ModelUtils;
 import com.academy.orders.apirest.common.TestSecurityConfig;
 import com.academy.orders.apirest.common.mapper.PageableDTOMapper;
-import com.academy.orders.apirest.products.mapper.ManagementProductMapper;
-import com.academy.orders.apirest.products.mapper.ProductStatusDTOMapper;
-import com.academy.orders.apirest.products.mapper.UpdateProductRequestDTOMapper;
+import com.academy.orders.apirest.products.mapper.*;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
+import com.academy.orders.domain.product.usecase.CreateProductUseCase;
 import com.academy.orders.domain.product.usecase.GetManagerProductsUseCase;
 import com.academy.orders.domain.product.usecase.UpdateProductUseCase;
 import com.academy.orders.domain.product.usecase.UpdateStatusUseCase;
@@ -36,11 +35,10 @@ import static com.academy.orders.apirest.TestConstants.ROLE_MANAGER;
 import static com.academy.orders.apirest.TestConstants.TEST_UUID;
 import static com.academy.orders.apirest.TestConstants.UPDATE_PRODUCT;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -74,6 +72,15 @@ class ProductsManagementControllerTest {
 
 	@MockBean
 	private GetManagerProductsUseCase managerProductsUseCase;
+
+	@MockBean
+	private CreateProductUseCase createProductUseCase;
+
+	@MockBean
+	private ProductResponseDTOMapper productResponseDTOMapper;
+
+	@MockBean
+	private CreateProductRequestDTOMapper createProductRequestDTOMapper;
 
 	@Test
 	@WithMockUser(authorities = ROLE_MANAGER)
@@ -138,5 +145,24 @@ class ProductsManagementControllerTest {
 		verify(managementProductMapper).fromProductManagementFilterDTO(any(ProductManagementFilterDTO.class));
 		verify(managerProductsUseCase).getManagerProducts(pageable, filter, lang);
 		verify(managementProductMapper).fromProductPage(pageOfProducts);
+	}
+
+	@Test
+	@WithMockUser(authorities = {"ROLE_MANAGER"})
+	@SneakyThrows
+	void createProductTest() {
+		var createProductRequestDTO = ModelUtils.getCreateProductRequestDTO();
+		var createProductRequest = createProductRequestDTOMapper.fromDTO(createProductRequestDTO);
+		var createdProduct = ModelUtils.getProduct();
+		var productResponseDTO = ModelUtils.getProductResponseDTO();
+
+		when(createProductRequestDTOMapper.fromDTO(createProductRequestDTO)).thenReturn(createProductRequest);
+		when(createProductUseCase.createProduct(createProductRequest)).thenReturn(createdProduct);
+		when(productResponseDTOMapper.toDTO(createdProduct)).thenReturn(productResponseDTO);
+
+		mockMvc.perform(post("/v1/management/products").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(createProductRequestDTO))).andExpect(status().isCreated())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(content().json(objectMapper.writeValueAsString(productResponseDTO)));
 	}
 }
