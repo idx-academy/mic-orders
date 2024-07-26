@@ -32,3 +32,25 @@ rest:
   client:
     colors:
       base-url: http://${COLOR_API_HOST:localhost}:${COLOR_API_PORT:8081}/
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      imagesCircuit:
+        minimumNumberOfCalls: 4
+        slowCallRateThreshold: 34
+        slowCallDurationThreshold: 1000
+        failureRateThreshold: 40
+        permittedNumberOfCallsInHalfOpenState: 3
+        waitDurationInOpenState: 30000
+
+  retry:
+    instances:
+      imagesRetry:
+        maxAttempts: 3
+        waitDuration: 200
+        fail-after-max-attempts: true
+
+images:
+  default:
+    url: https://www.demyhealth.com/storage/media/2/default-product-image.png

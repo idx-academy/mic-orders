@@ -2,6 +2,7 @@ package com.academy.orders.infrastructure.order.repository;
 
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
+import com.academy.orders.domain.common.respository.ImageRepository;
 import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
@@ -29,6 +30,7 @@ public class OrderRepositoryImpl implements OrderRepository {
 	private final CustomOrderRepository customOrderRepository;
 	private final ProductJpaAdapter productJpaAdapter;
 	private final AccountJpaAdapter accountJpaAdapter;
+	private final ImageRepository imageRepository;
 	private final OrderMapper mapper;
 	private final PageableMapper pageableMapper;
 	private final OrderPageMapper pageMapper;
@@ -97,6 +99,7 @@ public class OrderRepositoryImpl implements OrderRepository {
 	private void loadProducts(String language, OrderEntity... orderEntities) {
 		var productIds = Arrays.stream(orderEntities).flatMap(orderEntity -> orderEntity.getOrderItems().stream())
 				.map(orderItemEntity -> orderItemEntity.getProduct().getId()).toList();
-		productJpaAdapter.findAllByIdAndLanguageCode(productIds, language);
+		productJpaAdapter.findAllByIdAndLanguageCode(productIds, language).forEach(
+				productEntity -> productEntity.setImage(imageRepository.getImageLinkByName(productEntity.getImage())));
 	}
 }

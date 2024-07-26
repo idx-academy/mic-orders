@@ -45,6 +45,8 @@ import static com.academy.orders.infrastructure.TestConstants.TEST_UUID;
 
 public class ModelUtils {
 	private static final LocalDateTime DATE_TIME = LocalDateTime.of(1, 1, 1, 1, 1);
+	private static final String TEST_IMAGE_NAME = "image-1";
+	public static final String TEST_IMAGE_LINK = "http://localhost:8080/image-1";
 
 	public static AccountEntity getAccountEntity() {
 		return AccountEntity.builder().id(1L).password("$2a$12$5ZEfkhNQUREmioQ54TaFaOEM7h/QBgASIeqZceFGKPT80aTfYdvV.")
@@ -65,13 +67,13 @@ public class ModelUtils {
 
 	public static ProductEntity getProductEntity() {
 		return ProductEntity.builder().id(UUID.fromString("c39314ce-b659-4776-86b9-8201b05bb339"))
-				.status(ProductStatus.VISIBLE).image("http://localhost:8080/image-1").createdAt(DATE_TIME).quantity(100)
+				.status(ProductStatus.VISIBLE).image(TEST_IMAGE_NAME).createdAt(DATE_TIME).quantity(100)
 				.price(BigDecimal.valueOf(100.00)).build();
 	}
 
 	public static Product getProduct() {
 		return Product.builder().id(UUID.fromString("c39314ce-b659-4776-86b9-8201b05bb339"))
-				.status(ProductStatus.VISIBLE).image("http://localhost:8080/image-1").createdAt(DATE_TIME).quantity(100)
+				.status(ProductStatus.VISIBLE).image(TEST_IMAGE_LINK).createdAt(DATE_TIME).quantity(100)
 				.price(BigDecimal.valueOf(100.00)).build();
 	}
 
@@ -157,7 +159,7 @@ public class ModelUtils {
 	}
 
 	public static ProductTranslationEntity getProductTranslationEntity() {
-		return ProductTranslationEntity.builder().build();
+		return ProductTranslationEntity.builder().product(getProductEntity()).build();
 	}
 
 	public static ProductTranslationManagement getProductTranslationManagement() {

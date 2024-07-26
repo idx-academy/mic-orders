@@ -10,6 +10,7 @@ import com.academy.orders.domain.product.entity.Tag;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders.domain.product.repository.ProductRepository;
 import java.math.BigDecimal;
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,7 @@ import static java.time.LocalDateTime.of;
 import static java.time.Month.JULY;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -38,9 +40,11 @@ class ProductRepositoryIT extends AbstractRepository {
 		final var filter = ProductManagementFilterDto.builder().tags(emptyList()).build();
 
 		final var actual = productRepository.findAllByLanguageWithFilter(lang, filter, pageable);
+		final var firstImageLink = actual.content().get(0).image();
 
 		assertContentSchema(actual);
 		assertEquals(totalElements, actual.totalElements());
+		assertDoesNotThrow(() -> URI.create(firstImageLink));
 	}
 
 	@Test
