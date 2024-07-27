@@ -7,6 +7,7 @@ import com.academy.orders.infrastructure.product.ProductMapper;
 import com.academy.orders.infrastructure.product.ProductPageMapper;
 import com.academy.orders.infrastructure.product.ProductTranslationManagementMapper;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -200,6 +201,21 @@ class ProductRepositoryImplTest {
 
 		verify(productManagementMapper).toEntity(productManagement);
 		verify(productJpaAdapter).save(productEntity);
+		verify(productMapper).fromEntity(productEntity);
+	}
+
+	@Test
+	void getByIdTest() {
+		var product = getProduct();
+		var productEntity = getProductEntity();
+
+		when(productJpaAdapter.findById(TEST_UUID)).thenReturn(Optional.of(productEntity));
+		when(productMapper.fromEntity(productEntity)).thenReturn(product);
+
+		var result = productRepository.getById(TEST_UUID);
+		assertEquals(result, Optional.of(product));
+
+		verify(productJpaAdapter).findById(TEST_UUID);
 		verify(productMapper).fromEntity(productEntity);
 	}
 }
