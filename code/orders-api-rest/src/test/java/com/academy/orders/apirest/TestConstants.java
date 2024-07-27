@@ -5,8 +5,9 @@ import java.util.UUID;
 
 public class TestConstants {
 	public static final String GET_ALL_PRODUCTS_URL = "/v1/products";
-	public static final String UPDATE_ORDER_STATUS = "/v1/orders/{orderId}/status";
-	public static final String UPDATE_PRODUCT = "/v1/management/products/{productId}";
+	public static final String UPDATE_ORDER_STATUS_URL = "/v1/orders/{orderId}/status";
+	public static final String UPDATE_PRODUCT_URL = "/v1/management/products/{productId}";
+	public static final String GET_PRODUCT_BY_ID_URL = "/v1/management/products/{productId}";
 	public static final String LANGUAGE_UK = "uk";
 	public static final String LANGUAGE_EN = "en";
 	public static final String IMAGE_URL = "https://example.com/image.jpg";

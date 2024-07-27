@@ -7,6 +7,7 @@ import com.academy.orders.apirest.products.mapper.*;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders.domain.product.usecase.CreateProductUseCase;
 import com.academy.orders.domain.product.usecase.GetManagerProductsUseCase;
+import com.academy.orders.domain.product.usecase.GetProductByIdUseCase;
 import com.academy.orders.domain.product.usecase.UpdateProductUseCase;
 import com.academy.orders.domain.product.usecase.UpdateStatusUseCase;
 import com.academy.orders_api_rest.generated.model.PageableDTO;
@@ -28,12 +29,14 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static com.academy.orders.apirest.ModelUtils.getProduct;
 import static com.academy.orders.apirest.ModelUtils.getProductManagementPageDTO;
+import static com.academy.orders.apirest.ModelUtils.getProductResponseDTO;
 import static com.academy.orders.apirest.ModelUtils.getUpdateProduct;
 import static com.academy.orders.apirest.ModelUtils.getUpdateProductRequestDTO;
+import static com.academy.orders.apirest.TestConstants.GET_PRODUCT_BY_ID_URL;
 import static com.academy.orders.apirest.TestConstants.LANGUAGE_EN;
 import static com.academy.orders.apirest.TestConstants.ROLE_MANAGER;
 import static com.academy.orders.apirest.TestConstants.TEST_UUID;
-import static com.academy.orders.apirest.TestConstants.UPDATE_PRODUCT;
+import static com.academy.orders.apirest.TestConstants.UPDATE_PRODUCT_URL;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -77,6 +80,9 @@ class ProductsManagementControllerTest {
 	private CreateProductUseCase createProductUseCase;
 
 	@MockBean
+	private GetProductByIdUseCase getProductByIdUseCase;
+
+	@MockBean
 	private ProductResponseDTOMapper productResponseDTOMapper;
 
 	@MockBean
@@ -114,7 +120,7 @@ class ProductsManagementControllerTest {
 		when(updateProductRequestDTOMapper.fromDTO(dto)).thenReturn(updateProduct);
 		doNothing().when(updateProductUseCase).updateProduct(TEST_UUID, LANGUAGE_EN, updateProduct);
 
-		mockMvc.perform(patch(UPDATE_PRODUCT, TEST_UUID).param("lang", LANGUAGE_EN).contentType("application/json")
+		mockMvc.perform(patch(UPDATE_PRODUCT_URL, TEST_UUID).param("lang", LANGUAGE_EN).contentType("application/json")
 				.content(objectMapper.writeValueAsString(dto))).andExpect(status().isOk());
 
 		verify(updateProductRequestDTOMapper).fromDTO(dto);
@@ -154,7 +160,7 @@ class ProductsManagementControllerTest {
 		var createProductRequestDTO = ModelUtils.getCreateProductRequestDTO();
 		var createProductRequest = createProductRequestDTOMapper.fromDTO(createProductRequestDTO);
 		var createdProduct = ModelUtils.getProduct();
-		var productResponseDTO = ModelUtils.getProductResponseDTO();
+		var productResponseDTO = getProductResponseDTO();
 
 		when(createProductRequestDTOMapper.fromDTO(createProductRequestDTO)).thenReturn(createProductRequest);
 		when(createProductUseCase.createProduct(createProductRequest)).thenReturn(createdProduct);
@@ -164,5 +170,23 @@ class ProductsManagementControllerTest {
 				.content(objectMapper.writeValueAsString(createProductRequestDTO))).andExpect(status().isCreated())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(content().json(objectMapper.writeValueAsString(productResponseDTO)));
+	}
+
+	@Test
+	@WithMockUser(authorities = {"ROLE_MANAGER"})
+	@SneakyThrows
+	void getProductByIdTest() {
+		var product = getProduct();
+		var response = getProductResponseDTO();
+
+		when(productResponseDTOMapper.toDTO(product)).thenReturn(response);
+		when(getProductByIdUseCase.getProductById(TEST_UUID)).thenReturn(product);
+
+		mockMvc.perform(get(GET_PRODUCT_BY_ID_URL, TEST_UUID)).andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(content().json(objectMapper.writeValueAsString(response)));
+
+		verify(productResponseDTOMapper).toDTO(product);
+		verify(getProductByIdUseCase).getProductById(TEST_UUID);
 	}
 }

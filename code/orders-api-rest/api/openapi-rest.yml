@@ -256,6 +256,31 @@ paths:
           $ref: '#/components/responses/NotFoundResponse'
 
   /v1/management/products/{productId}:
+    get:
+      tags:
+        - ProductsManagement
+      summary: Get product by ID
+      operationId: getProductById
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/ProductId'
+      responses:
+        '200':
+          description: Successfully retrieved product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+
     patch:
       tags:
         - ProductsManagement
@@ -490,7 +515,7 @@ components:
       in: path
       name: productId
       required: true
-      description: Id of the product
+      description: ID of the product
       schema:
         type: string
         format: uuid

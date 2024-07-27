@@ -7,6 +7,8 @@ import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.ProductManagement;
 import com.academy.orders.domain.product.entity.ProductTranslationManagement;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
+
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.lang.NonNull;
 
@@ -124,4 +126,14 @@ public interface ProductRepository {
 	 */
 	Page<Product> findAllByLanguageWithFilter(String language, @NonNull ProductManagementFilterDto filter,
 			Pageable pageable);
+
+	/**
+	 * Retrieves a {@link Product} entity by its unique identifier.
+	 *
+	 * @param productId
+	 *            the unique identifier of the product.
+	 * @return the {@link Product} entity.
+	 * @author Anton Bondar
+	 */
+	Optional<Product> getById(UUID productId);
 }

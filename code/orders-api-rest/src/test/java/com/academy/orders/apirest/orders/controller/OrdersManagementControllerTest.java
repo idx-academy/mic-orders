@@ -44,7 +44,7 @@ import static com.academy.orders.apirest.ModelUtils.getPageable;
 import static com.academy.orders.apirest.ModelUtils.getPageableParams;
 import static com.academy.orders.apirest.TestConstants.ROLE_MANAGER;
 import static com.academy.orders.apirest.TestConstants.TEST_UUID;
-import static com.academy.orders.apirest.TestConstants.UPDATE_ORDER_STATUS;
+import static com.academy.orders.apirest.TestConstants.UPDATE_ORDER_STATUS_URL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -122,7 +122,7 @@ class OrdersManagementControllerTest {
 
 		doNothing().when(updateOrderStatusUseCase).updateOrderStatus(any(UUID.class), any());
 
-		mockMvc.perform(patch(UPDATE_ORDER_STATUS, orderId).param("orderStatus", status.toString())
+		mockMvc.perform(patch(UPDATE_ORDER_STATUS_URL, orderId).param("orderStatus", status.toString())
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
 
 		verify(updateOrderStatusUseCase).updateOrderStatus(orderId, orderStatusMapper.fromDTO(status));
