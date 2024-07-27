@@ -5,6 +5,7 @@ import com.academy.orders.domain.cart.exception.ExceedsAvailableException;
 import com.academy.orders.domain.exception.AlreadyExistsException;
 import com.academy.orders.domain.exception.NotFoundException;
 import com.academy.orders.domain.order.exception.InsufficientProductQuantityException;
+import com.academy.orders.domain.order.exception.InvalidOrderStatusTransitionException;
 import com.academy.orders_api_rest.generated.model.ErrorObjectDTO;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -109,5 +110,13 @@ public class ErrorHandler {
 		log.warn("Product quantity exceeds available stock", ex);
 		return new ErrorObjectDTO().status(HttpStatus.CONFLICT.value()).title(HttpStatus.CONFLICT.getReasonPhrase())
 				.detail(ex.getMessage());
+	}
+
+	@ExceptionHandler(InvalidOrderStatusTransitionException.class)
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	public ErrorObjectDTO handleInvalidOrderStatusTransitionException(final InvalidOrderStatusTransitionException ex) {
+		log.warn("Invalid Order Status Transition", ex);
+		return new ErrorObjectDTO().status(HttpStatus.BAD_REQUEST.value())
+				.title(HttpStatus.BAD_REQUEST.getReasonPhrase()).detail(ex.getMessage());
 	}
 }

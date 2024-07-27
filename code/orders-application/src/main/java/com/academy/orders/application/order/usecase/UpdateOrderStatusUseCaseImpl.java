@@ -1,6 +1,7 @@
 package com.academy.orders.application.order.usecase;
 
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
+import com.academy.orders.domain.order.exception.InvalidOrderStatusTransitionException;
 import com.academy.orders.domain.order.exception.OrderNotFoundException;
 import com.academy.orders.domain.order.repository.OrderRepository;
 import com.academy.orders.domain.order.usecase.UpdateOrderStatusUseCase;
@@ -18,6 +19,11 @@ public class UpdateOrderStatusUseCaseImpl implements UpdateOrderStatusUseCase {
 	@Override
 	public void updateOrderStatus(UUID orderId, OrderStatus orderStatus) {
 		var order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException(orderId));
-		orderRepository.updateOrderStatus(order.id(), orderStatus);
+
+		if (order.orderStatus().canTransitionTo(orderStatus)) {
+			orderRepository.updateOrderStatus(order.id(), orderStatus);
+		} else {
+			throw new InvalidOrderStatusTransitionException(order.orderStatus(), orderStatus);
+		}
 	}
 }
