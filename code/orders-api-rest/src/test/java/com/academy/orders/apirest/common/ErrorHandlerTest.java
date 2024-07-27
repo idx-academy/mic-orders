@@ -4,7 +4,9 @@ import com.academy.orders.domain.account.exception.AccountAlreadyExistsException
 import com.academy.orders.domain.cart.exception.EmptyCartException;
 import com.academy.orders.domain.cart.exception.ExceedsAvailableException;
 import com.academy.orders.domain.exception.NotFoundException;
+import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import com.academy.orders.domain.order.exception.InsufficientProductQuantityException;
+import com.academy.orders.domain.order.exception.InvalidOrderStatusTransitionException;
 import com.academy.orders_api_rest.generated.model.ErrorObjectDTO;
 import java.util.UUID;
 import jakarta.validation.ConstraintViolationException;
@@ -126,6 +128,17 @@ class ErrorHandlerTest {
 		var message = "Product with id: " + productId + " exceeded available quantity";
 
 		assertEquals(buildErrorObjectDTO(CONFLICT, message), errorHandler.handleExceedsAvailableException(ex));
+	}
+
+	@Test
+	void handleInvalidOrderStatusTransitionExceptionTest() {
+		var currentStatus = OrderStatus.COMPLETED;
+		var newStatus = OrderStatus.SHIPPED;
+		var ex = new InvalidOrderStatusTransitionException(currentStatus, newStatus);
+		var expectedMessage = "Invalid status transition from " + currentStatus + " to " + newStatus;
+
+		assertEquals(buildErrorObjectDTO(BAD_REQUEST, expectedMessage),
+				errorHandler.handleInvalidOrderStatusTransitionException(ex));
 	}
 
 	private ErrorObjectDTO buildErrorObjectDTO(HttpStatus status, String detail) {
