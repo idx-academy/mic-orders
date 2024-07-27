@@ -22,6 +22,7 @@ import com.academy.orders.domain.product.dto.ProductTranslationDto;
 import com.academy.orders.domain.product.dto.UpdateProductDto;
 import com.academy.orders.domain.product.entity.Language;
 import com.academy.orders.domain.product.entity.Product;
+import com.academy.orders.domain.product.entity.ProductManagement;
 import com.academy.orders.domain.product.entity.ProductTranslation;
 import com.academy.orders.domain.product.entity.ProductTranslationManagement;
 import com.academy.orders.domain.product.entity.Tag;
@@ -151,6 +152,10 @@ public class ModelUtils {
 				.price(BigDecimal.valueOf(100)).tagIds(List.of(TEST_ID)).createdAt(DATE_TIME).build();
 	}
 
+	public static UpdateProductDto getEmptyUpdateProduct() {
+		return UpdateProductDto.builder().tagIds(List.of(TEST_ID)).build();
+	}
+
 	public static ProductTranslationManagement getProductTranslationManagement() {
 		return ProductTranslationManagement.builder().productId(TEST_UUID).languageId(TEST_ID).name("Name")
 				.description("Description").language(getLanguageEn()).build();
@@ -166,5 +171,11 @@ public class ModelUtils {
 				.price(BigDecimal.valueOf(100)).tagIds(List.of(1L)).productTranslations(Set.of(ProductTranslationDto
 						.builder().name("Name").description("Description").languageCode("en").build()))
 				.build();
+	}
+
+	public static ProductManagement getProductManagement() {
+		return ProductManagement.builder().id(TEST_UUID).status(ProductStatus.VISIBLE).createdAt(LocalDateTime.now())
+				.quantity(10).price(BigDecimal.valueOf(100.00)).tags(Set.of(new Tag(1L, "tag")))
+				.productTranslationManagement(Set.of(getProductTranslationManagement())).build();
 	}
 }

@@ -61,6 +61,19 @@ public interface ProductRepository {
 	void updateStatus(UUID productId, ProductStatus status);
 
 	/**
+	 * Retrieves a {@link ProductManagement} entity by its unique identifier and
+	 * language code.
+	 *
+	 * @param productId
+	 *            the unique identifier of the product.
+	 * @param languageCode
+	 *            the language code for which the product information is retrieved.
+	 * @return the {@link ProductManagement} entity.
+	 * @author Anton Bondar
+	 */
+	ProductManagement findProductByIdAndLanguageCode(UUID productId, String languageCode);
+
+	/**
 	 * Retrieves a {@link ProductTranslationManagement} entity by its unique
 	 * identifier and language code.
 	 *
@@ -71,7 +84,7 @@ public interface ProductRepository {
 	 * @return the {@link ProductTranslationManagement} entity.
 	 * @author Anton Bondar
 	 */
-	ProductTranslationManagement findByIdAndLanguageCode(UUID productId, String languageCode);
+	ProductTranslationManagement findTranslationByIdAndLanguageCode(UUID productId, String languageCode);
 
 	/**
 	 * Saves a new product using the provided product creation request data transfer

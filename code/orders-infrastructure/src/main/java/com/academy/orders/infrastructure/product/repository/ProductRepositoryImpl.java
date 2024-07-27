@@ -67,9 +67,15 @@ public class ProductRepositoryImpl implements ProductRepository {
 	}
 
 	@Override
-	public ProductTranslationManagement findByIdAndLanguageCode(UUID id, String languageCode) {
-		var productEntity = productJpaAdapter.findByIdAndLanguageCode(id, languageCode);
-		return productTranslationManagementMapper.fromEntity(productEntity);
+	public ProductManagement findProductByIdAndLanguageCode(UUID productId, String languageCode) {
+		var productEntity = productJpaAdapter.findProductByIdAndLanguageCode(productId, languageCode);
+		return productManagementMapper.fromEntity(productEntity);
+	}
+
+	@Override
+	public ProductTranslationManagement findTranslationByIdAndLanguageCode(UUID id, String languageCode) {
+		var productTranslationEntity = productJpaAdapter.findTranslationByIdAndLanguageCode(id, languageCode);
+		return productTranslationManagementMapper.fromEntity(productTranslationEntity);
 	}
 
 	@Override
