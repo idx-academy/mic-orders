@@ -13,6 +13,7 @@ public interface UpdateOrderStatusUseCase {
 	 *            the new status to be set for the order.
 	 * @param currentAccountEmail
 	 *            the email of the current user performing the update.
+	 * @author Anton Bondar
 	 */
 	void updateOrderStatus(UUID orderId, OrderStatus orderStatus, String currentAccountEmail);
 }
