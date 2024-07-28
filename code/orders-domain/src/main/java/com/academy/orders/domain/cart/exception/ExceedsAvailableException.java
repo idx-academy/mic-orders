@@ -8,10 +8,13 @@ import java.util.UUID;
 public class ExceedsAvailableException extends QuantityExceedsAvailableException {
 	private final UUID product;
 	private final Integer quantity;
+	private final Integer stockQuantity;
 
-	public ExceedsAvailableException(UUID product, Integer quantity) {
-		super(String.format("Product with id: %s exceeded available quantity", product));
+	public ExceedsAvailableException(UUID product, Integer quantity, Integer stockQuantity) {
+		super(String.format("Product with id: %s exceeded available quantity. Requested: %d, Available: %d", product,
+				quantity, stockQuantity));
 		this.product = product;
 		this.quantity = quantity;
+		this.stockQuantity = stockQuantity;
 	}
 }

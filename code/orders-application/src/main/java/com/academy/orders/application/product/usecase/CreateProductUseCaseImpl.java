@@ -1,6 +1,8 @@
 package com.academy.orders.application.product.usecase;
 
+import com.academy.orders.domain.exception.NotFoundException;
 import com.academy.orders.domain.language.repository.LanguageRepository;
+import com.academy.orders.domain.language.repository.exception.LanguageNotFoundException;
 import com.academy.orders.domain.product.dto.CreateProductRequestDto;
 import com.academy.orders.domain.product.entity.*;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
@@ -25,7 +27,8 @@ public class CreateProductUseCaseImpl implements CreateProductUseCase {
 	@Override
 	public Product createProduct(CreateProductRequestDto request) {
 		if (request == null) {
-			throw new IllegalArgumentException("CreateProductRequestDto cannot be null");
+			throw new NotFoundException("CreateProductRequestDto cannot be null") {
+			};
 		}
 
 		var tags = tagRepository.getTagsByIds(request.tagIds());
@@ -38,7 +41,7 @@ public class CreateProductUseCaseImpl implements CreateProductUseCase {
 		var productTranslations = request.productTranslations().stream().map(dto -> {
 			var language = languageRepository.findByCode(dto.languageCode());
 			if (language == null) {
-				throw new IllegalArgumentException("Language not found for code: " + dto.languageCode());
+				throw new LanguageNotFoundException(dto.languageCode());
 			}
 			return new ProductTranslationManagement(productWithoutTranslation.id(), language.id(), dto.name(),
 					dto.description(), new Language(language.id(), dto.languageCode()));

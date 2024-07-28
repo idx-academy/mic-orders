@@ -32,7 +32,7 @@ public class UpdateCartItemQuantityUseCaseImpl implements SetCartItemQuantityUse
 		Product product = updatedCartItem.product();
 
 		if (quantity > product.quantity()) {
-			throw new ExceedsAvailableException(productId, quantity);
+			throw new ExceedsAvailableException(productId, quantity, product.quantity());
 		}
 
 		var cartItemPrice = calculatePriceUseCase.calculateCartItemPrice(updatedCartItem);

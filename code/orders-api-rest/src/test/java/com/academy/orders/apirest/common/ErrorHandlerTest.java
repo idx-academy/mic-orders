@@ -122,8 +122,10 @@ class ErrorHandlerTest {
 	void handleExceedsAvailableException() {
 		var productId = UUID.randomUUID();
 		var quantity = 10;
-		var ex = new ExceedsAvailableException(productId, quantity);
-		var message = "Product with id: " + productId + " exceeded available quantity";
+		var availableQuantity = 5;
+		var ex = new ExceedsAvailableException(productId, quantity, availableQuantity);
+		var message = "Product with id: " + productId + " exceeded available quantity. Requested: " + quantity
+				+ ", Available: " + availableQuantity;
 
 		assertEquals(buildErrorObjectDTO(CONFLICT, message), errorHandler.handleExceedsAvailableException(ex));
 	}
