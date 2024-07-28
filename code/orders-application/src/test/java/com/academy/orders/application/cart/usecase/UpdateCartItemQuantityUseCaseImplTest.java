@@ -91,6 +91,7 @@ class UpdateCartItemQuantityUseCaseImplTest {
 		UUID productId = UUID.randomUUID();
 		Long userId = 1L;
 		Integer quantity = 6;
+		Integer availableQuantity = 5;
 
 		Product product = getProductWithQuantity(5);
 
@@ -103,7 +104,9 @@ class UpdateCartItemQuantityUseCaseImplTest {
 		ExceedsAvailableException exception = assertThrows(ExceedsAvailableException.class,
 				() -> updateCartItemQuantityUseCase.setQuantity(productId, userId, quantity));
 
-		Assertions.assertEquals(String.format("Product with id: %s exceeded available quantity", productId),
+		Assertions.assertEquals(
+				String.format("Product with id: %s exceeded available quantity. Requested: %d, Available: %d",
+						productId, quantity, availableQuantity),
 				exception.getMessage());
 
 		verify(cartItemRepository).existsByProductIdAndUserId(productId, userId);
