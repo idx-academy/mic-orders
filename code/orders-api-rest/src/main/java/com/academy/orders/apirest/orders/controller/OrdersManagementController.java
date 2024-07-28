@@ -22,6 +22,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -49,9 +50,10 @@ public class OrdersManagementController implements OrdersManagementApi {
 	}
 
 	@Override
-	@PreAuthorize("hasAuthority('ROLE_MANAGER')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
 	public void updateOrderStatus(UUID orderId, OrderStatusDTO orderStatusDTO) {
-		updateOrderStatusUseCase.updateOrderStatus(orderId, orderStatusMapper.fromDTO(orderStatusDTO));
+		updateOrderStatusUseCase.updateOrderStatus(orderId, orderStatusMapper.fromDTO(orderStatusDTO),
+				getCurrentAccountEmail());
 	}
 
 	@Override
@@ -59,5 +61,10 @@ public class OrdersManagementController implements OrdersManagementApi {
 	public ManagerOrderDTO getOrderById(UUID id, String lang) {
 		Order order = getOrderByIdUseCase.getOrderById(id, lang);
 		return orderDTOMapper.toManagerDto(order);
+	}
+
+	private String getCurrentAccountEmail() {
+		var authentication = SecurityContextHolder.getContext().getAuthentication();
+		return authentication.getName();
 	}
 }

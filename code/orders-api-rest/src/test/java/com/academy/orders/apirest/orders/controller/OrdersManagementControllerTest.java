@@ -47,6 +47,7 @@ import static com.academy.orders.apirest.TestConstants.TEST_UUID;
 import static com.academy.orders.apirest.TestConstants.UPDATE_ORDER_STATUS_URL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -119,13 +120,12 @@ class OrdersManagementControllerTest {
 	void updateOrderStatusTest() throws Exception {
 		var orderId = UUID.randomUUID();
 		var status = OrderStatusDTO.COMPLETED;
-
-		doNothing().when(updateOrderStatusUseCase).updateOrderStatus(any(UUID.class), any());
+		doNothing().when(updateOrderStatusUseCase).updateOrderStatus(any(UUID.class), any(), anyString());
 
 		mockMvc.perform(patch(UPDATE_ORDER_STATUS_URL, orderId).param("orderStatus", status.toString())
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
 
-		verify(updateOrderStatusUseCase).updateOrderStatus(orderId, orderStatusMapper.fromDTO(status));
+		verify(updateOrderStatusUseCase).updateOrderStatus(orderId, orderStatusMapper.fromDTO(status), "user");
 	}
 
 	@Test
