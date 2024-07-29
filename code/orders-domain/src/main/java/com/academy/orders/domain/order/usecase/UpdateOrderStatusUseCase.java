@@ -1,6 +1,8 @@
 package com.academy.orders.domain.order.usecase;
 
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
+
+import java.util.List;
 import java.util.UUID;
 
 public interface UpdateOrderStatusUseCase {
@@ -9,11 +11,13 @@ public interface UpdateOrderStatusUseCase {
 	 *
 	 * @param orderId
 	 *            the unique identifier of the order to be updated.
-	 * @param orderStatus
+	 * @param newStatus
 	 *            the new status to be set for the order.
 	 * @param currentAccountEmail
 	 *            the email of the current user performing the update.
+	 * @return a list of available statuses that the order can transition to from
+	 *         its new state.
 	 * @author Anton Bondar
 	 */
-	void updateOrderStatus(UUID orderId, OrderStatus orderStatus, String currentAccountEmail);
+	List<String> updateOrderStatus(UUID orderId, OrderStatus newStatus, String currentAccountEmail);
 }

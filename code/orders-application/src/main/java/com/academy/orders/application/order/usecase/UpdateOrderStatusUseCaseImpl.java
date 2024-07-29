@@ -9,6 +9,8 @@ import com.academy.orders.domain.order.repository.OrderRepository;
 import com.academy.orders.domain.order.usecase.UpdateOrderStatusUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.UUID;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,17 +23,21 @@ public class UpdateOrderStatusUseCaseImpl implements UpdateOrderStatusUseCase {
 	private static final String ROLE_ADMIN = "role_admin";
 
 	@Override
-	public void updateOrderStatus(UUID orderId, OrderStatus orderStatus, String currentAccountEmail) {
+	public List<String> updateOrderStatus(UUID orderId, OrderStatus newStatus, String currentAccountEmail) {
 		var order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException(orderId));
 		var role = accountRepository.findRoleByEmail(currentAccountEmail)
 				.orElseThrow(() -> new AccountRoleNotFoundException(currentAccountEmail));
 
 		if (ROLE_ADMIN.equalsIgnoreCase(String.valueOf(role))) {
-			orderRepository.updateOrderStatus(order.id(), orderStatus);
-		} else if (order.orderStatus().canTransitionTo(orderStatus)) {
-			orderRepository.updateOrderStatus(order.id(), orderStatus);
+			orderRepository.updateOrderStatus(order.id(), newStatus);
+			return OrderStatus.getAllTransitions();
+
+		} else if (order.orderStatus().canTransitionTo(newStatus)) {
+			orderRepository.updateOrderStatus(order.id(), newStatus);
+			return OrderStatus.getAllowedTransitions(newStatus);
+
 		} else {
-			throw new InvalidOrderStatusTransitionException(order.orderStatus(), orderStatus);
+			throw new InvalidOrderStatusTransitionException(order.orderStatus(), newStatus);
 		}
 	}
 }

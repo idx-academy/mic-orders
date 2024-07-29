@@ -139,6 +139,10 @@ paths:
       responses:
         '200':
           description: Order status updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AvailableOrderStatuses'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -1359,6 +1363,13 @@ components:
         type: string
         description: categories of the product
         example: 'category:computer'
+
+    AvailableOrderStatuses:
+      type: array
+      items:
+        type: string
+        description: List of statuses that the order can transition to from its current state
+        example: 'DELIVERED, COMPLETED, CANCELED'
 
     ProductManagementFilter:
       type: object

@@ -18,6 +18,7 @@ import com.academy.orders_api_rest.generated.model.OrderStatusDTO;
 import com.academy.orders_api_rest.generated.model.OrdersFilterParametersDTO;
 import com.academy.orders_api_rest.generated.model.PageManagerOrderPreviewDTO;
 import com.academy.orders_api_rest.generated.model.PageableDTO;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,8 +53,8 @@ public class OrdersManagementController implements OrdersManagementApi {
 
 	@Override
 	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
-	public void updateOrderStatus(UUID orderId, OrderStatusDTO orderStatusDTO) {
-		updateOrderStatusUseCase.updateOrderStatus(orderId, orderStatusMapper.fromDTO(orderStatusDTO),
+	public List<String> updateOrderStatus(UUID orderId, OrderStatusDTO orderStatus) {
+		return updateOrderStatusUseCase.updateOrderStatus(orderId, orderStatusMapper.fromDTO(orderStatus),
 				getCurrentAccountEmail());
 	}
 

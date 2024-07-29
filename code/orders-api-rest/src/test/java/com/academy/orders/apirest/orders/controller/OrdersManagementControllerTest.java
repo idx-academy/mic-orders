@@ -20,6 +20,7 @@ import com.academy.orders_api_rest.generated.model.OrdersFilterParametersDTO;
 import com.academy.orders_api_rest.generated.model.PageManagerOrderPreviewDTO;
 import com.academy.orders_api_rest.generated.model.PageableDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,11 +49,11 @@ import static com.academy.orders.apirest.TestConstants.UPDATE_ORDER_STATUS_URL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(OrdersManagementController.class)
@@ -117,11 +118,19 @@ class OrdersManagementControllerTest {
 	@WithMockUser(authorities = ROLE_MANAGER)
 	void updateOrderStatusTest() throws Exception {
 		var orderId = UUID.randomUUID();
-		var status = OrderStatusDTO.COMPLETED;
-		doNothing().when(updateOrderStatusUseCase).updateOrderStatus(any(UUID.class), any(), anyString());
+		var status = OrderStatusDTO.IN_PROGRESS;
+		var availableStatuses = List.of("COMPLETED");
+
+		when(updateOrderStatusUseCase.updateOrderStatus(any(UUID.class), any(), anyString()))
+				.thenReturn(List.of("COMPLETED"));
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		String expectedJson = objectMapper.writeValueAsString(availableStatuses);
 
 		mockMvc.perform(patch(UPDATE_ORDER_STATUS_URL, orderId).param("orderStatus", status.toString())
-				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(content().json(expectedJson))
+				.andReturn();
 
 		verify(updateOrderStatusUseCase).updateOrderStatus(orderId, orderStatusMapper.fromDTO(status), "user");
 	}

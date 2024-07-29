@@ -7,6 +7,7 @@ import com.academy.orders.domain.exception.NotFoundException;
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import com.academy.orders.domain.order.exception.InsufficientProductQuantityException;
 import com.academy.orders.domain.order.exception.InvalidOrderStatusTransitionException;
+import com.academy.orders.domain.order.exception.OrderFinalStateException;
 import com.academy.orders_api_rest.generated.model.ErrorObjectDTO;
 import java.util.UUID;
 import jakarta.validation.ConstraintViolationException;
@@ -141,6 +142,17 @@ class ErrorHandlerTest {
 
 		assertEquals(buildErrorObjectDTO(BAD_REQUEST, expectedMessage),
 				errorHandler.handleInvalidOrderStatusTransitionException(ex));
+	}
+
+	@Test
+	void handleOrderFinalStateExceptionTest() {
+		var errorMessage = "The order has already been completed or canceled and cannot be updated.";
+		var ex = new OrderFinalStateException();
+
+		var expectedErrorObjectDTO = new ErrorObjectDTO().status(HttpStatus.BAD_REQUEST.value())
+				.title(HttpStatus.BAD_REQUEST.getReasonPhrase()).detail(errorMessage);
+
+		assertEquals(expectedErrorObjectDTO, errorHandler.handleOrderFinalStateException(ex));
 	}
 
 	private ErrorObjectDTO buildErrorObjectDTO(HttpStatus status, String detail) {
