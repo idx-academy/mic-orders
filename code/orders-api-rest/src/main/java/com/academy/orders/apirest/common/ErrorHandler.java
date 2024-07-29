@@ -1,7 +1,7 @@
 package com.academy.orders.apirest.common;
 
 import com.academy.orders.domain.cart.exception.EmptyCartException;
-import com.academy.orders.domain.cart.exception.ExceedsAvailableException;
+import com.academy.orders.domain.cart.exception.QuantityExceedsAvailableException;
 import com.academy.orders.domain.exception.AlreadyExistsException;
 import com.academy.orders.domain.exception.NotFoundException;
 import com.academy.orders.domain.order.exception.InsufficientProductQuantityException;
@@ -103,9 +103,9 @@ public class ErrorHandler {
 				.title(HttpStatus.BAD_REQUEST.getReasonPhrase()).detail(error.getMessage());
 	}
 
-	@ExceptionHandler(ExceedsAvailableException.class)
+	@ExceptionHandler(QuantityExceedsAvailableException.class)
 	@ResponseStatus(value = HttpStatus.CONFLICT)
-	public ErrorObjectDTO handleExceedsAvailableException(final ExceedsAvailableException ex) {
+	public ErrorObjectDTO handleExceedsAvailableException(final QuantityExceedsAvailableException ex) {
 		log.warn("Product quantity exceeds available stock", ex);
 		return new ErrorObjectDTO().status(HttpStatus.CONFLICT.value()).title(HttpStatus.CONFLICT.getReasonPhrase())
 				.detail(ex.getMessage());
