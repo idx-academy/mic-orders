@@ -17,7 +17,7 @@ import com.academy.orders.domain.order.usecase.UpdateOrderStatusUseCase;
 import com.academy.orders_api_rest.generated.model.ManagerOrderDTO;
 import com.academy.orders_api_rest.generated.model.OrderStatusDTO;
 import com.academy.orders_api_rest.generated.model.OrdersFilterParametersDTO;
-import com.academy.orders_api_rest.generated.model.PageManagerOrderDTO;
+import com.academy.orders_api_rest.generated.model.PageManagerOrderPreviewDTO;
 import com.academy.orders_api_rest.generated.model.PageableDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.UUID;
@@ -38,7 +38,7 @@ import static com.academy.orders.apirest.ModelUtils.getOrder;
 import static com.academy.orders.apirest.ModelUtils.getOrdersFilterParametersDTO;
 import static com.academy.orders.apirest.ModelUtils.getOrdersFilterParametersDTOParams;
 import static com.academy.orders.apirest.ModelUtils.getOrdersFilterParametersDto;
-import static com.academy.orders.apirest.ModelUtils.getPageManagerOrderDTO;
+import static com.academy.orders.apirest.ModelUtils.getPageManagerOrderPreviewDTO;
 import static com.academy.orders.apirest.ModelUtils.getPageOf;
 import static com.academy.orders.apirest.ModelUtils.getPageable;
 import static com.academy.orders.apirest.ModelUtils.getPageableParams;
@@ -85,23 +85,21 @@ class OrdersManagementControllerTest {
 	void getAllOrdersTest() throws Exception {
 		// Given
 		Long userId = 1L;
-		String language = "uk";
 		PageableDTO pageableDTO = new PageableDTO();
 		Pageable pageable = getPageable();
 		Page<Order> orderPage = getPageOf(getOrder());
 		OrdersFilterParametersDto orderFilterParametersDto = getOrdersFilterParametersDto();
 		OrdersFilterParametersDTO orderFilterParametersDTO = getOrdersFilterParametersDTO();
-		PageManagerOrderDTO pageOrderDTO = getPageManagerOrderDTO();
+		PageManagerOrderPreviewDTO pageOrderDTO = getPageManagerOrderPreviewDTO();
 
 		when(pageableDTOMapper.fromDto(pageableDTO)).thenReturn(pageable);
 		when(orderFilterParametersDTOMapper.fromDTO(orderFilterParametersDTO)).thenReturn(orderFilterParametersDto);
-		when(getAllOrdersUseCase.getAllOrders(orderFilterParametersDto, language, pageable)).thenReturn(orderPage);
+		when(getAllOrdersUseCase.getAllOrders(orderFilterParametersDto, pageable)).thenReturn(orderPage);
 		when(pageOrderDTOMapper.toManagerDto(orderPage)).thenReturn(pageOrderDTO);
 
 		// When
 		MvcResult result = mockMvc
 				.perform(get("/v1/management/orders", userId).contentType(MediaType.APPLICATION_JSON)
-						.param("lang", language)
 						.params(getPageableParams(pageableDTO.getPage(), pageableDTO.getSize(), pageableDTO.getSort()))
 						.params(getOrdersFilterParametersDTOParams(orderFilterParametersDTO)))
 				.andExpect(status().isOk()).andReturn();
@@ -111,8 +109,8 @@ class OrdersManagementControllerTest {
 
 		verify(pageableDTOMapper).fromDto(pageableDTO);
 		verify(orderFilterParametersDTOMapper).fromDTO(orderFilterParametersDTO);
-		verify(getAllOrdersUseCase).getAllOrders(orderFilterParametersDto, language, pageable);
-		assertEquals(pageOrderDTO, objectMapper.readValue(contentAsString, PageManagerOrderDTO.class));
+		verify(getAllOrdersUseCase).getAllOrders(orderFilterParametersDto, pageable);
+		assertEquals(pageOrderDTO, objectMapper.readValue(contentAsString, PageManagerOrderPreviewDTO.class));
 	}
 
 	@Test

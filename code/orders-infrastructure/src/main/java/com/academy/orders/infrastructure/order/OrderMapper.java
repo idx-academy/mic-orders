@@ -9,7 +9,10 @@ import com.academy.orders.infrastructure.order.entity.OrderEntity;
 import com.academy.orders.infrastructure.order.entity.OrderItemEntity;
 import com.academy.orders.infrastructure.order.entity.OrderReceiverVO;
 import com.academy.orders.infrastructure.order.entity.PostAddressEntity;
+import com.academy.orders.infrastructure.product.entity.ProductEntity;
 import java.util.List;
+import org.hibernate.Hibernate;
+import org.mapstruct.Condition;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring", uses = {AccountMapper.class})
@@ -19,4 +22,9 @@ public interface OrderMapper {
 	OrderReceiverVO toOrderReceiverVO(OrderReceiver orderReceiver);
 	PostAddressEntity toPostAddressEntity(PostAddress postAddress);
 	List<OrderItemEntity> toOrderItemEntities(List<OrderItem> orderItem);
+
+	@Condition
+	default boolean isNotLazyLoaded(ProductEntity source) {
+		return Hibernate.isInitialized(source);
+	}
 }

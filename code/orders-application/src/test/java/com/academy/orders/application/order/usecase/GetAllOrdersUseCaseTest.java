@@ -35,30 +35,28 @@ class GetAllOrdersUseCaseTest {
 	void getOrdersByUserIdTest() {
 		// Given
 		OrdersFilterParametersDto filterParametersDto = ModelUtils.getOrdersFilterParametersDto();
-		String language = "uk";
 		Pageable pageable = getPageable();
 		Order withoutTotal = getOrderWithoutTotal();
 		Order withTotal = getOrder();
 		Page<Order> orderPage = getPageOf(withoutTotal);
 		Page<Order> expected = getPageOf(withTotal);
 
-		when(orderRepository.findAll(filterParametersDto, language, pageable)).thenReturn(orderPage);
+		when(orderRepository.findAll(filterParametersDto, pageable)).thenReturn(orderPage);
 		when(calculateOrderTotalPriceUseCase.calculateTotalPriceFor(orderPage.content()))
 				.thenReturn(expected.content());
 
 		// When
-		Page<Order> ordersByUserId = getAllOrdersUseCase.getAllOrders(filterParametersDto, language, pageable);
+		Page<Order> ordersByUserId = getAllOrdersUseCase.getAllOrders(filterParametersDto, pageable);
 
 		// Then
 		assertEquals(expected, ordersByUserId);
-		verify(orderRepository).findAll(filterParametersDto, language, pageable);
+		verify(orderRepository).findAll(filterParametersDto, pageable);
 	}
 
 	@Test
 	void getOrdersByUserIdWithEmptySortTest() {
 		// Given
 		OrdersFilterParametersDto filterParametersDto = ModelUtils.getOrdersFilterParametersDto();
-		String language = "uk";
 		Pageable pageable = new Pageable(0, 8, List.of());
 		Pageable defaultPageable = new Pageable(0, 8, List.of("createdAt,desc"));
 		Order withoutTotal = getOrderWithoutTotal();
@@ -66,15 +64,15 @@ class GetAllOrdersUseCaseTest {
 		Page<Order> orderPage = getPageOf(withoutTotal);
 		Page<Order> expected = getPageOf(withTotal);
 
-		when(orderRepository.findAll(filterParametersDto, language, defaultPageable)).thenReturn(orderPage);
+		when(orderRepository.findAll(filterParametersDto, defaultPageable)).thenReturn(orderPage);
 		when(calculateOrderTotalPriceUseCase.calculateTotalPriceFor(orderPage.content()))
 				.thenReturn(expected.content());
 
 		// When
-		Page<Order> ordersByUserId = getAllOrdersUseCase.getAllOrders(filterParametersDto, language, pageable);
+		Page<Order> ordersByUserId = getAllOrdersUseCase.getAllOrders(filterParametersDto, pageable);
 
 		// Then
 		assertEquals(expected, ordersByUserId);
-		verify(orderRepository).findAll(filterParametersDto, language, defaultPageable);
+		verify(orderRepository).findAll(filterParametersDto, defaultPageable);
 	}
 }
