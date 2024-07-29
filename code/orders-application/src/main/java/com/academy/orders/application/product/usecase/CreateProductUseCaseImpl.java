@@ -1,6 +1,6 @@
 package com.academy.orders.application.product.usecase;
 
-import com.academy.orders.domain.exception.NotFoundException;
+import com.academy.orders.domain.exception.BadRequestException;
 import com.academy.orders.domain.language.repository.LanguageRepository;
 import com.academy.orders.domain.language.repository.exception.LanguageNotFoundException;
 import com.academy.orders.domain.product.dto.CreateProductRequestDto;
@@ -27,7 +27,7 @@ public class CreateProductUseCaseImpl implements CreateProductUseCase {
 	@Override
 	public Product createProduct(CreateProductRequestDto request) {
 		if (request == null) {
-			throw new NotFoundException("CreateProductRequestDto cannot be null") {
+			throw new BadRequestException("CreateProductRequestDto cannot be null") {
 			};
 		}
 

@@ -4,7 +4,7 @@ import com.academy.orders.domain.cart.dto.UpdatedCartItemDto;
 import com.academy.orders.domain.cart.entity.CartItem;
 import com.academy.orders.domain.cart.entity.CreateCartItemDTO;
 import com.academy.orders.domain.cart.exception.CartItemNotFoundException;
-import com.academy.orders.domain.cart.exception.ExceedsAvailableException;
+import com.academy.orders.domain.cart.exception.QuantityExceedsAvailableException;
 import com.academy.orders.domain.cart.repository.CartItemRepository;
 import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.usecase.CalculatePriceUseCase;
@@ -101,7 +101,7 @@ class UpdateCartItemQuantityUseCaseImplTest {
 		when(cartItemRepository.findByProductIdAndUserId(productId, userId)).thenReturn(Optional.of(cartItem));
 		when(cartItemRepository.save(any(CreateCartItemDTO.class))).thenReturn(new CartItem(product, quantity));
 
-		ExceedsAvailableException exception = assertThrows(ExceedsAvailableException.class,
+		QuantityExceedsAvailableException exception = assertThrows(QuantityExceedsAvailableException.class,
 				() -> updateCartItemQuantityUseCase.setQuantity(productId, userId, quantity));
 
 		Assertions.assertEquals(

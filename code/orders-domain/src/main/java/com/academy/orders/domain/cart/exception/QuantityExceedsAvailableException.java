@@ -1,16 +1,16 @@
 package com.academy.orders.domain.cart.exception;
 
-import com.academy.orders.domain.exception.QuantityExceedsAvailableException;
+import com.academy.orders.domain.exception.ExceedsAvailableException;
 import lombok.Getter;
 import java.util.UUID;
 
 @Getter
-public class ExceedsAvailableException extends QuantityExceedsAvailableException {
+public class QuantityExceedsAvailableException extends ExceedsAvailableException {
 	private final UUID product;
 	private final Integer quantity;
 	private final Integer stockQuantity;
 
-	public ExceedsAvailableException(UUID product, Integer quantity, Integer stockQuantity) {
+	public QuantityExceedsAvailableException(UUID product, Integer quantity, Integer stockQuantity) {
 		super(String.format("Product with id: %s exceeded available quantity. Requested: %d, Available: %d", product,
 				quantity, stockQuantity));
 		this.product = product;

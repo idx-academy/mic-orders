@@ -1,7 +1,7 @@
 package com.academy.orders.application.product.usecase;
 
 import com.academy.orders.application.ModelUtils;
-import com.academy.orders.domain.exception.NotFoundException;
+import com.academy.orders.domain.exception.BadRequestException;
 import com.academy.orders.domain.language.repository.LanguageRepository;
 import com.academy.orders.domain.language.repository.exception.LanguageNotFoundException;
 import com.academy.orders.domain.product.dto.CreateProductRequestDto;
@@ -63,7 +63,7 @@ class CreateProductUseCaseImplTest {
 
 	@Test
 	void createProductNullRequestTest() {
-		assertThrows(NotFoundException.class, () -> createProductUseCase.createProduct(null));
+		assertThrows(BadRequestException.class, () -> createProductUseCase.createProduct(null));
 	}
 
 	@Test
