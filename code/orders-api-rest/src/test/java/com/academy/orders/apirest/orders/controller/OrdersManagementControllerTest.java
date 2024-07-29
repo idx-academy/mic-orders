@@ -124,7 +124,6 @@ class OrdersManagementControllerTest {
 		when(updateOrderStatusUseCase.updateOrderStatus(any(UUID.class), any(), anyString()))
 				.thenReturn(List.of("COMPLETED"));
 
-		ObjectMapper objectMapper = new ObjectMapper();
 		String expectedJson = objectMapper.writeValueAsString(availableStatuses);
 
 		mockMvc.perform(patch(UPDATE_ORDER_STATUS_URL, orderId).param("orderStatus", status.toString())
