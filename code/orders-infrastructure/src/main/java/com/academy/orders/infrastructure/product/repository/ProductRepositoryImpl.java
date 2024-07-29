@@ -55,7 +55,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 
 	private void addImages(List<ProductEntity> products) {
 		products.forEach(p -> {
-			var name = p.getImage().substring(p.getImage().lastIndexOf("/") +1);
+			var name = p.getImage().substring(p.getImage().lastIndexOf("/") + 1);
 			p.setImage(imageRepository.getImageLinkByName(name));
 		});
 	}

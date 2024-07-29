@@ -25,10 +25,10 @@ public class ImageRepositoryImpl implements ImageRepository {
 		log.info("Call images api with with name param: {}", name);
 		return imagesApi.getImageByName(name).getImageUrl();
 	}
-//
-//	@Cacheable(value = "images", key = "#name")
-//	public String getDefaultUrl(String name, Throwable exception) {
-//		log.warn("Call api with name {} failed {}", name, exception.getMessage());
-//		return defaultImageUrl;
-//	}
+	//
+	// @Cacheable(value = "images", key = "#name")
+	// public String getDefaultUrl(String name, Throwable exception) {
+	// log.warn("Call api with name {} failed {}", name, exception.getMessage());
+	// return defaultImageUrl;
+	// }
 }
