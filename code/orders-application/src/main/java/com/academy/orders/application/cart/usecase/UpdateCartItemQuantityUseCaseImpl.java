@@ -4,7 +4,7 @@ import com.academy.orders.domain.cart.dto.UpdatedCartItemDto;
 import com.academy.orders.domain.cart.entity.CartItem;
 import com.academy.orders.domain.cart.entity.CreateCartItemDTO;
 import com.academy.orders.domain.cart.exception.CartItemNotFoundException;
-import com.academy.orders.domain.cart.exception.ExceedsAvailableException;
+import com.academy.orders.domain.cart.exception.QuantityExceedsAvailableException;
 import com.academy.orders.domain.cart.repository.CartItemRepository;
 import com.academy.orders.domain.cart.usecase.SetCartItemQuantityUseCase;
 import com.academy.orders.domain.product.entity.Product;
@@ -32,7 +32,7 @@ public class UpdateCartItemQuantityUseCaseImpl implements SetCartItemQuantityUse
 		Product product = updatedCartItem.product();
 
 		if (quantity > product.quantity()) {
-			throw new ExceedsAvailableException(productId, quantity);
+			throw new QuantityExceedsAvailableException(productId, quantity, product.quantity());
 		}
 
 		var cartItemPrice = calculatePriceUseCase.calculateCartItemPrice(updatedCartItem);
