@@ -186,8 +186,8 @@ public class ModelUtils {
 				.createdAfter(DATE_TIME).totalMore(BigDecimal.ZERO).totalLess(BigDecimal.TEN).build();
 	}
 
-	public static PageManagerOrderDTO getPageManagerOrderDTO() {
-		PageManagerOrderDTO pageOrderDTO = new PageManagerOrderDTO();
+	public static PageManagerOrderPreviewDTO getPageManagerOrderPreviewDTO() {
+		PageManagerOrderPreviewDTO pageOrderDTO = new PageManagerOrderPreviewDTO();
 		pageOrderDTO.setEmpty(false);
 		pageOrderDTO.setTotalElements(100L);
 		pageOrderDTO.setTotalPages(10);
@@ -196,7 +196,6 @@ public class ModelUtils {
 		pageOrderDTO.setNumber(1);
 		pageOrderDTO.setNumberOfElements(10);
 		pageOrderDTO.setSize(10);
-		pageOrderDTO.content(List.of(getManagerOrderDTO()));
 		return pageOrderDTO;
 	}
 

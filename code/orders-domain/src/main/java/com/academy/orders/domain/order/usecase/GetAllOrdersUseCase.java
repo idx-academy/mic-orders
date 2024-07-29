@@ -12,12 +12,10 @@ public interface GetAllOrdersUseCase {
 	 *
 	 * @param filterParametersDto
 	 *            the filter parameters to apply when retrieving the orders
-	 * @param language
-	 *            the language in which to retrieve the orders
 	 * @param pageable
 	 *            the pagination information
 	 * @return a paginated list of orders that match the filter parameters and
 	 *         language
 	 */
-	Page<Order> getAllOrders(OrdersFilterParametersDto filterParametersDto, String language, Pageable pageable);
+	Page<Order> getAllOrders(OrdersFilterParametersDto filterParametersDto, Pageable pageable);
 }
