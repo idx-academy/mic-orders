@@ -33,7 +33,7 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 	 * @author Anton Bondar
 	 */
 	@Query(value = "SELECT p FROM ProductEntity p JOIN FETCH p.productTranslations pt "
-			+ "JOIN FETCH pt.language l LEFT JOIN FETCH p.tags WHERE l.code = :language ORDER BY "
+			+ "JOIN FETCH pt.language l LEFT JOIN FETCH p.tags WHERE l.code = :language AND p.status = 'VISIBLE' ORDER BY "
 			+ "CASE WHEN :sort = 'name,asc' THEN pt.name END ASC, "
 			+ "CASE WHEN :sort = 'name,desc' THEN pt.name END DESC, "
 			+ "CASE WHEN :sort = 'createdAt,asc' THEN p.createdAt END ASC, "
@@ -133,6 +133,21 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 	void updateProductStatus(UUID id, ProductStatus status);
 
 	/**
+	 * Finds a product by its ID and language code.
+	 *
+	 * @param id
+	 *            the ID of the product.
+	 * @param languageCode
+	 *            the language code for filtering the product translation.
+	 * @return the {@link ProductEntity} object.
+	 *
+	 * @author Anton Bondar
+	 */
+	@Query("SELECT p FROM ProductEntity p LEFT JOIN FETCH p.productTranslations pt "
+			+ "LEFT JOIN FETCH pt.language l LEFT JOIN FETCH p.tags t WHERE p.id = :id AND l.code = :languageCode")
+	ProductEntity findProductByIdAndLanguageCode(UUID id, String languageCode);
+
+	/**
 	 * Finds a product translation by product ID and language code.
 	 *
 	 * @param id
@@ -145,5 +160,5 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 	 */
 	@Query("SELECT pt FROM ProductTranslationEntity pt LEFT JOIN FETCH pt.product p "
 			+ "LEFT JOIN FETCH pt.language l LEFT JOIN FETCH p.tags t WHERE p.id = :id AND l.code = :languageCode")
-	ProductTranslationEntity findByIdAndLanguageCode(UUID id, String languageCode);
+	ProductTranslationEntity findTranslationByIdAndLanguageCode(UUID id, String languageCode);
 }

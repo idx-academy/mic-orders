@@ -9,6 +9,7 @@ import com.academy.orders.apirest.products.mapper.ProductStatusDTOMapper;
 import com.academy.orders.domain.product.usecase.CreateProductUseCase;
 import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
+import com.academy.orders.domain.product.usecase.GetProductByIdUseCase;
 import com.academy.orders.domain.product.usecase.UpdateProductUseCase;
 import com.academy.orders.domain.product.usecase.GetManagerProductsUseCase;
 import com.academy.orders.domain.product.usecase.UpdateStatusUseCase;
@@ -34,12 +35,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProductsManagementController implements ProductsManagementApi {
 	private final UpdateStatusUseCase updateStatusUseCase;
 	private final UpdateProductUseCase updateProductUseCase;
+	private final GetManagerProductsUseCase managerProductsUseCase;
+	private final CreateProductUseCase createProductUseCase;
+	private final GetProductByIdUseCase getProductByIdUseCase;
 	private final ProductStatusDTOMapper productStatusDTOMapper;
 	private final UpdateProductRequestDTOMapper updateProductRequestDTOMapper;
 	private final PageableDTOMapper pageableDTOMapper;
 	private final ManagementProductMapper managementProductMapper;
-	private final GetManagerProductsUseCase managerProductsUseCase;
-	private final CreateProductUseCase createProductUseCase;
 	private final ProductResponseDTOMapper productResponseDTOMapper;
 	private final CreateProductRequestDTOMapper createProductRequestDTOMapper;
 
@@ -72,6 +74,13 @@ public class ProductsManagementController implements ProductsManagementApi {
 	public ProductResponseDTO createProduct(CreateProductRequestDTO createProductRequestDTO) {
 		var createProductRequest = createProductRequestDTOMapper.fromDTO(createProductRequestDTO);
 		Product product = createProductUseCase.createProduct(createProductRequest);
+		return productResponseDTOMapper.toDTO(product);
+	}
+
+	@Override
+	@PreAuthorize("hasAnyAuthority('ROLE_MANAGER')")
+	public ProductResponseDTO getProductById(UUID productId) {
+		var product = getProductByIdUseCase.getProductById(productId);
 		return productResponseDTOMapper.toDTO(product);
 	}
 }

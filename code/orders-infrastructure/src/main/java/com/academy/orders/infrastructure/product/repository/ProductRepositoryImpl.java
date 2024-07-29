@@ -14,6 +14,7 @@ import com.academy.orders.infrastructure.product.ProductMapper;
 import com.academy.orders.infrastructure.product.ProductPageMapper;
 import com.academy.orders.infrastructure.product.ProductTranslationManagementMapper;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -67,9 +68,15 @@ public class ProductRepositoryImpl implements ProductRepository {
 	}
 
 	@Override
-	public ProductTranslationManagement findByIdAndLanguageCode(UUID id, String languageCode) {
-		var productEntity = productJpaAdapter.findByIdAndLanguageCode(id, languageCode);
-		return productTranslationManagementMapper.fromEntity(productEntity);
+	public ProductManagement findProductByIdAndLanguageCode(UUID productId, String languageCode) {
+		var productEntity = productJpaAdapter.findProductByIdAndLanguageCode(productId, languageCode);
+		return productManagementMapper.fromEntity(productEntity);
+	}
+
+	@Override
+	public ProductTranslationManagement findTranslationByIdAndLanguageCode(UUID id, String languageCode) {
+		var productTranslationEntity = productJpaAdapter.findTranslationByIdAndLanguageCode(id, languageCode);
+		return productTranslationManagementMapper.fromEntity(productTranslationEntity);
 	}
 
 	@Override
@@ -86,6 +93,12 @@ public class ProductRepositoryImpl implements ProductRepository {
 		var ids = productJpaAdapter.findProductsIdsByLangAndFilters(lang, filter, pageable);
 		var products = productJpaAdapter.findProductsByIds(lang, ids.getContent(), pageable.getSort());
 		return productPageMapper.toDomain(new PageImpl<>(products, pageable, ids.getTotalElements()));
+	}
+
+	@Override
+	public Optional<Product> getById(UUID productId) {
+		var productEntity = productJpaAdapter.findById(productId);
+		return productEntity.map(productMapper::fromEntity);
 	}
 
 	@Override
