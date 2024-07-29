@@ -3,10 +3,10 @@ package com.academy.orders.domain.order.repository;
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
-import java.util.Optional;
-import java.util.UUID;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
+import java.util.Optional;
+import java.util.UUID;
 
 public interface OrderRepository {
 	/**
@@ -71,17 +71,14 @@ public interface OrderRepository {
 	void updateOrderStatus(UUID orderId, OrderStatus orderStatus);
 
 	/**
-	 * Method find page of {@link Order} by account id, fetch products by language
+	 * Method find page of {@link Order} by account id.
 	 *
 	 * @param filterParametersDto
 	 *            filter parameters to sort orders.
-	 * @param language
-	 *            the language in which the orders should be retrieved.
 	 * @param pageable
 	 *            the pagination and sorting information.
 	 * @return a Page of OrderEntity objects matching the specified criteria.
-	 *
 	 * @author Denys Liubchenko
 	 */
-	Page<Order> findAll(OrdersFilterParametersDto filterParametersDto, String language, Pageable pageable);
+	Page<Order> findAll(OrdersFilterParametersDto filterParametersDto, Pageable pageable);
 }

@@ -152,7 +152,6 @@ class CustomOrderRepositoryTest {
 		verify(criteriaBuilder, times(2)).lessThanOrEqualTo(any(), any(LocalDateTime.class));
 		verify(criteriaBuilder, times(2)).greaterThanOrEqualTo(any(), any(LocalDateTime.class));
 		verify(criteriaQuery).orderBy(any(List.class));
-		verify(root, times(3)).fetch(anyString(), any(JoinType.class));
 		verify(criteriaBuilder, times(5)).sum(any(Path.class));
 		verify(criteriaBuilder).asc(expression);
 

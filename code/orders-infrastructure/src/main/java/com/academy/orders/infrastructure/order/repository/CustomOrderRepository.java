@@ -88,8 +88,7 @@ public class CustomOrderRepository {
 		var query = cb.createQuery(OrderEntity.class);
 		var root = query.from(OrderEntity.class);
 
-		var orderItemFetch = root.fetch(ORDER_ITEMS, JoinType.LEFT);
-		orderItemFetch.fetch("product", JoinType.LEFT);
+		root.fetch(ORDER_ITEMS, JoinType.LEFT);
 		root.fetch(POST_ADDRESS, JoinType.LEFT);
 		root.fetch(ACCOUNT, JoinType.LEFT);
 

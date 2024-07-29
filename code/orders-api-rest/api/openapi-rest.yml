@@ -219,7 +219,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PageManagerOrder'
+                $ref: '#/components/schemas/PageManagerOrderPreview'
         '400':
           $ref: '#/components/responses/BadRequestResponse'
         '401':
@@ -918,6 +918,38 @@ components:
           items:
             $ref: '#/components/schemas/OrderItem'
 
+    ManagerOrderPreview:
+      type: object
+      description: Manager's view of Order
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the order
+        isPaid:
+          type: boolean
+          description: Indicates whether the order has been paid
+        orderStatus:
+          $ref: '#/components/schemas/OrderStatus'
+        createdAt:
+          type: string
+          format: date-time
+          description: The date and time when the order was created
+        editedAt:
+          type: string
+          format: date-time
+          description: The date and time when the order was edited
+        account:
+          $ref: '#/components/schemas/AccountResponse'
+        total:
+          type: number
+          format: decimal
+          description: The total cost of the order
+        receiver:
+          $ref: '#/components/schemas/OrderReceiver'
+        postAddress:
+          $ref: '#/components/schemas/PostAddress'
+
     ManagerOrder:
       type: object
       description: Manager's view of Order
@@ -1073,7 +1105,7 @@ components:
                 $ref: '#/components/schemas/UserOrder'
               description: List of orders in the page
 
-    PageManagerOrder:
+    PageManagerOrderPreview:
       type: object
       allOf:
         - $ref: '#/components/schemas/AbstractPage'
@@ -1082,7 +1114,7 @@ components:
             content:
               type: array
               items:
-                $ref: '#/components/schemas/ManagerOrder'
+                $ref: '#/components/schemas/ManagerOrderPreview'
               description: List of orders in the page
 
     PageProducts:
