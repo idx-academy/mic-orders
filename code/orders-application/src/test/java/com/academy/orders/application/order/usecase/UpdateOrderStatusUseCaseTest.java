@@ -16,7 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
-
 import static com.academy.orders.application.ModelUtils.getCanceledOrder;
 import static com.academy.orders.application.ModelUtils.getDeliveredOrder;
 import static com.academy.orders.application.ModelUtils.getOrder;
@@ -24,6 +23,7 @@ import static com.academy.orders.application.ModelUtils.getOrderStatusInfo;
 import static com.academy.orders.application.ModelUtils.getPaidOrder;
 import static com.academy.orders.application.ModelUtils.getUpdateOrderStatusDto;
 import static com.academy.orders.application.ModelUtils.getUpdateOrderStatusDtoWithCompletedStatus;
+import static com.academy.orders.application.ModelUtils.getUpdateOrderStatusDtoWithPaidStatus;
 import static com.academy.orders.application.TestConstants.TEST_ADMIN_MAIL;
 import static com.academy.orders.application.TestConstants.TEST_MANAGER_MAIL;
 import static com.academy.orders.application.TestConstants.TEST_UUID;
@@ -184,5 +184,56 @@ class UpdateOrderStatusUseCaseTest {
 
 		verify(orderRepository).findById(orderId);
 		verify(accountRepository).findRoleByEmail(TEST_MANAGER_MAIL);
+	}
+
+	@Test
+	void updateOrderStatusThrowsOrderAlreadyPaidExceptionWhenIsPaidNotNullAndCurrentOrderIsPaidTest() {
+		var orderId = TEST_UUID;
+		var updateOrderStatusDto = getUpdateOrderStatusDtoWithPaidStatus();
+		var role = Role.ROLE_MANAGER;
+
+		when(orderRepository.findById(orderId)).thenReturn(Optional.of(getPaidOrder()));
+		when(accountRepository.findRoleByEmail(TEST_MANAGER_MAIL)).thenReturn(Optional.of(role));
+
+		assertThrows(OrderAlreadyPaidException.class,
+				() -> updateOrderStatusUseCase.updateOrderStatus(orderId, updateOrderStatusDto, TEST_MANAGER_MAIL));
+
+		verify(orderRepository).findById(orderId);
+		verify(accountRepository).findRoleByEmail(TEST_MANAGER_MAIL);
+	}
+
+	@Test
+	void updateOrderStatusThrowsOrderUnpaidExceptionWhenCurrentOrderNotPaidAndStatusCompletedTest() {
+		var orderId = TEST_UUID;
+		var updateOrderStatusDto = getUpdateOrderStatusDtoWithCompletedStatus();
+		var role = Role.ROLE_MANAGER;
+
+		when(orderRepository.findById(orderId)).thenReturn(Optional.of(getOrder()));
+		when(accountRepository.findRoleByEmail(TEST_MANAGER_MAIL)).thenReturn(Optional.of(role));
+
+		assertThrows(OrderUnpaidException.class,
+				() -> updateOrderStatusUseCase.updateOrderStatus(orderId, updateOrderStatusDto, TEST_MANAGER_MAIL));
+
+		verify(orderRepository).findById(orderId);
+		verify(accountRepository).findRoleByEmail(TEST_MANAGER_MAIL);
+	}
+
+	@Test
+	void updateOrderStatusUpdatesIsPaidStatusWhenIsPaidNotNullTest() {
+		var orderId = TEST_UUID;
+		var updateOrderStatusDto = getUpdateOrderStatusDtoWithPaidStatus();
+		var role = Role.ROLE_MANAGER;
+
+		when(orderRepository.findById(orderId)).thenReturn(Optional.of(getOrder()));
+		when(accountRepository.findRoleByEmail(TEST_MANAGER_MAIL)).thenReturn(Optional.of(role));
+		doNothing().when(orderRepository).updateOrderStatus(orderId, OrderStatus.IN_PROGRESS);
+		doNothing().when(orderRepository).updateIsPaidStatus(orderId, true);
+
+		var result = updateOrderStatusUseCase.updateOrderStatus(orderId, updateOrderStatusDto, TEST_MANAGER_MAIL);
+
+		assertThat(result.isPaid()).isTrue();
+
+		verify(orderRepository).updateOrderStatus(orderId, OrderStatus.IN_PROGRESS);
+		verify(orderRepository).updateIsPaidStatus(orderId, true);
 	}
 }

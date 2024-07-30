@@ -11,7 +11,7 @@ public class OrderUnpaidException extends PaidException {
 	private final String status;
 
 	public OrderUnpaidException(UUID orderId, String status) {
-		super(String.format("Order with ID: %s must be paid before changing status to " + status, orderId));
+		super(String.format("Order with ID: %s must be paid before changing status to %s", orderId, status));
 		this.orderId = orderId;
 		this.status = status;
 	}
