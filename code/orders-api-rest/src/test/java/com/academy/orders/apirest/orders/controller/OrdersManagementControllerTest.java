@@ -5,8 +5,9 @@ import com.academy.orders.apirest.common.TestSecurityConfig;
 import com.academy.orders.apirest.common.mapper.PageableDTOMapper;
 import com.academy.orders.apirest.orders.mapper.OrderDTOMapper;
 import com.academy.orders.apirest.orders.mapper.OrderFilterParametersDTOMapper;
-import com.academy.orders.apirest.orders.mapper.OrderStatusMapper;
+import com.academy.orders.apirest.orders.mapper.OrderStatusInfoDTOMapper;
 import com.academy.orders.apirest.orders.mapper.PageOrderDTOMapper;
+import com.academy.orders.apirest.orders.mapper.UpdateOrderStatusRequestDTOMapper;
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
@@ -15,12 +16,11 @@ import com.academy.orders.domain.order.usecase.GetAllOrdersUseCase;
 import com.academy.orders.domain.order.usecase.GetOrderByIdUseCase;
 import com.academy.orders.domain.order.usecase.UpdateOrderStatusUseCase;
 import com.academy.orders_api_rest.generated.model.ManagerOrderDTO;
-import com.academy.orders_api_rest.generated.model.OrderStatusDTO;
+import com.academy.orders_api_rest.generated.model.OrderStatusInfoDTO;
 import com.academy.orders_api_rest.generated.model.OrdersFilterParametersDTO;
 import com.academy.orders_api_rest.generated.model.PageManagerOrderPreviewDTO;
 import com.academy.orders_api_rest.generated.model.PageableDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +33,10 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-
 import static com.academy.orders.apirest.ModelUtils.getManagerOrderDTO;
 import static com.academy.orders.apirest.ModelUtils.getOrder;
+import static com.academy.orders.apirest.ModelUtils.getOrderStatusInfo;
+import static com.academy.orders.apirest.ModelUtils.getOrderStatusInfoDTO;
 import static com.academy.orders.apirest.ModelUtils.getOrdersFilterParametersDTO;
 import static com.academy.orders.apirest.ModelUtils.getOrdersFilterParametersDTOParams;
 import static com.academy.orders.apirest.ModelUtils.getOrdersFilterParametersDto;
@@ -43,17 +44,16 @@ import static com.academy.orders.apirest.ModelUtils.getPageManagerOrderPreviewDT
 import static com.academy.orders.apirest.ModelUtils.getPageOf;
 import static com.academy.orders.apirest.ModelUtils.getPageable;
 import static com.academy.orders.apirest.ModelUtils.getPageableParams;
+import static com.academy.orders.apirest.ModelUtils.getUpdateOrderStatusDto;
+import static com.academy.orders.apirest.ModelUtils.getUpdateOrderStatusRequestDTO;
 import static com.academy.orders.apirest.TestConstants.ROLE_MANAGER;
 import static com.academy.orders.apirest.TestConstants.TEST_UUID;
 import static com.academy.orders.apirest.TestConstants.UPDATE_ORDER_STATUS_URL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(OrdersManagementController.class)
@@ -77,9 +77,11 @@ class OrdersManagementControllerTest {
 	@MockBean
 	private OrderFilterParametersDTOMapper orderFilterParametersDTOMapper;
 	@MockBean
-	private OrderStatusMapper orderStatusMapper;
-	@MockBean
 	private OrderDTOMapper orderDTOMapper;
+	@MockBean
+	private OrderStatusInfoDTOMapper orderStatusInfoDTOMapper;
+	@MockBean
+	private UpdateOrderStatusRequestDTOMapper updateOrderStatusRequestDTOMapper;
 
 	@Test
 	@WithMockUser(authorities = ROLE_MANAGER)
@@ -118,20 +120,29 @@ class OrdersManagementControllerTest {
 	@WithMockUser(authorities = ROLE_MANAGER)
 	void updateOrderStatusTest() throws Exception {
 		var orderId = UUID.randomUUID();
-		var status = OrderStatusDTO.IN_PROGRESS;
-		var availableStatuses = List.of("COMPLETED");
+		var updateOrderStatusRequestDTO = getUpdateOrderStatusRequestDTO();
+		var updateOrderStatusDto = getUpdateOrderStatusDto();
 
-		when(updateOrderStatusUseCase.updateOrderStatus(any(UUID.class), any(), anyString()))
-				.thenReturn(List.of("COMPLETED"));
+		var orderStatusInfoDTO = getOrderStatusInfoDTO();
+		var orderStatusInfo = getOrderStatusInfo();
 
-		String expectedJson = objectMapper.writeValueAsString(availableStatuses);
+		when(updateOrderStatusRequestDTOMapper.fromDTO(updateOrderStatusRequestDTO)).thenReturn(updateOrderStatusDto);
+		when(updateOrderStatusUseCase.updateOrderStatus(orderId, updateOrderStatusDto, "user"))
+				.thenReturn(orderStatusInfo);
+		when(orderStatusInfoDTOMapper.toDTO(orderStatusInfo)).thenReturn(orderStatusInfoDTO);
 
-		mockMvc.perform(patch(UPDATE_ORDER_STATUS_URL, orderId).param("orderStatus", status.toString())
-				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(content().json(expectedJson))
-				.andReturn();
+		var request = objectMapper.writeValueAsString(updateOrderStatusRequestDTO);
+		var result = mockMvc.perform(
+				patch(UPDATE_ORDER_STATUS_URL, orderId).contentType(MediaType.APPLICATION_JSON).content(request))
+				.andExpect(status().isOk()).andReturn();
 
-		verify(updateOrderStatusUseCase).updateOrderStatus(orderId, orderStatusMapper.fromDTO(status), "user");
+		var contentAsString = result.getResponse().getContentAsString();
+		assertEquals(orderStatusInfoDTO, objectMapper.readValue(contentAsString, OrderStatusInfoDTO.class));
+
+		verify(updateOrderStatusRequestDTOMapper).fromDTO(updateOrderStatusRequestDTO);
+		verify(updateOrderStatusUseCase).updateOrderStatus(orderId, updateOrderStatusDto, "user");
+		verify(orderStatusInfoDTOMapper).toDTO(orderStatusInfo);
+
 	}
 
 	@Test

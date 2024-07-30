@@ -9,7 +9,9 @@ import com.academy.orders.domain.cart.entity.CartItem;
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.order.dto.CreateOrderDto;
+import com.academy.orders.domain.order.dto.OrderStatusInfo;
 import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
+import com.academy.orders.domain.order.dto.UpdateOrderStatusDto;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.entity.OrderItem;
 import com.academy.orders.domain.order.entity.OrderReceiver;
@@ -110,8 +112,22 @@ public class ModelUtils {
 				.orderItems(List.of(getOrderItem())).editedAt(DATE_TIME).total(BigDecimal.valueOf(200)).build();
 	}
 
+	public static Order getPaidOrder() {
+		return Order.builder().id(TEST_UUID).createdAt(DATE_TIME).isPaid(true).orderStatus(OrderStatus.IN_PROGRESS)
+				.postAddress(PostAddress.builder().city("Kyiv").deliveryMethod(NOVA).department("1").build())
+				.receiver(OrderReceiver.builder().firstName("John").lastName("Doe").email("test@mail.com").build())
+				.orderItems(List.of(getOrderItem())).editedAt(DATE_TIME).total(BigDecimal.valueOf(200)).build();
+	}
+
 	public static Order getCanceledOrder() {
 		return Order.builder().id(TEST_UUID).createdAt(DATE_TIME).isPaid(false).orderStatus(OrderStatus.CANCELED)
+				.postAddress(PostAddress.builder().city("Kyiv").deliveryMethod(NOVA).department("1").build())
+				.receiver(OrderReceiver.builder().firstName("John").lastName("Doe").email("test@mail.com").build())
+				.orderItems(List.of(getOrderItem())).editedAt(DATE_TIME).total(BigDecimal.valueOf(200)).build();
+	}
+
+	public static Order getDeliveredOrder() {
+		return Order.builder().id(TEST_UUID).createdAt(DATE_TIME).isPaid(false).orderStatus(OrderStatus.DELIVERED)
 				.postAddress(PostAddress.builder().city("Kyiv").deliveryMethod(NOVA).department("1").build())
 				.receiver(OrderReceiver.builder().firstName("John").lastName("Doe").email("test@mail.com").build())
 				.orderItems(List.of(getOrderItem())).editedAt(DATE_TIME).total(BigDecimal.valueOf(200)).build();
@@ -186,4 +202,18 @@ public class ModelUtils {
 				.quantity(10).price(BigDecimal.valueOf(100.00)).tags(Set.of(new Tag(1L, "tag")))
 				.productTranslationManagement(Set.of(getProductTranslationManagement())).build();
 	}
+
+	public static UpdateOrderStatusDto getUpdateOrderStatusDto() {
+		return UpdateOrderStatusDto.builder().status(OrderStatus.IN_PROGRESS).isPaid(false).build();
+	}
+
+	public static UpdateOrderStatusDto getUpdateOrderStatusDtoWithCompletedStatus() {
+		return UpdateOrderStatusDto.builder().status(OrderStatus.COMPLETED).isPaid(false).build();
+	}
+
+	public static OrderStatusInfo getOrderStatusInfo() {
+		return OrderStatusInfo.builder().availableStatuses(List.of("SHIPPED, DELIVERED, COMPLETED, CANCELED"))
+				.isPaid(false).build();
+	}
+
 }

@@ -188,6 +188,16 @@ class OrderRepositoryImplTest {
 	}
 
 	@Test
+	void updateIsPaidStatusTest() {
+		UUID orderId = TEST_UUID;
+
+		doNothing().when(jpaAdapter).updateIsPaidStatus(orderId, true);
+
+		orderRepository.updateIsPaidStatus(orderId, true);
+		verify(jpaAdapter).updateIsPaidStatus(orderId, true);
+	}
+
+	@Test
 	void findByIdFetchDataTest() {
 		// Given
 		String language = "uk";

@@ -4,6 +4,7 @@ import com.academy.orders.domain.account.exception.AccountAlreadyExistsException
 import com.academy.orders.domain.cart.exception.EmptyCartException;
 import com.academy.orders.domain.cart.exception.QuantityExceedsAvailableException;
 import com.academy.orders.domain.exception.NotFoundException;
+import com.academy.orders.domain.exception.PaidException;
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import com.academy.orders.domain.order.exception.InsufficientProductQuantityException;
 import com.academy.orders.domain.order.exception.InvalidOrderStatusTransitionException;
@@ -153,6 +154,14 @@ class ErrorHandlerTest {
 				.title(HttpStatus.BAD_REQUEST.getReasonPhrase()).detail(errorMessage);
 
 		assertEquals(expectedErrorObjectDTO, errorHandler.handleOrderFinalStateException(ex));
+	}
+
+	@Test
+	void handlePaidExceptionTest() {
+		var ex = mock(PaidException.class);
+
+		when(ex.getMessage()).thenReturn(DEFAULT_ERROR_MESSAGE);
+		assertEquals(buildErrorObjectDTO(BAD_REQUEST), errorHandler.handlePaidException(ex));
 	}
 
 	private ErrorObjectDTO buildErrorObjectDTO(HttpStatus status, String detail) {
