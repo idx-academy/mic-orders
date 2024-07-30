@@ -13,9 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class GetProductSearchResultsUseCaseImpl implements GetProductSearchResultsUseCase {
-    private final ProductRepository productRepository;
-    @Override
-    public Page<Product> findProductsBySearchQuery(String searchQuery, String lang, Pageable pageable) {
-        return productRepository.searchProductsByName(searchQuery, lang, pageable);
-    }
+	private final ProductRepository productRepository;
+	@Override
+	public Page<Product> findProductsBySearchQuery(String searchQuery, String lang, Pageable pageable) {
+		return productRepository.searchProductsByName(searchQuery, lang, pageable);
+	}
 }

@@ -5,5 +5,5 @@ import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.product.entity.Product;
 
 public interface GetProductSearchResultsUseCase {
-    Page<Product> findProductsBySearchQuery(String searchQuery, String lang, Pageable pageable);
+	Page<Product> findProductsBySearchQuery(String searchQuery, String lang, Pageable pageable);
 }
