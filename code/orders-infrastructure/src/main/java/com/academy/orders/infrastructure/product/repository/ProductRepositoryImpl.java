@@ -102,6 +102,8 @@ public class ProductRepositoryImpl implements ProductRepository {
 		var pageable = pageableMapper.fromDomain(pageableDomain);
 		var ids = productJpaAdapter.findProductsIdsByLangAndFilters(lang, filter, pageable);
 		var products = productJpaAdapter.findProductsByIds(lang, ids.getContent(), pageable.getSort());
+		products.forEach(p -> p.setImage(p.getImage().substring(p.getImage().lastIndexOf("/") + 1)));
+
 		return productPageMapper.toDomain(new PageImpl<>(products, pageable, ids.getTotalElements()));
 	}
 
@@ -116,4 +118,5 @@ public class ProductRepositoryImpl implements ProductRepository {
 		var entity = productManagementMapper.toEntity(product);
 		return productMapper.fromEntity(productJpaAdapter.save(entity));
 	}
+
 }
