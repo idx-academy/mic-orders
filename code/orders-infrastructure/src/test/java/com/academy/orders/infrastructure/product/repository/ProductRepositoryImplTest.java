@@ -1,6 +1,5 @@
 package com.academy.orders.infrastructure.product.repository;
 
-import com.academy.orders.domain.common.respository.ImageRepository;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders.infrastructure.common.PageableMapper;
 import com.academy.orders.infrastructure.product.ProductManagementMapper;
@@ -38,7 +37,6 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
@@ -62,9 +60,6 @@ class ProductRepositoryImplTest {
 
 	@Mock
 	private ProductManagementMapper productManagementMapper;
-
-	@Mock
-	private ImageRepository imageRepository;
 
 	@ParameterizedTest
 	@CsvSource({"true", "false"})
@@ -92,8 +87,6 @@ class ProductRepositoryImplTest {
 		var page = new PageImpl<>(List.of(productEntity));
 		when(productJpaAdapter.findAllByLanguageCodeAndStatusVisible(LANGUAGE_EN,
 				PageRequest.of(pageable.page(), pageable.size()), sort)).thenReturn(page);
-		when(imageRepository.getImageLinkByName(anyString())).thenReturn(product.image());
-
 		when(productMapper.fromEntities(page.getContent())).thenReturn(List.of(product));
 		var products = productRepository.getAllProducts(LANGUAGE_EN, pageable);
 		assertEquals(1, products.size());

@@ -17,4 +17,7 @@ public interface ProductMapper {
 
 	@Mapping(target = "id", ignore = true)
 	ProductEntity toEntity(CreateProductRequestDto dto);
+
+	@Mapping(target = "image", source = "image")
+	Product mapDomainImage(Product product, String image);
 }
