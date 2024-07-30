@@ -16,7 +16,7 @@ import com.academy.orders_api_rest.generated.api.OrdersManagementApi;
 import com.academy.orders_api_rest.generated.model.ManagerOrderDTO;
 import com.academy.orders_api_rest.generated.model.OrderStatusDTO;
 import com.academy.orders_api_rest.generated.model.OrdersFilterParametersDTO;
-import com.academy.orders_api_rest.generated.model.PageManagerOrderDTO;
+import com.academy.orders_api_rest.generated.model.PageManagerOrderPreviewDTO;
 import com.academy.orders_api_rest.generated.model.PageableDTO;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -41,10 +41,11 @@ public class OrdersManagementController implements OrdersManagementApi {
 
 	@Override
 	@PreAuthorize("hasAnyAuthority('ROLE_MANAGER')")
-	public PageManagerOrderDTO getAllOrders(OrdersFilterParametersDTO ordersFilter, String lang, PageableDTO pageable) {
+	public PageManagerOrderPreviewDTO getAllOrders(OrdersFilterParametersDTO ordersFilter, String lang,
+			PageableDTO pageable) {
 		Pageable pageableDomain = pageableDTOMapper.fromDto(pageable);
 		OrdersFilterParametersDto filterParametersDto = orderFilterParametersDTOMapper.fromDTO(ordersFilter);
-		Page<Order> ordersByUserId = getAllOrdersUseCase.getAllOrders(filterParametersDto, lang, pageableDomain);
+		Page<Order> ordersByUserId = getAllOrdersUseCase.getAllOrders(filterParametersDto, pageableDomain);
 		return pageOrderDTOMapper.toManagerDto(ordersByUserId);
 	}
 

@@ -2,7 +2,7 @@ package com.academy.orders.apirest.common;
 
 import com.academy.orders.domain.account.exception.AccountAlreadyExistsException;
 import com.academy.orders.domain.cart.exception.EmptyCartException;
-import com.academy.orders.domain.cart.exception.ExceedsAvailableException;
+import com.academy.orders.domain.cart.exception.QuantityExceedsAvailableException;
 import com.academy.orders.domain.exception.NotFoundException;
 import com.academy.orders.domain.order.exception.InsufficientProductQuantityException;
 import com.academy.orders_api_rest.generated.model.ErrorObjectDTO;
@@ -122,8 +122,10 @@ class ErrorHandlerTest {
 	void handleExceedsAvailableException() {
 		var productId = UUID.randomUUID();
 		var quantity = 10;
-		var ex = new ExceedsAvailableException(productId, quantity);
-		var message = "Product with id: " + productId + " exceeded available quantity";
+		var availableQuantity = 5;
+		var ex = new QuantityExceedsAvailableException(productId, quantity, availableQuantity);
+		var message = "Product with id: " + productId + " exceeded available quantity. Requested: " + quantity
+				+ ", Available: " + availableQuantity;
 
 		assertEquals(buildErrorObjectDTO(CONFLICT, message), errorHandler.handleExceedsAvailableException(ex));
 	}
