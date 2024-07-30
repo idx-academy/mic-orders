@@ -10,12 +10,12 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class ProductImageRepositoryImpl implements ProductImageRepository {
-    private final ImageRepository imageRepository;
-    private final ProductMapper productMapper;
+	private final ImageRepository imageRepository;
+	private final ProductMapper productMapper;
 
-    @Override
-    public Product loadImageForProduct(Product product) {
-        var imageUrl = imageRepository.getImageLinkByName(product.image());
-        return productMapper.mapDomainImage(product, imageUrl);
-    }
+	@Override
+	public Product loadImageForProduct(Product product) {
+		var imageUrl = imageRepository.getImageLinkByName(product.image());
+		return productMapper.mapDomainImage(product, imageUrl);
+	}
 }
