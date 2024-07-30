@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -108,6 +109,13 @@ public class ErrorHandler {
 	public ErrorObjectDTO handleExceedsAvailableException(final QuantityExceedsAvailableException ex) {
 		log.warn("Product quantity exceeds available stock", ex);
 		return new ErrorObjectDTO().status(HttpStatus.CONFLICT.value()).title(HttpStatus.CONFLICT.getReasonPhrase())
+				.detail(ex.getMessage());
+	}
+
+	@ExceptionHandler(UsernameNotFoundException.class)
+	@ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+	public ErrorObjectDTO handleUsernameNotFoundException(final UsernameNotFoundException ex) {
+		return new ErrorObjectDTO().status(HttpStatus.UNAUTHORIZED.value()).title(HttpStatus.UNAUTHORIZED.getReasonPhrase())
 				.detail(ex.getMessage());
 	}
 }
