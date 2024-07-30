@@ -133,7 +133,21 @@ public interface ProductRepository {
 	 * @param productId
 	 *            the unique identifier of the product.
 	 * @return the {@link Product} entity.
+	 *
 	 * @author Anton Bondar
 	 */
 	Optional<Product> getById(UUID productId);
+
+	/**
+	 * Searches for products by their name based on the given search query and language.
+	 *
+	 * @param searchQuery the search term used to find products by name.
+	 * @param lang the language code for localizing the product names.
+	 * @param pageable the pagination information, specifying the page number, size, and sorting criteria.
+	 *
+	 * @return a {@code Page} of {@code Product} objects that match the search criteria.
+	 *
+	 * @author Denys Liubchenko
+	 */
+    Page<Product> searchProductsByName(String searchQuery, String lang, Pageable pageable);
 }
