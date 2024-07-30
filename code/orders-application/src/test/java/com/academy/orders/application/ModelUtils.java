@@ -207,8 +207,12 @@ public class ModelUtils {
 		return UpdateOrderStatusDto.builder().status(OrderStatus.IN_PROGRESS).isPaid(false).build();
 	}
 
-	public static UpdateOrderStatusDto getUpdateOrderStatusDtoWithPaidStatus() {
-		return UpdateOrderStatusDto.builder().status(OrderStatus.IN_PROGRESS).isPaid(true).build();
+	public static UpdateOrderStatusDto getUpdateOrderStatusDtoWithNullIsPaid() {
+		return UpdateOrderStatusDto.builder().status(OrderStatus.IN_PROGRESS).build();
+	}
+
+	public static UpdateOrderStatusDto getUpdateOrderStatusDtoWithNullIsPaidAndStatusCompleted() {
+		return UpdateOrderStatusDto.builder().status(OrderStatus.COMPLETED).build();
 	}
 
 	public static UpdateOrderStatusDto getUpdateOrderStatusDtoWithCompletedStatus() {
