@@ -115,7 +115,7 @@ public class ErrorHandler {
 	@ExceptionHandler(UsernameNotFoundException.class)
 	@ResponseStatus(value = HttpStatus.UNAUTHORIZED)
 	public ErrorObjectDTO handleUsernameNotFoundException(final UsernameNotFoundException ex) {
-		return new ErrorObjectDTO().status(HttpStatus.UNAUTHORIZED.value()).title(HttpStatus.UNAUTHORIZED.getReasonPhrase())
-				.detail(ex.getMessage());
+		return new ErrorObjectDTO().status(HttpStatus.UNAUTHORIZED.value())
+				.title(HttpStatus.UNAUTHORIZED.getReasonPhrase()).detail(ex.getMessage());
 	}
 }
