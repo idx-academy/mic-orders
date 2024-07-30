@@ -3,6 +3,9 @@ package com.academy.orders.boot.config;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
@@ -10,6 +13,10 @@ import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
 import java.util.function.Supplier;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,12 +39,15 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 @Configuration
 @EnableMethodSecurity
+@Slf4j
 @RequiredArgsConstructor
 public class SecurityConfig {
 	private final UserDetailsService userDetailsService;
@@ -68,6 +78,7 @@ public class SecurityConfig {
 			cors.configurationSource(source);
 		}).csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.addFilterBefore(accountStatusFilter(), UsernamePasswordAuthenticationFilter.class)
 				.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults())
 						.authenticationEntryPoint(authenticationEntryPoint(handlerExceptionResolver)))
 				.build();
@@ -88,6 +99,25 @@ public class SecurityConfig {
 		var jwk = new RSAKey.Builder((RSAPublicKey) keyPair.getPublic()).privateKey(keyPair.getPrivate()).build();
 		var jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
 		return new NimbusJwtEncoder(jwks);
+	}
+
+	@Bean
+	public OncePerRequestFilter accountStatusFilter() {
+		return new OncePerRequestFilter() {
+			@SneakyThrows
+			@Override
+			protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
+					@NonNull FilterChain filterChain) {
+				var header = request.getHeader("Authorization");
+				if (!ObjectUtils.isEmpty(header) && header.startsWith("Bearer")) {
+					var token = header.split(" ")[1].trim();
+					var username = jwtDecoder(generatedJwtKeyPairProvider()).decode(token).getSubject();
+					log.info("Account activity verification");
+					userDetailsService.loadUserByUsername(username);
+				}
+				filterChain.doFilter(request, response);
+			}
+		};
 	}
 
 	@Bean

@@ -26,7 +26,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		var account = accountRepository.getAccountByEmail(username);
 		if (account.isEmpty() || account.get().status().equals(DEACTIVATED)) {
 			throw new UsernameNotFoundException(
-                format("Account does not exist with email %s or account is disabled",username));
+					format("Account does not exist with email %s or account is disabled", username));
 		}
 		return account.get();
 	}
