@@ -2,7 +2,6 @@ package com.academy.orders.infrastructure.product.repository;
 
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
-import com.academy.orders.domain.common.respository.ImageRepository;
 import com.academy.orders.domain.product.dto.ProductManagementFilterDto;
 import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.ProductManagement;
@@ -37,7 +36,6 @@ public class ProductRepositoryImpl implements ProductRepository {
 	private final ProductTranslationManagementMapper productTranslationManagementMapper;
 	private final ProductPageMapper productPageMapper;
 	private final PageableMapper pageableMapper;
-	private final ImageRepository imageRepository;
 
 	@Override
 	public Page<Product> getAllProducts(String language, Pageable pageable) {
