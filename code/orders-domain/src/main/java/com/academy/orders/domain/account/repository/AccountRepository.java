@@ -2,6 +2,7 @@ package com.academy.orders.domain.account.repository;
 
 import com.academy.orders.domain.account.entity.Account;
 import com.academy.orders.domain.account.entity.CreateAccountDTO;
+import com.academy.orders.domain.account.entity.enumerated.UserStatus;
 import com.academy.orders.domain.account.entity.enumerated.Role;
 
 import java.util.Optional;
@@ -54,4 +55,7 @@ public interface AccountRepository {
 	 * @author Anton Bondar
 	 */
 	Optional<Role> findRoleByEmail(String email);
+
+	Boolean existsById(Long id);
+	void updateStatus(Long id, UserStatus status);
 }
