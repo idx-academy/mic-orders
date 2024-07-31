@@ -19,6 +19,8 @@ import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.ProductTranslation;
 import com.academy.orders.domain.product.entity.Tag;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
+import com.academy.orders_api_rest.generated.model.PageProductSearchResultDTO;
+import com.academy.orders_api_rest.generated.model.ProductSearchResultDTO;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -466,5 +468,27 @@ public class ModelUtils {
 	public static OrderStatusInfo getOrderStatusInfo() {
 		return OrderStatusInfo.builder().availableStatuses(List.of("SHIPPED, DELIVERED, COMPLETED, CANCELED"))
 				.isPaid(false).build();
+	}
+
+	public static PageProductSearchResultDTO getPageProductSearchResultDTO() {
+		PageProductSearchResultDTO pageProductSearchResultDTO = new PageProductSearchResultDTO();
+		pageProductSearchResultDTO.setEmpty(false);
+		pageProductSearchResultDTO.setTotalElements(100L);
+		pageProductSearchResultDTO.setTotalPages(10);
+		pageProductSearchResultDTO.setFirst(true);
+		pageProductSearchResultDTO.setLast(false);
+		pageProductSearchResultDTO.setNumber(1);
+		pageProductSearchResultDTO.setNumberOfElements(10);
+		pageProductSearchResultDTO.setSize(10);
+		pageProductSearchResultDTO.content(singletonList(getProductSearchResultDTO()));
+		return pageProductSearchResultDTO;
+	}
+
+	public static ProductSearchResultDTO getProductSearchResultDTO() {
+		ProductSearchResultDTO productSearchResultDTO = new ProductSearchResultDTO();
+		productSearchResultDTO.setId(TEST_UUID);
+		productSearchResultDTO.setName(TAG_NAME);
+		productSearchResultDTO.setImage("https://some/image");
+		return productSearchResultDTO;
 	}
 }

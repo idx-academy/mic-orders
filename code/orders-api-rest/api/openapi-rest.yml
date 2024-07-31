@@ -85,7 +85,7 @@ paths:
         '409':
           $ref: '#/components/responses/Conflict'
 
-  /v1/orders/{orderId}:
+  /v1/management/orders/{orderId}:
     get:
       tags:
         - OrdersManagement
@@ -119,7 +119,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
 
-  /v1/orders/{orderId}/status:
+  /v1/management/orders/{orderId}/status:
     patch:
       tags:
         - OrdersManagement
@@ -335,6 +335,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PageProducts'
+
+  /v1/products/search:
+    get:
+      tags:
+        - Products
+      summary: Get page of products in search.
+      description: The endpoint for getting page of short product info in search.
+      operationId: searchProducts
+      parameters:
+        - in: query
+          name: searchQuery
+          required: true
+          schema:
+            minLength: 3
+            pattern: '^(?!\s*$).+'
+            type: string
+            nullable: false
+            example: phone
+        - $ref: '#/components/parameters/Language'
+        - $ref: '#/components/parameters/Pageable'
+      responses:
+        '200':
+          description: Short information about all products
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageProductSearchResult'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+
   /v1/management/products:
     get:
       tags:
@@ -365,6 +395,7 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
+
     post:
       tags:
         - ProductsManagement
@@ -852,6 +883,21 @@ components:
           items:
             $ref: '#/components/schemas/ProductTranslation'
 
+    ProductSearchResult:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Id of the product.
+        image:
+          type: string
+          description: URL of the product image.
+        name:
+          type: string
+          example: APPLE iPhone
+          description: Name of the product.
+
     Tag:
       type: object
       properties:
@@ -1154,6 +1200,18 @@ components:
               items:
                 $ref: '#/components/schemas/UserOrder'
               description: List of orders in the page
+
+    PageProductSearchResult:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/AbstractPage'
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/ProductSearchResult'
+              description: List of product search results in page
 
     PageManagerOrderPreview:
       type: object

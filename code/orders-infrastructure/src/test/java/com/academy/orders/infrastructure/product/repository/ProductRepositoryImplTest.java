@@ -1,6 +1,9 @@
 package com.academy.orders.infrastructure.product.repository;
 
+import com.academy.orders.domain.common.Page;
+import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
+import com.academy.orders.infrastructure.ModelUtils;
 import com.academy.orders.infrastructure.common.PageableMapper;
 import com.academy.orders.infrastructure.product.ProductManagementMapper;
 import com.academy.orders.infrastructure.product.ProductMapper;
@@ -83,17 +86,18 @@ class ProductRepositoryImplTest {
 		var sort = String.join(",", pageable.sort());
 		var productEntity = getProductEntity();
 		var product = getProduct();
+		var pageDomain = getPageOf(product);
 
 		var page = new PageImpl<>(List.of(productEntity));
 		when(productJpaAdapter.findAllByLanguageCodeAndStatusVisible(LANGUAGE_EN,
 				PageRequest.of(pageable.page(), pageable.size()), sort)).thenReturn(page);
-		when(productMapper.fromEntities(page.getContent())).thenReturn(List.of(product));
+		when(productPageMapper.toDomain(page)).thenReturn(pageDomain);
 		var products = productRepository.getAllProducts(LANGUAGE_EN, pageable);
-		assertEquals(1, products.size());
 
+		assertEquals(pageDomain, products);
 		verify(productJpaAdapter).findAllByLanguageCodeAndStatusVisible(LANGUAGE_EN,
 				PageRequest.of(pageable.page(), pageable.size()), sort);
-		verify(productMapper).fromEntities(page.getContent());
+		verify(productPageMapper).toDomain(page);
 	}
 
 	@Test
@@ -216,5 +220,29 @@ class ProductRepositoryImplTest {
 
 		verify(productJpaAdapter).findById(TEST_UUID);
 		verify(productMapper).fromEntity(productEntity);
+	}
+
+	@Test
+	void searchProductsByNameTest() {
+		// Given
+		var pageableDomain = getPageable();
+		var pageable = PageRequest.of(0, 7);
+		var entityPage = ModelUtils.getPageImplOf(getProductTranslationEntity());
+		var page = ModelUtils.getPageOf(getProduct());
+		String searchQuery = "some text";
+		String lang = "en";
+
+		when(pageableMapper.fromDomain(pageableDomain)).thenReturn(pageable);
+		when(productJpaAdapter.findProductsByNameWithSearchQuery(searchQuery, lang, pageable)).thenReturn(entityPage);
+		when(productPageMapper.fromProductTranslationEntity(entityPage)).thenReturn(page);
+
+		// When
+		Page<Product> actual = productRepository.searchProductsByName(searchQuery, lang, pageableDomain);
+
+		// Then
+		assertEquals(page, actual);
+		verify(pageableMapper).fromDomain(pageableDomain);
+		verify(productJpaAdapter).findProductsByNameWithSearchQuery(searchQuery, lang, pageable);
+		verify(productPageMapper).fromProductTranslationEntity(entityPage);
 	}
 }
