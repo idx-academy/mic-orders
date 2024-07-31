@@ -76,6 +76,11 @@ public class OrderRepositoryImpl implements OrderRepository {
 		jpaAdapter.updateOrderStatus(orderId, orderStatus);
 	}
 
+	@Override
+	public void updateIsPaidStatus(UUID orderId, Boolean isPaid) {
+		jpaAdapter.updateIsPaidStatus(orderId, isPaid);
+	}
+
 	private OrderEntity getOrderEntityWithPostAddress(Order order) {
 		var orderEntity = mapper.toEntity(order);
 		orderEntity.getPostAddress().setOrder(orderEntity);

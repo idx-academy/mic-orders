@@ -42,4 +42,9 @@ public class AccountRepositoryImpl implements AccountRepository {
 		AccountEntity savedAccount = accountJpaAdapter.save(accountEntity);
 		return accountMapper.fromEntity(savedAccount);
 	}
+
+	@Override
+	public Optional<Role> findRoleByEmail(String email) {
+		return accountJpaAdapter.findRoleByEmail(email);
+	}
 }

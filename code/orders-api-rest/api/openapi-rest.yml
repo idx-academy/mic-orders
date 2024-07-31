@@ -117,7 +117,7 @@ paths:
     patch:
       tags:
         - OrdersManagement
-      summary: Update order status
+      summary: Update order statuses by order ID
       operationId: updateOrderStatus
       security:
         - bearerAuth: [ ]
@@ -130,15 +130,19 @@ paths:
             format: uuid
           description: The ID of the order to update
           example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
-        - in: query
-          name: orderStatus
-          required: true
-          schema:
-            $ref: '#/components/schemas/OrderStatus'
-          description: The new status for the order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOrderStatusRequest'
       responses:
         '200':
           description: Order status updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderStatusInfo'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -1033,6 +1037,7 @@ components:
         - COMPLETED
         - CANCELED
       description: The various statuses an order can have
+      example: IN_PROGRESS, SHIPPED, DELIVERED, COMPLETED, CANCELED
 
     AccountResponse:
       type: object
@@ -1359,6 +1364,32 @@ components:
         type: string
         description: categories of the product
         example: 'category:computer'
+
+    UpdateOrderStatusRequest:
+      type: object
+      properties:
+        orderStatus:
+          $ref: '#/components/schemas/OrderStatus'
+        isPaid:
+          type: boolean
+          description: Indicates if the order is paid
+          example: true
+      required:
+        - orderStatus
+
+    OrderStatusInfo:
+      type: object
+      properties:
+        availableStatuses:
+          type: array
+          items:
+            type: string
+            description: List of statuses that the order can transition to from its current state
+            example: 'DELIVERED, COMPLETED, CANCELED'
+        isPaid:
+          type: boolean
+          description: Indicates if the order is paid
+          example: true
 
     ProductManagementFilter:
       type: object

@@ -15,7 +15,7 @@ public class OrderNotFoundException extends NotFoundException {
 	private static final long serialVersionUID = 90712755442212371L;
 
 	public OrderNotFoundException(UUID orderId) {
-		super(String.format("Order %s is not found", orderId));
+		super(String.format("Order with ID: %s is not found", orderId));
 		this.orderId = orderId;
 	}
 }
