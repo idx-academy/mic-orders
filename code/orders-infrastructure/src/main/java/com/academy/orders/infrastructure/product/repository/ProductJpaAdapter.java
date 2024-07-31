@@ -164,9 +164,7 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 			+ "LEFT JOIN FETCH pt.language l LEFT JOIN FETCH p.tags t WHERE p.id = :id AND l.code = :languageCode")
 	ProductTranslationEntity findTranslationByIdAndLanguageCode(UUID id, String languageCode);
 
-	@Query("SELECT p FROM ProductEntity p " +
-		   "LEFT JOIN FETCH p.productTranslations pt " +
-		   "LEFT JOIN pt.language l " +
-		   "WHERE l.code = :lang AND LOWER(pt.name) LIKE LOWER(CONCAT('%', :searchQuery, '%'))")
+	@Query("SELECT p FROM ProductEntity p " + "LEFT JOIN FETCH p.productTranslations pt " + "LEFT JOIN pt.language l "
+			+ "WHERE l.code = :lang AND LOWER(pt.name) LIKE LOWER(CONCAT('%', :searchQuery, '%'))")
 	PageImpl<ProductEntity> findProductsByNameWithSearchQuery(String searchQuery, String lang, PageRequest pageable);
 }

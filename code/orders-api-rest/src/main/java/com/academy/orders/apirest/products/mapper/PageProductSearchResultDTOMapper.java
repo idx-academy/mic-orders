@@ -7,7 +7,7 @@ import com.academy.orders_api_rest.generated.model.ProductSearchResultDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {ManagementProductMapper.class})
 public interface PageProductSearchResultDTOMapper {
 	PageProductSearchResultDTO toDto(Page<Product> productPage);
 
