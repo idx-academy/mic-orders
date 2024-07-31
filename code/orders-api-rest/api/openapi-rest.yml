@@ -28,6 +28,9 @@ tags:
   - name: Cart
     description: Cart management endpoints
 
+  - name: UsersManagement
+    description: Endpoints for users management page
+
 #ENDPOINTS
 #=======================================================================================================================
 paths:
@@ -490,6 +493,28 @@ paths:
           $ref: '#/components/responses/NotFoundResponse'
         '409':
           $ref: '#/components/responses/Conflict'
+  /v1/users/{userId}/status:
+    patch:
+      tags:
+        - UsersManagement
+      operationId: changeUserStatus
+      summary: Block/unblock user's account
+      description: The endpoint change status of user's account
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+        - in: query
+          name: status
+          schema:
+            $ref: '#/components/schemas/AccountStatus'
+      responses:
+        '204':
+          description: Status was updated
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
 
 
 
@@ -1494,3 +1519,10 @@ components:
         - HIDDEN
       example: VISIBLE
       description: Status of the product
+
+    AccountStatus:
+      type: string
+      enum:
+        - ACTIVE
+        - DEACTIVATED
+      description: Status of the account

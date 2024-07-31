@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -136,5 +137,12 @@ public class ErrorHandler {
 		log.warn("The order is already paid/unpaid", ex);
 		return new ErrorObjectDTO().status(HttpStatus.BAD_REQUEST.value())
 				.title(HttpStatus.BAD_REQUEST.getReasonPhrase()).detail(ex.getMessage());
+	}
+
+	@ExceptionHandler(UsernameNotFoundException.class)
+	@ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+	public ErrorObjectDTO handleUsernameNotFoundException(final UsernameNotFoundException ex) {
+		return new ErrorObjectDTO().status(HttpStatus.UNAUTHORIZED.value())
+				.title(HttpStatus.UNAUTHORIZED.getReasonPhrase()).detail(ex.getMessage());
 	}
 }
