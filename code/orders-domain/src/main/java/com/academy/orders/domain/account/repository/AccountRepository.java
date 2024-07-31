@@ -56,6 +56,6 @@ public interface AccountRepository {
 	 */
 	Optional<Role> findRoleByEmail(String email);
 
-    Boolean existsById(Long id);
-    void updateStatus(Long id, UserStatus status);
+	Boolean existsById(Long id);
+	void updateStatus(Long id, UserStatus status);
 }

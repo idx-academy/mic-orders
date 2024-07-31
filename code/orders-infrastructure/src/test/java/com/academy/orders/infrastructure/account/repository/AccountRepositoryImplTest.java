@@ -76,15 +76,15 @@ class AccountRepositoryImplTest {
 		verify(accountJpaAdapter).existsByEmail(mail);
 	}
 
-    @ParameterizedTest
-    @CsvSource({"true", "false"})
-    void existsByIdTest(boolean exists) {
-        var id = 1L;
-        when(this.accountJpaAdapter.existsById(id)).thenReturn(exists);
-        var result = this.repository.existsById(id);
-        assertEquals(exists, result);
-        verify(accountJpaAdapter).existsById(id);
-    }
+	@ParameterizedTest
+	@CsvSource({"true", "false"})
+	void existsByIdTest(boolean exists) {
+		var id = 1L;
+		when(this.accountJpaAdapter.existsById(id)).thenReturn(exists);
+		var result = this.repository.existsById(id);
+		assertEquals(exists, result);
+		verify(accountJpaAdapter).existsById(id);
+	}
 
 	@Test
 	void saveTest() {
