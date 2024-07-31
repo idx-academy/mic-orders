@@ -13,6 +13,9 @@ tags:
   - name: Security
     description: Token retrieval
 
+  - name: AccountsManagement
+    description: Endpoints for accounts management page
+
   - name: Products
     description: Products endpoint
 
@@ -515,6 +518,23 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
+
+  /v1/management/accounts:
+    get:
+      tags:
+        - AccountsManagement
+      summary: Get list of accounts
+      description: The endpoint for getting all products from the database.
+      operationId: getAccounts
+      parameters:
+        - $ref: '#/components/parameters/Pageable'
+      responses:
+        '200':
+          description: Short information about all accounts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageAccounts'
 
 
 
@@ -1519,6 +1539,54 @@ components:
         - HIDDEN
       example: VISIBLE
       description: Status of the product
+
+    PageAccounts:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/AbstractPage'
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/AccountResponseManagement'
+
+    AccountResponseManagement:
+      type: object
+      properties:
+        id:
+          type: number
+          format: id
+          example: "1"
+        email:
+          type: string
+          format: email
+          example: "john.doe@example.com"
+        firstName:
+          type: string
+          example: "John"
+        lastName:
+          type: string
+          example: "Doe"
+        role:
+          type: string
+          default: ROLE_USER
+          enum:
+            - ROLE_USER
+            - ROLE_ADMIN
+            - ROLE_MANAGER
+          example: "ROLE_USER"
+        status:
+          type: string
+          default: ACTIVE
+          enum:
+            - ACTIVE
+            - DEACTIVATED
+          example: ACTIVE
+          description: Account Status
+        createdAt:
+          type: string
+          format: date-time
 
     AccountStatus:
       type: string
