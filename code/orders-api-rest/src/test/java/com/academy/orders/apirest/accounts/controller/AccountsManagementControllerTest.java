@@ -30,49 +30,45 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = {AccountsManagementController.class})
 @Import(value = {AopAutoConfiguration.class, TestSecurityConfig.class, ErrorHandler.class})
 class AccountsManagementControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
-    @MockBean
-    private AccountDTOMapper accountDTOMapper;
-    @MockBean
-    private ChangeAccountStatusUseCase changeAccountStatusUseCase;
+	@Autowired
+	private MockMvc mockMvc;
+	@MockBean
+	private AccountDTOMapper accountDTOMapper;
+	@MockBean
+	private ChangeAccountStatusUseCase changeAccountStatusUseCase;
 
+	@Test
+	@WithMockUser(authorities = "ROLE_ADMIN")
+	@SneakyThrows
+	void changeAccountStatusNotFoundTest() {
+		Long id = 1L;
+		UserStatus status = UserStatus.ACTIVE;
 
-    @Test
-    @WithMockUser(authorities = "ROLE_ADMIN")
-    @SneakyThrows
-    void changeAccountStatusNotFoundTest() {
-        Long id = 1L;
-        UserStatus status = UserStatus.ACTIVE;
+		when(accountDTOMapper.mapToUserStatus(any(AccountStatusDTO.class))).thenReturn(status);
+		doThrow(AccountNotFoundException.class).when(changeAccountStatusUseCase).changeStatus(id, status);
 
-        when(accountDTOMapper.mapToUserStatus(any(AccountStatusDTO.class))).thenReturn(status);
-        doThrow(AccountNotFoundException.class).when(changeAccountStatusUseCase).changeStatus(id, status);
+		mockMvc.perform(patch("/v1/users/{userId}/status", id).queryParam("status", status.name()))
+				.andExpect(status().isNotFound());
 
-        mockMvc.perform(patch("/v1/users/{userId}/status", id)
-            .queryParam("status", status.name()))
-            .andExpect(status().isNotFound());
+		verify(accountDTOMapper).mapToUserStatus(any(AccountStatusDTO.class));
+		verify(changeAccountStatusUseCase).changeStatus(id, status);
+	}
 
-        verify(accountDTOMapper).mapToUserStatus(any(AccountStatusDTO.class));
-        verify(changeAccountStatusUseCase).changeStatus(id, status);
-    }
+	@Test
+	@WithMockUser(authorities = "ROLE_ADMIN")
+	@SneakyThrows
+	void changeAccountStatusTest() {
+		Long id = 1L;
+		UserStatus status = UserStatus.ACTIVE;
 
+		when(accountDTOMapper.mapToUserStatus(any(AccountStatusDTO.class))).thenReturn(status);
+		doNothing().when(changeAccountStatusUseCase).changeStatus(id, status);
 
-    @Test
-    @WithMockUser(authorities = "ROLE_ADMIN")
-    @SneakyThrows
-    void changeAccountStatusTest() {
-        Long id = 1L;
-        UserStatus status = UserStatus.ACTIVE;
+		mockMvc.perform(patch("/v1/users/{userId}/status", id).queryParam("status", status.name()))
+				.andExpect(status().isNoContent());
 
-        when(accountDTOMapper.mapToUserStatus(any(AccountStatusDTO.class))).thenReturn(status);
-        doNothing().when(changeAccountStatusUseCase).changeStatus(id, status);
-
-        mockMvc.perform(patch("/v1/users/{userId}/status", id)
-            .queryParam("status", status.name()))
-            .andExpect(status().isNoContent());
-
-        verify(accountDTOMapper).mapToUserStatus(any(AccountStatusDTO.class));
-        verify(changeAccountStatusUseCase).changeStatus(id, status);
-    }
+		verify(accountDTOMapper).mapToUserStatus(any(AccountStatusDTO.class));
+		verify(changeAccountStatusUseCase).changeStatus(id, status);
+	}
 
 }

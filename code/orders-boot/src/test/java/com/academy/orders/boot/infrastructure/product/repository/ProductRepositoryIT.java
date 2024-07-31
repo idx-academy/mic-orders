@@ -11,15 +11,12 @@ import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders.domain.product.repository.ProductRepository;
 import java.math.BigDecimal;
 import java.net.URI;
-import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static com.academy.orders.domain.product.entity.enumerated.ProductStatus.VISIBLE;
 import static java.math.BigDecimal.valueOf;
-import static java.time.LocalDateTime.of;
-import static java.time.Month.JULY;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -48,11 +45,10 @@ class ProductRepositoryIT extends AbstractRepository {
 	}
 
 	@Test
-	void findAllByLanguageWithFilterForPriceCreatedAtQuantityAndStatusTest() {
-		final var totalElements = 4;
+	void findAllByLanguageWithFilterForPriceQuantityAndStatusTest() {
+		final var totalElements = 5;
 		final var filter = ProductManagementFilterDto.builder().priceMore(valueOf(1000)).priceLess(valueOf(1500))
-				.createdAfter(of(2024, JULY, 20, 13, 10)).createdBefore(of(2024, JULY, 21, 11, 16)).quantityMore(5)
-				.quantityLess(11).status(VISIBLE).tags(emptyList()).build();
+				.quantityMore(5).quantityLess(11).status(VISIBLE).tags(emptyList()).build();
 
 		final var result = productRepository.findAllByLanguageWithFilter(lang, filter, pageable);
 
@@ -62,14 +58,10 @@ class ProductRepositoryIT extends AbstractRepository {
 	}
 
 	private boolean isFiltered(Page<Product> actual, ProductManagementFilterDto filter) {
-		return actual.content().stream().allMatch(p -> isDatesInBounds(p, filter.createdAfter(), filter.createdBefore())
-				&& isPricesInBounds(p, filter.priceMore(), filter.priceLess()) && isStatusesEqual(p, filter.status())
-				&& isQuantityInBounds(p, filter.quantityMore(), filter.quantityLess()));
-	}
-
-	private boolean isDatesInBounds(Product product, LocalDateTime createdAfter, LocalDateTime createdBefore) {
-		var date = product.createdAt();
-		return date.isAfter(createdAfter) && date.isBefore(createdBefore);
+		return actual.content().stream()
+				.allMatch(p -> isPricesInBounds(p, filter.priceMore(), filter.priceLess())
+						&& isStatusesEqual(p, filter.status())
+						&& isQuantityInBounds(p, filter.quantityMore(), filter.quantityLess()));
 	}
 
 	private boolean isPricesInBounds(Product product, BigDecimal priceMore, BigDecimal priceLess) {

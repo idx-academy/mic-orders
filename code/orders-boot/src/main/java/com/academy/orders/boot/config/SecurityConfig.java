@@ -40,11 +40,12 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
+
+import static java.util.Collections.singletonList;
 
 @Configuration
 @EnableMethodSecurity
@@ -72,9 +73,9 @@ public class SecurityConfig {
 		return http.cors(cors -> {
 			UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 			CorsConfiguration config = new CorsConfiguration();
-			config.setAllowedOrigins(Arrays.asList("*"));
+			config.setAllowedOrigins(singletonList("*"));
 			config.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS", "DELETE", "PUT", "PATCH"));
-			config.setAllowedHeaders(Arrays.asList("*"));
+			config.setAllowedHeaders(singletonList("*"));
 			source.registerCorsConfiguration("/**", config);
 			cors.configurationSource(source);
 		}).csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
