@@ -82,7 +82,7 @@ paths:
         '409':
           $ref: '#/components/responses/Conflict'
 
-  /v1/orders/{orderId}:
+  /v1/management/orders/{orderId}:
     get:
       tags:
         - OrdersManagement
@@ -116,7 +116,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
 
-  /v1/orders/{orderId}/status:
+  /v1/management/orders/{orderId}/status:
     patch:
       tags:
         - OrdersManagement
