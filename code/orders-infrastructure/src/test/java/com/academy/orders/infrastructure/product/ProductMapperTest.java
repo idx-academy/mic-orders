@@ -31,6 +31,7 @@ class ProductMapperTest {
 
 	@Test
 	void fromProductTranslationEntityTest() {
+		// Given
 		ProductTranslationEntity translationEntity = getProductTranslationEntity();
 		ProductEntity productEntity = translationEntity.getProduct();
 		productEntity.setProductTranslations(Set.of(translationEntity));
@@ -43,8 +44,10 @@ class ProductMapperTest {
 
 		when(productMapper.fromEntity(productEntity)).thenReturn(product);
 
+		// When
 		Product actual = productMapper.fromEntity(translationEntity);
 
+		// Then
 		assertEquals(product, actual);
 		verify(productMapper).fromEntity(productEntity);
 	}
