@@ -14,6 +14,7 @@ import com.academy.orders.infrastructure.product.ProductMapper;
 import com.academy.orders.infrastructure.product.ProductPageMapper;
 import com.academy.orders.infrastructure.product.ProductTranslationManagementMapper;
 import com.academy.orders.infrastructure.product.entity.ProductEntity;
+import com.academy.orders.infrastructure.product.entity.ProductTranslationEntity;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -45,17 +46,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 				PageRequest.of(pageable.page(), pageable.size()), sort);
 		setImageNames(productEntities.getContent());
 
-		List<Product> products = productMapper.fromEntities(productEntities.getContent());
-		return new Page<>(productEntities.getTotalElements(), productEntities.getTotalPages(),
-				productEntities.isFirst(), productEntities.isLast(), productEntities.getNumber(),
-				productEntities.getNumberOfElements(), productEntities.getSize(), productEntities.isEmpty(), products);
-	}
-
-	private void setImageNames(List<ProductEntity> products) {
-		products.forEach(p -> {
-			var name = p.getImage().substring(p.getImage().lastIndexOf("/") + 1);
-			p.setImage(name);
-		});
+		return productPageMapper.toDomain(productEntities);
 	}
 
 	@Override
@@ -116,4 +107,18 @@ public class ProductRepositoryImpl implements ProductRepository {
 		return productMapper.fromEntity(productJpaAdapter.save(entity));
 	}
 
+	@Override
+	public Page<Product> searchProductsByName(String searchQuery, String lang, Pageable pageableDomain) {
+		var pageable = pageableMapper.fromDomain(pageableDomain);
+		var translations = productJpaAdapter.findProductsByNameWithSearchQuery(searchQuery, lang, pageable);
+		setImageNames(translations.getContent().stream().map(ProductTranslationEntity::getProduct).toList());
+		return productPageMapper.fromProductTranslationEntity(translations);
+	}
+
+	private void setImageNames(List<ProductEntity> products) {
+		products.forEach(p -> {
+			var name = p.getImage().substring(p.getImage().lastIndexOf("/") + 1);
+			p.setImage(name);
+		});
+	}
 }

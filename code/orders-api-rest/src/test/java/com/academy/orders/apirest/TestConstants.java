@@ -5,6 +5,7 @@ import java.util.UUID;
 
 public class TestConstants {
 	public static final String GET_ALL_PRODUCTS_URL = "/v1/products";
+	public static final String SEARCH_PRODUCTS_URL = "/v1/products/search";
 	public static final String UPDATE_ORDER_STATUS_URL = "/v1/management/orders/{orderId}/status";
 	public static final String UPDATE_PRODUCT_URL = "/v1/management/products/{productId}";
 	public static final String GET_PRODUCT_BY_ID_URL = "/v1/management/products/{productId}";
@@ -28,5 +29,4 @@ public class TestConstants {
 	public static final String ROLE_ADMIN = "ROLE_ADMIN";
 	public static final String ROLE_USER = "ROLE_USER";
 	public static final String ROLE_MANAGER = "ROLE_MANAGER";
-
 }

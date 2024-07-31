@@ -1,6 +1,5 @@
-package com.academy.orders.apirest.orders.controller.mapper;
+package com.academy.orders.apirest.orders.mapper;
 
-import com.academy.orders.apirest.orders.mapper.UpdateOrderStatusRequestDTOMapper;
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import com.academy.orders_api_rest.generated.model.OrderStatusDTO;
 import com.academy.orders_api_rest.generated.model.UpdateOrderStatusRequestDTO;
