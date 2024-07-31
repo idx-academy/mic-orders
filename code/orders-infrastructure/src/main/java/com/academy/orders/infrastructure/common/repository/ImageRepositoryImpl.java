@@ -19,16 +19,16 @@ public class ImageRepositoryImpl implements ImageRepository {
 	@Value("${images.default.url}")
 	private String defaultImageUrl;
 
-	@CircuitBreaker(name = "imagesCircuit")
+	@CircuitBreaker(name = "imagesCircuit", fallbackMethod = "getDefaultUrl")
 	@CachePut(value = "images", key = "#name")
 	public String getImageLinkByName(String name) {
 		log.info("Call images api with with name param: {}", name);
 		return imagesApi.getImageByName(name).getImageUrl();
 	}
-	//
-	// @Cacheable(value = "images", key = "#name")
-	// public String getDefaultUrl(String name, Throwable exception) {
-	// log.warn("Call api with name {} failed {}", name, exception.getMessage());
-	// return defaultImageUrl;
-	// }
+
+	@Cacheable(value = "images", key = "#name")
+	public String getDefaultUrl(String name, Throwable exception) {
+		log.warn("Call api with name {} failed {}", name, exception.getMessage());
+		return defaultImageUrl;
+	}
 }

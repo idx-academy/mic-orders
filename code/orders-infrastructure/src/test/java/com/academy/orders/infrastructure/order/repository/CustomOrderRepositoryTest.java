@@ -18,6 +18,11 @@ import jakarta.persistence.criteria.Root;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
+import org.hibernate.query.criteria.JpaCriteriaQuery;
+import org.hibernate.query.criteria.JpaJoin;
+import org.hibernate.query.criteria.JpaPath;
+import org.hibernate.query.criteria.JpaRoot;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,8 +39,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -51,7 +54,7 @@ class CustomOrderRepositoryTest {
 	private CriteriaQuery<OrderEntity> criteriaQuery;
 
 	@Mock
-	private CriteriaQuery<Long> countCriteriaQuery;
+	private JpaCriteriaQuery<UUID> countCriteriaQuery;
 
 	@Mock
 	private Root<OrderEntity> root;
@@ -63,13 +66,19 @@ class CustomOrderRepositoryTest {
 	private Join<Object, Object> postAddressJoin;
 
 	@Mock
+	private JpaJoin<Object, Object> jpaOrderItemJoin;
+
+	@Mock
+	private JpaJoin<Object, Object> jpaPostAddressJoin;
+
+	@Mock
 	private Join<Object, Object> accountJoin;
 
 	@Mock
 	private TypedQuery<OrderEntity> typedQuery;
 
 	@Mock
-	private TypedQuery<Long> countTypedQuery;
+	private JpaCriteriaQuery<UUID> countTypedQuery;
 
 	@Mock
 	private Predicate predicate;
@@ -82,6 +91,18 @@ class CustomOrderRepositoryTest {
 
 	@Mock
 	private Expression<Long> expression;
+
+	@Mock
+	private JpaCriteriaQuery<Long> jpaCriteriaQueryLong;
+
+	@Mock
+	private TypedQuery<Long> typedQueryLong;
+
+	@Mock
+	private JpaRoot<OrderEntity> jpaRoot;
+
+	@Mock
+	private JpaPath jpaPath;
 
 	@InjectMocks
 	private CustomOrderRepository customOrderRepository;
@@ -109,6 +130,8 @@ class CustomOrderRepositoryTest {
 		when(root.join("account", JoinType.LEFT)).thenReturn(accountJoin);
 		when(accountJoin.get("id")).thenReturn(path);
 		when(entityManager.createQuery(criteriaQuery)).thenReturn(typedQuery);
+		when(typedQuery.setMaxResults(pageable.getPageSize())).thenReturn(typedQuery);
+		when(typedQuery.setFirstResult((int) pageable.getOffset())).thenReturn(typedQuery);
 		when(root.get(anyString())).thenReturn(path);
 		when(criteriaBuilder.equal(any(Path.class), any(Boolean.class))).thenReturn(predicate);
 		when(postAddressJoin.get(anyString())).thenReturn(path);
@@ -122,46 +145,25 @@ class CustomOrderRepositoryTest {
 		when(criteriaBuilder.sum(any(Path.class))).thenReturn(expression);
 		when(criteriaBuilder.asc(expression)).thenReturn(mock(Order.class));
 
-		when(criteriaBuilder.createQuery(Long.class)).thenReturn(countCriteriaQuery);
-		when(criteriaBuilder.count(any(Path.class))).thenReturn(expression);
-		when(countCriteriaQuery.from(OrderEntity.class)).thenReturn(root);
-		when(entityManager.createQuery(countCriteriaQuery)).thenReturn(countTypedQuery);
+		when(criteriaBuilder.createQuery(UUID.class)).thenReturn(countCriteriaQuery);
+		when(countCriteriaQuery.from(OrderEntity.class)).thenReturn(jpaRoot);
+		when(jpaRoot.get(anyString())).thenReturn(jpaPath);
+		when(jpaRoot.join("orderItems", JoinType.LEFT)).thenReturn(jpaOrderItemJoin);
+		when(jpaRoot.join("postAddress", JoinType.LEFT)).thenReturn(jpaPostAddressJoin);
+		when(countCriteriaQuery.createCountQuery()).thenReturn(jpaCriteriaQueryLong);
+		when(jpaOrderItemJoin.get(anyString())).thenReturn(jpaPath);
+		when(jpaPostAddressJoin.get(anyString())).thenReturn(jpaPath);
+		when(typedQueryLong.getSingleResult()).thenReturn(1L);
+		when(entityManager.createQuery(jpaCriteriaQueryLong)).thenReturn(typedQueryLong);
 		when(countCriteriaQuery.groupBy(any(Path.class))).thenReturn(countCriteriaQuery);
 		when(countCriteriaQuery.where(any(Predicate[].class))).thenReturn(countCriteriaQuery);
 		when(countCriteriaQuery.select(any(Expression.class))).thenReturn(countCriteriaQuery);
 		when(typedQuery.getResultList()).thenReturn(orderEntities);
-		when(countTypedQuery.setMaxResults(1)).thenReturn(countTypedQuery);
-		when(countTypedQuery.getSingleResult()).thenReturn(1L);
 
 		// When
 		PageImpl<OrderEntity> result = customOrderRepository.findAllByFilterParameters(filterParametersDto, pageable);
 
 		// Then
 		assertEquals(expected, result);
-
-		verify(criteriaBuilder, times(2)).createQuery(OrderEntity.class);
-		verify(criteriaQuery, times(2)).from(OrderEntity.class);
-		verify(root, times(2)).join("orderItems", JoinType.LEFT);
-		verify(orderItemJoin, times(5)).get(anyString());
-		verify(root, times(2)).join("postAddress", JoinType.LEFT);
-		verify(entityManager, times(2)).createQuery(criteriaQuery);
-		verify(root, times(12)).get(anyString());
-		verify(criteriaBuilder, times(2)).equal(any(Path.class), any(Boolean.class));
-		verify(postAddressJoin, times(3)).get(anyString());
-		verify(path, times(5)).in(ArgumentMatchers.<Object>any());
-		verify(criteriaBuilder, times(2)).lessThanOrEqualTo(any(), any(LocalDateTime.class));
-		verify(criteriaBuilder, times(2)).greaterThanOrEqualTo(any(), any(LocalDateTime.class));
-		verify(criteriaQuery).orderBy(any(List.class));
-		verify(root, times(3)).fetch(anyString(), any(JoinType.class));
-		verify(criteriaBuilder, times(5)).sum(any(Path.class));
-		verify(criteriaBuilder).asc(expression);
-
-		verify(criteriaBuilder).createQuery(Long.class);
-		verify(criteriaBuilder).count(any(Path.class));
-		verify(countCriteriaQuery).from(OrderEntity.class);
-		verify(entityManager).createQuery(countCriteriaQuery);
-		verify(typedQuery, times(2)).getResultList();
-		verify(countTypedQuery).setMaxResults(1);
-		verify(countTypedQuery).getSingleResult();
 	}
 }

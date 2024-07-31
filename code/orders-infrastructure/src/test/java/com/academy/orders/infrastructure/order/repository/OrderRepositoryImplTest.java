@@ -125,31 +125,24 @@ class OrderRepositoryImplTest {
 	@Test
 	void findAllTest() {
 		// Given
-		String language = "uk";
 		Pageable pageable = getPageable();
 		var orderDomainPage = getPageOf(getOrder());
 		var springPageable = PageRequest.of(pageable.page(), pageable.size());
 		var orderEntityPage = getPageImplOf(getOrderEntity());
-		var productIds = orderEntityPage.getContent().stream()
-				.flatMap(orderEntity -> orderEntity.getOrderItems().stream())
-				.map(orderItemEntity -> orderItemEntity.getProduct().getId()).toList();
-		var products = List.of(getProductEntity());
 		var filterParametersDto = getOrdersFilterParametersDto();
 
 		when(pageableMapper.fromDomain(pageable)).thenReturn(springPageable);
 		when(customOrderRepository.findAllByFilterParameters(filterParametersDto, springPageable))
 				.thenReturn(orderEntityPage);
-		when(productJpaAdapter.findAllByIdAndLanguageCode(productIds, language)).thenReturn(products);
 		when(pageMapper.toDomain(orderEntityPage)).thenReturn(orderDomainPage);
 
 		// When
-		Page<Order> actual = orderRepository.findAll(filterParametersDto, language, pageable);
+		Page<Order> actual = orderRepository.findAll(filterParametersDto, pageable);
 
 		// Then
 		assertEquals(orderDomainPage, actual);
 		verify(pageableMapper).fromDomain(pageable);
 		verify(customOrderRepository).findAllByFilterParameters(filterParametersDto, springPageable);
-		verify(productJpaAdapter).findAllByIdAndLanguageCode(productIds, language);
 		verify(pageMapper).toDomain(orderEntityPage);
 	}
 
@@ -192,6 +185,16 @@ class OrderRepositoryImplTest {
 
 		orderRepository.updateOrderStatus(orderId, status);
 		verify(jpaAdapter).updateOrderStatus(orderId, status);
+	}
+
+	@Test
+	void updateIsPaidStatusTest() {
+		UUID orderId = TEST_UUID;
+
+		doNothing().when(jpaAdapter).updateIsPaidStatus(orderId, true);
+
+		orderRepository.updateIsPaidStatus(orderId, true);
+		verify(jpaAdapter).updateIsPaidStatus(orderId, true);
 	}
 
 	@Test

@@ -10,6 +10,8 @@ public class TestConstants {
 	public static final Long TEST_ID = 1L;
 	public static final UUID TEST_UUID = UUID.fromString("123e4567-e89b-12d3-a456-426614174000");
 	public static final int TEST_QUANTITY = 10;
+	public static final String TEST_MANAGER_MAIL = "manager@gmail.com";
+	public static final String TEST_ADMIN_MAIL = "admin@gmail.com";
 	public static final BigDecimal TEST_PRICE = BigDecimal.valueOf(999.99);
 	public static final String TAG_NAME = "electronics";
 	public static final String PRODUCT_NAME = "IPhone";

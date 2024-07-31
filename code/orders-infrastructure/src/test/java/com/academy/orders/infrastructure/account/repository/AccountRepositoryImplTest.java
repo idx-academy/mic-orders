@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static com.academy.orders.infrastructure.ModelUtils.getAccount;
 import static com.academy.orders.infrastructure.ModelUtils.getAccountEntity;
 import static com.academy.orders.infrastructure.ModelUtils.getCreateAccountDTO;
+import static com.academy.orders.infrastructure.TestConstants.TEST_EMAIL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.any;
@@ -99,6 +100,15 @@ class AccountRepositoryImplTest {
 		verify(accountJpaAdapter).save(preSavedAccountEntity);
 		verify(accountMapper).toEntity(createAccountDTO);
 		verify(accountMapper).fromEntity(savedAccountEntity);
+	}
+
+	@Test
+	void findRoleByEmailTest() {
+		var expectedRole = Role.ROLE_MANAGER;
+		when(accountJpaAdapter.findRoleByEmail(TEST_EMAIL)).thenReturn(Optional.of(expectedRole));
+		var result = repository.findRoleByEmail(TEST_EMAIL);
+		assertEquals(expectedRole, result.get());
+		verify(accountJpaAdapter).findRoleByEmail(TEST_EMAIL);
 	}
 
 	private void assertExistsByEmailHelper(String mail, Boolean exists) {

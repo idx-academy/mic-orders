@@ -1,7 +1,9 @@
 package com.academy.orders.application.product.usecase;
 
 import com.academy.orders.application.ModelUtils;
+import com.academy.orders.domain.exception.BadRequestException;
 import com.academy.orders.domain.language.repository.LanguageRepository;
+import com.academy.orders.domain.language.repository.exception.LanguageNotFoundException;
 import com.academy.orders.domain.product.dto.CreateProductRequestDto;
 import com.academy.orders.domain.product.dto.ProductTranslationDto;
 import com.academy.orders.domain.product.entity.Product;
@@ -61,7 +63,7 @@ class CreateProductUseCaseImplTest {
 
 	@Test
 	void createProductNullRequestTest() {
-		assertThrows(IllegalArgumentException.class, () -> createProductUseCase.createProduct(null));
+		assertThrows(BadRequestException.class, () -> createProductUseCase.createProduct(null));
 	}
 
 	@Test
@@ -84,6 +86,6 @@ class CreateProductUseCaseImplTest {
 		when(tagRepository.getTagsByIds(request.tagIds())).thenReturn(Set.of(ModelUtils.getTag()));
 		when(languageRepository.findByCode("invalid")).thenReturn(null);
 
-		assertThrows(IllegalArgumentException.class, () -> createProductUseCase.createProduct(request));
+		assertThrows(LanguageNotFoundException.class, () -> createProductUseCase.createProduct(request));
 	}
 }

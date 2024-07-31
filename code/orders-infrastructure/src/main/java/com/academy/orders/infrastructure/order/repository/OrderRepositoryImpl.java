@@ -64,10 +64,9 @@ public class OrderRepositoryImpl implements OrderRepository {
 	}
 
 	@Override
-	public Page<Order> findAll(OrdersFilterParametersDto filterParametersDto, String language, Pageable pageable) {
+	public Page<Order> findAll(OrdersFilterParametersDto filterParametersDto, Pageable pageable) {
 		var springPageable = pageableMapper.fromDomain(pageable);
 		var orderEntityPage = customOrderRepository.findAllByFilterParameters(filterParametersDto, springPageable);
-		loadProducts(language, orderEntityPage.getContent().toArray(new OrderEntity[0]));
 		return pageMapper.toDomain(orderEntityPage);
 	}
 
@@ -75,6 +74,11 @@ public class OrderRepositoryImpl implements OrderRepository {
 	@Transactional
 	public void updateOrderStatus(UUID orderId, OrderStatus orderStatus) {
 		jpaAdapter.updateOrderStatus(orderId, orderStatus);
+	}
+
+	@Override
+	public void updateIsPaidStatus(UUID orderId, Boolean isPaid) {
+		jpaAdapter.updateIsPaidStatus(orderId, isPaid);
 	}
 
 	private OrderEntity getOrderEntityWithPostAddress(Order order) {

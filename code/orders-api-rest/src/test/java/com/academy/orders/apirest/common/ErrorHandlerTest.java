@@ -2,9 +2,13 @@ package com.academy.orders.apirest.common;
 
 import com.academy.orders.domain.account.exception.AccountAlreadyExistsException;
 import com.academy.orders.domain.cart.exception.EmptyCartException;
-import com.academy.orders.domain.cart.exception.ExceedsAvailableException;
+import com.academy.orders.domain.cart.exception.QuantityExceedsAvailableException;
 import com.academy.orders.domain.exception.NotFoundException;
+import com.academy.orders.domain.exception.PaidException;
+import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import com.academy.orders.domain.order.exception.InsufficientProductQuantityException;
+import com.academy.orders.domain.order.exception.InvalidOrderStatusTransitionException;
+import com.academy.orders.domain.order.exception.OrderFinalStateException;
 import com.academy.orders_api_rest.generated.model.ErrorObjectDTO;
 import java.util.UUID;
 import jakarta.validation.ConstraintViolationException;
@@ -122,10 +126,42 @@ class ErrorHandlerTest {
 	void handleExceedsAvailableException() {
 		var productId = UUID.randomUUID();
 		var quantity = 10;
-		var ex = new ExceedsAvailableException(productId, quantity);
-		var message = "Product with id: " + productId + " exceeded available quantity";
+		var availableQuantity = 5;
+		var ex = new QuantityExceedsAvailableException(productId, quantity, availableQuantity);
+		var message = "Product with id: " + productId + " exceeded available quantity. Requested: " + quantity
+				+ ", Available: " + availableQuantity;
 
 		assertEquals(buildErrorObjectDTO(CONFLICT, message), errorHandler.handleExceedsAvailableException(ex));
+	}
+
+	@Test
+	void handleInvalidOrderStatusTransitionExceptionTest() {
+		var currentStatus = OrderStatus.COMPLETED;
+		var newStatus = OrderStatus.SHIPPED;
+		var ex = new InvalidOrderStatusTransitionException(currentStatus, newStatus);
+		var expectedMessage = "Invalid status transition from " + currentStatus + " to " + newStatus;
+
+		assertEquals(buildErrorObjectDTO(BAD_REQUEST, expectedMessage),
+				errorHandler.handleInvalidOrderStatusTransitionException(ex));
+	}
+
+	@Test
+	void handleOrderFinalStateExceptionTest() {
+		var errorMessage = "The order has already been completed or canceled and cannot be updated.";
+		var ex = new OrderFinalStateException();
+
+		var expectedErrorObjectDTO = new ErrorObjectDTO().status(HttpStatus.BAD_REQUEST.value())
+				.title(HttpStatus.BAD_REQUEST.getReasonPhrase()).detail(errorMessage);
+
+		assertEquals(expectedErrorObjectDTO, errorHandler.handleOrderFinalStateException(ex));
+	}
+
+	@Test
+	void handlePaidExceptionTest() {
+		var ex = mock(PaidException.class);
+
+		when(ex.getMessage()).thenReturn(DEFAULT_ERROR_MESSAGE);
+		assertEquals(buildErrorObjectDTO(BAD_REQUEST), errorHandler.handlePaidException(ex));
 	}
 
 	private ErrorObjectDTO buildErrorObjectDTO(HttpStatus status, String detail) {

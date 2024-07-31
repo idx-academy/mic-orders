@@ -3,7 +3,9 @@ package com.academy.orders.apirest;
 import com.academy.orders.domain.cart.dto.UpdatedCartItemDto;
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
+import com.academy.orders.domain.order.dto.OrderStatusInfo;
 import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
+import com.academy.orders.domain.order.dto.UpdateOrderStatusDto;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.entity.OrderItem;
 import com.academy.orders.domain.order.entity.OrderReceiver;
@@ -17,21 +19,49 @@ import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.ProductTranslation;
 import com.academy.orders.domain.product.entity.Tag;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
-import com.academy.orders_api_rest.generated.model.*;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
+import com.academy.orders_api_rest.generated.model.AccountResponseDTO;
+import com.academy.orders_api_rest.generated.model.CartItemDTO;
+import com.academy.orders_api_rest.generated.model.CartItemsResponseDTO;
+import com.academy.orders_api_rest.generated.model.CreateProductRequestDTO;
+import com.academy.orders_api_rest.generated.model.ManagerOrderDTO;
+import com.academy.orders_api_rest.generated.model.OrderItemDTO;
+import com.academy.orders_api_rest.generated.model.OrderReceiverDTO;
+import com.academy.orders_api_rest.generated.model.OrderStatusDTO;
+import com.academy.orders_api_rest.generated.model.OrderStatusInfoDTO;
+import com.academy.orders_api_rest.generated.model.OrdersFilterParametersDTO;
+import com.academy.orders_api_rest.generated.model.PageManagerOrderPreviewDTO;
+import com.academy.orders_api_rest.generated.model.PageUserOrderDTO;
+import com.academy.orders_api_rest.generated.model.PageableDTO;
+import com.academy.orders_api_rest.generated.model.PlaceOrderRequestDTO;
+import com.academy.orders_api_rest.generated.model.PostAddressDTO;
+import com.academy.orders_api_rest.generated.model.ProductManagementContentDTO;
+import com.academy.orders_api_rest.generated.model.ProductManagementPageDTO;
+import com.academy.orders_api_rest.generated.model.ProductManagementStatusDTO;
+import com.academy.orders_api_rest.generated.model.ProductPreviewDTO;
+import com.academy.orders_api_rest.generated.model.ProductResponseDTO;
+import com.academy.orders_api_rest.generated.model.ProductStatusDTO;
+import com.academy.orders_api_rest.generated.model.ProductTranslationDTO;
+import com.academy.orders_api_rest.generated.model.TagDTO;
+import com.academy.orders_api_rest.generated.model.UpdateOrderStatusRequestDTO;
+import com.academy.orders_api_rest.generated.model.UpdateProductRequestDTO;
+import com.academy.orders_api_rest.generated.model.UpdatedCartItemDTO;
+import com.academy.orders_api_rest.generated.model.UserOrderDTO;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-
 import static com.academy.orders.apirest.TestConstants.IMAGE_URL;
 import static com.academy.orders.apirest.TestConstants.LANGUAGE_UK;
 import static com.academy.orders.apirest.TestConstants.PRODUCT_DESCRIPTION;
@@ -186,8 +216,8 @@ public class ModelUtils {
 				.createdAfter(DATE_TIME).totalMore(BigDecimal.ZERO).totalLess(BigDecimal.TEN).build();
 	}
 
-	public static PageManagerOrderDTO getPageManagerOrderDTO() {
-		PageManagerOrderDTO pageOrderDTO = new PageManagerOrderDTO();
+	public static PageManagerOrderPreviewDTO getPageManagerOrderPreviewDTO() {
+		PageManagerOrderPreviewDTO pageOrderDTO = new PageManagerOrderPreviewDTO();
 		pageOrderDTO.setEmpty(false);
 		pageOrderDTO.setTotalElements(100L);
 		pageOrderDTO.setTotalPages(10);
@@ -196,7 +226,6 @@ public class ModelUtils {
 		pageOrderDTO.setNumber(1);
 		pageOrderDTO.setNumberOfElements(10);
 		pageOrderDTO.setSize(10);
-		pageOrderDTO.content(List.of(getManagerOrderDTO()));
 		return pageOrderDTO;
 	}
 
@@ -414,5 +443,28 @@ public class ModelUtils {
 		productResponseDTO.setProductTranslations(productTranslations);
 
 		return productResponseDTO;
+	}
+
+	public static UpdateOrderStatusRequestDTO getUpdateOrderStatusRequestDTO() {
+		var updateOrderStatusRequestDTO = new UpdateOrderStatusRequestDTO();
+		updateOrderStatusRequestDTO.setOrderStatus(OrderStatusDTO.IN_PROGRESS);
+		updateOrderStatusRequestDTO.setIsPaid(false);
+		return updateOrderStatusRequestDTO;
+	}
+
+	public static UpdateOrderStatusDto getUpdateOrderStatusDto() {
+		return UpdateOrderStatusDto.builder().status(OrderStatus.IN_PROGRESS).isPaid(false).build();
+	}
+
+	public static OrderStatusInfoDTO getOrderStatusInfoDTO() {
+		var orderStatusInfoDTO = new OrderStatusInfoDTO();
+		orderStatusInfoDTO.setAvailableStatuses(List.of("SHIPPED, DELIVERED, COMPLETED, CANCELED"));
+		orderStatusInfoDTO.setIsPaid(false);
+		return orderStatusInfoDTO;
+	}
+
+	public static OrderStatusInfo getOrderStatusInfo() {
+		return OrderStatusInfo.builder().availableStatuses(List.of("SHIPPED, DELIVERED, COMPLETED, CANCELED"))
+				.isPaid(false).build();
 	}
 }
