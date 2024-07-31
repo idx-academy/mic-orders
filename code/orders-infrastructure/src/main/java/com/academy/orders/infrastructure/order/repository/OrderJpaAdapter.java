@@ -58,4 +58,19 @@ public interface OrderJpaAdapter extends CrudRepository<OrderEntity, UUID> {
 	@Modifying
 	@Query("update OrderEntity set orderStatus = :orderStatus where id = :orderId")
 	void updateOrderStatus(UUID orderId, OrderStatus orderStatus);
+
+	/**
+	 * Updates the `isPaid` status of an order identified by its ID.
+	 *
+	 * @param orderId
+	 *            the unique identifier of the order to be updated.
+	 * @param isPaid
+	 *            a boolean indicating whether the order is paid or not. `true` if
+	 *            the order is paid, `false` otherwise.
+	 *
+	 * @author Anton Bondar
+	 */
+	@Modifying
+	@Query("update OrderEntity set isPaid = :isPaid where id = :orderId")
+	void updateIsPaidStatus(UUID orderId, Boolean isPaid);
 }

@@ -50,6 +50,11 @@ public class AccountRepositoryImpl implements AccountRepository {
 	}
 
 	@Override
+	public Optional<Role> findRoleByEmail(String email) {
+		return accountJpaAdapter.findRoleByEmail(email);
+	}
+
+	@Override
 	public void updateStatus(Long id, UserStatus status) {
 		accountJpaAdapter.updateStatus(id, status);
 	}

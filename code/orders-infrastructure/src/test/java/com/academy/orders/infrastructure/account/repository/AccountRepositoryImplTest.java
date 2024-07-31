@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static com.academy.orders.infrastructure.ModelUtils.getAccount;
 import static com.academy.orders.infrastructure.ModelUtils.getAccountEntity;
 import static com.academy.orders.infrastructure.ModelUtils.getCreateAccountDTO;
+import static com.academy.orders.infrastructure.TestConstants.TEST_EMAIL;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -75,6 +76,16 @@ class AccountRepositoryImplTest {
 		verify(accountJpaAdapter).existsByEmail(mail);
 	}
 
+    @ParameterizedTest
+    @CsvSource({"true", "false"})
+    void existsByIdTest(boolean exists) {
+        var id = 1L;
+        when(this.accountJpaAdapter.existsById(id)).thenReturn(exists);
+        var result = this.repository.existsById(id);
+        assertEquals(exists, result);
+        verify(accountJpaAdapter).existsById(id);
+    }
+
 	@Test
 	void saveTest() {
 		AccountEntity mappedAccountEntity = getAccountEntity();
@@ -99,15 +110,13 @@ class AccountRepositoryImplTest {
 		verify(accountMapper).fromEntity(savedAccountEntity);
 	}
 
-	@ParameterizedTest
-	@CsvSource({"true", "false"})
-	void existsByIdTest(boolean exists) {
-		var id = 1L;
-
-		when(this.accountJpaAdapter.existsById(id)).thenReturn(exists);
-		var result = this.repository.existsById(id);
-		assertEquals(exists, result);
-		verify(accountJpaAdapter).existsById(id);
+	@Test
+	void findRoleByEmailTest() {
+		var expectedRole = Role.ROLE_MANAGER;
+		when(accountJpaAdapter.findRoleByEmail(TEST_EMAIL)).thenReturn(Optional.of(expectedRole));
+		var result = repository.findRoleByEmail(TEST_EMAIL);
+		assertEquals(expectedRole, result.get());
+		verify(accountJpaAdapter).findRoleByEmail(TEST_EMAIL);
 	}
 
 	@Test
