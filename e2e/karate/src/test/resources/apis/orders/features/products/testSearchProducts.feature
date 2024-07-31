@@ -1,4 +1,3 @@
-@test
 Feature: Search products by search query
 
   Background:
