@@ -98,7 +98,7 @@ class ProductsControllerTest {
 
 	@Test
 	@SneakyThrows
-	void searchProducts() {
+	void searchProductsTest() {
 		// Given
 		String searchQuery = "some text";
 		String lang = "en";

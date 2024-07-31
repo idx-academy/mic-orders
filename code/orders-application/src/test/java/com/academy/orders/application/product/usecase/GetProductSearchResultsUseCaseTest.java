@@ -48,7 +48,7 @@ class GetProductSearchResultsUseCaseTest {
 	}
 
 	@Test
-	void findProductsBySearchQueryWithEmptySortTestTest() {
+	void findProductsBySearchQueryWithEmptySortTest() {
 		// Given
 		Pageable pageable = new Pageable(0, 8, List.of());
 		Pageable defaultPageable = new Pageable(0, 8, List.of("name,desc"));
