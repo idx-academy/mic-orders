@@ -342,6 +342,8 @@ paths:
           name: searchQuery
           required: true
           schema:
+            minLength: 3
+            pattern: '^(?!\s*$).+'
             type: string
             nullable: false
             example: phone
