@@ -20,13 +20,13 @@ public class ChangeAccountStatusUseCaseImpl implements ChangeAccountStatusUseCas
 		updateStatus(id, status);
 	}
 
-	private void updateStatus(Long id, UserStatus status) {
-		accountRepository.updateStatus(id, status);
-	}
-
 	private void checkAccountExistsById(Long id) {
 		if (Boolean.FALSE.equals(accountRepository.existsById(id))) {
 			throw new AccountNotFoundException(id);
 		}
+	}
+
+	private void updateStatus(Long id, UserStatus status) {
+		accountRepository.updateStatus(id, status);
 	}
 }

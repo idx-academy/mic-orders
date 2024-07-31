@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -128,6 +129,13 @@ class ErrorHandlerTest {
 				+ ", Available: " + availableQuantity;
 
 		assertEquals(buildErrorObjectDTO(CONFLICT, message), errorHandler.handleExceedsAvailableException(ex));
+	}
+
+	@Test
+	void handleUsernameNotFoundExceptionTest() {
+		var ex = new UsernameNotFoundException(DEFAULT_ERROR_MESSAGE);
+
+		assertEquals(buildErrorObjectDTO(UNAUTHORIZED), errorHandler.handleUsernameNotFoundException(ex));
 	}
 
 	private ErrorObjectDTO buildErrorObjectDTO(HttpStatus status, String detail) {

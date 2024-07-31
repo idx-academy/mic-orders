@@ -5,6 +5,7 @@ import com.academy.orders.domain.account.usecase.ChangeAccountStatusUseCase;
 import com.academy.orders_api_rest.generated.api.UsersManagementApi;
 import com.academy.orders_api_rest.generated.model.AccountStatusDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -14,6 +15,7 @@ public class AccountsManagementController implements UsersManagementApi {
 	private final ChangeAccountStatusUseCase changeAccountStatusUseCase;
 
 	@Override
+	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 	public void changeUserStatus(Long userId, AccountStatusDTO status) {
 		var userStatus = accountDTOMapper.mapToUserStatus(status);
 		changeAccountStatusUseCase.changeStatus(userId, userStatus);
