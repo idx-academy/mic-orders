@@ -27,4 +27,7 @@ public interface ProductMapper {
 	default boolean isNotLazyLoadedTagEntity(Collection<TagEntity> source) {
 		return Hibernate.isInitialized(source);
 	}
+
+	@Mapping(target = "image", source = "image")
+	Product mapDomainImage(Product product, String image);
 }
