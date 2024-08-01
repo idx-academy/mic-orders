@@ -9,9 +9,13 @@ public record Page<T> (Long totalElements, Integer totalPages, Boolean first, Bo
 		Integer numberOfElements, Integer size, Boolean empty, List<T> content) {
 
 	public <D> Page<D> map(Function<T, D> mapper) {
+		List<D> list = null;
+		if (content != null) {
+			list = content.stream().map(mapper).toList();
+		}
 		return Page.<D>builder().totalElements(totalElements).totalPages(totalPages).first(first).last(last)
-				.number(number).numberOfElements(numberOfElements).size(size).empty(empty)
-				.content(content.stream().map(mapper).toList()).build();
+				.number(number).numberOfElements(numberOfElements).size(size).empty(empty).content(list).build();
+
 	}
 
 }

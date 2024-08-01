@@ -3,10 +3,12 @@ package com.academy.orders.infrastructure.product.repository;
 import com.academy.orders.domain.product.dto.ProductManagementFilterDto;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders.infrastructure.product.entity.ProductEntity;
+import com.academy.orders.infrastructure.product.entity.ProductTranslationEntity;
 import java.util.List;
 import java.util.UUID;
-import com.academy.orders.infrastructure.product.entity.ProductTranslationEntity;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -161,4 +163,23 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 	@Query("SELECT pt FROM ProductTranslationEntity pt LEFT JOIN FETCH pt.product p "
 			+ "LEFT JOIN FETCH pt.language l LEFT JOIN FETCH p.tags t WHERE p.id = :id AND l.code = :languageCode")
 	ProductTranslationEntity findTranslationByIdAndLanguageCode(UUID id, String languageCode);
+
+	/**
+	 * Retrieves a paginated list of ProductTranslationEntity objects based on a
+	 * search query and language code.
+	 *
+	 * @param searchQuery
+	 *            the search query to filter product names
+	 * @param lang
+	 *            the language code to filter product translations
+	 * @param pageable
+	 *            the pagination information
+	 *
+	 * @return a paginated list of ProductTranslationEntity objects that match the
+	 *         search criteria
+	 */
+	@Query("SELECT pt FROM ProductTranslationEntity pt LEFT JOIN FETCH pt.product p LEFT JOIN pt.language l "
+			+ "WHERE l.code = :lang AND LOWER(pt.name) LIKE LOWER(CONCAT('%', :searchQuery, '%'))")
+	PageImpl<ProductTranslationEntity> findProductsByNameWithSearchQuery(String searchQuery, String lang,
+			PageRequest pageable);
 }

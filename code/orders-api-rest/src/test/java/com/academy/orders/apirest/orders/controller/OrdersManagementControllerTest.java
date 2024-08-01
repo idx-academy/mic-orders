@@ -158,9 +158,9 @@ class OrdersManagementControllerTest {
 		when(orderDTOMapper.toManagerDto(order)).thenReturn(orderDTO);
 
 		// When
-		MvcResult result = mockMvc.perform(
-				get("/v1/orders/{orderId}", orderId).contentType(MediaType.APPLICATION_JSON).param("lang", language))
-				.andExpect(status().isOk()).andReturn();
+		MvcResult result = mockMvc.perform(get("/v1/management/orders/{orderId}", orderId)
+				.contentType(MediaType.APPLICATION_JSON).param("lang", language)).andExpect(status().isOk())
+				.andReturn();
 		String contentAsString = result.getResponse().getContentAsString();
 
 		// Then
