@@ -77,6 +77,7 @@ public class OrderRepositoryImpl implements OrderRepository {
 	}
 
 	@Override
+	@Transactional
 	public void updateIsPaidStatus(UUID orderId, Boolean isPaid) {
 		jpaAdapter.updateIsPaidStatus(orderId, isPaid);
 	}
