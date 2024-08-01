@@ -18,19 +18,18 @@ import com.academy.orders.domain.order.entity.OrderReceiver;
 import com.academy.orders.domain.order.entity.PostAddress;
 import com.academy.orders.domain.order.entity.enumerated.DeliveryMethod;
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
-import com.academy.orders.domain.product.dto.CreateProductRequestDto;
+import com.academy.orders.domain.product.dto.ProductRequestDto;
 import com.academy.orders.domain.product.dto.ProductManagementFilterDto;
 import com.academy.orders.domain.product.dto.ProductTranslationDto;
-import com.academy.orders.domain.product.dto.UpdateProductDto;
 import com.academy.orders.domain.product.entity.Language;
 import com.academy.orders.domain.product.entity.Product;
-import com.academy.orders.domain.product.entity.ProductManagement;
 import com.academy.orders.domain.product.entity.ProductTranslation;
 import com.academy.orders.domain.product.entity.ProductTranslationManagement;
 import com.academy.orders.domain.product.entity.Tag;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import static com.academy.orders.application.TestConstants.IMAGE_URL;
@@ -170,16 +169,6 @@ public class ModelUtils {
 		return CartItem.builder().product(product).quantity(quantity).build();
 	}
 
-	public static UpdateProductDto getUpdateProduct() {
-		return UpdateProductDto.builder().id(TEST_UUID).name("Name").description("Description")
-				.status(String.valueOf(ProductStatus.VISIBLE)).image(IMAGE_URL).quantity(10)
-				.price(BigDecimal.valueOf(100)).tagIds(List.of(TEST_ID)).createdAt(DATE_TIME).build();
-	}
-
-	public static UpdateProductDto getEmptyUpdateProduct() {
-		return UpdateProductDto.builder().tagIds(List.of(TEST_ID)).build();
-	}
-
 	public static ProductTranslationManagement getProductTranslationManagement() {
 		return ProductTranslationManagement.builder().productId(TEST_UUID).languageId(TEST_ID).name("Name")
 				.description("Description").language(getLanguageEn()).build();
@@ -190,17 +179,49 @@ public class ModelUtils {
 				.createdAfter(DATE_TIME).priceMore(BigDecimal.ZERO).priceLess(BigDecimal.TEN).build();
 	}
 
-	public static CreateProductRequestDto getCreateProductRequestDto() {
-		return CreateProductRequestDto.builder().status("VISIBLE").image(IMAGE_URL).quantity(10)
-				.price(BigDecimal.valueOf(100)).tagIds(List.of(1L)).productTranslations(Set.of(ProductTranslationDto
-						.builder().name("Name").description("Description").languageCode("en").build()))
+	public static ProductRequestDto getProductRequestDto() {
+		return ProductRequestDto.builder().status(String.valueOf(ProductStatus.VISIBLE)).image(IMAGE_URL)
+				.quantity(TEST_QUANTITY).price(TEST_PRICE).tagIds(List.of(1L))
+				.productTranslations(Set.of(ProductTranslationDto.builder().name("Name").description("Description")
+						.languageCode("en").build()))
 				.build();
 	}
 
-	public static ProductManagement getProductManagement() {
-		return ProductManagement.builder().id(TEST_UUID).status(ProductStatus.VISIBLE).createdAt(LocalDateTime.now())
-				.quantity(10).price(BigDecimal.valueOf(100.00)).tags(Set.of(new Tag(1L, "tag")))
-				.productTranslationManagement(Set.of(getProductTranslationManagement())).build();
+	public static ProductRequestDto getProductRequestWithEmptyTagsDto() {
+		return ProductRequestDto.builder().status(String.valueOf(ProductStatus.VISIBLE)).image(IMAGE_URL)
+				.quantity(TEST_QUANTITY).price(TEST_PRICE).tagIds(Collections.emptyList())
+				.productTranslations(Set.of(ProductTranslationDto.builder().name("Name").description("Description")
+						.languageCode("en").build()))
+				.build();
+	}
+
+	public static ProductRequestDto getProductRequestRemoveAllTagsDto() {
+		return ProductRequestDto.builder().status(String.valueOf(ProductStatus.VISIBLE)).image(IMAGE_URL)
+				.quantity(TEST_QUANTITY).price(TEST_PRICE).tagIds(List.of(-1L))
+				.productTranslations(Set.of(ProductTranslationDto.builder().name("Name").description("Description")
+						.languageCode("en").build()))
+				.build();
+	}
+
+	public static ProductRequestDto getProductRequestWithDifferentIds() {
+		return ProductRequestDto.builder().status(String.valueOf(ProductStatus.VISIBLE)).image(IMAGE_URL)
+				.quantity(TEST_QUANTITY).price(TEST_PRICE).tagIds(List.of(-1L, 1L))
+				.productTranslations(Set.of(ProductTranslationDto.builder().name("Name").description("Description")
+						.languageCode("en").build()))
+				.build();
+	}
+
+	public static ProductRequestDto getEmptyProductRequestDto() {
+		return ProductRequestDto.builder().tagIds(List.of(1L))
+				.productTranslations(Set.of(ProductTranslationDto.builder().languageCode("en").build())).build();
+	}
+
+	public static ProductRequestDto getProductRequestDtoWithInvalidLanguageCode() {
+		return ProductRequestDto.builder().status(String.valueOf(ProductStatus.VISIBLE)).image(IMAGE_URL)
+				.quantity(TEST_QUANTITY).price(TEST_PRICE).tagIds(List.of(1L))
+				.productTranslations(Set.of(ProductTranslationDto.builder().name("Name").description("Description")
+						.languageCode("invalid").build()))
+				.build();
 	}
 
 	public static UpdateOrderStatusDto getUpdateOrderStatusDto() {
