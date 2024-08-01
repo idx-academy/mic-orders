@@ -59,11 +59,11 @@ class OrderRepositoryIT extends AbstractRepository {
 
 	@Test
 	void findByIdFetchDataTest() {
-		var actual = orderRepository.findById(orderId);
+		var actual = orderRepository.findById(orderId, lang);
 		assertTrue(actual.isPresent());
 
 		Order order = actual.get();
-		validateBasicOrderNotNull(order);
+		validateOrderNotNull(order);
 		assertEquals(orderId, order.id());
 	}
 
@@ -128,7 +128,8 @@ class OrderRepositoryIT extends AbstractRepository {
 
 	@Test
 	void findAllWithEmptyFilterTest() {
-		OrdersFilterParametersDto filterParametersDto = OrdersFilterParametersDto.builder().deliveryMethods(emptyList()).statuses(emptyList()).build();
+		OrdersFilterParametersDto filterParametersDto = OrdersFilterParametersDto.builder().deliveryMethods(emptyList())
+				.statuses(emptyList()).build();
 		Page<Order> orderPage = orderRepository.findAll(filterParametersDto, pageable);
 
 		validatePageNotNull(orderPage);
@@ -142,8 +143,8 @@ class OrderRepositoryIT extends AbstractRepository {
 	void findAllWithBoundedByDateTest() {
 		LocalDateTime createdAfter = LocalDateTime.of(2021, 1, 1, 1, 1, 1);
 		LocalDateTime createdBefore = LocalDateTime.of(2027, 1, 1, 1, 1, 1);
-		OrdersFilterParametersDto filterParametersDto = OrdersFilterParametersDto.builder().createdAfter(createdAfter).deliveryMethods(emptyList()).statuses(emptyList())
-				.createdBefore(createdBefore).build();
+		OrdersFilterParametersDto filterParametersDto = OrdersFilterParametersDto.builder().createdAfter(createdAfter)
+				.deliveryMethods(emptyList()).statuses(emptyList()).createdBefore(createdBefore).build();
 		Page<Order> orderPage = orderRepository.findAll(filterParametersDto, pageable);
 
 		validatePageNotNull(orderPage);
@@ -159,8 +160,8 @@ class OrderRepositoryIT extends AbstractRepository {
 	void findAllWithBoundedByTotalPriceTest() {
 		BigDecimal totalMore = BigDecimal.valueOf(30);
 		BigDecimal totalLess = BigDecimal.valueOf(300);
-		OrdersFilterParametersDto filterParametersDto = OrdersFilterParametersDto.builder().totalMore(totalMore).deliveryMethods(emptyList()).statuses(emptyList())
-				.totalLess(totalLess).build();
+		OrdersFilterParametersDto filterParametersDto = OrdersFilterParametersDto.builder().totalMore(totalMore)
+				.deliveryMethods(emptyList()).statuses(emptyList()).totalLess(totalLess).build();
 		Page<Order> orderPage = orderRepository.findAll(filterParametersDto, pageable);
 
 		validatePageNotNull(orderPage);
@@ -172,7 +173,8 @@ class OrderRepositoryIT extends AbstractRepository {
 
 	@Test
 	void findAllWithIsPaidTrueTest() {
-		OrdersFilterParametersDto filterParametersDto = OrdersFilterParametersDto.builder().deliveryMethods(emptyList()).statuses(emptyList()).isPaid(true).build();
+		OrdersFilterParametersDto filterParametersDto = OrdersFilterParametersDto.builder().deliveryMethods(emptyList())
+				.statuses(emptyList()).isPaid(true).build();
 		Page<Order> orderPage = orderRepository.findAll(filterParametersDto, pageable);
 
 		validatePageNotNull(orderPage);
@@ -186,7 +188,8 @@ class OrderRepositoryIT extends AbstractRepository {
 	@Test
 	void findAllWithStatusesTest() {
 		List<OrderStatus> statuses = List.of(OrderStatus.IN_PROGRESS, OrderStatus.COMPLETED);
-		OrdersFilterParametersDto filterParametersDto = OrdersFilterParametersDto.builder().deliveryMethods(emptyList()).statuses(statuses).build();
+		OrdersFilterParametersDto filterParametersDto = OrdersFilterParametersDto.builder().deliveryMethods(emptyList())
+				.statuses(statuses).build();
 		Page<Order> orderPage = orderRepository.findAll(filterParametersDto, pageable);
 
 		validatePageNotNull(orderPage);
