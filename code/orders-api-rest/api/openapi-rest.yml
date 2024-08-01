@@ -529,7 +529,7 @@ paths:
           $ref: '#/components/responses/NotFoundResponse'
         '409':
           $ref: '#/components/responses/Conflict'
-  /v1/users/{userId}/status:
+  /v1/management/users/{userId}/status:
     patch:
       tags:
         - UsersManagement

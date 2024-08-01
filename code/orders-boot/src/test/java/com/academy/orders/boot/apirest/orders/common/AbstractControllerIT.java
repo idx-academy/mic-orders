@@ -1,14 +1,12 @@
 package com.academy.orders.boot.apirest.orders.common;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import com.academy.orders_api_rest.generated.model.SignInRequestDTO;
-import java.util.HashMap;
-import java.util.Map;
 import com.academy.orders.boot.Application;
 import com.academy.orders.boot.config.UsersConfig;
 import com.academy.orders.boot.config.UsersConfig.AppUser;
 import com.academy.orders_api_rest.generated.model.AuthTokenResponseDTO;
+import com.academy.orders_api_rest.generated.model.SignInRequestDTO;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +18,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(classes = {Application.class}, webEnvironment = WebEnvironment.RANDOM_PORT)
 @ExtendWith(SpringExtension.class)

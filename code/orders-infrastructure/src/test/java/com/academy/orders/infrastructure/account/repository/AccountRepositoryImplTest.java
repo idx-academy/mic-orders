@@ -38,14 +38,14 @@ class AccountRepositoryImplTest {
 	private AccountMapper accountMapper;
 
 	@Test
-	void getAccountByEmailTest() {
+	void findAccountByEmailTest() {
 		var accountEntity = getAccountEntity();
 		var accountDomain = getAccount();
 
 		when(accountJpaAdapter.findByEmail(accountEntity.getEmail())).thenReturn(Optional.of(accountEntity));
 		when(accountMapper.fromEntity(accountEntity)).thenReturn(accountDomain);
 
-		var actualAccount = repository.getAccountByEmail(accountEntity.getEmail());
+		var actualAccount = repository.findAccountByEmail(accountEntity.getEmail());
 
 		assertEquals(accountDomain, actualAccount.get());
 
@@ -54,11 +54,11 @@ class AccountRepositoryImplTest {
 	}
 
 	@Test
-	void getAccountByEmailIfAccountAbsentTest() {
+	void findAccountByEmailIfAccountAbsentTest() {
 		var mail = "test@mail.com";
 
 		when(accountJpaAdapter.findByEmail(mail)).thenReturn(Optional.empty());
-		var actualAccount = repository.getAccountByEmail(mail);
+		var actualAccount = repository.findAccountByEmail(mail);
 
 		assertTrue(actualAccount.isEmpty());
 		verify(accountJpaAdapter).findByEmail(mail);
