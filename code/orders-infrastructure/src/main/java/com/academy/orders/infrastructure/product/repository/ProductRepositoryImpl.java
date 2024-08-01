@@ -96,7 +96,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 
 	@Override
 	public Optional<Product> getById(UUID productId) {
-		var productEntity = productJpaAdapter.findById(productId);
+		var productEntity = productJpaAdapter.findProductByProductId(productId);
 		return productEntity.map(productMapper::fromEntity);
 	}
 

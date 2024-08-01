@@ -207,13 +207,13 @@ class ProductRepositoryImplTest {
 		var product = getProduct();
 		var productEntity = getProductEntity();
 
-		when(productJpaAdapter.findById(TEST_UUID)).thenReturn(Optional.of(productEntity));
+		when(productJpaAdapter.findProductByProductId(TEST_UUID)).thenReturn(Optional.of(productEntity));
 		when(productMapper.fromEntity(productEntity)).thenReturn(product);
 
 		var result = productRepository.getById(TEST_UUID);
 		assertEquals(result, Optional.of(product));
 
-		verify(productJpaAdapter).findById(TEST_UUID);
+		verify(productJpaAdapter).findProductByProductId(TEST_UUID);
 		verify(productMapper).fromEntity(productEntity);
 	}
 
