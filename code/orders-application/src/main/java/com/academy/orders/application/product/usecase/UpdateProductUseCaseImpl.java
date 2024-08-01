@@ -65,11 +65,14 @@ public class UpdateProductUseCaseImpl implements UpdateProductUseCase {
 	 * repository.
 	 */
 	private Set<Tag> getTags(ProductRequestDto request, Product existingProduct) {
-		return request.tagIds().isEmpty()
-				? existingProduct.tags()
-				: (request.tagIds().size() == 1 && request.tagIds().get(0) == -1
-						? Set.of()
-						: tagRepository.getTagsByIds(request.tagIds()));
+		if (request.tagIds().isEmpty()) {
+			return existingProduct.tags();
+		}
+
+		if (request.tagIds().size() == 1 && request.tagIds().get(0) == -1) {
+			return Set.of();
+		}
+		return tagRepository.getTagsByIds(request.tagIds());
 	}
 
 	private <T> T getValue(T newValue, T existingValue) {
