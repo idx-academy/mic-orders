@@ -24,7 +24,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	}
 
 	private Account getAccount(String username) {
-		return accountRepository.getAccountByEmail(username).orElseThrow(
+		return accountRepository.findAccountByEmail(username).orElseThrow(
 				() -> new UsernameNotFoundException(format("Account does not exist with email: %s", username)));
 	}
 

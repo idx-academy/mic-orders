@@ -29,7 +29,7 @@ class UserDetailsServiceTest {
 	@Test
 	void loadUserByUsernameTest() {
 		var account = ModelsUtil.getAccount();
-		when(accountRepository.getAccountByEmail(Mockito.anyString())).thenReturn(Optional.of(account));
+		when(accountRepository.findAccountByEmail(Mockito.anyString())).thenReturn(Optional.of(account));
 
 		var result = (SecurityUser) userDetailsService.loadUserByUsername(account.email());
 
@@ -40,14 +40,14 @@ class UserDetailsServiceTest {
 		assertEquals(result.getLastName(), account.lastName());
 		assertTrue(result.getAuthorities().contains(new SimpleGrantedAuthority(account.role().name())));
 
-		verify(accountRepository).getAccountByEmail(Mockito.anyString());
+		verify(accountRepository).findAccountByEmail(Mockito.anyString());
 	}
 
 	@Test
 	void loadUserByUsernameThrowsUsernameNotFoundExceptionTest() {
-		when(accountRepository.getAccountByEmail(Mockito.anyString())).thenReturn(Optional.empty());
+		when(accountRepository.findAccountByEmail(Mockito.anyString())).thenReturn(Optional.empty());
 
 		assertThrowsExactly(UsernameNotFoundException.class, () -> userDetailsService.loadUserByUsername(anyString()));
-		verify(accountRepository).getAccountByEmail(Mockito.anyString());
+		verify(accountRepository).findAccountByEmail(Mockito.anyString());
 	}
 }

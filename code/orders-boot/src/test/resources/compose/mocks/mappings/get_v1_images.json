@@ -19,8 +19,8 @@
         "transformers": ["response-template"],
         "delayDistribution": {
           "type": "uniform",
-          "lower": 500,
-          "upper": 2000
+          "lower": 20,
+          "upper": 100
         }
       }
     },
@@ -43,8 +43,8 @@
         "transformers": ["response-template"],
         "delayDistribution": {
           "type": "uniform",
-          "lower": 500,
-          "upper": 1000
+          "lower": 50,
+          "upper": 100
         }
       }
     },
@@ -67,8 +67,8 @@
         "transformers": ["response-template"],
         "delayDistribution": {
           "type": "uniform",
-          "lower": 100,
-          "upper": 600
+          "lower": 10,
+          "upper": 100
         }
       }
     },
@@ -122,8 +122,8 @@
         "transformers": ["response-template"],
         "delayDistribution": {
           "type": "uniform",
-          "lower": 500,
-          "upper": 2000
+          "lower": 40,
+          "upper": 100
         }
       }
     },
@@ -146,8 +146,8 @@
         "transformers": ["response-template"],
         "delayDistribution": {
           "type": "uniform",
-          "lower": 500,
-          "upper": 2000
+          "lower": 100,
+          "upper": 500
         }
       }
     },
@@ -214,7 +214,7 @@
         "delayDistribution": {
           "type": "uniform",
           "lower": 100,
-          "upper": 500
+          "upper": 400
         }
       }
     }
