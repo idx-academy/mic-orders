@@ -2,19 +2,24 @@ package com.academy.orders.apirest.products.controller;
 
 import com.academy.orders.apirest.common.mapper.PageableDTOMapper;
 import com.academy.orders.apirest.products.mapper.PageProductSearchResultDTOMapper;
+import com.academy.orders.apirest.products.mapper.ProductDetailsResponseDTOMapper;
 import com.academy.orders.apirest.products.mapper.ProductPreviewDTOMapper;
 import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.product.usecase.GetAllProductsUseCase;
+import com.academy.orders.domain.product.usecase.GetProductDetailsByIdUseCase;
 import com.academy.orders.domain.product.usecase.GetProductSearchResultsUseCase;
 import com.academy.orders_api_rest.generated.api.ProductsApi;
 import com.academy.orders_api_rest.generated.model.PageProductSearchResultDTO;
 import com.academy.orders_api_rest.generated.model.PageProductsDTO;
 import com.academy.orders_api_rest.generated.model.PageableDTO;
+import com.academy.orders_api_rest.generated.model.ProductDetailsResponseDTO;
 import com.academy.orders_api_rest.generated.model.ProductFilterDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,10 +27,18 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 public class ProductsController implements ProductsApi {
 	private final GetAllProductsUseCase getAllProductsUseCase;
+	private final GetProductDetailsByIdUseCase getProductDetailsByIdUseCase;
 	private final GetProductSearchResultsUseCase getProductSearchResultsUseCase;
 	private final ProductPreviewDTOMapper productPreviewDTOMapper;
 	private final PageableDTOMapper pageableDTOMapper;
 	private final PageProductSearchResultDTOMapper pageProductSearchResultDTOMapper;
+	private final ProductDetailsResponseDTOMapper productDetailsResponseDTOMapper;
+
+	@Override
+	public ProductDetailsResponseDTO getProductDetailsById(UUID productId, String lang) {
+		var product = getProductDetailsByIdUseCase.getProductDetailsById(productId, lang);
+		return productDetailsResponseDTOMapper.toDTO(product);
+	}
 
 	@Override
 	public PageProductsDTO getProducts(ProductFilterDTO productFilter, PageableDTO dto, String lang) {

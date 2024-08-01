@@ -186,4 +186,25 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 	@Query("SELECT p FROM ProductEntity p LEFT JOIN FETCH p.productTranslations pt "
 			+ "LEFT JOIN FETCH pt.language LEFT JOIN FETCH p.tags WHERE p.id = :id")
 	Optional<ProductEntity> findProductByProductId(UUID id);
+
+	/**
+	 * Finds a {@link ProductEntity} by its ID and language code. This method
+	 * retrieves a product entity along with its associated product translations,
+	 * languages, and tags based on the provided product ID and language code, and
+	 * filters by products with status VISIBLE.
+	 *
+	 * @param id
+	 *            the ID of the product to find.
+	 * @param lang
+	 *            the language code to filter the product translation.
+	 * @return an {@link Optional} containing the {@link ProductEntity} if found, or
+	 *         an empty {@link Optional} if no product with the given ID and
+	 *         language code exists.
+	 *
+	 * @author Anton Bondar
+	 */
+	@Query("SELECT p FROM ProductEntity p LEFT JOIN FETCH p.productTranslations pt "
+			+ "LEFT JOIN FETCH pt.language l LEFT JOIN FETCH p.tags "
+			+ "WHERE p.id = :id AND l.code = :lang AND p.status = 'VISIBLE'")
+	Optional<ProductEntity> findProductByProductIdAndLanguageCode(UUID id, String lang);
 }

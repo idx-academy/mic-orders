@@ -36,6 +36,7 @@ import com.academy.orders_api_rest.generated.model.PageUserOrderDTO;
 import com.academy.orders_api_rest.generated.model.PageableDTO;
 import com.academy.orders_api_rest.generated.model.PlaceOrderRequestDTO;
 import com.academy.orders_api_rest.generated.model.PostAddressDTO;
+import com.academy.orders_api_rest.generated.model.ProductDetailsResponseDTO;
 import com.academy.orders_api_rest.generated.model.ProductManagementContentDTO;
 import com.academy.orders_api_rest.generated.model.ProductManagementPageDTO;
 import com.academy.orders_api_rest.generated.model.ProductManagementStatusDTO;
@@ -496,5 +497,16 @@ public class ModelUtils {
 		pageProductsDTO.size(1);
 		pageProductsDTO.empty(false);
 		return pageProductsDTO;
+	}
+
+	public static ProductDetailsResponseDTO getProductDetailsResponseDTO() {
+		var productDetailsResponseDTO = new ProductDetailsResponseDTO();
+		productDetailsResponseDTO.name("Name");
+		productDetailsResponseDTO.description("Desc");
+		productDetailsResponseDTO.image(IMAGE_URL);
+		productDetailsResponseDTO.tags(List.of("tag1", "tag2"));
+		productDetailsResponseDTO.quantity(TEST_QUANTITY);
+		productDetailsResponseDTO.price(TEST_PRICE);
+		return productDetailsResponseDTO;
 	}
 }

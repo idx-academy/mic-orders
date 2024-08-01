@@ -73,6 +73,12 @@ public class ModelUtils {
 				.price(BigDecimal.valueOf(100.00)).build();
 	}
 
+	public static ProductEntity getProductEntityWithTranslation() {
+		return ProductEntity.builder().id(UUID.fromString("c39314ce-b659-4776-86b9-8201b05bb339"))
+				.status(ProductStatus.VISIBLE).image(TEST_IMAGE_NAME).createdAt(DATE_TIME).quantity(100)
+				.price(BigDecimal.valueOf(100.00)).productTranslations(Set.of(getProductTranslationEntity())).build();
+	}
+
 	public static Product getProduct() {
 		return Product.builder().id(UUID.fromString("c39314ce-b659-4776-86b9-8201b05bb339"))
 				.status(ProductStatus.VISIBLE).image(TEST_IMAGE_NAME).createdAt(DATE_TIME).quantity(100)
