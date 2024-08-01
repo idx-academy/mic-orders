@@ -35,10 +35,8 @@ public class UpdateProductUseCaseImpl implements UpdateProductUseCase {
 
 		var tags = getTags(request, existingProduct);
 
-		request.productTranslations().forEach(dto -> {
-			languageRepository.findByCode(dto.languageCode())
-					.orElseThrow(() -> new LanguageNotFoundException(dto.languageCode()));
-		});
+		request.productTranslations().forEach(dto -> languageRepository.findByCode(dto.languageCode())
+				.orElseThrow(() -> new LanguageNotFoundException(dto.languageCode())));
 
 		var existingTranslationsMap = existingTranslations.stream()
 				.collect(Collectors.toMap(t -> t.language().code(), t -> t));
