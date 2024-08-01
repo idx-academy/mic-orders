@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -94,7 +95,7 @@ class ProductRepositoryImplTest {
 		when(productJpaAdapter.findAllByLanguageCodeAndStatusVisible(LANGUAGE_EN,
 				PageRequest.of(pageable.page(), pageable.size()), sort, tags)).thenReturn(page);
 		when(productPageMapper.toDomain(page)).thenReturn(pageDomain);
-		var products = productRepository.findAllProducts(LANGUAGE_EN, pageable, tags);
+		var products = productRepository.findAllProducts(LANGUAGE_EN, pageable, null);
 
 		assertEquals(pageDomain, products);
 		verify(productJpaAdapter).findAllByLanguageCodeAndStatusVisible(LANGUAGE_EN,
