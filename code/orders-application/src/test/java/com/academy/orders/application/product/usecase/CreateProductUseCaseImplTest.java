@@ -4,24 +4,26 @@ import com.academy.orders.application.ModelUtils;
 import com.academy.orders.domain.exception.BadRequestException;
 import com.academy.orders.domain.language.repository.LanguageRepository;
 import com.academy.orders.domain.language.repository.exception.LanguageNotFoundException;
-import com.academy.orders.domain.product.dto.CreateProductRequestDto;
-import com.academy.orders.domain.product.dto.ProductTranslationDto;
-import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.ProductManagement;
-import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders.domain.product.repository.ProductRepository;
 import com.academy.orders.domain.tag.repository.TagRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.*;
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Optional;
+import java.util.Set;
+import static com.academy.orders.application.ModelUtils.getProduct;
+import static com.academy.orders.application.ModelUtils.getProductRequestDto;
+import static com.academy.orders.application.ModelUtils.getProductRequestDtoWithInvalidLanguageCode;
+import static com.academy.orders.application.ModelUtils.getTag;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CreateProductUseCaseImplTest {
@@ -36,29 +38,21 @@ class CreateProductUseCaseImplTest {
 
 	@Test
 	void createProductTest() {
-		UUID productId = UUID.randomUUID();
-		CreateProductRequestDto request = ModelUtils.getCreateProductRequestDto();
+		var request = getProductRequestDto();
+		var product = getProduct();
 
-		Product product = Product.builder().id(productId).status(ProductStatus.valueOf(request.status()))
-				.image(request.image()).createdAt(LocalDateTime.now()).quantity(request.quantity())
-				.price(request.price()).tags(Set.of(ModelUtils.getTag()))
-				.productTranslations(Set.of(ModelUtils.getProductTranslation())).build();
-
-		when(tagRepository.getTagsByIds(request.tagIds())).thenReturn(Set.of(ModelUtils.getTag()));
+		when(tagRepository.getTagsByIds(request.tagIds())).thenReturn(Set.of(getTag()));
 		when(languageRepository.findByCode(request.productTranslations().iterator().next().languageCode()))
-				.thenReturn(ModelUtils.getLanguageEn());
+				.thenReturn(Optional.ofNullable(ModelUtils.getLanguageEn()));
 		when(productRepository.save(any(ProductManagement.class))).thenReturn(product);
 
-		Product result = createProductUseCase.createProduct(request);
+		var result = createProductUseCase.createProduct(request);
 
-		assertNotNull(result);
-		assertEquals(productId, result.id());
-		assertEquals(request.status(), result.status().name());
-		assertEquals(request.image(), result.image());
-		assertEquals(request.quantity(), result.quantity());
-		assertEquals(request.price(), result.price());
-		assertEquals(1, result.tags().size());
-		assertEquals(1, result.productTranslations().size());
+		Assertions.assertEquals(result, product);
+
+		verify(tagRepository).getTagsByIds(request.tagIds());
+		verify(languageRepository).findByCode(request.productTranslations().iterator().next().languageCode());
+		verify(productRepository, times(2)).save(any(ProductManagement.class));
 	}
 
 	@Test
@@ -67,25 +61,18 @@ class CreateProductUseCaseImplTest {
 	}
 
 	@Test
-	void createProductProductRepositorySaveReturnsNullTest() {
-		CreateProductRequestDto request = ModelUtils.getCreateProductRequestDto();
-
-		when(productRepository.save(any(ProductManagement.class))).thenReturn(null);
-
-		assertThrows(RuntimeException.class, () -> createProductUseCase.createProduct(request));
-	}
-
-	@Test
 	void createProductLanguageNotFoundTest() {
-		CreateProductRequestDto request = CreateProductRequestDto.builder().status("VISIBLE").image("image.jpg")
-				.quantity(10).price(BigDecimal.valueOf(100)).tagIds(List.of(1L))
-				.productTranslations(Set.of(ProductTranslationDto.builder().name("Name").description("Description")
-						.languageCode("invalid").build()))
-				.build();
+		var request = getProductRequestDtoWithInvalidLanguageCode();
+		var product = getProduct();
 
-		when(tagRepository.getTagsByIds(request.tagIds())).thenReturn(Set.of(ModelUtils.getTag()));
-		when(languageRepository.findByCode("invalid")).thenReturn(null);
+		when(tagRepository.getTagsByIds(request.tagIds())).thenReturn(Set.of(getTag()));
+		when(productRepository.save(any(ProductManagement.class))).thenReturn(product);
+		when(languageRepository.findByCode("invalid")).thenThrow(new LanguageNotFoundException("invalid"));
 
 		assertThrows(LanguageNotFoundException.class, () -> createProductUseCase.createProduct(request));
+
+		verify(tagRepository).getTagsByIds(request.tagIds());
+		verify(productRepository).save(any(ProductManagement.class));
+		verify(languageRepository).findByCode("invalid");
 	}
 }

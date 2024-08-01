@@ -11,6 +11,7 @@ import com.academy.orders.infrastructure.product.ProductPageMapper;
 import com.academy.orders.infrastructure.product.ProductTranslationManagementMapper;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
@@ -122,37 +123,20 @@ class ProductRepositoryImplTest {
 	}
 
 	@Test
-	void findProductByIdAndLanguageCodeTest() {
-		UUID productId = UUID.randomUUID();
-		var productEntity = getProductEntity();
-		var productManagement = getProductManagement();
-
-		when(productJpaAdapter.findProductByIdAndLanguageCode(productId, LANGUAGE_EN)).thenReturn(productEntity);
-		when(productManagementMapper.fromEntity(productEntity)).thenReturn(productManagement);
-
-		var result = productRepository.findProductByIdAndLanguageCode(productId, LANGUAGE_EN);
-		assertEquals(productManagement, result);
-
-		verify(productJpaAdapter).findProductByIdAndLanguageCode(productId, LANGUAGE_EN);
-		verify(productManagementMapper).fromEntity(productEntity);
-	}
-
-	@Test
-	void findTranslationByIdAndLanguageCodeTest() {
+	void findTranslationsByProductIdTest() {
 		UUID productId = UUID.randomUUID();
 		var productTranslationEntity = getProductTranslationEntity();
 		var productTranslationManagement = getProductTranslationManagement();
 
-		when(productJpaAdapter.findTranslationByIdAndLanguageCode(productId, LANGUAGE_EN))
-				.thenReturn(productTranslationEntity);
-		when(productTranslationManagementMapper.fromEntity(productTranslationEntity))
-				.thenReturn(productTranslationManagement);
+		when(productJpaAdapter.findTranslationsByProductId(productId)).thenReturn(Set.of(productTranslationEntity));
+		when(productTranslationManagementMapper.fromEntities(Set.of(productTranslationEntity)))
+				.thenReturn(Set.of(productTranslationManagement));
 
-		var result = productRepository.findTranslationByIdAndLanguageCode(productId, LANGUAGE_EN);
-		assertEquals(productTranslationManagement, result);
+		var result = productRepository.findTranslationsByProductId(productId);
+		assertEquals(Set.of(productTranslationManagement), result);
 
-		verify(productJpaAdapter).findTranslationByIdAndLanguageCode(productId, LANGUAGE_EN);
-		verify(productTranslationManagementMapper).fromEntity(productTranslationEntity);
+		verify(productJpaAdapter).findTranslationsByProductId(productId);
+		verify(productTranslationManagementMapper).fromEntities(Set.of(productTranslationEntity));
 	}
 
 	@Test
