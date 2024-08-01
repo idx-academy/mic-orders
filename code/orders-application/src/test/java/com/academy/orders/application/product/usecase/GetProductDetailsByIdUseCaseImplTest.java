@@ -16,6 +16,7 @@ import java.util.Optional;
 import static com.academy.orders.application.ModelUtils.getLanguage;
 import static com.academy.orders.application.ModelUtils.getProduct;
 import static com.academy.orders.application.TestConstants.LANGUAGE_EN;
+import static com.academy.orders.application.TestConstants.LANGUAGE_UK;
 import static com.academy.orders.application.TestConstants.TEST_UUID;
 import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.verify;
@@ -37,14 +38,14 @@ class GetProductDetailsByIdUseCaseImplTest {
 		var product = getProduct();
 		var language = getLanguage();
 
-		when(languageRepository.findByCode(LANGUAGE_EN)).thenReturn(Optional.of(language));
-		when(productRepository.getByIdAndLanguageCode(TEST_UUID, LANGUAGE_EN)).thenReturn(Optional.of(product));
+		when(languageRepository.findByCode(LANGUAGE_UK)).thenReturn(Optional.of(language));
+		when(productRepository.getByIdAndLanguageCode(TEST_UUID, LANGUAGE_UK)).thenReturn(Optional.of(product));
 
-		var result = getProductDetailsByIdUseCase.getProductDetailsById(TEST_UUID, LANGUAGE_EN);
+		var result = getProductDetailsByIdUseCase.getProductDetailsById(TEST_UUID, LANGUAGE_UK);
 		Assertions.assertEquals(result, product);
 
-		verify(languageRepository).findByCode(LANGUAGE_EN);
-		verify(productRepository).getByIdAndLanguageCode(TEST_UUID, LANGUAGE_EN);
+		verify(languageRepository).findByCode(LANGUAGE_UK);
+		verify(productRepository).getByIdAndLanguageCode(TEST_UUID, LANGUAGE_UK);
 	}
 
 	@Test
@@ -61,13 +62,13 @@ class GetProductDetailsByIdUseCaseImplTest {
 	void getProductDetailsByIdThrowsProductNotFoundTest() {
 		var language = getLanguage();
 
-		when(languageRepository.findByCode(LANGUAGE_EN)).thenReturn(Optional.of(language));
-		when(productRepository.getByIdAndLanguageCode(TEST_UUID, LANGUAGE_EN)).thenReturn(Optional.empty());
+		when(languageRepository.findByCode(LANGUAGE_UK)).thenReturn(Optional.of(language));
+		when(productRepository.getByIdAndLanguageCode(TEST_UUID, LANGUAGE_UK)).thenReturn(Optional.empty());
 
 		assertThrows(ProductNotFoundException.class,
-				() -> getProductDetailsByIdUseCase.getProductDetailsById(TEST_UUID, LANGUAGE_EN));
+				() -> getProductDetailsByIdUseCase.getProductDetailsById(TEST_UUID, LANGUAGE_UK));
 
-		verify(languageRepository).findByCode(LANGUAGE_EN);
-		verify(productRepository).getByIdAndLanguageCode(TEST_UUID, LANGUAGE_EN);
+		verify(languageRepository).findByCode(LANGUAGE_UK);
+		verify(productRepository).getByIdAndLanguageCode(TEST_UUID, LANGUAGE_UK);
 	}
 }
