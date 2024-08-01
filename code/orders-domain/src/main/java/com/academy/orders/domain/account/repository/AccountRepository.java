@@ -18,7 +18,7 @@ public interface AccountRepository {
 	 *
 	 * @author Denys Ryhal
 	 */
-	Optional<Account> getAccountByEmail(String email);
+	Optional<Account> findAccountByEmail(String email);
 
 	/**
 	 * Checks if an account exists by its email.

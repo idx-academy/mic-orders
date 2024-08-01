@@ -35,7 +35,8 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 	 * @author Anton Bondar
 	 */
 	@Query(value = "SELECT p FROM ProductEntity p JOIN FETCH p.productTranslations pt "
-			+ "JOIN FETCH pt.language l LEFT JOIN FETCH p.tags WHERE l.code = :language AND p.status = 'VISIBLE' ORDER BY "
+			+ "JOIN FETCH pt.language l LEFT JOIN FETCH p.tags t WHERE l.code = :language AND p.status = 'VISIBLE' "
+			+ "AND (:#{#tags.isEmpty()} = true OR t.name IN :tags) ORDER BY "
 			+ "CASE WHEN :sort = 'name,asc' THEN pt.name END ASC, "
 			+ "CASE WHEN :sort = 'name,desc' THEN pt.name END DESC, "
 			+ "CASE WHEN :sort = 'createdAt,asc' THEN p.createdAt END ASC, "
@@ -43,7 +44,8 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 			+ "CASE WHEN :sort = 'price,asc' THEN p.price END ASC, "
 			+ "CASE WHEN :sort = 'price,desc' THEN p.price END DESC", countQuery = "SELECT COUNT(p) FROM ProductEntity p JOIN p.productTranslations pt "
 					+ "JOIN pt.language l WHERE l.code = :language AND p.status = 'VISIBLE'")
-	Page<ProductEntity> findAllByLanguageCodeAndStatusVisible(String language, Pageable pageable, String sort);
+	Page<ProductEntity> findAllByLanguageCodeAndStatusVisible(String language, Pageable pageable, String sort,
+			List<String> tags);
 
 	/**
 	 * Finds a list of products by their IDs and language code.

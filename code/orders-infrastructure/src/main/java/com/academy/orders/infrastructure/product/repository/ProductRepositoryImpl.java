@@ -26,6 +26,9 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import static java.util.Collections.emptyList;
+import static java.util.Objects.isNull;
+
 @Repository
 @RequiredArgsConstructor
 @Slf4j
@@ -39,11 +42,12 @@ public class ProductRepositoryImpl implements ProductRepository {
 	private final PageableMapper pageableMapper;
 
 	@Override
-	public Page<Product> getAllProducts(String language, Pageable pageable) {
+	public Page<Product> findAllProducts(String language, Pageable pageable, List<String> tags) {
 		log.debug("Fetching all products by language code with pagination and sorting");
 		String sort = String.join(",", pageable.sort());
+		List<String> tagList = isNull(tags) ? emptyList() : tags;
 		var productEntities = productJpaAdapter.findAllByLanguageCodeAndStatusVisible(language,
-				PageRequest.of(pageable.page(), pageable.size()), sort);
+				PageRequest.of(pageable.page(), pageable.size()), sort, tagList);
 		setImageNames(productEntities.getContent());
 
 		return productPageMapper.toDomain(productEntities);

@@ -47,7 +47,7 @@ class AccountsManagementControllerTest {
 		when(accountDTOMapper.mapToUserStatus(any(AccountStatusDTO.class))).thenReturn(status);
 		doThrow(AccountNotFoundException.class).when(changeAccountStatusUseCase).changeStatus(id, status);
 
-		mockMvc.perform(patch("/v1/users/{userId}/status", id).queryParam("status", status.name()))
+		mockMvc.perform(patch("/v1/management/users/{userId}/status", id).queryParam("status", status.name()))
 				.andExpect(status().isNotFound());
 
 		verify(accountDTOMapper).mapToUserStatus(any(AccountStatusDTO.class));
@@ -64,7 +64,7 @@ class AccountsManagementControllerTest {
 		when(accountDTOMapper.mapToUserStatus(any(AccountStatusDTO.class))).thenReturn(status);
 		doNothing().when(changeAccountStatusUseCase).changeStatus(id, status);
 
-		mockMvc.perform(patch("/v1/users/{userId}/status", id).queryParam("status", status.name()))
+		mockMvc.perform(patch("/v1/management/users/{userId}/status", id).queryParam("status", status.name()))
 				.andExpect(status().isNoContent());
 
 		verify(accountDTOMapper).mapToUserStatus(any(AccountStatusDTO.class));
