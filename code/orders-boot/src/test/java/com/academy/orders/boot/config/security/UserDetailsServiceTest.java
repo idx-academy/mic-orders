@@ -1,6 +1,6 @@
 package com.academy.orders.boot.config.security;
 
-import com.academy.orders.ModelsUtil;
+import com.academy.orders.ModelUtils;
 import com.academy.orders.domain.account.repository.AccountRepository;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ class UserDetailsServiceTest {
 
 	@Test
 	void loadUserByUsernameTest() {
-		var account = ModelsUtil.getAccount();
+		var account = ModelUtils.getAccount();
 		when(accountRepository.findAccountByEmail(Mockito.anyString())).thenReturn(Optional.of(account));
 
 		var result = (SecurityUser) userDetailsService.loadUserByUsername(account.email());
