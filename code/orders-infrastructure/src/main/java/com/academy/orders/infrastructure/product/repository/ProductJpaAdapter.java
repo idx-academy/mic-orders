@@ -5,6 +5,7 @@ import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders.infrastructure.product.entity.ProductEntity;
 import com.academy.orders.infrastructure.product.entity.ProductTranslationEntity;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
@@ -169,4 +170,20 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 			+ "WHERE l.code = :lang AND LOWER(pt.name) LIKE LOWER(CONCAT('%', :searchQuery, '%'))")
 	PageImpl<ProductTranslationEntity> findProductsByNameWithSearchQuery(String searchQuery, String lang,
 			PageRequest pageable);
+
+	/**
+	 * Finds a {@link ProductEntity} by its ID. This method retrieves a product
+	 * entity along with its associated product translations, languages, and tags
+	 * based on the provided product ID.
+	 *
+	 * @param id
+	 *            the ID of the product to find.
+	 * @return an {@link Optional} containing the {@link ProductEntity} if found, or
+	 *         an empty {@link Optional} if no product with the given ID exists.
+	 *
+	 * @author Anton Bondar
+	 */
+	@Query("SELECT p FROM ProductEntity p LEFT JOIN FETCH p.productTranslations pt "
+			+ "LEFT JOIN FETCH pt.language LEFT JOIN FETCH p.tags WHERE p.id = :id")
+	Optional<ProductEntity> findProductByProductId(UUID id);
 }
