@@ -14,7 +14,7 @@ import static com.academy.orders.apirest.TestConstants.PRODUCT_DESCRIPTION;
 import static com.academy.orders.apirest.TestConstants.PRODUCT_NAME;
 import static com.academy.orders.apirest.TestConstants.TAG_NAME;
 
-public class ProductDetailsResponseDTOMapperTest {
+class ProductDetailsResponseDTOMapperTest {
 	private ProductDetailsResponseDTOMapper productDetailsResponseDTOMapper;
 
 	@BeforeEach

@@ -19,8 +19,8 @@ public class GetProductDetailsByIdUseCaseImpl implements GetProductDetailsByIdUs
 
 	@Override
 	public Product getProductDetailsById(UUID productId, String lang) {
-		languageRepository.findByCode(lang).orElseThrow(() -> new LanguageNotFoundException(lang));
-		return productRepository.getByIdAndLanguageCode(productId, lang)
+		var language = languageRepository.findByCode(lang).orElseThrow(() -> new LanguageNotFoundException(lang));
+		return productRepository.getByIdAndLanguageCode(productId, language.code())
 				.orElseThrow(() -> new ProductNotFoundException(productId));
 	}
 }
