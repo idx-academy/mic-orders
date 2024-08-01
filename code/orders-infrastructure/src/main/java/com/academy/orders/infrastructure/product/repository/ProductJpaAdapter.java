@@ -44,7 +44,8 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 			+ "CASE WHEN :sort = 'createdAt,desc' THEN p.createdAt END DESC, "
 			+ "CASE WHEN :sort = 'price,asc' THEN p.price END ASC, "
 			+ "CASE WHEN :sort = 'price,desc' THEN p.price END DESC", countQuery = "SELECT COUNT(p) FROM ProductEntity p JOIN p.productTranslations pt "
-					+ "JOIN pt.language l WHERE l.code = :language AND p.status = 'VISIBLE'")
+					+ "JOIN pt.language l LEFT JOIN p.tags t WHERE l.code = :language AND p.status = 'VISIBLE'"
+					+ "AND (:#{#tags.isEmpty()} = true OR t.name IN :tags)")
 	Page<ProductEntity> findAllByLanguageCodeAndStatusVisible(String language, Pageable pageable, String sort,
 			List<String> tags);
 
