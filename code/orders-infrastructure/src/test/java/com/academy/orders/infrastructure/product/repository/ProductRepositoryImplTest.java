@@ -33,6 +33,7 @@ import static com.academy.orders.infrastructure.ModelUtils.getPageOf;
 import static com.academy.orders.infrastructure.ModelUtils.getPageable;
 import static com.academy.orders.infrastructure.ModelUtils.getProduct;
 import static com.academy.orders.infrastructure.ModelUtils.getProductEntity;
+import static com.academy.orders.infrastructure.ModelUtils.getProductEntityWithTranslation;
 import static com.academy.orders.infrastructure.ModelUtils.getProductManagement;
 import static com.academy.orders.infrastructure.ModelUtils.getProductTranslationEntity;
 import static com.academy.orders.infrastructure.ModelUtils.getProductTranslationManagement;
@@ -239,5 +240,21 @@ class ProductRepositoryImplTest {
 		verify(pageableMapper).fromDomain(pageableDomain);
 		verify(productJpaAdapter).findProductsByNameWithSearchQuery(searchQuery, lang, pageable);
 		verify(productPageMapper).fromProductTranslationEntity(entityPage);
+	}
+
+	@Test
+	void getByIdAndLanguageCodeTest() {
+		var product = getProduct();
+		var productEntity = getProductEntityWithTranslation();
+
+		when(productJpaAdapter.findProductByProductIdAndLanguageCode(TEST_UUID, LANGUAGE_EN))
+				.thenReturn(Optional.of(productEntity));
+		when(productMapper.fromEntity(productEntity)).thenReturn(product);
+
+		var result = productRepository.getByIdAndLanguageCode(TEST_UUID, LANGUAGE_EN);
+		assertEquals(result, Optional.of(product));
+
+		verify(productJpaAdapter).findProductByProductIdAndLanguageCode(TEST_UUID, LANGUAGE_EN);
+		verify(productMapper).fromEntity(productEntity);
 	}
 }
