@@ -8,6 +8,7 @@ import com.academy.orders.domain.product.entity.ProductManagement;
 import com.academy.orders.domain.product.entity.ProductTranslationManagement;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.lang.NonNull;
@@ -21,11 +22,13 @@ public interface ProductRepository {
 	 *            the language code to filter the products.
 	 * @param pageable
 	 *            the pageable information for pagination and sorting.
+	 * @param tags
+	 *            list of tag's names for filtering.
 	 * @return a page containing the products that match the criteria.
 	 *
 	 * @author Anton Bondar, Yurii Osovskyi
 	 */
-	Page<Product> getAllProducts(String language, Pageable pageable);
+	Page<Product> findAllProducts(String language, Pageable pageable, List<String> tags);
 
 	/**
 	 * Method sets new quantity of products.

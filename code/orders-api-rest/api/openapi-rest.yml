@@ -323,8 +323,13 @@ paths:
       description: The endpoint for getting all products from the database.
       operationId: getProducts
       parameters:
-        - $ref: '#/components/parameters/Language'
+        - in: query
+          description: filter for products
+          name: productFilter
+          schema:
+            $ref: '#/components/schemas/ProductFilter'
         - $ref: '#/components/parameters/Pageable'
+        - $ref: '#/components/parameters/Language'
       responses:
         '200':
           description: Short information about all products
@@ -1513,6 +1518,12 @@ components:
           type: string
           format: date-time
           description:  The date of product creation is before
+        tags:
+          $ref: '#/components/schemas/ProductTags'
+
+    ProductFilter:
+      type: object
+      properties:
         tags:
           $ref: '#/components/schemas/ProductTags'
 

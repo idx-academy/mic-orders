@@ -34,6 +34,7 @@ import static com.academy.orders.infrastructure.ModelUtils.getProductTranslation
 import static com.academy.orders.infrastructure.ModelUtils.getProductTranslationManagement;
 import static com.academy.orders.infrastructure.TestConstants.LANGUAGE_EN;
 import static com.academy.orders.infrastructure.TestConstants.TEST_UUID;
+import static java.util.Collections.*;
 import static java.util.Collections.singletonList;
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -81,22 +82,23 @@ class ProductRepositoryImplTest {
 	}
 
 	@Test
-	void getAllProductsTest() {
+	void findAllProductsTest() {
 		var pageable = getPageable();
 		var sort = String.join(",", pageable.sort());
 		var productEntity = getProductEntity();
 		var product = getProduct();
 		var pageDomain = getPageOf(product);
+		List<String> tags = emptyList();
 
 		var page = new PageImpl<>(List.of(productEntity));
 		when(productJpaAdapter.findAllByLanguageCodeAndStatusVisible(LANGUAGE_EN,
-				PageRequest.of(pageable.page(), pageable.size()), sort)).thenReturn(page);
+				PageRequest.of(pageable.page(), pageable.size()), sort, tags)).thenReturn(page);
 		when(productPageMapper.toDomain(page)).thenReturn(pageDomain);
-		var products = productRepository.getAllProducts(LANGUAGE_EN, pageable);
+		var products = productRepository.findAllProducts(LANGUAGE_EN, pageable, tags);
 
 		assertEquals(pageDomain, products);
 		verify(productJpaAdapter).findAllByLanguageCodeAndStatusVisible(LANGUAGE_EN,
-				PageRequest.of(pageable.page(), pageable.size()), sort);
+				PageRequest.of(pageable.page(), pageable.size()), sort, tags);
 		verify(productPageMapper).toDomain(page);
 	}
 

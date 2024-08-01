@@ -6,6 +6,7 @@ import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.repository.ProductImageRepository;
 import com.academy.orders.domain.product.repository.ProductRepository;
 import com.academy.orders.domain.product.usecase.GetAllProductsUseCase;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,8 @@ public class GetAllProductsUseCaseImpl implements GetAllProductsUseCase {
 	private final ProductImageRepository productImageRepository;
 
 	@Override
-	public Page<Product> getAllProducts(String language, Pageable pageable) {
-		return productRepository.getAllProducts(language, pageable).map(productImageRepository::loadImageForProduct);
+	public Page<Product> getAllProducts(String language, Pageable pageable, List<String> tags) {
+		return productRepository.findAllProducts(language, pageable, tags)
+				.map(productImageRepository::loadImageForProduct);
 	}
 }
