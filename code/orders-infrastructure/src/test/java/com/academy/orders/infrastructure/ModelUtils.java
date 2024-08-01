@@ -24,12 +24,14 @@ import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders.infrastructure.account.entity.AccountEntity;
 import com.academy.orders.infrastructure.cart.entity.CartItemEntity;
 import com.academy.orders.infrastructure.cart.entity.CartItemId;
+import com.academy.orders.infrastructure.language.entity.LanguageEntity;
 import com.academy.orders.infrastructure.order.entity.OrderEntity;
 import com.academy.orders.infrastructure.order.entity.OrderItemEntity;
 import com.academy.orders.infrastructure.order.entity.OrderReceiverVO;
 import com.academy.orders.infrastructure.order.entity.PostAddressEntity;
 import com.academy.orders.infrastructure.product.entity.ProductEntity;
 import com.academy.orders.infrastructure.product.entity.ProductTranslationEntity;
+import com.academy.orders.infrastructure.product.entity.ProductTranslationId;
 import com.academy.orders.infrastructure.tag.entity.TagEntity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -159,7 +161,9 @@ public class ModelUtils {
 	}
 
 	public static ProductTranslationEntity getProductTranslationEntity() {
-		return ProductTranslationEntity.builder().product(getProductEntity()).build();
+		return ProductTranslationEntity.builder().productTranslationId(new ProductTranslationId(TEST_UUID, 1L))
+				.name("Name").description("Description").product(getProductEntity()).language(getLanguageEntity())
+				.build();
 	}
 
 	public static ProductTranslationManagement getProductTranslationManagement() {
@@ -179,5 +183,13 @@ public class ModelUtils {
 
 	public static Tag getTag() {
 		return Tag.builder().id(TEST_ID).name("category:mobile").build();
+	}
+
+	public static LanguageEntity getLanguageEntity() {
+		return LanguageEntity.builder().id(1L).code("en").build();
+	}
+
+	public static Language getLanguage() {
+		return Language.builder().id(1L).code("en").build();
 	}
 }

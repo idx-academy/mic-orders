@@ -5,6 +5,7 @@ import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders.infrastructure.product.entity.ProductEntity;
 import com.academy.orders.infrastructure.product.entity.ProductTranslationEntity;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -138,34 +139,17 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 	void updateProductStatus(UUID id, ProductStatus status);
 
 	/**
-	 * Finds a product by its ID and language code.
+	 * Finds product translations by product ID.
 	 *
 	 * @param id
 	 *            the ID of the product.
-	 * @param languageCode
-	 *            the language code for filtering the product translation.
-	 * @return the {@link ProductEntity} object.
-	 *
-	 * @author Anton Bondar
-	 */
-	@Query("SELECT p FROM ProductEntity p LEFT JOIN FETCH p.productTranslations pt "
-			+ "LEFT JOIN FETCH pt.language l LEFT JOIN FETCH p.tags t WHERE p.id = :id AND l.code = :languageCode")
-	ProductEntity findProductByIdAndLanguageCode(UUID id, String languageCode);
-
-	/**
-	 * Finds a product translation by product ID and language code.
-	 *
-	 * @param id
-	 *            the ID of the product.
-	 * @param languageCode
-	 *            the language code for filtering the product translation.
-	 * @return the {@link ProductTranslationEntity} object.
+	 * @return a {@link List} of {@link ProductTranslationEntity} objects.
 	 *
 	 * @author Anton Bondar
 	 */
 	@Query("SELECT pt FROM ProductTranslationEntity pt LEFT JOIN FETCH pt.product p "
-			+ "LEFT JOIN FETCH pt.language l LEFT JOIN FETCH p.tags t WHERE p.id = :id AND l.code = :languageCode")
-	ProductTranslationEntity findTranslationByIdAndLanguageCode(UUID id, String languageCode);
+			+ "LEFT JOIN FETCH pt.language l LEFT JOIN FETCH p.tags t WHERE p.id = :id")
+	Set<ProductTranslationEntity> findTranslationsByProductId(UUID id);
 
 	/**
 	 * Retrieves a paginated list of ProductTranslationEntity objects based on a
