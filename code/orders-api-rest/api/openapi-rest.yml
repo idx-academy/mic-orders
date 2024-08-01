@@ -13,9 +13,6 @@ tags:
   - name: Security
     description: Token retrieval
 
-  - name: AccountsManagement
-    description: Endpoints for accounts management page
-
   - name: Products
     description: Products endpoint
 
@@ -550,12 +547,12 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
 
-  /v1/management/accounts:
+  /v1/management/users:
     get:
       tags:
-        - AccountsManagement
-      summary: Get list of accounts
-      description: The endpoint for getting all products from the database.
+        - UsersManagement
+      summary: Get list of all users
+      description: The endpoint for getting all accounts from the database.
       operationId: getAccounts
       parameters:
         - $ref: '#/components/parameters/Pageable'
