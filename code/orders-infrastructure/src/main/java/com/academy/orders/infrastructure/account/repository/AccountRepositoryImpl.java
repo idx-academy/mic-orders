@@ -29,7 +29,7 @@ public class AccountRepositoryImpl implements AccountRepository {
 	private final AccountMapper accountMapper;
 
 	@Override
-	public Optional<Account> getAccountByEmail(String email) {
+	public Optional<Account> findAccountByEmail(String email) {
 		var accountEntity = accountJpaAdapter.findByEmail(email);
 		return accountEntity.map(accountMapper::fromEntity);
 	}

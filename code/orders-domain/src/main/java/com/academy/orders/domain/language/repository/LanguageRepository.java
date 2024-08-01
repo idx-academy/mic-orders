@@ -2,7 +2,8 @@ package com.academy.orders.domain.language.repository;
 
 import com.academy.orders.domain.product.entity.Language;
 
-public interface LanguageRepository {
+import java.util.Optional;
 
-	Language findByCode(String code);
+public interface LanguageRepository {
+	Optional<Language> findByCode(String code);
 }

@@ -11,11 +11,15 @@ import com.academy.orders.infrastructure.product.ProductPageMapper;
 import com.academy.orders.infrastructure.product.ProductTranslationManagementMapper;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -34,10 +38,12 @@ import static com.academy.orders.infrastructure.ModelUtils.getProductTranslation
 import static com.academy.orders.infrastructure.ModelUtils.getProductTranslationManagement;
 import static com.academy.orders.infrastructure.TestConstants.LANGUAGE_EN;
 import static com.academy.orders.infrastructure.TestConstants.TEST_UUID;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.params.provider.Arguments.of;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doAnswer;
@@ -80,8 +86,9 @@ class ProductRepositoryImplTest {
 		assertDoesNotThrow(() -> productRepository.setNewProductQuantity(UUID.randomUUID(), 1));
 	}
 
-	@Test
-	void getAllProductsTest() {
+	@ParameterizedTest
+	@MethodSource("findAllProductsMethodSourceProvider")
+	void findAllProductsTest(List<String> tagsParams, List<String> mockedTags) {
 		var pageable = getPageable();
 		var sort = String.join(",", pageable.sort());
 		var productEntity = getProductEntity();
@@ -90,14 +97,19 @@ class ProductRepositoryImplTest {
 
 		var page = new PageImpl<>(List.of(productEntity));
 		when(productJpaAdapter.findAllByLanguageCodeAndStatusVisible(LANGUAGE_EN,
-				PageRequest.of(pageable.page(), pageable.size()), sort)).thenReturn(page);
+				PageRequest.of(pageable.page(), pageable.size()), sort, mockedTags)).thenReturn(page);
 		when(productPageMapper.toDomain(page)).thenReturn(pageDomain);
-		var products = productRepository.getAllProducts(LANGUAGE_EN, pageable);
+		var products = productRepository.findAllProducts(LANGUAGE_EN, pageable, tagsParams);
 
 		assertEquals(pageDomain, products);
 		verify(productJpaAdapter).findAllByLanguageCodeAndStatusVisible(LANGUAGE_EN,
-				PageRequest.of(pageable.page(), pageable.size()), sort);
+				PageRequest.of(pageable.page(), pageable.size()), sort, mockedTags);
 		verify(productPageMapper).toDomain(page);
+	}
+
+	static Stream<Arguments> findAllProductsMethodSourceProvider() {
+		return Stream.of(of(emptyList(), emptyList()), of(null, emptyList()),
+				of(singletonList("category:computer"), singletonList("category:computer")));
 	}
 
 	@Test
@@ -111,37 +123,20 @@ class ProductRepositoryImplTest {
 	}
 
 	@Test
-	void findProductByIdAndLanguageCodeTest() {
-		UUID productId = UUID.randomUUID();
-		var productEntity = getProductEntity();
-		var productManagement = getProductManagement();
-
-		when(productJpaAdapter.findProductByIdAndLanguageCode(productId, LANGUAGE_EN)).thenReturn(productEntity);
-		when(productManagementMapper.fromEntity(productEntity)).thenReturn(productManagement);
-
-		var result = productRepository.findProductByIdAndLanguageCode(productId, LANGUAGE_EN);
-		assertEquals(productManagement, result);
-
-		verify(productJpaAdapter).findProductByIdAndLanguageCode(productId, LANGUAGE_EN);
-		verify(productManagementMapper).fromEntity(productEntity);
-	}
-
-	@Test
-	void findTranslationByIdAndLanguageCodeTest() {
+	void findTranslationsByProductIdTest() {
 		UUID productId = UUID.randomUUID();
 		var productTranslationEntity = getProductTranslationEntity();
 		var productTranslationManagement = getProductTranslationManagement();
 
-		when(productJpaAdapter.findTranslationByIdAndLanguageCode(productId, LANGUAGE_EN))
-				.thenReturn(productTranslationEntity);
-		when(productTranslationManagementMapper.fromEntity(productTranslationEntity))
-				.thenReturn(productTranslationManagement);
+		when(productJpaAdapter.findTranslationsByProductId(productId)).thenReturn(Set.of(productTranslationEntity));
+		when(productTranslationManagementMapper.fromEntities(Set.of(productTranslationEntity)))
+				.thenReturn(Set.of(productTranslationManagement));
 
-		var result = productRepository.findTranslationByIdAndLanguageCode(productId, LANGUAGE_EN);
-		assertEquals(productTranslationManagement, result);
+		var result = productRepository.findTranslationsByProductId(productId);
+		assertEquals(Set.of(productTranslationManagement), result);
 
-		verify(productJpaAdapter).findTranslationByIdAndLanguageCode(productId, LANGUAGE_EN);
-		verify(productTranslationManagementMapper).fromEntity(productTranslationEntity);
+		verify(productJpaAdapter).findTranslationsByProductId(productId);
+		verify(productTranslationManagementMapper).fromEntities(Set.of(productTranslationEntity));
 	}
 
 	@Test
@@ -212,13 +207,13 @@ class ProductRepositoryImplTest {
 		var product = getProduct();
 		var productEntity = getProductEntity();
 
-		when(productJpaAdapter.findById(TEST_UUID)).thenReturn(Optional.of(productEntity));
+		when(productJpaAdapter.findProductByProductId(TEST_UUID)).thenReturn(Optional.of(productEntity));
 		when(productMapper.fromEntity(productEntity)).thenReturn(product);
 
 		var result = productRepository.getById(TEST_UUID);
 		assertEquals(result, Optional.of(product));
 
-		verify(productJpaAdapter).findById(TEST_UUID);
+		verify(productJpaAdapter).findProductByProductId(TEST_UUID);
 		verify(productMapper).fromEntity(productEntity);
 	}
 

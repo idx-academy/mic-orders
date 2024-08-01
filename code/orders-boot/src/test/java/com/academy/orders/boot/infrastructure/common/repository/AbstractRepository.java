@@ -1,4 +1,4 @@
-package com.academy.orders.boot.infrastructure.common;
+package com.academy.orders.boot.infrastructure.common.repository;
 
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

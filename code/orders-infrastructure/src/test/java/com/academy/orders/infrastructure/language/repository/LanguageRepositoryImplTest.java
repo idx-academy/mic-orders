@@ -1,16 +1,21 @@
 package com.academy.orders.infrastructure.language.repository;
 
-import com.academy.orders.domain.product.entity.Language;
+import com.academy.orders.domain.language.repository.exception.LanguageNotFoundException;
 import com.academy.orders.infrastructure.language.LanguageMapper;
-import com.academy.orders.infrastructure.language.entity.LanguageEntity;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import static org.mockito.Mockito.*;
+import java.util.Optional;
+
+import static com.academy.orders.infrastructure.ModelUtils.getLanguage;
+import static com.academy.orders.infrastructure.ModelUtils.getLanguageEntity;
+import static com.academy.orders.infrastructure.TestConstants.LANGUAGE_EN;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class LanguageRepositoryImplTest {
@@ -21,41 +26,26 @@ class LanguageRepositoryImplTest {
 	@Mock
 	private LanguageMapper languageMapper;
 
-	private LanguageEntity languageEntity;
-	private Language language;
-
-	@BeforeEach
-	void setUp() {
-		languageEntity = new LanguageEntity();
-		languageEntity.setId(1L);
-		languageEntity.setCode("en");
-
-		language = new Language(1L, "en");
-	}
-
 	@Test
 	void findByCodeTest() {
-		String code = "en";
-		when(languageJpaAdapter.findByCode(code)).thenReturn(languageEntity);
+		var languageEntity = getLanguageEntity();
+		var language = getLanguage();
+
+		when(languageJpaAdapter.findByCode(LANGUAGE_EN)).thenReturn(Optional.ofNullable(languageEntity));
 		when(languageMapper.fromEntity(languageEntity)).thenReturn(language);
 
-		Language result = languageRepository.findByCode(code);
+		var result = languageRepository.findByCode(LANGUAGE_EN);
 
-		Assertions.assertEquals(language, result);
-		verify(languageJpaAdapter, times(1)).findByCode(code);
-		verify(languageMapper, times(1)).fromEntity(languageEntity);
+		Assertions.assertEquals(language, result.get());
+		verify(languageJpaAdapter).findByCode(LANGUAGE_EN);
+		verify(languageMapper).fromEntity(languageEntity);
 	}
 
 	@Test
-	void findByCode_NotFoundTest() {
+	void findByCodeNotFoundTest() {
 		String code = "fr";
-		when(languageJpaAdapter.findByCode(code)).thenReturn(null);
-		when(languageMapper.fromEntity(null)).thenReturn(null);
-
-		Language result = languageRepository.findByCode(code);
-
-		Assertions.assertNull(result);
-		verify(languageJpaAdapter, times(1)).findByCode(code);
-		verify(languageMapper, times(1)).fromEntity(null);
+		when(languageJpaAdapter.findByCode(code)).thenThrow(LanguageNotFoundException.class);
+		assertThrows(LanguageNotFoundException.class, () -> languageRepository.findByCode(code));
+		verify(languageJpaAdapter).findByCode(code);
 	}
 }

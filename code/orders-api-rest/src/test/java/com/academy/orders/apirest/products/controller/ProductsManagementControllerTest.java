@@ -26,12 +26,11 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-
 import static com.academy.orders.apirest.ModelUtils.getProduct;
 import static com.academy.orders.apirest.ModelUtils.getProductManagementPageDTO;
+import static com.academy.orders.apirest.ModelUtils.getProductRequestDTO;
+import static com.academy.orders.apirest.ModelUtils.getProductRequestDto;
 import static com.academy.orders.apirest.ModelUtils.getProductResponseDTO;
-import static com.academy.orders.apirest.ModelUtils.getUpdateProduct;
-import static com.academy.orders.apirest.ModelUtils.getUpdateProductRequestDTO;
 import static com.academy.orders.apirest.TestConstants.GET_PRODUCT_BY_ID_URL;
 import static com.academy.orders.apirest.TestConstants.LANGUAGE_EN;
 import static com.academy.orders.apirest.TestConstants.ROLE_MANAGER;
@@ -65,7 +64,7 @@ class ProductsManagementControllerTest {
 	private ProductStatusDTOMapper productStatusDTOMapper;
 
 	@MockBean
-	private UpdateProductRequestDTOMapper updateProductRequestDTOMapper;
+	private ProductRequestDTOMapper productRequestDTOMapper;
 
 	@MockBean
 	private PageableDTOMapper pageableDTOMapper;
@@ -84,9 +83,6 @@ class ProductsManagementControllerTest {
 
 	@MockBean
 	private ProductResponseDTOMapper productResponseDTOMapper;
-
-	@MockBean
-	private CreateProductRequestDTOMapper createProductRequestDTOMapper;
 
 	@Test
 	@WithMockUser(authorities = ROLE_MANAGER)
@@ -114,17 +110,17 @@ class ProductsManagementControllerTest {
 	@WithMockUser(authorities = ROLE_MANAGER)
 	@SneakyThrows
 	void updateProductTest() {
-		var dto = getUpdateProductRequestDTO();
-		var updateProduct = getUpdateProduct();
+		var dto = getProductRequestDTO();
+		var request = getProductRequestDto();
 
-		when(updateProductRequestDTOMapper.fromDTO(dto)).thenReturn(updateProduct);
-		doNothing().when(updateProductUseCase).updateProduct(TEST_UUID, LANGUAGE_EN, updateProduct);
+		when(productRequestDTOMapper.fromDTO(dto)).thenReturn(request);
+		doNothing().when(updateProductUseCase).updateProduct(TEST_UUID, request);
 
 		mockMvc.perform(patch(UPDATE_PRODUCT_URL, TEST_UUID).param("lang", LANGUAGE_EN).contentType("application/json")
 				.content(objectMapper.writeValueAsString(dto))).andExpect(status().isOk());
 
-		verify(updateProductRequestDTOMapper).fromDTO(dto);
-		verify(updateProductUseCase).updateProduct(TEST_UUID, LANGUAGE_EN, updateProduct);
+		verify(productRequestDTOMapper).fromDTO(dto);
+		verify(updateProductUseCase).updateProduct(TEST_UUID, request);
 	}
 
 	@Test
@@ -157,12 +153,12 @@ class ProductsManagementControllerTest {
 	@WithMockUser(authorities = {"ROLE_MANAGER"})
 	@SneakyThrows
 	void createProductTest() {
-		var createProductRequestDTO = ModelUtils.getCreateProductRequestDTO();
-		var createProductRequest = createProductRequestDTOMapper.fromDTO(createProductRequestDTO);
+		var createProductRequestDTO = getProductRequestDTO();
+		var createProductRequest = productRequestDTOMapper.fromDTO(createProductRequestDTO);
 		var createdProduct = ModelUtils.getProduct();
 		var productResponseDTO = getProductResponseDTO();
 
-		when(createProductRequestDTOMapper.fromDTO(createProductRequestDTO)).thenReturn(createProductRequest);
+		when(productRequestDTOMapper.fromDTO(createProductRequestDTO)).thenReturn(createProductRequest);
 		when(createProductUseCase.createProduct(createProductRequest)).thenReturn(createdProduct);
 		when(productResponseDTOMapper.toDTO(createdProduct)).thenReturn(productResponseDTO);
 
@@ -170,6 +166,10 @@ class ProductsManagementControllerTest {
 				.content(objectMapper.writeValueAsString(createProductRequestDTO))).andExpect(status().isCreated())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(content().json(objectMapper.writeValueAsString(productResponseDTO)));
+
+		verify(productRequestDTOMapper, times(2)).fromDTO(createProductRequestDTO);
+		verify(createProductUseCase).createProduct(createProductRequest);
+		verify(productResponseDTOMapper).toDTO(createdProduct);
 	}
 
 	@Test

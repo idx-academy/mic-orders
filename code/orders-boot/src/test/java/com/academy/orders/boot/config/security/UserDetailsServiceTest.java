@@ -1,6 +1,6 @@
 package com.academy.orders.boot.config.security;
 
-import com.academy.orders.ModelsUtil;
+import com.academy.orders.ModelUtils;
 import com.academy.orders.domain.account.repository.AccountRepository;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -28,8 +28,8 @@ class UserDetailsServiceTest {
 
 	@Test
 	void loadUserByUsernameTest() {
-		var account = ModelsUtil.getAccount();
-		when(accountRepository.getAccountByEmail(Mockito.anyString())).thenReturn(Optional.of(account));
+		var account = ModelUtils.getAccount();
+		when(accountRepository.findAccountByEmail(Mockito.anyString())).thenReturn(Optional.of(account));
 
 		var result = (SecurityUser) userDetailsService.loadUserByUsername(account.email());
 
@@ -40,14 +40,14 @@ class UserDetailsServiceTest {
 		assertEquals(result.getLastName(), account.lastName());
 		assertTrue(result.getAuthorities().contains(new SimpleGrantedAuthority(account.role().name())));
 
-		verify(accountRepository).getAccountByEmail(Mockito.anyString());
+		verify(accountRepository).findAccountByEmail(Mockito.anyString());
 	}
 
 	@Test
 	void loadUserByUsernameThrowsUsernameNotFoundExceptionTest() {
-		when(accountRepository.getAccountByEmail(Mockito.anyString())).thenReturn(Optional.empty());
+		when(accountRepository.findAccountByEmail(Mockito.anyString())).thenReturn(Optional.empty());
 
 		assertThrowsExactly(UsernameNotFoundException.class, () -> userDetailsService.loadUserByUsername(anyString()));
-		verify(accountRepository).getAccountByEmail(Mockito.anyString());
+		verify(accountRepository).findAccountByEmail(Mockito.anyString());
 	}
 }

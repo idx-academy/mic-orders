@@ -18,7 +18,7 @@ public interface AccountRepository {
 	 * @return an {@link Optional} containing the {@link Account} entity if found,
 	 *         otherwise empty.
 	 */
-	Optional<Account> getAccountByEmail(String email);
+	Optional<Account> findAccountByEmail(String email);
 
 	/**
 	 * Checks if an account with the given email address exists.

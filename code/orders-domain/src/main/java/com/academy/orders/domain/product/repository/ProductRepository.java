@@ -8,7 +8,9 @@ import com.academy.orders.domain.product.entity.ProductManagement;
 import com.academy.orders.domain.product.entity.ProductTranslationManagement;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import org.springframework.lang.NonNull;
 
@@ -21,11 +23,13 @@ public interface ProductRepository {
 	 *            the language code to filter the products.
 	 * @param pageable
 	 *            the pageable information for pagination and sorting.
+	 * @param tags
+	 *            list of tag's names for filtering.
 	 * @return a page containing the products that match the criteria.
 	 *
 	 * @author Anton Bondar, Yurii Osovskyi
 	 */
-	Page<Product> getAllProducts(String language, Pageable pageable);
+	Page<Product> findAllProducts(String language, Pageable pageable, List<String> tags);
 
 	/**
 	 * Method sets new quantity of products.
@@ -63,30 +67,15 @@ public interface ProductRepository {
 	void updateStatus(UUID productId, ProductStatus status);
 
 	/**
-	 * Retrieves a {@link ProductManagement} entity by its unique identifier and
-	 * language code.
+	 * Retrieves a list of {@link ProductTranslationManagement} entities by the
+	 * unique identifier of the product.
 	 *
 	 * @param productId
 	 *            the unique identifier of the product.
-	 * @param languageCode
-	 *            the language code for which the product information is retrieved.
-	 * @return the {@link ProductManagement} entity.
+	 * @return a set of {@link ProductTranslationManagement} entities.
 	 * @author Anton Bondar
 	 */
-	ProductManagement findProductByIdAndLanguageCode(UUID productId, String languageCode);
-
-	/**
-	 * Retrieves a {@link ProductTranslationManagement} entity by its unique
-	 * identifier and language code.
-	 *
-	 * @param productId
-	 *            the unique identifier of the product.
-	 * @param languageCode
-	 *            the language code for which the product information is retrieved.
-	 * @return the {@link ProductTranslationManagement} entity.
-	 * @author Anton Bondar
-	 */
-	ProductTranslationManagement findTranslationByIdAndLanguageCode(UUID productId, String languageCode);
+	Set<ProductTranslationManagement> findTranslationsByProductId(UUID productId);
 
 	/**
 	 * Saves a new product using the provided product creation request data transfer
