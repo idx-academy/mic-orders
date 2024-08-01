@@ -1,6 +1,6 @@
 package com.academy.orders.infrastructure.product;
 
-import com.academy.orders.domain.product.dto.CreateProductRequestDto;
+import com.academy.orders.domain.product.dto.ProductRequestDto;
 import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.infrastructure.product.entity.ProductEntity;
 import com.academy.orders.infrastructure.product.entity.ProductTranslationEntity;
@@ -29,7 +29,7 @@ public interface ProductMapper {
 	ProductEntity toEntity(Product product);
 
 	@Mapping(target = "id", ignore = true)
-	ProductEntity toEntity(CreateProductRequestDto dto);
+	ProductEntity toEntity(ProductRequestDto dto);
 
 	@Condition
 	default boolean isNotLazyLoadedTagEntity(Collection<TagEntity> source) {
