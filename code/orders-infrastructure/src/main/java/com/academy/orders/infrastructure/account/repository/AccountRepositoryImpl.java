@@ -8,16 +8,14 @@ import com.academy.orders.domain.account.repository.AccountRepository;
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.infrastructure.account.AccountMapper;
+import com.academy.orders.infrastructure.account.AccountPageMapper;
 import com.academy.orders.infrastructure.account.entity.AccountEntity;
+import com.academy.orders.infrastructure.common.PageableMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -27,6 +25,8 @@ import java.util.Optional;
 public class AccountRepositoryImpl implements AccountRepository {
 	private final AccountJpaAdapter accountJpaAdapter;
 	private final AccountMapper accountMapper;
+	private final AccountPageMapper accountPageMapper;
+	private final PageableMapper pageableMapper;
 
 	@Override
 	public Optional<Account> findAccountByEmail(String email) {
@@ -67,28 +67,10 @@ public class AccountRepositoryImpl implements AccountRepository {
 	}
 
 	@Override
-	public Page<Account> getAccounts(Pageable pageable) {
-		List<Order> orders = new ArrayList<>();
-		List<String> sortParams = pageable.sort().stream().toList();
-
-		for (int i = 0; i < sortParams.size(); i += 2) {
-			String property = sortParams.get(i).trim();
-			String directionPart = (i + 1 < sortParams.size()) ? sortParams.get(i + 1).trim() : "asc";
-			Sort.Direction direction = directionPart.equalsIgnoreCase("desc")
-					? Sort.Direction.DESC
-					: Sort.Direction.ASC;
-			orders.add(new Order(direction, property));
-		}
-
-		Sort sort = Sort.by(orders);
-		var pageRequest = PageRequest.of(pageable.page(), pageable.size(), sort);
+	public Page<Account> getAccounts(Pageable pageableDomain) {
+		var pageable = pageableMapper.fromDomain(pageableDomain);
+		var pageRequest = PageRequest.of(pageableDomain.page(), pageableDomain.size(), pageable.getSort());
 		var accountPage = accountJpaAdapter.findAll(pageRequest);
-
-		var content = accountPage.getContent().stream().map(accountMapper::fromEntity).toList();
-
-		return Page.<Account>builder().totalElements(accountPage.getTotalElements())
-				.totalPages(accountPage.getTotalPages()).first(accountPage.isFirst()).last(accountPage.isLast())
-				.number(accountPage.getNumber()).numberOfElements(accountPage.getNumberOfElements())
-				.size(accountPage.getSize()).empty(accountPage.isEmpty()).content(content).build();
+		return accountPageMapper.toDomain(accountPage);
 	}
 }
