@@ -366,6 +366,27 @@ paths:
         '400':
           $ref: '#/components/responses/BadRequestResponse'
 
+  /v1/products/{productId}:
+    get:
+      tags:
+        - Products
+      summary: Get product by ID
+      operationId: getProductDetailsById
+      parameters:
+          - $ref: '#/components/parameters/ProductId'
+          - $ref: '#/components/parameters/Language'
+      responses:
+          '200':
+            description: Successfully retrieved product
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ProductDetailsResponse'
+          '400':
+            $ref: '#/components/responses/BadRequestResponse'
+          '404':
+            $ref: '#/components/responses/NotFoundResponse'
+
   /v1/management/products:
     get:
       tags:
@@ -609,7 +630,7 @@ components:
         type: string
         default: uk
         nullable: false
-        example: en
+        example: uk
       description: The language code for the product information (e.g., 'uk' for Ukrainian).
   securitySchemes:
     bearerAuth:
@@ -883,6 +904,31 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ProductTranslation'
+
+    ProductDetailsResponse:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "APPLE iPhone"
+        description:
+          type: string
+          example: "Screen 6.1 Super Retina XDR, 2532x1170 / A16 Bionic chip"
+        image:
+          type: string
+          example: "https://example.com/image.jpg"
+        tags:
+          type: array
+          items:
+            type: string
+            example: "category:mobile, category:mobile"
+        quantity:
+          type: integer
+          example: 10
+        price:
+          type: number
+          example: 999.99
+
 
     ProductSearchResult:
       type: object

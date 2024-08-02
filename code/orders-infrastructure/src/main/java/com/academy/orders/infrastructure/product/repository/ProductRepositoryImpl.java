@@ -114,6 +114,12 @@ public class ProductRepositoryImpl implements ProductRepository {
 		return productPageMapper.fromProductTranslationEntity(translations);
 	}
 
+	@Override
+	public Optional<Product> getByIdAndLanguageCode(UUID productId, String lang) {
+		var productEntity = productJpaAdapter.findProductByProductIdAndLanguageCode(productId, lang);
+		return productEntity.map(productMapper::fromEntity);
+	}
+
 	private void setImageNames(List<ProductEntity> products) {
 		products.forEach(p -> {
 			var name = p.getImage().substring(p.getImage().lastIndexOf("/") + 1);

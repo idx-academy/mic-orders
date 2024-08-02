@@ -145,4 +145,16 @@ public interface ProductRepository {
 	 * @author Denys Liubchenko
 	 */
 	Page<Product> searchProductsByName(String searchQuery, String lang, Pageable pageable);
+
+	/**
+	 * Retrieves an optional product based on its ID and language code.
+	 *
+	 * @param productId
+	 *            the unique identifier of the product
+	 * @param lang
+	 *            the language code to filter the product translation
+	 * @return an {@link Optional} containing the product if found, otherwise an
+	 *         empty {@link Optional}
+	 */
+	Optional<Product> getByIdAndLanguageCode(UUID productId, String lang);
 }
