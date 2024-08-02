@@ -37,18 +37,6 @@ public interface CartItemRepository {
 	CartItem save(CreateCartItemDTO cartItem);
 
 	/**
-	 * Method increases quantity of the product in the cart by 1.
-	 *
-	 * @param productId
-	 *            with type {@link UUID}
-	 * @param accountId
-	 *            with type {@link Long}
-	 *
-	 * @author Denys Ryhal
-	 */
-	void incrementQuantity(UUID productId, Long accountId);
-
-	/**
 	 * Method finds {@link CartItem} by accountId.
 	 *
 	 * @param accountId
