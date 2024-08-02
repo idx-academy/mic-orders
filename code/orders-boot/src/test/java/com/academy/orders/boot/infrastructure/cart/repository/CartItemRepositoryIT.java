@@ -19,16 +19,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.of;
 
 class CartItemRepositoryIT extends AbstractRepository {
-	private static final UUID productId = UUID.fromString("f4831fef-35a8-4766-b50e-dcb25d7b2e7b");
-	private static final Long userId = 2L;
+	private final UUID productId = UUID.fromString("f4831fef-35a8-4766-b50e-dcb25d7b2e7b");
+	private final Long userId = 2L;
 
 	@Autowired
 	private CartItemRepository cartItemRepository;
 
 	@ParameterizedTest
 	@MethodSource("productIdAndUserIdMethodSourceProvider")
-	void existsByProductIdAndUserIdTest(UUID productId, Long userId, Boolean expected) {
-		final var actual = cartItemRepository.existsByProductIdAndUserId(productId, userId);
+	void existsByProductIdAndUserIdTest(UUID productId, Long uId, Boolean expected) {
+		final var actual = cartItemRepository.existsByProductIdAndUserId(productId, uId);
 
 		assertEquals(expected, actual);
 	}
@@ -75,8 +75,8 @@ class CartItemRepositoryIT extends AbstractRepository {
 
 	@ParameterizedTest
 	@MethodSource("findByProductIdAndUserIdMethodSourceProvider")
-	void findByProductIdAndUserIdIfNotFoundTest(UUID productId, Long userId) {
-		var cartItem = cartItemRepository.findByProductIdAndUserId(productId, userId);
+	void findByProductIdAndUserIdIfNotFoundTest(UUID productId, Long uId) {
+		var cartItem = cartItemRepository.findByProductIdAndUserId(productId, uId);
 		assertTrue(cartItem.isEmpty());
 	}
 
@@ -99,12 +99,14 @@ class CartItemRepositoryIT extends AbstractRepository {
 	}
 
 	static Stream<Arguments> productIdAndUserIdMethodSourceProvider() {
-		return Stream.of(of(productId, userId, true), of(UUID.randomUUID(), userId, false),
-				of(productId, Long.MAX_VALUE, false));
+		return Stream.of(of(UUID.fromString("f4831fef-35a8-4766-b50e-dcb25d7b2e7b"), 2L, true),
+				of(UUID.randomUUID(), 2L, false),
+				of(UUID.fromString("f4831fef-35a8-4766-b50e-dcb25d7b2e7b"), Long.MAX_VALUE, false));
 	}
 
 	static Stream<Arguments> findByProductIdAndUserIdMethodSourceProvider() {
-		return Stream.of(of(UUID.randomUUID(), userId), of(productId, Long.MAX_VALUE));
+		return Stream.of(of(UUID.randomUUID(), 2L),
+				of(UUID.fromString("f4831fef-35a8-4766-b50e-dcb25d7b2e7b"), Long.MAX_VALUE));
 	}
 
 	private void assertSchemaIsNotNull(List<CartItem> cartItems) {
