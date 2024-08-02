@@ -10,6 +10,7 @@ import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
 import com.academy.orders.domain.order.entity.Order;
+import com.academy.orders.domain.order.entity.OrderManagement;
 import com.academy.orders.domain.order.usecase.GetAllOrdersUseCase;
 import com.academy.orders.domain.order.usecase.GetOrderByIdUseCase;
 import com.academy.orders.domain.order.usecase.UpdateOrderStatusUseCase;
@@ -50,7 +51,8 @@ public class OrdersManagementController implements OrdersManagementApi {
 			PageableDTO pageable) {
 		Pageable pageableDomain = pageableDTOMapper.fromDto(pageable);
 		OrdersFilterParametersDto filterParametersDto = orderFilterParametersDTOMapper.fromDTO(ordersFilter);
-		Page<Order> ordersByUserId = getAllOrdersUseCase.getAllOrders(filterParametersDto, pageableDomain);
+		Page<OrderManagement> ordersByUserId = getAllOrdersUseCase.getAllOrders(filterParametersDto, pageableDomain,
+				getCurrentAccountEmail());
 		return pageOrderDTOMapper.toManagerDto(ordersByUserId);
 	}
 

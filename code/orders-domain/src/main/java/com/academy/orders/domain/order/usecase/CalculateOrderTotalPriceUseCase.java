@@ -2,6 +2,8 @@ package com.academy.orders.domain.order.usecase;
 
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.entity.OrderItem;
+import com.academy.orders.domain.order.entity.OrderManagement;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -32,4 +34,17 @@ public interface CalculateOrderTotalPriceUseCase {
 	 * @return the order with its total price calculated
 	 */
 	Order calculateTotalPriceFor(Order order);
+
+	/**
+	 * Calculates the total price for each order in a list of orders and determines
+	 * the available statuses based on the user's role.
+	 *
+	 * @param orders
+	 *            the list of orders for which to calculate the total price
+	 * @param currentAccountEmail
+	 *            the email address of the current user.
+	 * @return the list of orders with their total prices calculated and available
+	 *         statuses to change
+	 */
+	List<OrderManagement> calculateTotalPriceAndAvailableStatuses(List<Order> orders, String currentAccountEmail);
 }

@@ -14,6 +14,7 @@ import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
 import com.academy.orders.domain.order.dto.UpdateOrderStatusDto;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.entity.OrderItem;
+import com.academy.orders.domain.order.entity.OrderManagement;
 import com.academy.orders.domain.order.entity.OrderReceiver;
 import com.academy.orders.domain.order.entity.PostAddress;
 import com.academy.orders.domain.order.entity.enumerated.DeliveryMethod;
@@ -106,6 +107,24 @@ public class ModelUtils {
 
 	public static Order getOrder() {
 		return Order.builder().id(TEST_UUID).createdAt(DATE_TIME).isPaid(false).orderStatus(OrderStatus.IN_PROGRESS)
+				.postAddress(PostAddress.builder().city("Kyiv").deliveryMethod(NOVA).department("1").build())
+				.receiver(OrderReceiver.builder().firstName("John").lastName("Doe").email("test@mail.com").build())
+				.orderItems(List.of(getOrderItem())).editedAt(DATE_TIME).total(BigDecimal.valueOf(200)).build();
+	}
+
+	public static OrderManagement getOrderManagementForManager() {
+		return OrderManagement.builder().id(TEST_UUID).createdAt(DATE_TIME).isPaid(false)
+				.orderStatus(OrderStatus.IN_PROGRESS)
+				.availableStatuses(List.of("SHIPPED", "DELIVERED", "COMPLETED", "CANCELED"))
+				.postAddress(PostAddress.builder().city("Kyiv").deliveryMethod(NOVA).department("1").build())
+				.receiver(OrderReceiver.builder().firstName("John").lastName("Doe").email("test@mail.com").build())
+				.orderItems(List.of(getOrderItem())).editedAt(DATE_TIME).total(BigDecimal.valueOf(200)).build();
+	}
+
+	public static OrderManagement getOrderManagementForAdmin() {
+		return OrderManagement.builder().id(TEST_UUID).createdAt(DATE_TIME).isPaid(false)
+				.orderStatus(OrderStatus.IN_PROGRESS)
+				.availableStatuses(List.of("IN_PROGRESS", "SHIPPED", "DELIVERED", "COMPLETED", "CANCELED"))
 				.postAddress(PostAddress.builder().city("Kyiv").deliveryMethod(NOVA).department("1").build())
 				.receiver(OrderReceiver.builder().firstName("John").lastName("Doe").email("test@mail.com").build())
 				.orderItems(List.of(getOrderItem())).editedAt(DATE_TIME).total(BigDecimal.valueOf(200)).build();

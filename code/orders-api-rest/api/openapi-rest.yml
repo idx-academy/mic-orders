@@ -1056,6 +1056,12 @@ components:
           description: Indicates whether the order has been paid
         orderStatus:
           $ref: '#/components/schemas/OrderStatus'
+        availableStatuses:
+          type: array
+          items:
+            type: string
+            description: List of statuses that the order can transition to from its current state
+            example: 'DELIVERED, COMPLETED, CANCELED'
         createdAt:
           type: string
           format: date-time
@@ -1074,6 +1080,7 @@ components:
           $ref: '#/components/schemas/OrderReceiver'
         postAddress:
           $ref: '#/components/schemas/PostAddress'
+
 
     ManagerOrder:
       type: object

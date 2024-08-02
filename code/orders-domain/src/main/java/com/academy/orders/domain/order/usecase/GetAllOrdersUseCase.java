@@ -3,7 +3,7 @@ package com.academy.orders.domain.order.usecase;
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
-import com.academy.orders.domain.order.entity.Order;
+import com.academy.orders.domain.order.entity.OrderManagement;
 
 public interface GetAllOrdersUseCase {
 	/**
@@ -17,5 +17,6 @@ public interface GetAllOrdersUseCase {
 	 * @return a paginated list of orders that match the filter parameters and
 	 *         language
 	 */
-	Page<Order> getAllOrders(OrdersFilterParametersDto filterParametersDto, Pageable pageable);
+	Page<OrderManagement> getAllOrders(OrdersFilterParametersDto filterParametersDto, Pageable pageable,
+			String currentAccountEmail);
 }
