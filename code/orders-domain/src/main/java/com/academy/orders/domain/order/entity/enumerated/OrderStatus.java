@@ -2,6 +2,7 @@ package com.academy.orders.domain.order.entity.enumerated;
 
 import com.academy.orders.domain.order.exception.OrderFinalStateException;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
@@ -29,17 +30,17 @@ public enum OrderStatus {
 		return transitions.contains(newStatus);
 	}
 
-	public static List<String> getAllowedTransitions(OrderStatus status, boolean isAdmin) {
+	public static List<OrderStatus> getAllowedTransitions(OrderStatus status, boolean isAdmin) {
 		if (isAdmin) {
 			return getAllTransitions();
 		}
 		Set<OrderStatus> transitions = allowedTransitions.getOrDefault(status, EnumSet.noneOf(OrderStatus.class));
 		Set<OrderStatus> result = EnumSet.copyOf(transitions);
 		result.remove(status);
-		return result.stream().map(OrderStatus::name).collect(Collectors.toList());
+		return new ArrayList<>(result);
 	}
 
-	public static List<String> getAllTransitions() {
-		return Stream.of(OrderStatus.values()).map(OrderStatus::name).collect(Collectors.toList());
+	public static List<OrderStatus> getAllTransitions() {
+		return Stream.of(OrderStatus.values()).collect(Collectors.toList());
 	}
 }

@@ -176,7 +176,8 @@ public class ModelUtils {
 	public static OrderManagement getOrderManagement() {
 		return OrderManagement.builder().id(TEST_UUID).createdAt(LocalDateTime.of(1, 1, 1, 1, 1)).isPaid(false)
 				.orderStatus(OrderStatus.IN_PROGRESS)
-				.availableStatuses(List.of("SHIPPED, DELIVERED, COMPLETED, CANCELED"))
+				.availableStatuses(List.of(OrderStatus.SHIPPED, OrderStatus.DELIVERED, OrderStatus.COMPLETED,
+						OrderStatus.CANCELED))
 				.postAddress(PostAddress.builder().city(TEST_CITY).deliveryMethod(DeliveryMethod.NOVA)
 						.department(TEST_DEPARTMENT).build())
 				.receiver(OrderReceiver.builder().firstName(TEST_FIRST_NAME).lastName(TEST_LAST_NAME).email(TEST_EMAIL)
@@ -465,13 +466,15 @@ public class ModelUtils {
 
 	public static OrderStatusInfoDTO getOrderStatusInfoDTO() {
 		var orderStatusInfoDTO = new OrderStatusInfoDTO();
-		orderStatusInfoDTO.setAvailableStatuses(List.of("SHIPPED, DELIVERED, COMPLETED, CANCELED"));
+		orderStatusInfoDTO.setAvailableStatuses(List.of(OrderStatusDTO.SHIPPED, OrderStatusDTO.DELIVERED,
+				OrderStatusDTO.COMPLETED, OrderStatusDTO.CANCELED));
 		orderStatusInfoDTO.setIsPaid(false);
 		return orderStatusInfoDTO;
 	}
 
 	public static OrderStatusInfo getOrderStatusInfo() {
-		return OrderStatusInfo.builder().availableStatuses(List.of("SHIPPED, DELIVERED, COMPLETED, CANCELED"))
+		return OrderStatusInfo.builder().availableStatuses(
+				List.of(OrderStatus.SHIPPED, OrderStatus.DELIVERED, OrderStatus.COMPLETED, OrderStatus.CANCELED))
 				.isPaid(false).build();
 	}
 

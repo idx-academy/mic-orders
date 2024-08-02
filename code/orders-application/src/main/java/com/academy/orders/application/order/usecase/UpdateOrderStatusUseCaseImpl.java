@@ -69,14 +69,14 @@ public class UpdateOrderStatusUseCaseImpl implements UpdateOrderStatusUseCase {
 		}
 	}
 
-	private List<String> getAvailableStatuses(boolean isAdmin, UpdateOrderStatusDto updateOrderStatus) {
+	private List<OrderStatus> getAvailableStatuses(boolean isAdmin, UpdateOrderStatusDto updateOrderStatus) {
 		return isAdmin
 				? OrderStatus.getAllTransitions()
 				: OrderStatus.getAllowedTransitions(updateOrderStatus.status(), false);
 	}
 
 	private OrderStatusInfo buildOrderStatusInfo(Order currentOrder, UpdateOrderStatusDto updateOrderStatus,
-			List<String> availableStatuses) {
+			List<OrderStatus> availableStatuses) {
 		return OrderStatusInfo.builder().availableStatuses(availableStatuses)
 				.isPaid(updateOrderStatus.isPaid() != null ? updateOrderStatus.isPaid() : currentOrder.isPaid())
 				.build();

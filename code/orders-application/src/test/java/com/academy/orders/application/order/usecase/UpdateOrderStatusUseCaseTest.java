@@ -54,8 +54,8 @@ class UpdateOrderStatusUseCaseTest {
 		var result = updateOrderStatusUseCase.updateOrderStatus(orderId, updateOrderStatusDto, ROLE_MANAGER);
 
 		assertEquals(orderStatusInfo.isPaid(), result.isPaid());
-		assertThat(result.availableStatuses()).containsExactlyInAnyOrder("SHIPPED", "DELIVERED", "COMPLETED",
-				"CANCELED");
+		assertThat(result.availableStatuses()).containsExactlyInAnyOrder(OrderStatus.SHIPPED, OrderStatus.DELIVERED,
+				OrderStatus.COMPLETED, OrderStatus.CANCELED);
 
 		verify(orderRepository).updateOrderStatus(orderId, status);
 		verify(orderRepository).updateOrderStatus(orderId, status);
@@ -77,8 +77,8 @@ class UpdateOrderStatusUseCaseTest {
 		var result = updateOrderStatusUseCase.updateOrderStatus(orderId, updateOrderStatusDto, ROLE_ADMIN);
 
 		assertEquals(orderStatusInfo.isPaid(), result.isPaid());
-		assertThat(result.availableStatuses()).containsExactlyInAnyOrder("IN_PROGRESS", "SHIPPED", "DELIVERED",
-				"COMPLETED", "CANCELED");
+		assertThat(result.availableStatuses()).containsExactlyInAnyOrder(OrderStatus.IN_PROGRESS, OrderStatus.SHIPPED,
+				OrderStatus.DELIVERED, OrderStatus.COMPLETED, OrderStatus.CANCELED);
 
 		verify(orderRepository).updateOrderStatus(orderId, status);
 		verify(orderRepository).updateOrderStatus(orderId, status);
@@ -163,8 +163,8 @@ class UpdateOrderStatusUseCaseTest {
 		var result = updateOrderStatusUseCase.updateOrderStatus(orderId, updateOrderStatusDto, ROLE_MANAGER);
 
 		assertEquals(orderStatusInfo.isPaid(), result.isPaid());
-		assertThat(result.availableStatuses()).containsExactlyInAnyOrder("SHIPPED", "DELIVERED", "COMPLETED",
-				"CANCELED");
+		assertThat(result.availableStatuses()).containsExactlyInAnyOrder(OrderStatus.SHIPPED, OrderStatus.DELIVERED,
+				OrderStatus.COMPLETED, OrderStatus.CANCELED);
 
 		verify(orderRepository).updateOrderStatus(orderId, status);
 		verify(orderRepository).updateOrderStatus(orderId, status);

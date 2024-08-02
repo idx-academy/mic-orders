@@ -1059,9 +1059,7 @@ components:
         availableStatuses:
           type: array
           items:
-            type: string
-            description: List of statuses that the order can transition to from its current state
-            example: 'DELIVERED, COMPLETED, CANCELED'
+            $ref: '#/components/schemas/OrderStatus'
         createdAt:
           type: string
           format: date-time
@@ -1488,9 +1486,7 @@ components:
         availableStatuses:
           type: array
           items:
-            type: string
-            description: List of statuses that the order can transition to from its current state
-            example: 'DELIVERED, COMPLETED, CANCELED'
+            $ref: '#/components/schemas/OrderStatus'
         isPaid:
           type: boolean
           description: Indicates if the order is paid

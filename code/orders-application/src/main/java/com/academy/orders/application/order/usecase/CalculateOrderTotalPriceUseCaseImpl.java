@@ -56,7 +56,7 @@ public class CalculateOrderTotalPriceUseCaseImpl implements CalculateOrderTotalP
 
 	}
 
-	private List<String> getAvailableStatuses(boolean isAdmin, Order order) {
+	private List<OrderStatus> getAvailableStatuses(boolean isAdmin, Order order) {
 		return isAdmin
 				? OrderStatus.getAllTransitions()
 				: OrderStatus.getAllowedTransitions(order.orderStatus(), false);

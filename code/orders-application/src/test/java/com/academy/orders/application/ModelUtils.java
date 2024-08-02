@@ -115,7 +115,8 @@ public class ModelUtils {
 	public static OrderManagement getOrderManagementForManager() {
 		return OrderManagement.builder().id(TEST_UUID).createdAt(DATE_TIME).isPaid(false)
 				.orderStatus(OrderStatus.IN_PROGRESS)
-				.availableStatuses(List.of("SHIPPED", "DELIVERED", "COMPLETED", "CANCELED"))
+				.availableStatuses(List.of(OrderStatus.SHIPPED, OrderStatus.DELIVERED, OrderStatus.COMPLETED,
+						OrderStatus.CANCELED))
 				.postAddress(PostAddress.builder().city("Kyiv").deliveryMethod(NOVA).department("1").build())
 				.receiver(OrderReceiver.builder().firstName("John").lastName("Doe").email("test@mail.com").build())
 				.orderItems(List.of(getOrderItem())).editedAt(DATE_TIME).total(BigDecimal.valueOf(200)).build();
@@ -124,7 +125,8 @@ public class ModelUtils {
 	public static OrderManagement getOrderManagementForAdmin() {
 		return OrderManagement.builder().id(TEST_UUID).createdAt(DATE_TIME).isPaid(false)
 				.orderStatus(OrderStatus.IN_PROGRESS)
-				.availableStatuses(List.of("IN_PROGRESS", "SHIPPED", "DELIVERED", "COMPLETED", "CANCELED"))
+				.availableStatuses(List.of(OrderStatus.IN_PROGRESS, OrderStatus.SHIPPED, OrderStatus.DELIVERED,
+						OrderStatus.COMPLETED, OrderStatus.CANCELED))
 				.postAddress(PostAddress.builder().city("Kyiv").deliveryMethod(NOVA).department("1").build())
 				.receiver(OrderReceiver.builder().firstName("John").lastName("Doe").email("test@mail.com").build())
 				.orderItems(List.of(getOrderItem())).editedAt(DATE_TIME).total(BigDecimal.valueOf(200)).build();
@@ -260,7 +262,8 @@ public class ModelUtils {
 	}
 
 	public static OrderStatusInfo getOrderStatusInfo() {
-		return OrderStatusInfo.builder().availableStatuses(List.of("SHIPPED, DELIVERED, COMPLETED, CANCELED"))
+		return OrderStatusInfo.builder().availableStatuses(
+				List.of(OrderStatus.SHIPPED, OrderStatus.DELIVERED, OrderStatus.COMPLETED, OrderStatus.CANCELED))
 				.isPaid(false).build();
 	}
 
