@@ -2,7 +2,6 @@ package com.academy.orders.application.order.usecase;
 
 import com.academy.orders.application.ModelUtils;
 import com.academy.orders.domain.account.entity.enumerated.Role;
-import com.academy.orders.domain.account.repository.AccountRepository;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.entity.OrderItem;
 import java.math.BigDecimal;
@@ -10,7 +9,6 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.academy.orders.application.ModelUtils.getOrderManagementForAdmin;
@@ -23,9 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class CalculateOrderTotalPriceUseCaseTest {
 	@InjectMocks
 	private CalculateOrderTotalPriceUseCaseImpl calculateOrderTotalPriceUseCase;
-
-	@Mock
-	private AccountRepository accountRepository;
 
 	@Test
 	void calculateTotalPriceTest() {

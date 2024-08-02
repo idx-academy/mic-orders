@@ -1,7 +1,5 @@
 package com.academy.orders.application.order.usecase;
 
-import com.academy.orders.domain.account.entity.enumerated.Role;
-import com.academy.orders.domain.account.repository.AccountRepository;
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import com.academy.orders.domain.order.exception.InvalidOrderStatusTransitionException;
 import com.academy.orders.domain.order.exception.OrderAlreadyPaidException;
@@ -40,8 +38,6 @@ class UpdateOrderStatusUseCaseTest {
 	private UpdateOrderStatusUseCaseImpl updateOrderStatusUseCase;
 	@Mock
 	private OrderRepository orderRepository;
-	@Mock
-	private AccountRepository accountRepository;
 
 	@Test
 	void updateOrderStatusWithRoleManagerTest() {
@@ -70,7 +66,6 @@ class UpdateOrderStatusUseCaseTest {
 	void updateOrderStatusWithRoleAdminTest() {
 		var orderId = TEST_UUID;
 		var status = OrderStatus.IN_PROGRESS;
-		var role = Role.ROLE_ADMIN;
 
 		var updateOrderStatusDto = getUpdateOrderStatusDto();
 		var orderStatusInfo = getOrderStatusInfo();
@@ -106,7 +101,6 @@ class UpdateOrderStatusUseCaseTest {
 	void updateOrderStatusThrowsInvalidOrderStatusTransitionExceptionTest() {
 		var orderId = TEST_UUID;
 		var updateOrderStatusDto = getUpdateOrderStatusDto();
-		var role = Role.ROLE_MANAGER;
 
 		when(orderRepository.findById(orderId)).thenReturn(Optional.of(getDeliveredOrder()));
 
@@ -120,7 +114,6 @@ class UpdateOrderStatusUseCaseTest {
 	void updateOrderStatusThrowsOrderFinalStateExceptionTest() {
 		var orderId = TEST_UUID;
 		var updateOrderStatusDto = getUpdateOrderStatusDto();
-		var role = Role.ROLE_MANAGER;
 
 		when(orderRepository.findById(orderId)).thenReturn(Optional.of(getCanceledOrder()));
 
@@ -134,7 +127,6 @@ class UpdateOrderStatusUseCaseTest {
 	void updateOrderStatusThrowsOrderAlreadyPaidExceptionTest() {
 		var orderId = TEST_UUID;
 		var updateOrderStatusDto = getUpdateOrderStatusDto();
-		var role = Role.ROLE_MANAGER;
 
 		when(orderRepository.findById(orderId)).thenReturn(Optional.of(getPaidOrder()));
 
@@ -148,7 +140,6 @@ class UpdateOrderStatusUseCaseTest {
 	void updateOrderStatusThrowsOrderUnpaidExceptionTest() {
 		var orderId = TEST_UUID;
 		var updateOrderStatusDto = getUpdateOrderStatusDtoWithCompletedStatus();
-		var role = Role.ROLE_MANAGER;
 
 		when(orderRepository.findById(orderId)).thenReturn(Optional.of(getOrder()));
 
@@ -162,7 +153,6 @@ class UpdateOrderStatusUseCaseTest {
 	void updateOrderStatusWithNullIsPaidStatusTest() {
 		var orderId = TEST_UUID;
 		var status = OrderStatus.IN_PROGRESS;
-		var role = Role.ROLE_MANAGER;
 
 		var updateOrderStatusDto = getUpdateOrderStatusDtoWithNullIsPaid();
 		var orderStatusInfo = getOrderStatusInfo();
@@ -184,7 +174,6 @@ class UpdateOrderStatusUseCaseTest {
 	void updateOrderStatusWithoutPaidStatusToCompletedTest() {
 		var orderId = TEST_UUID;
 		var status = OrderStatus.COMPLETED;
-		var role = Role.ROLE_MANAGER;
 
 		var updateOrderStatusDto = getUpdateOrderStatusDtoWithNullIsPaidAndStatusCompleted();
 
