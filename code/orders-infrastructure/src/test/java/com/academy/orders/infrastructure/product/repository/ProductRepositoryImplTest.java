@@ -11,6 +11,7 @@ import com.academy.orders.infrastructure.product.ProductPageMapper;
 import com.academy.orders.infrastructure.product.ProductTranslationManagementMapper;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,7 @@ import static com.academy.orders.infrastructure.ModelUtils.getPageOf;
 import static com.academy.orders.infrastructure.ModelUtils.getPageable;
 import static com.academy.orders.infrastructure.ModelUtils.getProduct;
 import static com.academy.orders.infrastructure.ModelUtils.getProductEntity;
+import static com.academy.orders.infrastructure.ModelUtils.getProductEntityWithTranslation;
 import static com.academy.orders.infrastructure.ModelUtils.getProductManagement;
 import static com.academy.orders.infrastructure.ModelUtils.getProductTranslationEntity;
 import static com.academy.orders.infrastructure.ModelUtils.getProductTranslationManagement;
@@ -122,37 +124,20 @@ class ProductRepositoryImplTest {
 	}
 
 	@Test
-	void findProductByIdAndLanguageCodeTest() {
-		UUID productId = UUID.randomUUID();
-		var productEntity = getProductEntity();
-		var productManagement = getProductManagement();
-
-		when(productJpaAdapter.findProductByIdAndLanguageCode(productId, LANGUAGE_EN)).thenReturn(productEntity);
-		when(productManagementMapper.fromEntity(productEntity)).thenReturn(productManagement);
-
-		var result = productRepository.findProductByIdAndLanguageCode(productId, LANGUAGE_EN);
-		assertEquals(productManagement, result);
-
-		verify(productJpaAdapter).findProductByIdAndLanguageCode(productId, LANGUAGE_EN);
-		verify(productManagementMapper).fromEntity(productEntity);
-	}
-
-	@Test
-	void findTranslationByIdAndLanguageCodeTest() {
+	void findTranslationsByProductIdTest() {
 		UUID productId = UUID.randomUUID();
 		var productTranslationEntity = getProductTranslationEntity();
 		var productTranslationManagement = getProductTranslationManagement();
 
-		when(productJpaAdapter.findTranslationByIdAndLanguageCode(productId, LANGUAGE_EN))
-				.thenReturn(productTranslationEntity);
-		when(productTranslationManagementMapper.fromEntity(productTranslationEntity))
-				.thenReturn(productTranslationManagement);
+		when(productJpaAdapter.findTranslationsByProductId(productId)).thenReturn(Set.of(productTranslationEntity));
+		when(productTranslationManagementMapper.fromEntities(Set.of(productTranslationEntity)))
+				.thenReturn(Set.of(productTranslationManagement));
 
-		var result = productRepository.findTranslationByIdAndLanguageCode(productId, LANGUAGE_EN);
-		assertEquals(productTranslationManagement, result);
+		var result = productRepository.findTranslationsByProductId(productId);
+		assertEquals(Set.of(productTranslationManagement), result);
 
-		verify(productJpaAdapter).findTranslationByIdAndLanguageCode(productId, LANGUAGE_EN);
-		verify(productTranslationManagementMapper).fromEntity(productTranslationEntity);
+		verify(productJpaAdapter).findTranslationsByProductId(productId);
+		verify(productTranslationManagementMapper).fromEntities(Set.of(productTranslationEntity));
 	}
 
 	@Test
@@ -223,13 +208,13 @@ class ProductRepositoryImplTest {
 		var product = getProduct();
 		var productEntity = getProductEntity();
 
-		when(productJpaAdapter.findById(TEST_UUID)).thenReturn(Optional.of(productEntity));
+		when(productJpaAdapter.findProductByProductId(TEST_UUID)).thenReturn(Optional.of(productEntity));
 		when(productMapper.fromEntity(productEntity)).thenReturn(product);
 
 		var result = productRepository.getById(TEST_UUID);
 		assertEquals(result, Optional.of(product));
 
-		verify(productJpaAdapter).findById(TEST_UUID);
+		verify(productJpaAdapter).findProductByProductId(TEST_UUID);
 		verify(productMapper).fromEntity(productEntity);
 	}
 
@@ -255,5 +240,21 @@ class ProductRepositoryImplTest {
 		verify(pageableMapper).fromDomain(pageableDomain);
 		verify(productJpaAdapter).findProductsByNameWithSearchQuery(searchQuery, lang, pageable);
 		verify(productPageMapper).fromProductTranslationEntity(entityPage);
+	}
+
+	@Test
+	void getByIdAndLanguageCodeTest() {
+		var product = getProduct();
+		var productEntity = getProductEntityWithTranslation();
+
+		when(productJpaAdapter.findProductByProductIdAndLanguageCode(TEST_UUID, LANGUAGE_EN))
+				.thenReturn(Optional.of(productEntity));
+		when(productMapper.fromEntity(productEntity)).thenReturn(product);
+
+		var result = productRepository.getByIdAndLanguageCode(TEST_UUID, LANGUAGE_EN);
+		assertEquals(result, Optional.of(product));
+
+		verify(productJpaAdapter).findProductByProductIdAndLanguageCode(TEST_UUID, LANGUAGE_EN);
+		verify(productMapper).fromEntity(productEntity);
 	}
 }

@@ -17,6 +17,7 @@ import com.academy.orders.infrastructure.product.entity.ProductEntity;
 import com.academy.orders.infrastructure.product.entity.ProductTranslationEntity;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -71,15 +72,9 @@ public class ProductRepositoryImpl implements ProductRepository {
 	}
 
 	@Override
-	public ProductManagement findProductByIdAndLanguageCode(UUID productId, String languageCode) {
-		var productEntity = productJpaAdapter.findProductByIdAndLanguageCode(productId, languageCode);
-		return productManagementMapper.fromEntity(productEntity);
-	}
-
-	@Override
-	public ProductTranslationManagement findTranslationByIdAndLanguageCode(UUID id, String languageCode) {
-		var productTranslationEntity = productJpaAdapter.findTranslationByIdAndLanguageCode(id, languageCode);
-		return productTranslationManagementMapper.fromEntity(productTranslationEntity);
+	public Set<ProductTranslationManagement> findTranslationsByProductId(UUID id) {
+		var productTranslationEntity = productJpaAdapter.findTranslationsByProductId(id);
+		return productTranslationManagementMapper.fromEntities(productTranslationEntity);
 	}
 
 	@Override
@@ -101,7 +96,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 
 	@Override
 	public Optional<Product> getById(UUID productId) {
-		var productEntity = productJpaAdapter.findById(productId);
+		var productEntity = productJpaAdapter.findProductByProductId(productId);
 		return productEntity.map(productMapper::fromEntity);
 	}
 
@@ -117,6 +112,12 @@ public class ProductRepositoryImpl implements ProductRepository {
 		var translations = productJpaAdapter.findProductsByNameWithSearchQuery(searchQuery, lang, pageable);
 		setImageNames(translations.getContent().stream().map(ProductTranslationEntity::getProduct).toList());
 		return productPageMapper.fromProductTranslationEntity(translations);
+	}
+
+	@Override
+	public Optional<Product> getByIdAndLanguageCode(UUID productId, String lang) {
+		var productEntity = productJpaAdapter.findProductByProductIdAndLanguageCode(productId, lang);
+		return productEntity.map(productMapper::fromEntity);
 	}
 
 	private void setImageNames(List<ProductEntity> products) {

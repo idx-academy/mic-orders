@@ -1,6 +1,6 @@
 package com.academy.orders.boot.infrastructure.product.repository;
 
-import com.academy.orders.boot.infrastructure.common.AbstractRepository;
+import com.academy.orders.boot.infrastructure.common.repository.AbstractRepository;
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.product.dto.ProductManagementFilterDto;
@@ -57,27 +57,6 @@ class ProductRepositoryIT extends AbstractRepository {
 		assertTrue(isFiltered(result, filter));
 	}
 
-	private boolean isFiltered(Page<Product> actual, ProductManagementFilterDto filter) {
-		return actual.content().stream()
-				.allMatch(p -> isPricesInBounds(p, filter.priceMore(), filter.priceLess())
-						&& isStatusesEqual(p, filter.status())
-						&& isQuantityInBounds(p, filter.quantityMore(), filter.quantityLess()));
-	}
-
-	private boolean isPricesInBounds(Product product, BigDecimal priceMore, BigDecimal priceLess) {
-		var price = product.price();
-		return price.compareTo(priceMore) > 0 && price.compareTo(priceLess) < 0;
-	}
-
-	private boolean isQuantityInBounds(Product product, Integer priceMore, Integer priceLess) {
-		var price = product.quantity();
-		return price.compareTo(priceMore) > 0 && price.compareTo(priceLess) < 0;
-	}
-
-	private boolean isStatusesEqual(Product product, ProductStatus status) {
-		return product.status().equals(status);
-	}
-
 	@Test
 	void findAllByLanguageWithFilterForNameRegexTest() {
 		final var totalElements = 5;
@@ -88,11 +67,6 @@ class ProductRepositoryIT extends AbstractRepository {
 		assertContentSchema(result);
 		assertEquals(totalElements, result.totalElements());
 		assertTrue(isFilteredByNameRegex(result, filter.searchByName()));
-	}
-
-	private boolean isFilteredByNameRegex(Page<Product> actual, String nameRegex) {
-		return actual.content().stream().flatMap(p -> p.productTranslations().stream()).map(ProductTranslation::name)
-				.allMatch(name -> name.toLowerCase().contains(nameRegex));
 	}
 
 	@Test
@@ -124,4 +98,29 @@ class ProductRepositoryIT extends AbstractRepository {
 		assertNotNull(product.tags());
 	}
 
+	private boolean isFiltered(Page<Product> actual, ProductManagementFilterDto filter) {
+		return actual.content().stream()
+				.allMatch(p -> isPricesInBounds(p, filter.priceMore(), filter.priceLess())
+						&& isStatusesEqual(p, filter.status())
+						&& isQuantityInBounds(p, filter.quantityMore(), filter.quantityLess()));
+	}
+
+	private boolean isPricesInBounds(Product product, BigDecimal priceMore, BigDecimal priceLess) {
+		var price = product.price();
+		return price.compareTo(priceMore) > 0 && price.compareTo(priceLess) < 0;
+	}
+
+	private boolean isQuantityInBounds(Product product, Integer priceMore, Integer priceLess) {
+		var price = product.quantity();
+		return price.compareTo(priceMore) > 0 && price.compareTo(priceLess) < 0;
+	}
+
+	private boolean isStatusesEqual(Product product, ProductStatus status) {
+		return product.status().equals(status);
+	}
+
+	private boolean isFilteredByNameRegex(Page<Product> actual, String nameRegex) {
+		return actual.content().stream().flatMap(p -> p.productTranslations().stream()).map(ProductTranslation::name)
+				.allMatch(name -> name.toLowerCase().contains(nameRegex));
+	}
 }

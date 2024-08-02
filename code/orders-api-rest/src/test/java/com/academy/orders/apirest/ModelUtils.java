@@ -13,7 +13,8 @@ import com.academy.orders.domain.order.entity.PostAddress;
 import com.academy.orders.domain.order.entity.enumerated.DeliveryMethod;
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import com.academy.orders.domain.product.dto.ProductManagementFilterDto;
-import com.academy.orders.domain.product.dto.UpdateProductDto;
+import com.academy.orders.domain.product.dto.ProductRequestDto;
+import com.academy.orders.domain.product.dto.ProductTranslationDto;
 import com.academy.orders.domain.product.entity.Language;
 import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.ProductTranslation;
@@ -22,7 +23,6 @@ import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders_api_rest.generated.model.AccountResponseDTO;
 import com.academy.orders_api_rest.generated.model.CartItemDTO;
 import com.academy.orders_api_rest.generated.model.CartItemsResponseDTO;
-import com.academy.orders_api_rest.generated.model.CreateProductRequestDTO;
 import com.academy.orders_api_rest.generated.model.ManagerOrderDTO;
 import com.academy.orders_api_rest.generated.model.OrderItemDTO;
 import com.academy.orders_api_rest.generated.model.OrderReceiverDTO;
@@ -36,17 +36,18 @@ import com.academy.orders_api_rest.generated.model.PageUserOrderDTO;
 import com.academy.orders_api_rest.generated.model.PageableDTO;
 import com.academy.orders_api_rest.generated.model.PlaceOrderRequestDTO;
 import com.academy.orders_api_rest.generated.model.PostAddressDTO;
+import com.academy.orders_api_rest.generated.model.ProductDetailsResponseDTO;
 import com.academy.orders_api_rest.generated.model.ProductManagementContentDTO;
 import com.academy.orders_api_rest.generated.model.ProductManagementPageDTO;
 import com.academy.orders_api_rest.generated.model.ProductManagementStatusDTO;
 import com.academy.orders_api_rest.generated.model.ProductPreviewDTO;
+import com.academy.orders_api_rest.generated.model.ProductRequestDTO;
 import com.academy.orders_api_rest.generated.model.ProductResponseDTO;
 import com.academy.orders_api_rest.generated.model.ProductSearchResultDTO;
 import com.academy.orders_api_rest.generated.model.ProductStatusDTO;
 import com.academy.orders_api_rest.generated.model.ProductTranslationDTO;
 import com.academy.orders_api_rest.generated.model.TagDTO;
 import com.academy.orders_api_rest.generated.model.UpdateOrderStatusRequestDTO;
-import com.academy.orders_api_rest.generated.model.UpdateProductRequestDTO;
 import com.academy.orders_api_rest.generated.model.UpdatedCartItemDTO;
 import com.academy.orders_api_rest.generated.model.UserOrderDTO;
 import java.math.BigDecimal;
@@ -353,24 +354,6 @@ public class ModelUtils {
 		return cartItemDTO;
 	}
 
-	public static UpdateProductRequestDTO getUpdateProductRequestDTO() {
-		UpdateProductRequestDTO updateProductRequestDTO = new UpdateProductRequestDTO();
-		updateProductRequestDTO.setName("Name");
-		updateProductRequestDTO.setDescription("Description");
-		updateProductRequestDTO.setStatus(ProductStatusDTO.VISIBLE);
-		updateProductRequestDTO.setImage("image");
-		updateProductRequestDTO.setQuantity(10);
-		updateProductRequestDTO.setPrice(BigDecimal.valueOf(100));
-		updateProductRequestDTO.setTagIds(List.of(TEST_ID));
-		return updateProductRequestDTO;
-	}
-
-	public static UpdateProductDto getUpdateProduct() {
-		return UpdateProductDto.builder().id(TEST_UUID).name("Name").description("Description")
-				.status(String.valueOf(ProductStatusDTO.VISIBLE)).image(IMAGE_URL).quantity(10)
-				.price(BigDecimal.valueOf(100)).tagIds(List.of(TEST_ID)).createdAt(LocalDateTime.now()).build();
-	}
-
 	public static ProductManagementFilterDto getManagementFilterDto() {
 		return ProductManagementFilterDto.builder().status(ProductStatus.VISIBLE).createdBefore(DATE_TIME)
 				.createdAfter(DATE_TIME).priceMore(BigDecimal.ZERO).priceLess(BigDecimal.TEN).build();
@@ -403,26 +386,34 @@ public class ModelUtils {
 		return pageOrderDTO;
 	}
 
-	public static CreateProductRequestDTO getCreateProductRequestDTO() {
-		CreateProductRequestDTO createProductRequestDTO = new CreateProductRequestDTO();
-		createProductRequestDTO.setStatus(ProductStatusDTO.VISIBLE);
-		createProductRequestDTO.setImage("https://example.com/image.jpg");
-		createProductRequestDTO.setQuantity(10);
-		createProductRequestDTO.setPrice(new BigDecimal("999.99"));
+	public static ProductRequestDTO getProductRequestDTO() {
+		ProductRequestDTO productRequestDTO = new ProductRequestDTO();
+		productRequestDTO.setStatus(ProductStatusDTO.VISIBLE);
+		productRequestDTO.setImage(IMAGE_URL);
+		productRequestDTO.setQuantity(TEST_QUANTITY);
+		productRequestDTO.setPrice(TEST_PRICE);
+		productRequestDTO.setTagIds(List.of(1L, 2L));
+		productRequestDTO.setProductTranslations(List.of(getProductTranslationDTO()));
 
-		List<Long> tagIds = new ArrayList<>();
-		tagIds.add(1L);
-		tagIds.add(2L);
-		createProductRequestDTO.setTagIds(tagIds);
+		return productRequestDTO;
+	}
 
-		List<ProductTranslationDTO> productTranslations = new ArrayList<>();
-		productTranslations.add(new ProductTranslationDTO().languageCode("en").name("Sample Product")
-				.description("Description in English"));
-		productTranslations
-				.add(new ProductTranslationDTO().languageCode("uk").name("Продукт").description("Опис Українською"));
-		createProductRequestDTO.setProductTranslations(productTranslations);
+	public static ProductRequestDto getProductRequestDto() {
+		return ProductRequestDto.builder().status(String.valueOf(ProductStatus.VISIBLE)).image(IMAGE_URL)
+				.quantity(TEST_QUANTITY).price(TEST_PRICE).tagIds(List.of(1L, 2L))
+				.productTranslations(Set.of(getProductTranslationDto())).build();
+	}
 
-		return createProductRequestDTO;
+	public static ProductTranslationDto getProductTranslationDto() {
+		return ProductTranslationDto.builder().name("Name").description("Description").languageCode("en").build();
+	}
+
+	public static ProductTranslationDTO getProductTranslationDTO() {
+		ProductTranslationDTO productTranslationDTO = new ProductTranslationDTO();
+		productTranslationDTO.setLanguageCode("en");
+		productTranslationDTO.setName("Name");
+		productTranslationDTO.setDescription("Description");
+		return productTranslationDTO;
 	}
 
 	public static ProductResponseDTO getProductResponseDTO() {
@@ -506,5 +497,16 @@ public class ModelUtils {
 		pageProductsDTO.size(1);
 		pageProductsDTO.empty(false);
 		return pageProductsDTO;
+	}
+
+	public static ProductDetailsResponseDTO getProductDetailsResponseDTO() {
+		var productDetailsResponseDTO = new ProductDetailsResponseDTO();
+		productDetailsResponseDTO.name("Name");
+		productDetailsResponseDTO.description("Desc");
+		productDetailsResponseDTO.image(IMAGE_URL);
+		productDetailsResponseDTO.tags(List.of("tag1", "tag2"));
+		productDetailsResponseDTO.quantity(TEST_QUANTITY);
+		productDetailsResponseDTO.price(TEST_PRICE);
+		return productDetailsResponseDTO;
 	}
 }

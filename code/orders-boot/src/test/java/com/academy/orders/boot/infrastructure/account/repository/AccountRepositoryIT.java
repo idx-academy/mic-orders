@@ -1,6 +1,6 @@
-package com.academy.orders.boot.infrastructure.account;
+package com.academy.orders.boot.infrastructure.account.repository;
 
-import com.academy.orders.boot.infrastructure.common.AbstractRepository;
+import com.academy.orders.boot.infrastructure.common.repository.AbstractRepository;
 import com.academy.orders.domain.account.entity.enumerated.UserStatus;
 import com.academy.orders.domain.account.repository.AccountRepository;
 import org.junit.jupiter.api.Test;

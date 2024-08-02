@@ -3,8 +3,11 @@ package com.academy.orders.application.product.usecase;
 import com.academy.orders.domain.exception.BadRequestException;
 import com.academy.orders.domain.language.repository.LanguageRepository;
 import com.academy.orders.domain.language.repository.exception.LanguageNotFoundException;
-import com.academy.orders.domain.product.dto.CreateProductRequestDto;
-import com.academy.orders.domain.product.entity.*;
+import com.academy.orders.domain.product.dto.ProductRequestDto;
+import com.academy.orders.domain.product.entity.Language;
+import com.academy.orders.domain.product.entity.Product;
+import com.academy.orders.domain.product.entity.ProductManagement;
+import com.academy.orders.domain.product.entity.ProductTranslationManagement;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders.domain.product.repository.ProductRepository;
 import com.academy.orders.domain.product.usecase.CreateProductUseCase;
@@ -25,27 +28,26 @@ public class CreateProductUseCaseImpl implements CreateProductUseCase {
 	private final LanguageRepository languageRepository;
 
 	@Override
-	public Product createProduct(CreateProductRequestDto request) {
+	public Product createProduct(ProductRequestDto request) {
 		if (request == null) {
-			throw new BadRequestException("CreateProductRequestDto cannot be null") {
+			throw new BadRequestException("Request cannot be null") {
 			};
 		}
-
 		var tags = tagRepository.getTagsByIds(request.tagIds());
 
 		var product = ProductManagement.builder().status(ProductStatus.valueOf(request.status())).image(request.image())
 				.createdAt(LocalDateTime.now()).quantity(request.quantity()).price(request.price()).tags(tags)
 				.productTranslationManagement(Set.of()).build();
+
 		var productWithoutTranslation = productRepository.save(product);
 
 		var productTranslations = request.productTranslations().stream().map(dto -> {
-			var language = languageRepository.findByCode(dto.languageCode());
-			if (language == null) {
-				throw new LanguageNotFoundException(dto.languageCode());
-			}
+			var language = languageRepository.findByCode(dto.languageCode())
+					.orElseThrow(() -> new LanguageNotFoundException(dto.languageCode()));
 			return new ProductTranslationManagement(productWithoutTranslation.id(), language.id(), dto.name(),
 					dto.description(), new Language(language.id(), dto.languageCode()));
 		}).collect(Collectors.toSet());
+
 		var productWithTranslations = new ProductManagement(productWithoutTranslation.id(), product.status(),
 				product.image(), product.createdAt(), product.quantity(), product.price(), product.tags(),
 				productTranslations);
