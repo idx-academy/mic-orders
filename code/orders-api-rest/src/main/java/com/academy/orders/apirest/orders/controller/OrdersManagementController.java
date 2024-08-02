@@ -45,7 +45,7 @@ public class OrdersManagementController implements OrdersManagementApi {
 	private final OrderStatusInfoDTOMapper orderStatusInfoDTOMapper;
 
 	@Override
-	@PreAuthorize("hasAnyAuthority('ROLE_MANAGER')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
 	public PageManagerOrderPreviewDTO getAllOrders(OrdersFilterParametersDTO ordersFilter, String lang,
 			PageableDTO pageable) {
 		Pageable pageableDomain = pageableDTOMapper.fromDto(pageable);
@@ -63,7 +63,7 @@ public class OrdersManagementController implements OrdersManagementApi {
 	}
 
 	@Override
-	@PreAuthorize("hasAuthority('ROLE_MANAGER')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
 	public ManagerOrderDTO getOrderById(UUID id, String lang) {
 		Order order = getOrderByIdUseCase.getOrderById(id, lang);
 		return orderDTOMapper.toManagerDto(order);
