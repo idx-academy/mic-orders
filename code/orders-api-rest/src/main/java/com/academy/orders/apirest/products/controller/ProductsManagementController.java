@@ -43,21 +43,21 @@ public class ProductsManagementController implements ProductsManagementApi {
 	private final ProductRequestDTOMapper productRequestDTOMapper;
 
 	@Override
-	@PreAuthorize("hasAnyAuthority('ROLE_MANAGER')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
 	public void updateStatus(UUID productId, ProductStatusDTO status) {
 		ProductStatus productStatus = productStatusDTOMapper.fromDTO(status);
 		updateStatusUseCase.updateStatus(productId, productStatus);
 	}
 
 	@Override
-	@PreAuthorize("hasAnyAuthority('ROLE_MANAGER')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
 	public void updateProduct(UUID productId, ProductRequestDTO productRequestDTO) {
 		var updateProduct = productRequestDTOMapper.fromDTO(productRequestDTO);
 		updateProductUseCase.updateProduct(productId, updateProduct);
 	}
 
 	@Override
-	@PreAuthorize("hasAnyAuthority('ROLE_MANAGER')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
 	public ProductManagementPageDTO getProductsForManager(ProductManagementFilterDTO productFilter, String lang,
 			PageableDTO pageable) {
 		var pageableDomain = pageableDTOMapper.fromDto(pageable);
@@ -67,7 +67,7 @@ public class ProductsManagementController implements ProductsManagementApi {
 	}
 
 	@Override
-	@PreAuthorize("hasAnyAuthority('ROLE_MANAGER')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
 	public ProductResponseDTO createProduct(ProductRequestDTO productRequestDTO) {
 		var createProductRequest = productRequestDTOMapper.fromDTO(productRequestDTO);
 		Product product = createProductUseCase.createProduct(createProductRequest);
@@ -75,7 +75,7 @@ public class ProductsManagementController implements ProductsManagementApi {
 	}
 
 	@Override
-	@PreAuthorize("hasAnyAuthority('ROLE_MANAGER')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
 	public ProductResponseDTO getProductById(UUID productId) {
 		var product = getProductByIdUseCase.getProductById(productId);
 		return productResponseDTOMapper.toDTO(product);
