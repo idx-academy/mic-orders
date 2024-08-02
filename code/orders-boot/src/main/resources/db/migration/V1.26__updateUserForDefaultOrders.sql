@@ -1,0 +1,2 @@
+UPDATE orders SET account_id = 2
+              WHERE id IN ('550e8400-e29b-41d4-a716-446655440015', '550e8400-e29b-41d4-a716-446655440016');
