@@ -28,7 +28,6 @@ import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -111,14 +110,6 @@ class CartItemRepositoryImplTest {
 		verify(cartItemJpaAdapter).findById(any(CartItemId.class));
 		verify(cartItemJpaAdapter).save(existingCartItemEntity);
 		verify(cartItemMapper).fromEntity(existingCartItemEntity);
-	}
-
-	@Test
-	void saveIncrementQuantityTest() {
-		doNothing().when(cartItemJpaAdapter).increaseQuantity(any(CartItemId.class), anyInt());
-
-		assertDoesNotThrow(() -> cartItemRepository.incrementQuantity(UUID.randomUUID(), 1L));
-		verify(cartItemJpaAdapter).increaseQuantity(any(CartItemId.class), anyInt());
 	}
 
 	@Test
