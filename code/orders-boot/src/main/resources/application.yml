@@ -31,4 +31,25 @@ spring:
 rest:
   client:
     colors:
-      base-url: http://${COLOR_API_HOST:localhost}:${COLOR_API_PORT:8081}/colors
+      base-url: http://${MOCKED_SERVICES_HOST:localhost}:${MOCKED_SERVICES_PORT:8081}/colors
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      imagesCircuit:
+        minimumNumberOfCalls: 5
+        slowCallRateThreshold: 50
+        slowCallDurationThreshold: 500
+        failureRateThreshold: 55
+        permittedNumberOfCallsInHalfOpenState: 3
+        waitDurationInOpenState: 30000
+  retry:
+    instances:
+      imagesRetry:
+        maxAttempts: 3
+        waitDuration: 200
+        fail-after-max-attempts: true
+
+images:
+  default:
+    url: https://www.demyhealth.com/storage/media/2/default-product-image.png

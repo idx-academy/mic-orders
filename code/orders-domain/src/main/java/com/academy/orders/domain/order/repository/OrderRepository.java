@@ -3,10 +3,10 @@ package com.academy.orders.domain.order.repository;
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
-import java.util.Optional;
-import java.util.UUID;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
+import java.util.Optional;
+import java.util.UUID;
 
 public interface OrderRepository {
 	/**
@@ -18,6 +18,18 @@ public interface OrderRepository {
 	 * @return {@link Optional} of {@link Order}
 	 */
 	Optional<Order> findById(UUID id);
+
+	/**
+	 * Method find {@link Order} by order's id fetch all data
+	 *
+	 * @param id
+	 *            with type {@link UUID}
+	 * @param language
+	 *            language of fetched products in order items
+	 *
+	 * @return {@link Optional} of {@link Order}
+	 */
+	Optional<Order> findById(UUID id, String language);
 
 	/**
 	 * Method saves order to the DB.
@@ -59,17 +71,26 @@ public interface OrderRepository {
 	void updateOrderStatus(UUID orderId, OrderStatus orderStatus);
 
 	/**
-	 * Method find page of {@link Order} by account id, fetch products by language
+	 * Updates the `isPaid` status of an order identified by its ID.
+	 *
+	 * @param orderId
+	 *            the unique identifier of the order to be updated.
+	 * @param isPaid
+	 *            a boolean indicating whether the order is paid or not. `true` if
+	 *            the order is paid, `false` otherwise.
+	 * @author Anton Bondar
+	 */
+	void updateIsPaidStatus(UUID orderId, Boolean isPaid);
+
+	/**
+	 * Method find page of {@link Order} by account id.
 	 *
 	 * @param filterParametersDto
 	 *            filter parameters to sort orders.
-	 * @param language
-	 *            the language in which the orders should be retrieved.
 	 * @param pageable
 	 *            the pagination and sorting information.
 	 * @return a Page of OrderEntity objects matching the specified criteria.
-	 *
 	 * @author Denys Liubchenko
 	 */
-	Page<Order> findAll(OrdersFilterParametersDto filterParametersDto, String language, Pageable pageable);
+	Page<Order> findAll(OrdersFilterParametersDto filterParametersDto, Pageable pageable);
 }

@@ -7,8 +7,10 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
+import lombok.With;
 
 @Builder
-public record Product(UUID id, ProductStatus status, String image, LocalDateTime createdAt, Integer quantity,
+public record Product(UUID id, ProductStatus status, @With String image, LocalDateTime createdAt, Integer quantity,
 		BigDecimal price, Set<Tag> tags, Set<ProductTranslation> productTranslations) {
+
 }

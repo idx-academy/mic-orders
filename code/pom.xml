@@ -41,6 +41,12 @@
 
     <junit-vintage.version>5.9.2</junit-vintage.version>
 
+    <caffeine.version>3.1.8</caffeine.version>
+
+    <spring-cloud-circuitbreaker.version>3.1.2</spring-cloud-circuitbreaker.version>
+
+    <httpclient5.version>5.3.1</httpclient5.version>
+
     <skipTests>false</skipTests>
     <skipUTs>${skipTests}</skipUTs>
     <skipITs>${skipTests}</skipITs>
@@ -78,6 +84,24 @@
       </dependency>
 
       <dependency>
+        <groupId>com.github.ben-manes.caffeine</groupId>
+        <artifactId>caffeine</artifactId>
+        <version>${caffeine.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.httpcomponents.client5</groupId>
+        <artifactId>httpclient5</artifactId>
+        <version>${httpclient5.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-cache</artifactId>
+        <version>${spring-boot-starter.version}</version>
+      </dependency>
+
+      <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-data-jpa</artifactId>
         <version>${spring-boot-starter.version}</version>
@@ -88,6 +112,13 @@
         <artifactId>spring-boot-starter-web</artifactId>
         <version>${spring-boot-starter.version}</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-circuitbreaker-resilience4j</artifactId>
+        <version>${spring-cloud-circuitbreaker.version}</version>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 

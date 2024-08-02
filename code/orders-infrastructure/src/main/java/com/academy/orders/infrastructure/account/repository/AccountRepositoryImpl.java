@@ -22,7 +22,7 @@ public class AccountRepositoryImpl implements AccountRepository {
 	private final AccountMapper accountMapper;
 
 	@Override
-	public Optional<Account> getAccountByEmail(String email) {
+	public Optional<Account> findAccountByEmail(String email) {
 		var accountEntity = accountJpaAdapter.findByEmail(email);
 		return accountEntity.map(accountMapper::fromEntity);
 	}
@@ -34,6 +34,12 @@ public class AccountRepositoryImpl implements AccountRepository {
 
 	@Override
 	@Transactional
+	public Boolean existsById(Long id) {
+		return accountJpaAdapter.existsById(id);
+	}
+
+	@Override
+	@Transactional
 	public Account save(CreateAccountDTO account) {
 		log.info("Saving user {}:", account);
 		AccountEntity accountEntity = accountMapper.toEntity(account);
@@ -41,5 +47,15 @@ public class AccountRepositoryImpl implements AccountRepository {
 		accountEntity.setStatus(UserStatus.ACTIVE);
 		AccountEntity savedAccount = accountJpaAdapter.save(accountEntity);
 		return accountMapper.fromEntity(savedAccount);
+	}
+
+	@Override
+	public Optional<Role> findRoleByEmail(String email) {
+		return accountJpaAdapter.findRoleByEmail(email);
+	}
+
+	@Override
+	public void updateStatus(Long id, UserStatus status) {
+		accountJpaAdapter.updateStatus(id, status);
 	}
 }

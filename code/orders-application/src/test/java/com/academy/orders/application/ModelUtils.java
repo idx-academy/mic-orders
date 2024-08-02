@@ -9,25 +9,32 @@ import com.academy.orders.domain.cart.entity.CartItem;
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.order.dto.CreateOrderDto;
+import com.academy.orders.domain.order.dto.OrderStatusInfo;
 import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
+import com.academy.orders.domain.order.dto.UpdateOrderStatusDto;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.entity.OrderItem;
 import com.academy.orders.domain.order.entity.OrderReceiver;
 import com.academy.orders.domain.order.entity.PostAddress;
 import com.academy.orders.domain.order.entity.enumerated.DeliveryMethod;
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
+import com.academy.orders.domain.product.dto.ProductRequestDto;
+import com.academy.orders.domain.product.dto.ProductManagementFilterDto;
+import com.academy.orders.domain.product.dto.ProductTranslationDto;
 import com.academy.orders.domain.product.entity.Language;
 import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.ProductTranslation;
+import com.academy.orders.domain.product.entity.ProductTranslationManagement;
 import com.academy.orders.domain.product.entity.Tag;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-
 import static com.academy.orders.application.TestConstants.IMAGE_URL;
-import static com.academy.orders.application.TestConstants.LANGUAGE_UA;
+import static com.academy.orders.application.TestConstants.LANGUAGE_EN;
+import static com.academy.orders.application.TestConstants.LANGUAGE_UK;
 import static com.academy.orders.application.TestConstants.PRODUCT_DESCRIPTION;
 import static com.academy.orders.application.TestConstants.PRODUCT_NAME;
 import static com.academy.orders.application.TestConstants.TAG_NAME;
@@ -50,7 +57,11 @@ public class ModelUtils {
 	}
 
 	public static Language getLanguage() {
-		return Language.builder().id(TEST_ID).code(LANGUAGE_UA).build();
+		return Language.builder().id(TEST_ID).code(LANGUAGE_UK).build();
+	}
+
+	public static Language getLanguageEn() {
+		return Language.builder().id(TEST_ID).code(LANGUAGE_EN).build();
 	}
 
 	public static ProductTranslation getProductTranslation() {
@@ -99,6 +110,28 @@ public class ModelUtils {
 				.receiver(OrderReceiver.builder().firstName("John").lastName("Doe").email("test@mail.com").build())
 				.orderItems(List.of(getOrderItem())).editedAt(DATE_TIME).total(BigDecimal.valueOf(200)).build();
 	}
+
+	public static Order getPaidOrder() {
+		return Order.builder().id(TEST_UUID).createdAt(DATE_TIME).isPaid(true).orderStatus(OrderStatus.IN_PROGRESS)
+				.postAddress(PostAddress.builder().city("Kyiv").deliveryMethod(NOVA).department("1").build())
+				.receiver(OrderReceiver.builder().firstName("John").lastName("Doe").email("test@mail.com").build())
+				.orderItems(List.of(getOrderItem())).editedAt(DATE_TIME).total(BigDecimal.valueOf(200)).build();
+	}
+
+	public static Order getCanceledOrder() {
+		return Order.builder().id(TEST_UUID).createdAt(DATE_TIME).isPaid(false).orderStatus(OrderStatus.CANCELED)
+				.postAddress(PostAddress.builder().city("Kyiv").deliveryMethod(NOVA).department("1").build())
+				.receiver(OrderReceiver.builder().firstName("John").lastName("Doe").email("test@mail.com").build())
+				.orderItems(List.of(getOrderItem())).editedAt(DATE_TIME).total(BigDecimal.valueOf(200)).build();
+	}
+
+	public static Order getDeliveredOrder() {
+		return Order.builder().id(TEST_UUID).createdAt(DATE_TIME).isPaid(false).orderStatus(OrderStatus.DELIVERED)
+				.postAddress(PostAddress.builder().city("Kyiv").deliveryMethod(NOVA).department("1").build())
+				.receiver(OrderReceiver.builder().firstName("John").lastName("Doe").email("test@mail.com").build())
+				.orderItems(List.of(getOrderItem())).editedAt(DATE_TIME).total(BigDecimal.valueOf(200)).build();
+	}
+
 	public static Order getOrderWithoutTotal() {
 		return Order.builder().id(TEST_UUID).createdAt(DATE_TIME).isPaid(false).orderStatus(OrderStatus.IN_PROGRESS)
 				.postAddress(PostAddress.builder().city("Kyiv").deliveryMethod(NOVA).department("1").build())
@@ -136,4 +169,81 @@ public class ModelUtils {
 	public static CartItem getCartItem(Product product, int quantity) {
 		return CartItem.builder().product(product).quantity(quantity).build();
 	}
+
+	public static ProductTranslationManagement getProductTranslationManagement() {
+		return ProductTranslationManagement.builder().productId(TEST_UUID).languageId(TEST_ID).name("Name")
+				.description("Description").language(getLanguageEn()).build();
+	}
+
+	public static ProductManagementFilterDto getManagementFilterDto() {
+		return ProductManagementFilterDto.builder().status(ProductStatus.VISIBLE).createdBefore(DATE_TIME)
+				.createdAfter(DATE_TIME).priceMore(BigDecimal.ZERO).priceLess(BigDecimal.TEN).build();
+	}
+
+	public static ProductRequestDto getProductRequestDto() {
+		return ProductRequestDto.builder().status(String.valueOf(ProductStatus.VISIBLE)).image(IMAGE_URL)
+				.quantity(TEST_QUANTITY).price(TEST_PRICE).tagIds(List.of(1L))
+				.productTranslations(Set.of(ProductTranslationDto.builder().name("Name").description("Description")
+						.languageCode("en").build()))
+				.build();
+	}
+
+	public static ProductRequestDto getProductRequestWithEmptyTagsDto() {
+		return ProductRequestDto.builder().status(String.valueOf(ProductStatus.VISIBLE)).image(IMAGE_URL)
+				.quantity(TEST_QUANTITY).price(TEST_PRICE).tagIds(Collections.emptyList())
+				.productTranslations(Set.of(ProductTranslationDto.builder().name("Name").description("Description")
+						.languageCode("en").build()))
+				.build();
+	}
+
+	public static ProductRequestDto getProductRequestRemoveAllTagsDto() {
+		return ProductRequestDto.builder().status(String.valueOf(ProductStatus.VISIBLE)).image(IMAGE_URL)
+				.quantity(TEST_QUANTITY).price(TEST_PRICE).tagIds(List.of(-1L))
+				.productTranslations(Set.of(ProductTranslationDto.builder().name("Name").description("Description")
+						.languageCode("en").build()))
+				.build();
+	}
+
+	public static ProductRequestDto getProductRequestWithDifferentIds() {
+		return ProductRequestDto.builder().status(String.valueOf(ProductStatus.VISIBLE)).image(IMAGE_URL)
+				.quantity(TEST_QUANTITY).price(TEST_PRICE).tagIds(List.of(-1L, 1L))
+				.productTranslations(Set.of(ProductTranslationDto.builder().name("Name").description("Description")
+						.languageCode("en").build()))
+				.build();
+	}
+
+	public static ProductRequestDto getEmptyProductRequestDto() {
+		return ProductRequestDto.builder().tagIds(List.of(1L))
+				.productTranslations(Set.of(ProductTranslationDto.builder().languageCode("en").build())).build();
+	}
+
+	public static ProductRequestDto getProductRequestDtoWithInvalidLanguageCode() {
+		return ProductRequestDto.builder().status(String.valueOf(ProductStatus.VISIBLE)).image(IMAGE_URL)
+				.quantity(TEST_QUANTITY).price(TEST_PRICE).tagIds(List.of(1L))
+				.productTranslations(Set.of(ProductTranslationDto.builder().name("Name").description("Description")
+						.languageCode("invalid").build()))
+				.build();
+	}
+
+	public static UpdateOrderStatusDto getUpdateOrderStatusDto() {
+		return UpdateOrderStatusDto.builder().status(OrderStatus.IN_PROGRESS).isPaid(false).build();
+	}
+
+	public static UpdateOrderStatusDto getUpdateOrderStatusDtoWithNullIsPaid() {
+		return UpdateOrderStatusDto.builder().status(OrderStatus.IN_PROGRESS).build();
+	}
+
+	public static UpdateOrderStatusDto getUpdateOrderStatusDtoWithNullIsPaidAndStatusCompleted() {
+		return UpdateOrderStatusDto.builder().status(OrderStatus.COMPLETED).build();
+	}
+
+	public static UpdateOrderStatusDto getUpdateOrderStatusDtoWithCompletedStatus() {
+		return UpdateOrderStatusDto.builder().status(OrderStatus.COMPLETED).isPaid(false).build();
+	}
+
+	public static OrderStatusInfo getOrderStatusInfo() {
+		return OrderStatusInfo.builder().availableStatuses(List.of("SHIPPED, DELIVERED, COMPLETED, CANCELED"))
+				.isPaid(false).build();
+	}
+
 }

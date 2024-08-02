@@ -11,10 +11,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CartItemJpaAdapter extends CrudRepository<CartItemEntity, CartItemId> {
-	@Modifying
-	@Query("UPDATE CartItemEntity ci SET ci.quantity = ci.quantity + :quantity " + "WHERE ci.cartItemId = :cartItemId ")
-	void increaseQuantity(CartItemId cartItemId, Integer quantity);
-
 	@Query("SELECT c FROM CartItemEntity c INNER JOIN FETCH c.product WHERE c.account.id = :accountId")
 	List<CartItemEntity> findAllByAccountId(Long accountId);
 

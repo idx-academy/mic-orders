@@ -28,6 +28,9 @@ tags:
   - name: Cart
     description: Cart management endpoints
 
+  - name: UsersManagement
+    description: Endpoints for users management page
+
 #ENDPOINTS
 #=======================================================================================================================
 paths:
@@ -79,10 +82,10 @@ paths:
         '409':
           $ref: '#/components/responses/Conflict'
 
-  /v1/orders/{orderId}:
+  /v1/management/orders/{orderId}:
     get:
       tags:
-        - Orders
+        - OrdersManagement
       summary: Get order by id
       operationId: getOrderById
       security:
@@ -96,21 +99,28 @@ paths:
             description: Id of the order
             format: uuid
           example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
+        - $ref: '#/components/parameters/Language'
       responses:
         '200':
           description: Order
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserOrder'
+                $ref: '#/components/schemas/ManagerOrder'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
 
-  /v1/orders/{orderId}/status:
+  /v1/management/orders/{orderId}/status:
     patch:
       tags:
         - OrdersManagement
-      summary: Update order status
+      summary: Update order statuses by order ID
       operationId: updateOrderStatus
       security:
         - bearerAuth: [ ]
@@ -123,15 +133,19 @@ paths:
             format: uuid
           description: The ID of the order to update
           example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
-        - in: query
-          name: orderStatus
-          required: true
-          schema:
-            $ref: '#/components/schemas/OrderStatus'
-          description: The new status for the order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOrderStatusRequest'
       responses:
         '200':
           description: Order status updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderStatusInfo'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -212,7 +226,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PageManagerOrder'
+                $ref: '#/components/schemas/PageManagerOrderPreview'
         '400':
           $ref: '#/components/responses/BadRequestResponse'
         '401':
@@ -226,8 +240,8 @@ paths:
         - ProductsManagement
       summary: Change visibility status for product
       operationId: updateStatus
-#      security:
-#        - bearerAuth: [ ]
+      security:
+        - bearerAuth: [ ]
       parameters:
         - $ref: '#/components/parameters/ProductId'
         - in: query
@@ -237,8 +251,60 @@ paths:
           schema:
             $ref: '#/components/schemas/ProductStatus'
       responses:
-        '201':
+        '200':
           description: successful operation
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+
+  /v1/management/products/{productId}:
+    get:
+      tags:
+        - ProductsManagement
+      summary: Get product by ID
+      operationId: getProductById
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/ProductId'
+      responses:
+        '200':
+          description: Successfully retrieved product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+
+    patch:
+      tags:
+        - ProductsManagement
+      summary: Update existing product details
+      operationId: updateProduct
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/ProductId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+      responses:
+        '200':
+          description: Product updated successfully
         '400':
           $ref: '#/components/responses/BadRequestResponse'
         '401':
@@ -256,6 +322,38 @@ paths:
       description: The endpoint for getting all products from the database.
       operationId: getProducts
       parameters:
+        - in: query
+          description: filter for products
+          name: productFilter
+          schema:
+            $ref: '#/components/schemas/ProductFilter'
+        - $ref: '#/components/parameters/Pageable'
+        - $ref: '#/components/parameters/Language'
+      responses:
+        '200':
+          description: Short information about all products
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageProducts'
+
+  /v1/products/search:
+    get:
+      tags:
+        - Products
+      summary: Get page of products in search.
+      description: The endpoint for getting page of short product info in search.
+      operationId: searchProducts
+      parameters:
+        - in: query
+          name: searchQuery
+          required: true
+          schema:
+            minLength: 3
+            pattern: '^(?!\s*$).+'
+            type: string
+            nullable: false
+            example: phone
         - $ref: '#/components/parameters/Language'
         - $ref: '#/components/parameters/Pageable'
       responses:
@@ -264,7 +362,90 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PageProducts'
+                $ref: '#/components/schemas/PageProductSearchResult'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+
+  /v1/products/{productId}:
+    get:
+      tags:
+        - Products
+      summary: Get product by ID
+      operationId: getProductDetailsById
+      parameters:
+          - $ref: '#/components/parameters/ProductId'
+          - $ref: '#/components/parameters/Language'
+      responses:
+          '200':
+            description: Successfully retrieved product
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ProductDetailsResponse'
+          '400':
+            $ref: '#/components/responses/BadRequestResponse'
+          '404':
+            $ref: '#/components/responses/NotFoundResponse'
+
+  /v1/management/products:
+    get:
+      tags:
+        - ProductsManagement
+      summary: Get all information about products
+      description: The endpoint retrieves all information about products
+      operationId: getProductsForManager
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - in: query
+          name: productFilter
+          schema:
+            $ref: '#/components/schemas/ProductManagementFilter'
+          description: filter for products
+        - $ref: '#/components/parameters/Language'
+        - $ref: '#/components/parameters/Pageable'
+      responses:
+        '200':
+          description: Products
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ProductManagementPage'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+    post:
+      tags:
+        - ProductsManagement
+      summary: Create a new product
+      description: The endpoint for creating a new product in the management page
+      operationId: createProduct
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+      responses:
+        '201':
+          description: Product created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
 
   /v1/users/{userId}/cart/{productId}:
     post:
@@ -368,6 +549,28 @@ paths:
           $ref: '#/components/responses/NotFoundResponse'
         '409':
           $ref: '#/components/responses/Conflict'
+  /v1/management/users/{userId}/status:
+    patch:
+      tags:
+        - UsersManagement
+      operationId: changeUserStatus
+      summary: Block/unblock user's account
+      description: The endpoint change status of user's account
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+        - in: query
+          name: status
+          schema:
+            $ref: '#/components/schemas/AccountStatus'
+      responses:
+        '204':
+          description: Status was updated
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
 
 
 
@@ -375,8 +578,8 @@ paths:
 #=======================================================================================================================
 components:
 
-  #PARAMETERS
-  #=======================================================================================================================
+#PARAMETERS
+#=======================================================================================================================
   parameters:
     Pageable:
       name: pageable
@@ -397,7 +600,7 @@ components:
       in: path
       name: productId
       required: true
-      description: Id of the product
+      description: ID of the product
       schema:
         type: string
         format: uuid
@@ -408,18 +611,18 @@ components:
       required: false
       schema:
         type: string
-        default: en
+        default: uk
         nullable: false
-        example: ua
-      description: The language code for the product information (e.g., 'ua' for Ukrainian).
+        example: uk
+      description: The language code for the product information (e.g., 'uk' for Ukrainian).
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
 
-  #RESPONSES
-  #=======================================================================================================================
+#RESPONSES
+#=======================================================================================================================
   responses:
     CreatedResponse:
       description: Resource created
@@ -483,8 +686,8 @@ components:
             title: Forbidden
             detail: User does not have success to this resource
 
-  #SCHEMAS
-  #=======================================================================================================================
+#SCHEMAS
+#=======================================================================================================================
   schemas:
     Pageable:
       type: object
@@ -626,6 +829,168 @@ components:
           description: Creation status message
           example: Resource successfully created
 
+    ProductRequest:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/ProductStatus'
+        image:
+          type: string
+          example: https://example.com/image.jpg
+          description: Image URL associated with the product.
+        quantity:
+          type: integer
+          example: 10
+          description: Quantity of the product
+        price:
+          type: number
+          format: bigDecimal
+          example: 999.99
+          description: Price of the product
+        tagIds:
+          type: array
+          description: Array of Tag IDs associated with the product
+          items:
+            type: integer
+            format: int64
+            example: 1, 2
+            description: The unique identifiers of the tags.
+        productTranslations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductTranslation'
+
+    ProductResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/ProductStatus'
+        image:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        quantity:
+          type: integer
+          example: 10
+        price:
+          type: number
+          example: 999.99
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+        productTranslations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductTranslation'
+
+    ProductDetailsResponse:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "APPLE iPhone"
+        description:
+          type: string
+          example: "Screen 6.1 Super Retina XDR, 2532x1170 / A16 Bionic chip"
+        image:
+          type: string
+          example: "https://example.com/image.jpg"
+        tags:
+          type: array
+          items:
+            type: string
+            example: "category:mobile, category:mobile"
+        quantity:
+          type: integer
+          example: 10
+        price:
+          type: number
+          example: 999.99
+
+
+    ProductSearchResult:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Id of the product.
+        image:
+          type: string
+          description: URL of the product image.
+        name:
+          type: string
+          example: APPLE iPhone
+          description: Name of the product.
+
+    Tag:
+      type: object
+      properties:
+        id:
+          type: number
+          format: id
+          example: 1
+        name:
+          type: string
+          example: category:mobile
+          description: The name of the tag.
+
+    ProductTranslation:
+      type: object
+      properties:
+        name:
+          type: string
+          example: APPLE iPhone
+          description: Name of the product.
+        description:
+          type: string
+          example: Screen 6.1 Super Retina XDR, 2532x1170 / A16 Bionic chip
+        languageCode:
+          type: string
+          example: en
+          description: language
+
+    ProductTranslationId:
+      type: object
+      properties:
+        productId:
+          type: string
+          format: id
+        languageId:
+          type: number
+          format: id
+
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/ProductStatus'
+        image:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        quantity:
+          type: integer
+        price:
+          type: number
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+        productTranslations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductTranslation'
+
     ErrorObject:
       title: Unauthorized
       type: object
@@ -677,6 +1042,38 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/OrderItem'
+
+    ManagerOrderPreview:
+      type: object
+      description: Manager's view of Order
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the order
+        isPaid:
+          type: boolean
+          description: Indicates whether the order has been paid
+        orderStatus:
+          $ref: '#/components/schemas/OrderStatus'
+        createdAt:
+          type: string
+          format: date-time
+          description: The date and time when the order was created
+        editedAt:
+          type: string
+          format: date-time
+          description: The date and time when the order was edited
+        account:
+          $ref: '#/components/schemas/AccountResponse'
+        total:
+          type: number
+          format: decimal
+          description: The total cost of the order
+        receiver:
+          $ref: '#/components/schemas/OrderReceiver'
+        postAddress:
+          $ref: '#/components/schemas/PostAddress'
 
     ManagerOrder:
       type: object
@@ -761,6 +1158,7 @@ components:
         - COMPLETED
         - CANCELED
       description: The various statuses an order can have
+      example: IN_PROGRESS, SHIPPED, DELIVERED, COMPLETED, CANCELED
 
     AccountResponse:
       type: object
@@ -838,7 +1236,7 @@ components:
                 $ref: '#/components/schemas/UserOrder'
               description: List of orders in the page
 
-    PageManagerOrder:
+    PageProductSearchResult:
       type: object
       allOf:
         - $ref: '#/components/schemas/AbstractPage'
@@ -847,7 +1245,19 @@ components:
             content:
               type: array
               items:
-                $ref: '#/components/schemas/ManagerOrder'
+                $ref: '#/components/schemas/ProductSearchResult'
+              description: List of product search results in page
+
+    PageManagerOrderPreview:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/AbstractPage'
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/ManagerOrderPreview'
               description: List of orders in the page
 
     PageProducts:
@@ -895,7 +1305,7 @@ components:
         image:
           type: string
           example: https://example.com/image.jpg
-          description: List of image URLs associated with the product.
+          description: Image URLs associated with the product.
         price:
           type: number
           format: float
@@ -1050,3 +1460,153 @@ components:
         - productPrice
         - calculatedPrice
         - totalPrice
+
+    ProductTags:
+      type: array
+      items:
+        type: string
+        description: categories of the product
+        example: 'category:computer'
+
+    UpdateOrderStatusRequest:
+      type: object
+      properties:
+        orderStatus:
+          $ref: '#/components/schemas/OrderStatus'
+        isPaid:
+          type: boolean
+          description: Indicates if the order is paid
+          example: true
+      required:
+        - orderStatus
+
+    OrderStatusInfo:
+      type: object
+      properties:
+        availableStatuses:
+          type: array
+          items:
+            type: string
+            description: List of statuses that the order can transition to from its current state
+            example: 'DELIVERED, COMPLETED, CANCELED'
+        isPaid:
+          type: boolean
+          description: Indicates if the order is paid
+          example: true
+
+    ProductManagementFilter:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/ProductManagementStatus'
+        searchByName:
+          type: string
+          description: field for searching products by name
+          example: Laptop
+        priceMore:
+          type: number
+          format: double
+          example: 100.20
+          minimum: 0
+          description: The price of the product is more than
+        priceLess:
+          type: number
+          format: double
+          example: 200.20
+          description: The price of the product is less than
+        quantityMore:
+          type: number
+          format: int64
+          example: 10
+          minimum: 0
+          description: The quantity of the product is more than
+        quantityLess:
+          type: number
+          format: int64
+          example: 20
+          description: The quantity of the product is less than
+        createdAfter:
+          type: string
+          format: date-time
+          description: The date of product creation is after
+        createdBefore:
+          type: string
+          format: date-time
+          description:  The date of product creation is before
+        tags:
+          $ref: '#/components/schemas/ProductTags'
+
+    ProductFilter:
+      type: object
+      properties:
+        tags:
+          $ref: '#/components/schemas/ProductTags'
+
+    ProductManagementPage:
+      allOf:
+        - $ref: '#/components/schemas/AbstractPage'
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/ProductManagementContent'
+              description: List of orders in the page
+
+    ProductManagementContent:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
+          description: id of the product
+        name:
+          type: string
+          description: name of the product
+          example: Iphone
+        imageLink:
+          type: string
+          description: name of the product
+          example: https://images.org/image.png
+        quantity:
+          type: number
+          format: int64
+          example: 10
+          minimum: 0
+        price:
+          type: number
+          format: double
+          example: 100.45
+          minimum: 0
+        createdAt:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/ProductManagementStatus'
+        tags:
+          $ref: '#/components/schemas/ProductTags'
+      required:
+        - id
+        - name
+        - imageLink
+        - quantity
+        - price
+        - createdAt
+        - status
+        - tags
+
+    ProductManagementStatus:
+      type: string
+      enum:
+        - VISIBLE
+        - HIDDEN
+      example: VISIBLE
+      description: Status of the product
+
+    AccountStatus:
+      type: string
+      enum:
+        - ACTIVE
+        - DEACTIVATED
+      description: Status of the account

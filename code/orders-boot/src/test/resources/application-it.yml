@@ -9,8 +9,8 @@ server:
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/retail
-    username: ${DATASOURCE_USER}
-    password: ${DATASOURCE_PASSWORD}
+    username: pgusr
+    password: pgpwd
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate.ddl-auto: none
@@ -25,7 +25,7 @@ spring:
 rest:
   client:
     colors:
-      base-url: http://localhost:8081/colors
+      base-url: http://localhost:8081/
 
 auth:
   users:
@@ -35,5 +35,17 @@ auth:
     - username: admin@mail.com
       roles: ROLE_ADMIN
       password: Admin_1234
+    - username: manager@mail.com
+      roles: ROLE_Manager
+      password: Manager_1234
 
-
+resilience4j:
+  circuitbreaker:
+    instances:
+      imagesCircuit:
+        minimumNumberOfCalls: 4
+        slowCallRateThreshold: 34
+        slowCallDurationThreshold: 1000
+        failureRateThreshold: 40
+        permittedNumberOfCallsInHalfOpenState: 3
+        waitDurationInOpenState: 30000

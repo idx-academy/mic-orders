@@ -5,46 +5,64 @@ info:
   version: 0.0.1
 
 tags:
-  - name: colors
-    description: Colors endpoints
+  - name: Images
+    description: Image urls endpoints
 paths:
-  /v1/colors:
+  /v1/images/{imageName}:
     get:
       tags:
-        - colors
-      summary: Get all colors
-      operationId: getColors
+        - Images
+      summary: Get urls by image's names
+      description: The endpoint get urls by image's names
+      operationId: getImageByName
+      parameters:
+        - in: path
+          name: imageName
+          schema:
+            type: string
+            description: image's name
+          required: true
       responses:
         '200':
-          description: All colors
+          description: Success
           content:
-            application/json:
+            'application/json':
               schema:
-                $ref: '#/components/schemas/Colors'
+                $ref: '#/components/schemas/ImageUrl'
+        '503':
+          description: Service Unavailable
+        '404':
+          $ref: '#/components/responses/NotFound'
 
 components:
+  responses:
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
   schemas:
-    Colors:
-      type: array
-      items:
-        $ref: '#/components/schemas/Color'
-    Color:
+    ImageUrl:
       type: object
-      required:
-        - name
-        - hex
-        - id
+      description: Image`s urls
       properties:
-        id:
+        imageUrl:
           type: string
-          description: Id of the color
-          format: uuid
-          example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
-        name:
+          example: https://host.com/image.png
+      required:
+        - imageUrl
+
+    ErrorResponse:
+      type: object
+      description: Image`s urls
+      properties:
+        status:
           type: string
-          example: 'Black'
-          description: 'Black color'
-        hex:
+          example: 404
+        detail:
           type: string
-          example: '#0000ff'
-          description: 'Hex of black color'
+          example: NotFound
+      required:
+        - status
+        - detail

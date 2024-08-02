@@ -5,8 +5,13 @@ import java.util.UUID;
 
 public class TestConstants {
 	public static final String GET_ALL_PRODUCTS_URL = "/v1/products";
-	public static final String UPDATE_ORDER_STATUS = "/v1/orders/{orderId}/status";
-	public static final String LANGUAGE_UA = "ua";
+	public static final String SEARCH_PRODUCTS_URL = "/v1/products/search";
+	public static final String UPDATE_ORDER_STATUS_URL = "/v1/management/orders/{orderId}/status";
+	public static final String UPDATE_PRODUCT_URL = "/v1/management/products/{productId}";
+	public static final String GET_PRODUCT_BY_ID_URL = "/v1/management/products/{productId}";
+	public static final String GET_PRODUCT_DETAILS_URL = "/v1/products/{productId}";
+	public static final String LANGUAGE_UK = "uk";
+	public static final String LANGUAGE_EN = "en";
 	public static final String IMAGE_URL = "https://example.com/image.jpg";
 	public static final Long TEST_ID = 1L;
 	public static final UUID TEST_UUID = UUID.fromString("123e4567-e89b-12d3-a456-426614174000");
@@ -25,5 +30,4 @@ public class TestConstants {
 	public static final String ROLE_ADMIN = "ROLE_ADMIN";
 	public static final String ROLE_USER = "ROLE_USER";
 	public static final String ROLE_MANAGER = "ROLE_MANAGER";
-
 }

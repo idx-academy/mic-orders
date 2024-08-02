@@ -8,6 +8,7 @@ import com.academy.orders.infrastructure.order.entity.PostAddressEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Order;
@@ -16,6 +17,7 @@ import jakarta.persistence.criteria.Root;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
+import org.hibernate.query.criteria.JpaCriteriaQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -61,14 +63,16 @@ public class CustomOrderRepository {
 		List<Predicate> predicates = getAllPredicates(mainRoot, aj, paj, filterParametersDto);
 		List<Predicate> totalPredicates = getTotalPredicates(oij, filterParametersDto);
 
-		mainQuery.where(predicates.toArray(new Predicate[0])).groupBy(mainRoot.get("id")).orderBy(order);
+		mainQuery.where(predicates.toArray(new Predicate[0])).groupBy(mainRoot.get("id"), paj.get("id"), aj.get("id"))
+				.orderBy(order);
 
 		if (!totalPredicates.isEmpty()) {
 			mainQuery.having(totalPredicates.toArray(new Predicate[0]));
 		}
 
 		TypedQuery<OrderEntity> countTotalTypedQuery = em.createQuery(mainQuery);
-		List<OrderEntity> firstResults = countTotalTypedQuery.getResultList();
+		List<OrderEntity> firstResults = countTotalTypedQuery.setFirstResult((int) pageable.getOffset())
+				.setMaxResults(pageable.getPageSize()).getResultList();
 
 		if (firstResults.isEmpty()) {
 			return new PageImpl<>(firstResults, pageable, 0L);
@@ -87,8 +91,7 @@ public class CustomOrderRepository {
 		var query = cb.createQuery(OrderEntity.class);
 		var root = query.from(OrderEntity.class);
 
-		var orderItemFetch = root.fetch(ORDER_ITEMS, JoinType.LEFT);
-		orderItemFetch.fetch("product", JoinType.LEFT);
+		root.fetch(ORDER_ITEMS, JoinType.LEFT);
 		root.fetch(POST_ADDRESS, JoinType.LEFT);
 		root.fetch(ACCOUNT, JoinType.LEFT);
 
@@ -118,7 +121,7 @@ public class CustomOrderRepository {
 	}
 
 	private Long getTotalCount(OrdersFilterParametersDto filterParametersDto) {
-		var countQuery = cb.createQuery(Long.class);
+		var countQuery = cb.createQuery(UUID.class);
 		var countRoot = countQuery.from(OrderEntity.class);
 
 		Join<OrderEntity, OrderItemEntity> oij = countRoot.join(ORDER_ITEMS, JoinType.LEFT);
@@ -127,15 +130,15 @@ public class CustomOrderRepository {
 
 		List<Predicate> predicatesCount = getAllPredicates(countRoot, aj, paj, filterParametersDto);
 		List<Predicate> totalCountPredicates = getTotalPredicates(oij, filterParametersDto);
-		countQuery.select(cb.count(countRoot.get("id"))).where(predicatesCount.toArray(new Predicate[0]))
+		countQuery.select(countRoot.get("id")).where(predicatesCount.toArray(new Predicate[0]))
 				.groupBy(countRoot.get("id"));
 
 		if (!totalCountPredicates.isEmpty()) {
 			countQuery.having(totalCountPredicates.toArray(new Predicate[0]));
 		}
-		TypedQuery<Long> countTypedQuery = em.createQuery(countQuery);
 
-		return countTypedQuery.setMaxResults(1).getSingleResult();
+		CriteriaQuery<Long> query = ((JpaCriteriaQuery<UUID>) countQuery).createCountQuery();
+		return em.createQuery(query).getSingleResult();
 	}
 
 	private List<Predicate> getTotalPredicates(Join<OrderEntity, OrderItemEntity> oij,

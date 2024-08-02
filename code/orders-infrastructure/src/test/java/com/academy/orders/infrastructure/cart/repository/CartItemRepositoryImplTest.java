@@ -20,6 +20,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import static com.academy.orders.infrastructure.ModelUtils.getCartItem;
 import static com.academy.orders.infrastructure.ModelUtils.getCartItemEntity;
 import static com.academy.orders.infrastructure.ModelUtils.getProduct;
@@ -27,7 +28,6 @@ import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -113,16 +113,9 @@ class CartItemRepositoryImplTest {
 	}
 
 	@Test
-	void saveIncrementQuantityTest() {
-		doNothing().when(cartItemJpaAdapter).increaseQuantity(any(CartItemId.class), anyInt());
-
-		assertDoesNotThrow(() -> cartItemRepository.incrementQuantity(UUID.randomUUID(), 1L));
-		verify(cartItemJpaAdapter).increaseQuantity(any(CartItemId.class), anyInt());
-	}
-
-	@Test
 	void findCartItemsByAccountIdTest() {
-		var cartItemEntities = singletonList(getCartItemEntity());
+		var cartItem = getCartItemEntity();
+		var cartItemEntities = singletonList(cartItem);
 		var cartItems = singletonList(getCartItem());
 
 		when(cartItemJpaAdapter.findAllByAccountId(anyLong())).thenReturn(cartItemEntities);
@@ -157,9 +150,10 @@ class CartItemRepositoryImplTest {
 
 	@Test
 	void findCartItemsByAccountIdAndLangTest() {
-		var lang = "ua";
+		var lang = "uk";
 		var accountId = 1L;
-		var cartItemEntities = singletonList(getCartItemEntity());
+		var cartItem = getCartItemEntity();
+		var cartItemEntities = singletonList(cartItem);
 		var cartItems = singletonList(getCartItem());
 
 		when(cartItemJpaAdapter.findAllByAccountIdAndProductLang(accountId, lang)).thenReturn(cartItemEntities);
@@ -169,6 +163,7 @@ class CartItemRepositoryImplTest {
 		assertEquals(cartItems, actualItems);
 		verify(cartItemJpaAdapter).findAllByAccountIdAndProductLang(anyLong(), anyString());
 		verify(cartItemMapper).fromEntitiesWithProductsTranslations(any());
+
 	}
 
 	@Test
@@ -188,5 +183,6 @@ class CartItemRepositoryImplTest {
 
 		verify(cartItemJpaAdapter).findById(new CartItemId(productId, userId));
 		verify(cartItemMapper).fromEntity(cartItem);
+
 	}
 }

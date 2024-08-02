@@ -3,13 +3,18 @@ package com.academy.orders.apirest;
 import com.academy.orders.domain.cart.dto.UpdatedCartItemDto;
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
+import com.academy.orders.domain.order.dto.OrderStatusInfo;
 import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
+import com.academy.orders.domain.order.dto.UpdateOrderStatusDto;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.entity.OrderItem;
 import com.academy.orders.domain.order.entity.OrderReceiver;
 import com.academy.orders.domain.order.entity.PostAddress;
 import com.academy.orders.domain.order.entity.enumerated.DeliveryMethod;
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
+import com.academy.orders.domain.product.dto.ProductManagementFilterDto;
+import com.academy.orders.domain.product.dto.ProductRequestDto;
+import com.academy.orders.domain.product.dto.ProductTranslationDto;
 import com.academy.orders.domain.product.entity.Language;
 import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.ProductTranslation;
@@ -19,18 +24,32 @@ import com.academy.orders_api_rest.generated.model.AccountResponseDTO;
 import com.academy.orders_api_rest.generated.model.CartItemDTO;
 import com.academy.orders_api_rest.generated.model.CartItemsResponseDTO;
 import com.academy.orders_api_rest.generated.model.ManagerOrderDTO;
-import com.academy.orders_api_rest.generated.model.OrdersFilterParametersDTO;
-import com.academy.orders_api_rest.generated.model.PageManagerOrderDTO;
-import com.academy.orders_api_rest.generated.model.UpdatedCartItemDTO;
-import com.academy.orders_api_rest.generated.model.UserOrderDTO;
 import com.academy.orders_api_rest.generated.model.OrderItemDTO;
 import com.academy.orders_api_rest.generated.model.OrderReceiverDTO;
 import com.academy.orders_api_rest.generated.model.OrderStatusDTO;
+import com.academy.orders_api_rest.generated.model.OrderStatusInfoDTO;
+import com.academy.orders_api_rest.generated.model.OrdersFilterParametersDTO;
+import com.academy.orders_api_rest.generated.model.PageManagerOrderPreviewDTO;
+import com.academy.orders_api_rest.generated.model.PageProductSearchResultDTO;
+import com.academy.orders_api_rest.generated.model.PageProductsDTO;
 import com.academy.orders_api_rest.generated.model.PageUserOrderDTO;
 import com.academy.orders_api_rest.generated.model.PageableDTO;
 import com.academy.orders_api_rest.generated.model.PlaceOrderRequestDTO;
 import com.academy.orders_api_rest.generated.model.PostAddressDTO;
+import com.academy.orders_api_rest.generated.model.ProductDetailsResponseDTO;
+import com.academy.orders_api_rest.generated.model.ProductManagementContentDTO;
+import com.academy.orders_api_rest.generated.model.ProductManagementPageDTO;
+import com.academy.orders_api_rest.generated.model.ProductManagementStatusDTO;
 import com.academy.orders_api_rest.generated.model.ProductPreviewDTO;
+import com.academy.orders_api_rest.generated.model.ProductRequestDTO;
+import com.academy.orders_api_rest.generated.model.ProductResponseDTO;
+import com.academy.orders_api_rest.generated.model.ProductSearchResultDTO;
+import com.academy.orders_api_rest.generated.model.ProductStatusDTO;
+import com.academy.orders_api_rest.generated.model.ProductTranslationDTO;
+import com.academy.orders_api_rest.generated.model.TagDTO;
+import com.academy.orders_api_rest.generated.model.UpdateOrderStatusRequestDTO;
+import com.academy.orders_api_rest.generated.model.UpdatedCartItemDTO;
+import com.academy.orders_api_rest.generated.model.UserOrderDTO;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -39,6 +58,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -48,7 +68,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import static com.academy.orders.apirest.TestConstants.IMAGE_URL;
-import static com.academy.orders.apirest.TestConstants.LANGUAGE_UA;
+import static com.academy.orders.apirest.TestConstants.LANGUAGE_UK;
 import static com.academy.orders.apirest.TestConstants.PRODUCT_DESCRIPTION;
 import static com.academy.orders.apirest.TestConstants.PRODUCT_NAME;
 import static com.academy.orders.apirest.TestConstants.TAG_NAME;
@@ -63,6 +83,7 @@ import static com.academy.orders.apirest.TestConstants.TEST_PRICE;
 import static com.academy.orders.apirest.TestConstants.TEST_QUANTITY;
 import static com.academy.orders.apirest.TestConstants.TEST_UUID;
 import static com.academy.orders_api_rest.generated.model.DeliveryMethodDTO.NOVA;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.singletonList;
 
@@ -103,7 +124,7 @@ public class ModelUtils {
 	}
 
 	public static Language getLanguage() {
-		return Language.builder().id(TEST_ID).code(LANGUAGE_UA).build();
+		return Language.builder().id(TEST_ID).code(LANGUAGE_UK).build();
 	}
 
 	public static ProductTranslation getProductTranslation() {
@@ -202,8 +223,8 @@ public class ModelUtils {
 				.build();
 	}
 
-	public static PageManagerOrderDTO getPageManagerOrderDTO() {
-		PageManagerOrderDTO pageOrderDTO = new PageManagerOrderDTO();
+	public static PageManagerOrderPreviewDTO getPageManagerOrderPreviewDTO() {
+		PageManagerOrderPreviewDTO pageOrderDTO = new PageManagerOrderPreviewDTO();
 		pageOrderDTO.setEmpty(false);
 		pageOrderDTO.setTotalElements(100L);
 		pageOrderDTO.setTotalPages(10);
@@ -212,7 +233,6 @@ public class ModelUtils {
 		pageOrderDTO.setNumber(1);
 		pageOrderDTO.setNumberOfElements(10);
 		pageOrderDTO.setSize(10);
-		pageOrderDTO.content(List.of(getManagerOrderDTO()));
 		return pageOrderDTO;
 	}
 
@@ -335,5 +355,161 @@ public class ModelUtils {
 		cartItemDTO.setImage(IMAGE_URL);
 
 		return cartItemDTO;
+	}
+
+	public static ProductManagementFilterDto getManagementFilterDto() {
+		return ProductManagementFilterDto.builder().status(ProductStatus.VISIBLE).createdBefore(DATE_TIME)
+				.createdAfter(DATE_TIME).priceMore(BigDecimal.ZERO).priceLess(BigDecimal.TEN).build();
+	}
+
+	public static ProductManagementContentDTO getProductManagementContentDTO() {
+		var content = new ProductManagementContentDTO();
+		content.setId(TEST_UUID);
+		content.setName(PRODUCT_NAME);
+		content.setImageLink(IMAGE_URL);
+		content.setQuantity(BigDecimal.valueOf(TEST_QUANTITY));
+		content.setPrice(TEST_PRICE.doubleValue());
+		content.setStatus(ProductManagementStatusDTO.VISIBLE);
+		content.createdAt(OFFSET_DATE_TIME);
+		content.setTags(emptyList());
+		return content;
+	}
+
+	public static ProductManagementPageDTO getProductManagementPageDTO() {
+		ProductManagementPageDTO pageOrderDTO = new ProductManagementPageDTO();
+		pageOrderDTO.setEmpty(false);
+		pageOrderDTO.setTotalElements(100L);
+		pageOrderDTO.setTotalPages(10);
+		pageOrderDTO.setFirst(true);
+		pageOrderDTO.setLast(false);
+		pageOrderDTO.setNumber(1);
+		pageOrderDTO.setNumberOfElements(10);
+		pageOrderDTO.setSize(10);
+		pageOrderDTO.content(singletonList(getProductManagementContentDTO()));
+		return pageOrderDTO;
+	}
+
+	public static ProductRequestDTO getProductRequestDTO() {
+		ProductRequestDTO productRequestDTO = new ProductRequestDTO();
+		productRequestDTO.setStatus(ProductStatusDTO.VISIBLE);
+		productRequestDTO.setImage(IMAGE_URL);
+		productRequestDTO.setQuantity(TEST_QUANTITY);
+		productRequestDTO.setPrice(TEST_PRICE);
+		productRequestDTO.setTagIds(List.of(1L, 2L));
+		productRequestDTO.setProductTranslations(List.of(getProductTranslationDTO()));
+
+		return productRequestDTO;
+	}
+
+	public static ProductRequestDto getProductRequestDto() {
+		return ProductRequestDto.builder().status(String.valueOf(ProductStatus.VISIBLE)).image(IMAGE_URL)
+				.quantity(TEST_QUANTITY).price(TEST_PRICE).tagIds(List.of(1L, 2L))
+				.productTranslations(Set.of(getProductTranslationDto())).build();
+	}
+
+	public static ProductTranslationDto getProductTranslationDto() {
+		return ProductTranslationDto.builder().name("Name").description("Description").languageCode("en").build();
+	}
+
+	public static ProductTranslationDTO getProductTranslationDTO() {
+		ProductTranslationDTO productTranslationDTO = new ProductTranslationDTO();
+		productTranslationDTO.setLanguageCode("en");
+		productTranslationDTO.setName("Name");
+		productTranslationDTO.setDescription("Description");
+		return productTranslationDTO;
+	}
+
+	public static ProductResponseDTO getProductResponseDTO() {
+		ProductResponseDTO productResponseDTO = new ProductResponseDTO();
+		productResponseDTO.setId(UUID.randomUUID());
+		productResponseDTO.setStatus(ProductStatusDTO.VISIBLE);
+		productResponseDTO.setImage("https://example.com/image.jpg");
+		productResponseDTO.setCreatedAt(OffsetDateTime.now());
+		productResponseDTO.setQuantity(10);
+		productResponseDTO.setPrice(new BigDecimal("999.99"));
+
+		List<TagDTO> tags = new ArrayList<>();
+		tags.add(new TagDTO().id(BigDecimal.valueOf(1L)).name("Electronics"));
+		tags.add(new TagDTO().id(BigDecimal.valueOf(2L)).name("Gadgets"));
+		productResponseDTO.setTags(tags);
+
+		List<ProductTranslationDTO> productTranslations = new ArrayList<>();
+		productTranslations.add(new ProductTranslationDTO().languageCode("en").name("Sample Product")
+				.description("Description in English"));
+		productTranslations
+				.add(new ProductTranslationDTO().languageCode("uk").name("Продукт").description("Опис Українською"));
+		productResponseDTO.setProductTranslations(productTranslations);
+
+		return productResponseDTO;
+	}
+
+	public static UpdateOrderStatusRequestDTO getUpdateOrderStatusRequestDTO() {
+		var updateOrderStatusRequestDTO = new UpdateOrderStatusRequestDTO();
+		updateOrderStatusRequestDTO.setOrderStatus(OrderStatusDTO.IN_PROGRESS);
+		updateOrderStatusRequestDTO.setIsPaid(false);
+		return updateOrderStatusRequestDTO;
+	}
+
+	public static UpdateOrderStatusDto getUpdateOrderStatusDto() {
+		return UpdateOrderStatusDto.builder().status(OrderStatus.IN_PROGRESS).isPaid(false).build();
+	}
+
+	public static OrderStatusInfoDTO getOrderStatusInfoDTO() {
+		var orderStatusInfoDTO = new OrderStatusInfoDTO();
+		orderStatusInfoDTO.setAvailableStatuses(List.of("SHIPPED, DELIVERED, COMPLETED, CANCELED"));
+		orderStatusInfoDTO.setIsPaid(false);
+		return orderStatusInfoDTO;
+	}
+
+	public static OrderStatusInfo getOrderStatusInfo() {
+		return OrderStatusInfo.builder().availableStatuses(List.of("SHIPPED, DELIVERED, COMPLETED, CANCELED"))
+				.isPaid(false).build();
+	}
+
+	public static PageProductSearchResultDTO getPageProductSearchResultDTO() {
+		PageProductSearchResultDTO pageProductSearchResultDTO = new PageProductSearchResultDTO();
+		pageProductSearchResultDTO.setEmpty(false);
+		pageProductSearchResultDTO.setTotalElements(100L);
+		pageProductSearchResultDTO.setTotalPages(10);
+		pageProductSearchResultDTO.setFirst(true);
+		pageProductSearchResultDTO.setLast(false);
+		pageProductSearchResultDTO.setNumber(1);
+		pageProductSearchResultDTO.setNumberOfElements(10);
+		pageProductSearchResultDTO.setSize(10);
+		pageProductSearchResultDTO.content(singletonList(getProductSearchResultDTO()));
+		return pageProductSearchResultDTO;
+	}
+
+	public static ProductSearchResultDTO getProductSearchResultDTO() {
+		ProductSearchResultDTO productSearchResultDTO = new ProductSearchResultDTO();
+		productSearchResultDTO.setId(TEST_UUID);
+		productSearchResultDTO.setName(TAG_NAME);
+		productSearchResultDTO.setImage("https://some/image");
+		return productSearchResultDTO;
+	}
+
+	public static PageProductsDTO getPageProductsDTO() {
+		var pageProductsDTO = new PageProductsDTO();
+		pageProductsDTO.setContent(singletonList(getProductPreviewDTO()));
+		pageProductsDTO.setTotalElements(1L);
+		pageProductsDTO.totalPages(1);
+		pageProductsDTO.first(true);
+		pageProductsDTO.last(true);
+		pageProductsDTO.number(1);
+		pageProductsDTO.numberOfElements(1);
+		pageProductsDTO.size(1);
+		pageProductsDTO.empty(false);
+		return pageProductsDTO;
+	}
+
+	public static ProductDetailsResponseDTO getProductDetailsResponseDTO() {
+		var productDetailsResponseDTO = new ProductDetailsResponseDTO();
+		productDetailsResponseDTO.name("Name");
+		productDetailsResponseDTO.description("Desc");
+		productDetailsResponseDTO.image(IMAGE_URL);
+		productDetailsResponseDTO.tags(List.of("tag1", "tag2"));
+		productDetailsResponseDTO.quantity(TEST_QUANTITY);
+		productDetailsResponseDTO.price(TEST_PRICE);
+		return productDetailsResponseDTO;
 	}
 }

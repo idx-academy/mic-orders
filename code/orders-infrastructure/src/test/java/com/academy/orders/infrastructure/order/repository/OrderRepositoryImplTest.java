@@ -12,18 +12,21 @@ import com.academy.orders.infrastructure.order.entity.OrderEntity;
 import com.academy.orders.infrastructure.product.entity.ProductEntity;
 import com.academy.orders.infrastructure.product.repository.ProductJpaAdapter;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
+
 import static com.academy.orders.infrastructure.ModelUtils.getAccountEntity;
 import static com.academy.orders.infrastructure.ModelUtils.getOrder;
 import static com.academy.orders.infrastructure.ModelUtils.getOrderEntity;
-import static com.academy.orders.infrastructure.ModelUtils.getOrdersFilterParametersDto;
 import static com.academy.orders.infrastructure.ModelUtils.getOrderItemEntity;
+import static com.academy.orders.infrastructure.ModelUtils.getOrdersFilterParametersDto;
 import static com.academy.orders.infrastructure.ModelUtils.getPageImplOf;
 import static com.academy.orders.infrastructure.ModelUtils.getPageOf;
 import static com.academy.orders.infrastructure.ModelUtils.getPageable;
@@ -33,6 +36,7 @@ import static com.academy.orders.infrastructure.TestConstants.TEST_UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -98,33 +102,47 @@ class OrderRepositoryImplTest {
 	}
 
 	@Test
+	void findByIdTest() {
+		// Given
+		OrderEntity order = getOrderEntity();
+		UUID orderId = order.getId();
+		Optional<OrderEntity> optionalOrderEntity = Optional.of(order);
+		Order orderDomain = getOrder();
+		Optional<Order> optionalOrder = Optional.of(orderDomain);
+
+		when(jpaAdapter.findById(orderId)).thenReturn(optionalOrderEntity);
+		when(mapper.fromEntity(order)).thenReturn(orderDomain);
+
+		// When
+		Optional<Order> result = orderRepository.findById(orderId);
+
+		// Then
+		assertEquals(optionalOrder, result);
+		verify(jpaAdapter).findById(orderId);
+		verify(mapper).fromEntity(order);
+	}
+
+	@Test
 	void findAllTest() {
 		// Given
-		String language = "ua";
 		Pageable pageable = getPageable();
 		var orderDomainPage = getPageOf(getOrder());
 		var springPageable = PageRequest.of(pageable.page(), pageable.size());
 		var orderEntityPage = getPageImplOf(getOrderEntity());
-		var productIds = orderEntityPage.getContent().stream()
-				.flatMap(orderEntity -> orderEntity.getOrderItems().stream())
-				.map(orderItemEntity -> orderItemEntity.getProduct().getId()).toList();
-		var products = List.of(getProductEntity());
 		var filterParametersDto = getOrdersFilterParametersDto();
 
 		when(pageableMapper.fromDomain(pageable)).thenReturn(springPageable);
 		when(customOrderRepository.findAllByFilterParameters(filterParametersDto, springPageable))
 				.thenReturn(orderEntityPage);
-		when(productJpaAdapter.findAllByIdAndLanguageCode(productIds, language)).thenReturn(products);
 		when(pageMapper.toDomain(orderEntityPage)).thenReturn(orderDomainPage);
 
 		// When
-		Page<Order> actual = orderRepository.findAll(filterParametersDto, language, pageable);
+		Page<Order> actual = orderRepository.findAll(filterParametersDto, pageable);
 
 		// Then
 		assertEquals(orderDomainPage, actual);
 		verify(pageableMapper).fromDomain(pageable);
 		verify(customOrderRepository).findAllByFilterParameters(filterParametersDto, springPageable);
-		verify(productJpaAdapter).findAllByIdAndLanguageCode(productIds, language);
 		verify(pageMapper).toDomain(orderEntityPage);
 	}
 
@@ -132,7 +150,7 @@ class OrderRepositoryImplTest {
 	void findAllByUserIdTest() {
 		// Given
 		Long userId = 1L;
-		String language = "ua";
+		String language = "uk";
 		Pageable pageable = getPageable();
 		var orderDomainPage = getPageOf(getOrder());
 		var springPageable = PageRequest.of(pageable.page(), pageable.size());
@@ -163,7 +181,64 @@ class OrderRepositoryImplTest {
 		UUID orderId = TEST_UUID;
 		OrderStatus status = OrderStatus.COMPLETED;
 
+		doNothing().when(jpaAdapter).updateOrderStatus(orderId, status);
+
 		orderRepository.updateOrderStatus(orderId, status);
 		verify(jpaAdapter).updateOrderStatus(orderId, status);
+	}
+
+	@Test
+	void updateIsPaidStatusTest() {
+		UUID orderId = TEST_UUID;
+
+		doNothing().when(jpaAdapter).updateIsPaidStatus(orderId, true);
+
+		orderRepository.updateIsPaidStatus(orderId, true);
+		verify(jpaAdapter).updateIsPaidStatus(orderId, true);
+	}
+
+	@Test
+	void findByIdFetchDataTest() {
+		// Given
+		String language = "uk";
+		OrderEntity order = getOrderEntity();
+		UUID orderId = order.getId();
+		Optional<OrderEntity> optionalOrderEntity = Optional.of(order);
+		Order orderDomain = getOrder();
+		Optional<Order> optionalOrder = Optional.of(orderDomain);
+		var productIds = Stream.of(order).flatMap(orderEntity -> orderEntity.getOrderItems().stream())
+				.map(orderItemEntity -> orderItemEntity.getProduct().getId()).toList();
+		var products = List.of(getProductEntity());
+
+		when(jpaAdapter.findByIdFetchData(orderId)).thenReturn(optionalOrderEntity);
+		when(productJpaAdapter.findAllByIdAndLanguageCode(productIds, language)).thenReturn(products);
+		when(mapper.fromEntity(order)).thenReturn(orderDomain);
+
+		// When
+		Optional<Order> result = orderRepository.findById(orderId, language);
+
+		// Then
+		assertEquals(optionalOrder, result);
+		verify(jpaAdapter).findByIdFetchData(orderId);
+		verify(productJpaAdapter).findAllByIdAndLanguageCode(productIds, language);
+		verify(mapper).fromEntity(order);
+	}
+
+	@Test
+	void findByIdFetchDataWhenOrderNotFoundTest() {
+		// Given
+		String language = "uk";
+		UUID orderId = TEST_UUID;
+		Optional<OrderEntity> optionalOrderEntity = Optional.empty();
+		Optional<Order> optionalOrder = Optional.empty();
+
+		when(jpaAdapter.findByIdFetchData(orderId)).thenReturn(optionalOrderEntity);
+
+		// When
+		Optional<Order> result = orderRepository.findById(orderId, language);
+
+		// Then
+		assertEquals(optionalOrder, result);
+		verify(jpaAdapter).findByIdFetchData(orderId);
 	}
 }

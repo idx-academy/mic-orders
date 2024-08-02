@@ -1,16 +1,20 @@
 package com.academy.orders.apirest.common;
 
 import com.academy.orders.domain.cart.exception.EmptyCartException;
-import com.academy.orders.domain.cart.exception.ExceedsAvailableException;
+import com.academy.orders.domain.cart.exception.QuantityExceedsAvailableException;
 import com.academy.orders.domain.exception.AlreadyExistsException;
 import com.academy.orders.domain.exception.NotFoundException;
+import com.academy.orders.domain.exception.PaidException;
 import com.academy.orders.domain.order.exception.InsufficientProductQuantityException;
+import com.academy.orders.domain.order.exception.InvalidOrderStatusTransitionException;
+import com.academy.orders.domain.order.exception.OrderFinalStateException;
 import com.academy.orders_api_rest.generated.model.ErrorObjectDTO;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -103,11 +107,42 @@ public class ErrorHandler {
 				.title(HttpStatus.BAD_REQUEST.getReasonPhrase()).detail(error.getMessage());
 	}
 
-	@ExceptionHandler(ExceedsAvailableException.class)
+	@ExceptionHandler(QuantityExceedsAvailableException.class)
 	@ResponseStatus(value = HttpStatus.CONFLICT)
-	public ErrorObjectDTO handleExceedsAvailableException(final ExceedsAvailableException ex) {
+	public ErrorObjectDTO handleExceedsAvailableException(final QuantityExceedsAvailableException ex) {
 		log.warn("Product quantity exceeds available stock", ex);
 		return new ErrorObjectDTO().status(HttpStatus.CONFLICT.value()).title(HttpStatus.CONFLICT.getReasonPhrase())
 				.detail(ex.getMessage());
+	}
+
+	@ExceptionHandler(InvalidOrderStatusTransitionException.class)
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	public ErrorObjectDTO handleInvalidOrderStatusTransitionException(final InvalidOrderStatusTransitionException ex) {
+		log.warn("Invalid Order Status Transition", ex);
+		return new ErrorObjectDTO().status(HttpStatus.BAD_REQUEST.value())
+				.title(HttpStatus.BAD_REQUEST.getReasonPhrase()).detail(ex.getMessage());
+	}
+
+	@ExceptionHandler(OrderFinalStateException.class)
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	public ErrorObjectDTO handleOrderFinalStateException(final OrderFinalStateException ex) {
+		log.warn("The order has already been completed or canceled and cannot be updated", ex);
+		return new ErrorObjectDTO().status(HttpStatus.BAD_REQUEST.value())
+				.title(HttpStatus.BAD_REQUEST.getReasonPhrase()).detail(ex.getMessage());
+	}
+
+	@ExceptionHandler(PaidException.class)
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	public ErrorObjectDTO handlePaidException(final PaidException ex) {
+		log.warn("The order is already paid/unpaid", ex);
+		return new ErrorObjectDTO().status(HttpStatus.BAD_REQUEST.value())
+				.title(HttpStatus.BAD_REQUEST.getReasonPhrase()).detail(ex.getMessage());
+	}
+
+	@ExceptionHandler(UsernameNotFoundException.class)
+	@ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+	public ErrorObjectDTO handleUsernameNotFoundException(final UsernameNotFoundException ex) {
+		return new ErrorObjectDTO().status(HttpStatus.UNAUTHORIZED.value())
+				.title(HttpStatus.UNAUTHORIZED.getReasonPhrase()).detail(ex.getMessage());
 	}
 }

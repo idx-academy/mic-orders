@@ -32,7 +32,7 @@ class GetOrdersByUserIdUseCaseTest {
 	void getOrdersByUserIdTest() {
 		// Given
 		Long userId = 1L;
-		String language = "ua";
+		String language = "uk";
 		Pageable pageable = getPageable();
 		Order withoutTotal = getOrderWithoutTotal();
 		Order withTotal = getOrder();

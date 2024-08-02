@@ -61,14 +61,9 @@ public class CartItemRepositoryImpl implements CartItemRepository {
 	}
 
 	@Override
-	@Transactional
-	public void incrementQuantity(UUID productId, Long accountId) {
-		cartItemJpaAdapter.increaseQuantity(new CartItemId(productId, accountId), 1);
-	}
-
-	@Override
 	public List<CartItem> findCartItemsByAccountId(Long accountId) {
-		return cartItemMapper.fromEntities(cartItemJpaAdapter.findAllByAccountId(accountId));
+		var cartItems = cartItemJpaAdapter.findAllByAccountId(accountId);
+		return cartItemMapper.fromEntities(cartItems);
 	}
 
 	@Override
@@ -91,6 +86,8 @@ public class CartItemRepositoryImpl implements CartItemRepository {
 
 	@Override
 	public Optional<CartItem> findByProductIdAndUserId(UUID productId, Long userId) {
-		return cartItemJpaAdapter.findById(new CartItemId(productId, userId)).map(cartItemMapper::fromEntity);
+		var cartItem = cartItemJpaAdapter.findById(new CartItemId(productId, userId));
+		return cartItem.map(cartItemMapper::fromEntity);
 	}
+
 }

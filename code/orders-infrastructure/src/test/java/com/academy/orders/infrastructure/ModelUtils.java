@@ -14,27 +14,41 @@ import com.academy.orders.domain.order.entity.OrderReceiver;
 import com.academy.orders.domain.order.entity.PostAddress;
 import com.academy.orders.domain.order.entity.enumerated.DeliveryMethod;
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
+import com.academy.orders.domain.product.dto.ProductManagementFilterDto;
+import com.academy.orders.domain.product.entity.Language;
 import com.academy.orders.domain.product.entity.Product;
+import com.academy.orders.domain.product.entity.ProductManagement;
+import com.academy.orders.domain.product.entity.ProductTranslationManagement;
+import com.academy.orders.domain.product.entity.Tag;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders.infrastructure.account.entity.AccountEntity;
 import com.academy.orders.infrastructure.cart.entity.CartItemEntity;
 import com.academy.orders.infrastructure.cart.entity.CartItemId;
+import com.academy.orders.infrastructure.language.entity.LanguageEntity;
 import com.academy.orders.infrastructure.order.entity.OrderEntity;
 import com.academy.orders.infrastructure.order.entity.OrderItemEntity;
 import com.academy.orders.infrastructure.order.entity.OrderReceiverVO;
 import com.academy.orders.infrastructure.order.entity.PostAddressEntity;
 import com.academy.orders.infrastructure.product.entity.ProductEntity;
+import com.academy.orders.infrastructure.product.entity.ProductTranslationEntity;
+import com.academy.orders.infrastructure.product.entity.ProductTranslationId;
+import com.academy.orders.infrastructure.tag.entity.TagEntity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import org.springframework.data.domain.PageImpl;
 
 import static com.academy.orders.domain.order.entity.enumerated.DeliveryMethod.NOVA;
+import static com.academy.orders.infrastructure.TestConstants.LANGUAGE_EN;
+import static com.academy.orders.infrastructure.TestConstants.TEST_ID;
 import static com.academy.orders.infrastructure.TestConstants.TEST_UUID;
 
 public class ModelUtils {
 	private static final LocalDateTime DATE_TIME = LocalDateTime.of(1, 1, 1, 1, 1);
+	private static final String TEST_IMAGE_NAME = "image-1";
+	public static final String TEST_IMAGE_LINK = "http://localhost:8080/image-1";
 
 	public static AccountEntity getAccountEntity() {
 		return AccountEntity.builder().id(1L).password("$2a$12$5ZEfkhNQUREmioQ54TaFaOEM7h/QBgASIeqZceFGKPT80aTfYdvV.")
@@ -55,13 +69,19 @@ public class ModelUtils {
 
 	public static ProductEntity getProductEntity() {
 		return ProductEntity.builder().id(UUID.fromString("c39314ce-b659-4776-86b9-8201b05bb339"))
-				.status(ProductStatus.VISIBLE).image("http://localhost:8080/image-1").createdAt(DATE_TIME).quantity(100)
+				.status(ProductStatus.VISIBLE).image(TEST_IMAGE_NAME).createdAt(DATE_TIME).quantity(100)
 				.price(BigDecimal.valueOf(100.00)).build();
+	}
+
+	public static ProductEntity getProductEntityWithTranslation() {
+		return ProductEntity.builder().id(UUID.fromString("c39314ce-b659-4776-86b9-8201b05bb339"))
+				.status(ProductStatus.VISIBLE).image(TEST_IMAGE_NAME).createdAt(DATE_TIME).quantity(100)
+				.price(BigDecimal.valueOf(100.00)).productTranslations(Set.of(getProductTranslationEntity())).build();
 	}
 
 	public static Product getProduct() {
 		return Product.builder().id(UUID.fromString("c39314ce-b659-4776-86b9-8201b05bb339"))
-				.status(ProductStatus.VISIBLE).image("http://localhost:8080/image-1").createdAt(DATE_TIME).quantity(100)
+				.status(ProductStatus.VISIBLE).image(TEST_IMAGE_NAME).createdAt(DATE_TIME).quantity(100)
 				.price(BigDecimal.valueOf(100.00)).build();
 	}
 
@@ -137,8 +157,46 @@ public class ModelUtils {
 				.accountEmail("test@mail.com").build();
 	}
 
+	public static ProductManagementFilterDto getManagementFilterDto() {
+		return ProductManagementFilterDto.builder().status(ProductStatus.VISIBLE).createdBefore(DATE_TIME)
+				.createdAfter(DATE_TIME).priceMore(BigDecimal.ZERO).priceLess(BigDecimal.TEN).build();
+	}
+
 	@SafeVarargs
 	public static <T> PageImpl<T> getPageImplOf(T... elements) {
 		return new PageImpl<>(List.of(elements));
+	}
+
+	public static ProductTranslationEntity getProductTranslationEntity() {
+		return ProductTranslationEntity.builder().productTranslationId(new ProductTranslationId(TEST_UUID, 1L))
+				.name("Name").description("Description").product(getProductEntity()).language(getLanguageEntity())
+				.build();
+	}
+
+	public static ProductTranslationManagement getProductTranslationManagement() {
+		return ProductTranslationManagement.builder().productId(TEST_UUID).languageId(1L).name("Name")
+				.description("Description").language(new Language(1L, LANGUAGE_EN)).build();
+	}
+
+	public static ProductManagement getProductManagement() {
+		return ProductManagement.builder().id(TEST_UUID).status(ProductStatus.VISIBLE).createdAt(LocalDateTime.now())
+				.quantity(10).price(BigDecimal.valueOf(100.00)).tags(Set.of(new Tag(1L, "tag")))
+				.productTranslationManagement(Set.of(getProductTranslationManagement())).build();
+	}
+
+	public static TagEntity getTagEntity() {
+		return TagEntity.builder().id(TEST_ID).name("category:mobile").build();
+	}
+
+	public static Tag getTag() {
+		return Tag.builder().id(TEST_ID).name("category:mobile").build();
+	}
+
+	public static LanguageEntity getLanguageEntity() {
+		return LanguageEntity.builder().id(1L).code("en").build();
+	}
+
+	public static Language getLanguage() {
+		return Language.builder().id(1L).code("en").build();
 	}
 }

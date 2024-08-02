@@ -1,3 +1,4 @@
+@ignore
 Feature: get id of the product
 
   Background:

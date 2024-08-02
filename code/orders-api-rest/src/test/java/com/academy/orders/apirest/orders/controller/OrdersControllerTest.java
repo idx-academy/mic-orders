@@ -89,7 +89,7 @@ class OrdersControllerTest {
 
 	@Test
 	@SneakyThrows
-	void testCreateOrderThrowsEmptyCartExceptionTest() {
+	void createOrderThrowsEmptyCartExceptionTest() {
 		Long userId = 1L;
 		String role = "ROLE_ADMIN";
 
@@ -107,7 +107,7 @@ class OrdersControllerTest {
 
 	@Test
 	@SneakyThrows
-	void testCreateOrderThrowsInsufficientProductQuantityExceptionTest() {
+	void createOrderThrowsInsufficientProductQuantityExceptionTest() {
 		Long userId = 1L;
 		String role = "ROLE_ADMIN";
 
@@ -129,7 +129,7 @@ class OrdersControllerTest {
 		// Given
 		Long userId = 1L;
 		String role = "ROLE_USER";
-		String language = "ua";
+		String language = "uk";
 		PageableDTO pageableDTO = new PageableDTO();
 		Pageable pageable = getPageable();
 		Page<Order> orderPage = getPageOf(getOrder());
