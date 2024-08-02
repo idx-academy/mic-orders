@@ -41,10 +41,10 @@ public interface CalculateOrderTotalPriceUseCase {
 	 *
 	 * @param orders
 	 *            the list of orders for which to calculate the total price
-	 * @param currentAccountEmail
-	 *            the email address of the current user.
+	 * @param role
+	 *            the role of the current user.
 	 * @return the list of orders with their total prices calculated and available
 	 *         statuses to change
 	 */
-	List<OrderManagement> calculateTotalPriceAndAvailableStatuses(List<Order> orders, String currentAccountEmail);
+	List<OrderManagement> calculateTotalPriceAndAvailableStatuses(List<Order> orders, String role);
 }

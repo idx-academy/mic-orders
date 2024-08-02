@@ -99,7 +99,7 @@ class OrdersManagementControllerTest {
 
 		when(pageableDTOMapper.fromDto(pageableDTO)).thenReturn(pageable);
 		when(orderFilterParametersDTOMapper.fromDTO(orderFilterParametersDTO)).thenReturn(orderFilterParametersDto);
-		when(getAllOrdersUseCase.getAllOrders(orderFilterParametersDto, pageable, "user")).thenReturn(orderPage);
+		when(getAllOrdersUseCase.getAllOrders(orderFilterParametersDto, pageable, ROLE_MANAGER)).thenReturn(orderPage);
 		when(pageOrderDTOMapper.toManagerDto(orderPage)).thenReturn(pageOrderDTO);
 
 		// When
@@ -114,7 +114,7 @@ class OrdersManagementControllerTest {
 
 		verify(pageableDTOMapper).fromDto(pageableDTO);
 		verify(orderFilterParametersDTOMapper).fromDTO(orderFilterParametersDTO);
-		verify(getAllOrdersUseCase).getAllOrders(orderFilterParametersDto, pageable, "user");
+		verify(getAllOrdersUseCase).getAllOrders(orderFilterParametersDto, pageable, ROLE_MANAGER);
 		assertEquals(pageOrderDTO, objectMapper.readValue(contentAsString, PageManagerOrderPreviewDTO.class));
 	}
 
@@ -129,7 +129,7 @@ class OrdersManagementControllerTest {
 		var orderStatusInfo = getOrderStatusInfo();
 
 		when(updateOrderStatusRequestDTOMapper.fromDTO(updateOrderStatusRequestDTO)).thenReturn(updateOrderStatusDto);
-		when(updateOrderStatusUseCase.updateOrderStatus(orderId, updateOrderStatusDto, "user"))
+		when(updateOrderStatusUseCase.updateOrderStatus(orderId, updateOrderStatusDto, ROLE_MANAGER))
 				.thenReturn(orderStatusInfo);
 		when(orderStatusInfoDTOMapper.toDTO(orderStatusInfo)).thenReturn(orderStatusInfoDTO);
 
@@ -142,7 +142,7 @@ class OrdersManagementControllerTest {
 		assertEquals(orderStatusInfoDTO, objectMapper.readValue(contentAsString, OrderStatusInfoDTO.class));
 
 		verify(updateOrderStatusRequestDTOMapper).fromDTO(updateOrderStatusRequestDTO);
-		verify(updateOrderStatusUseCase).updateOrderStatus(orderId, updateOrderStatusDto, "user");
+		verify(updateOrderStatusUseCase).updateOrderStatus(orderId, updateOrderStatusDto, ROLE_MANAGER);
 		verify(orderStatusInfoDTOMapper).toDTO(orderStatusInfo);
 
 	}

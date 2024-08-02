@@ -2,13 +2,11 @@ package com.academy.orders.application.order.usecase;
 
 import com.academy.orders.application.ModelUtils;
 import com.academy.orders.domain.account.entity.enumerated.Role;
-import com.academy.orders.domain.account.exception.AccountRoleNotFoundException;
 import com.academy.orders.domain.account.repository.AccountRepository;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.entity.OrderItem;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,13 +16,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static com.academy.orders.application.ModelUtils.getOrderManagementForAdmin;
 import static com.academy.orders.application.ModelUtils.getOrderManagementForManager;
 import static com.academy.orders.application.ModelUtils.getOrderWithoutTotal;
-import static com.academy.orders.application.TestConstants.TEST_ADMIN_MAIL;
-import static com.academy.orders.application.TestConstants.TEST_MANAGER_MAIL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CalculateOrderTotalPriceUseCaseTest {
@@ -88,10 +81,9 @@ class CalculateOrderTotalPriceUseCaseTest {
 		var order = getOrderWithoutTotal();
 		var orderManagement = getOrderManagementForManager();
 		var orders = List.of(order);
-		when(accountRepository.findRoleByEmail(TEST_MANAGER_MAIL)).thenReturn(Optional.of(Role.ROLE_MANAGER));
-		var actual = calculateOrderTotalPriceUseCase.calculateTotalPriceAndAvailableStatuses(orders, TEST_MANAGER_MAIL);
+		var actual = calculateOrderTotalPriceUseCase.calculateTotalPriceAndAvailableStatuses(orders,
+				String.valueOf(Role.ROLE_MANAGER));
 		assertEquals(List.of(orderManagement), actual);
-		verify(accountRepository).findRoleByEmail(TEST_MANAGER_MAIL);
 	}
 
 	@Test
@@ -99,25 +91,15 @@ class CalculateOrderTotalPriceUseCaseTest {
 		var order = getOrderWithoutTotal();
 		var orderManagement = getOrderManagementForAdmin();
 		var orders = List.of(order);
-		when(accountRepository.findRoleByEmail(TEST_ADMIN_MAIL)).thenReturn(Optional.of(Role.ROLE_ADMIN));
-		var actual = calculateOrderTotalPriceUseCase.calculateTotalPriceAndAvailableStatuses(orders, TEST_ADMIN_MAIL);
+		var actual = calculateOrderTotalPriceUseCase.calculateTotalPriceAndAvailableStatuses(orders,
+				String.valueOf(Role.ROLE_ADMIN));
 		assertEquals(List.of(orderManagement), actual);
-		verify(accountRepository).findRoleByEmail(TEST_ADMIN_MAIL);
 	}
 
 	@Test
 	void calculateTotalPriceAndAvailableStatusesIfNullTest() {
-		var actual = calculateOrderTotalPriceUseCase.calculateTotalPriceAndAvailableStatuses(null, TEST_MANAGER_MAIL);
+		var actual = calculateOrderTotalPriceUseCase.calculateTotalPriceAndAvailableStatuses(null,
+				String.valueOf(Role.ROLE_MANAGER));
 		assertTrue(actual.isEmpty());
-	}
-
-	@Test
-	void calculateTotalPriceAndAvailableStatusesThrowAccountNotFoundExceptionTest() {
-		var order = getOrderWithoutTotal();
-		var orders = List.of(order);
-		when(accountRepository.findRoleByEmail(TEST_ADMIN_MAIL)).thenReturn(Optional.empty());
-		assertThrows(AccountRoleNotFoundException.class,
-				() -> calculateOrderTotalPriceUseCase.calculateTotalPriceAndAvailableStatuses(orders, TEST_ADMIN_MAIL));
-		verify(accountRepository).findRoleByEmail(TEST_ADMIN_MAIL);
 	}
 }

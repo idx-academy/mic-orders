@@ -20,7 +20,7 @@ public class GetAllOrdersUseCaseImpl implements GetAllOrdersUseCase {
 
 	@Override
 	public Page<OrderManagement> getAllOrders(OrdersFilterParametersDto filterParametersDto, Pageable pageable,
-			String currentAccountEmail) {
+			String role) {
 		if (pageable.sort().isEmpty()) {
 			pageable = new Pageable(pageable.page(), pageable.size(), List.of("createdAt,desc"));
 		}
@@ -30,7 +30,7 @@ public class GetAllOrdersUseCaseImpl implements GetAllOrdersUseCase {
 				.totalPages(orderPage.totalPages()).first(orderPage.first()).last(orderPage.last())
 				.number(orderPage.number()).numberOfElements(orderPage.numberOfElements()).size(orderPage.size())
 				.empty(orderPage.empty()).content(calculateOrderTotalPriceUseCase
-						.calculateTotalPriceAndAvailableStatuses(orderPage.content(), currentAccountEmail))
+						.calculateTotalPriceAndAvailableStatuses(orderPage.content(), role))
 				.build();
 	}
 

@@ -1,7 +1,5 @@
 package com.academy.orders.application.order.usecase;
 
-import com.academy.orders.domain.account.exception.AccountRoleNotFoundException;
-import com.academy.orders.domain.account.repository.AccountRepository;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.entity.OrderItem;
 import com.academy.orders.domain.order.entity.OrderManagement;
@@ -17,7 +15,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CalculateOrderTotalPriceUseCaseImpl implements CalculateOrderTotalPriceUseCase {
 	private static final String ROLE_ADMIN = "role_admin";
-	private final AccountRepository accountRepository;
 
 	@Override
 	public BigDecimal calculateTotalPrice(List<OrderItem> orderItems) {
@@ -43,15 +40,11 @@ public class CalculateOrderTotalPriceUseCaseImpl implements CalculateOrderTotalP
 	}
 
 	@Override
-	public List<OrderManagement> calculateTotalPriceAndAvailableStatuses(List<Order> orders,
-			String currentAccountEmail) {
+	public List<OrderManagement> calculateTotalPriceAndAvailableStatuses(List<Order> orders, String role) {
 		if (orders == null) {
 			return Collections.emptyList();
 		}
-
-		var accountRole = accountRepository.findRoleByEmail(currentAccountEmail)
-				.orElseThrow(() -> new AccountRoleNotFoundException(currentAccountEmail));
-		boolean isAdmin = ROLE_ADMIN.equalsIgnoreCase(String.valueOf(accountRole));
+		boolean isAdmin = ROLE_ADMIN.equalsIgnoreCase(String.valueOf(role));
 
 		return orders.stream()
 				.map(order -> OrderManagement.builder().id(order.id()).orderStatus(order.orderStatus())

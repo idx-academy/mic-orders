@@ -26,6 +26,7 @@ import com.academy.orders_api_rest.generated.model.UpdateOrderStatusRequestDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,7 +53,7 @@ public class OrdersManagementController implements OrdersManagementApi {
 		Pageable pageableDomain = pageableDTOMapper.fromDto(pageable);
 		OrdersFilterParametersDto filterParametersDto = orderFilterParametersDTOMapper.fromDTO(ordersFilter);
 		Page<OrderManagement> ordersByUserId = getAllOrdersUseCase.getAllOrders(filterParametersDto, pageableDomain,
-				getCurrentAccountEmail());
+				getRole());
 		return pageOrderDTOMapper.toManagerDto(ordersByUserId);
 	}
 
@@ -60,7 +61,7 @@ public class OrdersManagementController implements OrdersManagementApi {
 	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
 	public OrderStatusInfoDTO updateOrderStatus(UUID orderId, UpdateOrderStatusRequestDTO updateOrderStatusRequestDTO) {
 		var updateOrderStatus = updateOrderStatusRequestDTOMapper.fromDTO(updateOrderStatusRequestDTO);
-		var result = updateOrderStatusUseCase.updateOrderStatus(orderId, updateOrderStatus, getCurrentAccountEmail());
+		var result = updateOrderStatusUseCase.updateOrderStatus(orderId, updateOrderStatus, getRole());
 		return orderStatusInfoDTOMapper.toDTO(result);
 	}
 
@@ -71,8 +72,10 @@ public class OrdersManagementController implements OrdersManagementApi {
 		return orderDTOMapper.toManagerDto(order);
 	}
 
-	private String getCurrentAccountEmail() {
+	private String getRole() {
 		var authentication = SecurityContextHolder.getContext().getAuthentication();
-		return authentication.getName();
+		return authentication != null
+				? authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).findFirst().orElse(null)
+				: null;
 	}
 }
