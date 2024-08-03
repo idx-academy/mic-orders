@@ -10,6 +10,7 @@ import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
 import com.academy.orders.domain.order.entity.Order;
+import com.academy.orders.domain.order.entity.OrderManagement;
 import com.academy.orders.domain.order.usecase.GetAllOrdersUseCase;
 import com.academy.orders.domain.order.usecase.GetOrderByIdUseCase;
 import com.academy.orders.domain.order.usecase.UpdateOrderStatusUseCase;
@@ -25,6 +26,7 @@ import com.academy.orders_api_rest.generated.model.UpdateOrderStatusRequestDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,12 +47,13 @@ public class OrdersManagementController implements OrdersManagementApi {
 	private final OrderStatusInfoDTOMapper orderStatusInfoDTOMapper;
 
 	@Override
-	@PreAuthorize("hasAnyAuthority('ROLE_MANAGER')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
 	public PageManagerOrderPreviewDTO getAllOrders(OrdersFilterParametersDTO ordersFilter, String lang,
 			PageableDTO pageable) {
 		Pageable pageableDomain = pageableDTOMapper.fromDto(pageable);
 		OrdersFilterParametersDto filterParametersDto = orderFilterParametersDTOMapper.fromDTO(ordersFilter);
-		Page<Order> ordersByUserId = getAllOrdersUseCase.getAllOrders(filterParametersDto, pageableDomain);
+		Page<OrderManagement> ordersByUserId = getAllOrdersUseCase.getAllOrders(filterParametersDto, pageableDomain,
+				getRole());
 		return pageOrderDTOMapper.toManagerDto(ordersByUserId);
 	}
 
@@ -58,19 +61,21 @@ public class OrdersManagementController implements OrdersManagementApi {
 	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
 	public OrderStatusInfoDTO updateOrderStatus(UUID orderId, UpdateOrderStatusRequestDTO updateOrderStatusRequestDTO) {
 		var updateOrderStatus = updateOrderStatusRequestDTOMapper.fromDTO(updateOrderStatusRequestDTO);
-		var result = updateOrderStatusUseCase.updateOrderStatus(orderId, updateOrderStatus, getCurrentAccountEmail());
+		var result = updateOrderStatusUseCase.updateOrderStatus(orderId, updateOrderStatus, getRole());
 		return orderStatusInfoDTOMapper.toDTO(result);
 	}
 
 	@Override
-	@PreAuthorize("hasAuthority('ROLE_MANAGER')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
 	public ManagerOrderDTO getOrderById(UUID id, String lang) {
 		Order order = getOrderByIdUseCase.getOrderById(id, lang);
 		return orderDTOMapper.toManagerDto(order);
 	}
 
-	private String getCurrentAccountEmail() {
+	private String getRole() {
 		var authentication = SecurityContextHolder.getContext().getAuthentication();
-		return authentication.getName();
+		return authentication != null
+				? authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).findFirst().orElse(null)
+				: null;
 	}
 }

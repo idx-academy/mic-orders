@@ -5,21 +5,21 @@ import com.academy.orders.apirest.products.mapper.ManagementProductMapper;
 import com.academy.orders.apirest.products.mapper.ProductRequestDTOMapper;
 import com.academy.orders.apirest.products.mapper.ProductResponseDTOMapper;
 import com.academy.orders.apirest.products.mapper.ProductStatusDTOMapper;
-import com.academy.orders.domain.product.usecase.CreateProductUseCase;
 import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
+import com.academy.orders.domain.product.usecase.CreateProductUseCase;
+import com.academy.orders.domain.product.usecase.GetManagerProductsUseCase;
 import com.academy.orders.domain.product.usecase.GetProductByIdUseCase;
 import com.academy.orders.domain.product.usecase.UpdateProductUseCase;
-import com.academy.orders.domain.product.usecase.GetManagerProductsUseCase;
 import com.academy.orders.domain.product.usecase.UpdateStatusUseCase;
 import com.academy.orders_api_rest.generated.api.ProductsManagementApi;
+import com.academy.orders_api_rest.generated.model.PageableDTO;
+import com.academy.orders_api_rest.generated.model.ProductManagementFilterDTO;
+import com.academy.orders_api_rest.generated.model.ProductManagementPageDTO;
 import com.academy.orders_api_rest.generated.model.ProductRequestDTO;
 import com.academy.orders_api_rest.generated.model.ProductResponseDTO;
 import com.academy.orders_api_rest.generated.model.ProductStatusDTO;
 import java.util.UUID;
-import com.academy.orders_api_rest.generated.model.PageableDTO;
-import com.academy.orders_api_rest.generated.model.ProductManagementFilterDTO;
-import com.academy.orders_api_rest.generated.model.ProductManagementPageDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -43,21 +43,21 @@ public class ProductsManagementController implements ProductsManagementApi {
 	private final ProductRequestDTOMapper productRequestDTOMapper;
 
 	@Override
-	@PreAuthorize("hasAnyAuthority('ROLE_MANAGER')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
 	public void updateStatus(UUID productId, ProductStatusDTO status) {
 		ProductStatus productStatus = productStatusDTOMapper.fromDTO(status);
 		updateStatusUseCase.updateStatus(productId, productStatus);
 	}
 
 	@Override
-	@PreAuthorize("hasAnyAuthority('ROLE_MANAGER')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
 	public void updateProduct(UUID productId, ProductRequestDTO productRequestDTO) {
 		var updateProduct = productRequestDTOMapper.fromDTO(productRequestDTO);
 		updateProductUseCase.updateProduct(productId, updateProduct);
 	}
 
 	@Override
-	@PreAuthorize("hasAnyAuthority('ROLE_MANAGER')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
 	public ProductManagementPageDTO getProductsForManager(ProductManagementFilterDTO productFilter, String lang,
 			PageableDTO pageable) {
 		var pageableDomain = pageableDTOMapper.fromDto(pageable);
@@ -67,7 +67,7 @@ public class ProductsManagementController implements ProductsManagementApi {
 	}
 
 	@Override
-	@PreAuthorize("hasAnyAuthority('ROLE_MANAGER')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
 	public ProductResponseDTO createProduct(ProductRequestDTO productRequestDTO) {
 		var createProductRequest = productRequestDTOMapper.fromDTO(productRequestDTO);
 		Product product = createProductUseCase.createProduct(createProductRequest);
@@ -75,7 +75,7 @@ public class ProductsManagementController implements ProductsManagementApi {
 	}
 
 	@Override
-	@PreAuthorize("hasAnyAuthority('ROLE_MANAGER')")
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')")
 	public ProductResponseDTO getProductById(UUID productId) {
 		var product = getProductByIdUseCase.getProductById(productId);
 		return productResponseDTOMapper.toDTO(product);

@@ -1,6 +1,7 @@
 package com.academy.orders.application.order.usecase;
 
 import com.academy.orders.application.ModelUtils;
+import com.academy.orders.domain.account.entity.enumerated.Role;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.entity.OrderItem;
 import java.math.BigDecimal;
@@ -10,6 +11,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static com.academy.orders.application.ModelUtils.getOrderManagementForAdmin;
+import static com.academy.orders.application.ModelUtils.getOrderManagementForManager;
+import static com.academy.orders.application.ModelUtils.getOrderWithoutTotal;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -33,7 +37,7 @@ class CalculateOrderTotalPriceUseCaseTest {
 	@Test
 	void calculateTotalPriceForOrderTest() {
 		// Given
-		Order orderWithoutTotal = ModelUtils.getOrderWithoutTotal();
+		Order orderWithoutTotal = getOrderWithoutTotal();
 		Order orderWithTotal = ModelUtils.getOrder();
 
 		// When
@@ -46,7 +50,7 @@ class CalculateOrderTotalPriceUseCaseTest {
 	@Test
 	void calculateTotalPriceForOrderListTest() {
 		// Given
-		Order orderWithoutTotal = ModelUtils.getOrderWithoutTotal();
+		Order orderWithoutTotal = getOrderWithoutTotal();
 		Order orderWithTotal = ModelUtils.getOrder();
 		List<Order> ordersWithoutTotal = List.of(orderWithoutTotal, orderWithoutTotal);
 		List<Order> ordersWithTotal = List.of(orderWithTotal, orderWithTotal);
@@ -64,6 +68,33 @@ class CalculateOrderTotalPriceUseCaseTest {
 		List<Order> actual = calculateOrderTotalPriceUseCase.calculateTotalPriceFor((List<Order>) null);
 
 		// Then
+		assertTrue(actual.isEmpty());
+	}
+
+	@Test
+	void calculateTotalPriceAndAvailableStatusesForManagerTest() {
+		var order = getOrderWithoutTotal();
+		var orderManagement = getOrderManagementForManager();
+		var orders = List.of(order);
+		var actual = calculateOrderTotalPriceUseCase.calculateTotalPriceAndAvailableStatuses(orders,
+				String.valueOf(Role.ROLE_MANAGER));
+		assertEquals(List.of(orderManagement), actual);
+	}
+
+	@Test
+	void calculateTotalPriceAndAvailableStatusesForAdminTest() {
+		var order = getOrderWithoutTotal();
+		var orderManagement = getOrderManagementForAdmin();
+		var orders = List.of(order);
+		var actual = calculateOrderTotalPriceUseCase.calculateTotalPriceAndAvailableStatuses(orders,
+				String.valueOf(Role.ROLE_ADMIN));
+		assertEquals(List.of(orderManagement), actual);
+	}
+
+	@Test
+	void calculateTotalPriceAndAvailableStatusesIfNullTest() {
+		var actual = calculateOrderTotalPriceUseCase.calculateTotalPriceAndAvailableStatuses(null,
+				String.valueOf(Role.ROLE_MANAGER));
 		assertTrue(actual.isEmpty());
 	}
 }

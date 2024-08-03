@@ -31,4 +31,4 @@ Feature: Get all orders
       | 200    | 'MANAGER' | 'classpath:apis/orders/test-data/page_200.json'     |
       | 403    | 'USER'    | 'classpath:apis/orders/test-data/response_4xx.json' |
       | 403    | 'USER'    | 'classpath:apis/orders/test-data/response_4xx.json' |
-      | 403    | 'ADMIN'   | 'classpath:apis/orders/test-data/response_4xx.json' |
+      | 200    | 'ADMIN'   | 'classpath:apis/orders/test-data/page_200.json' |

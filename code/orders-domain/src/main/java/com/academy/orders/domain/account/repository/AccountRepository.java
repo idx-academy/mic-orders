@@ -53,22 +53,26 @@ public interface AccountRepository {
 	Optional<Role> findRoleByEmail(String email);
 
 	/**
-	 * Checks if an account with the given id exists.
+	 * Checks if an account exists by its email.
 	 *
 	 * @param id
-	 *            the id to check for existence.
-	 * @return {@code true} if an account with the given id exists, {@code false}
-	 *         otherwise.
+	 *            the id of account to check for existence.
+	 * @return {@code true} if an account with the given id exists, otherwise
+	 *         {@code false}.
+	 *
+	 * @author Denys Ryhal
 	 */
 	Boolean existsById(Long id);
 
 	/**
-	 * Updates the status of an account by its id.
+	 * Updates status of an account.
 	 *
 	 * @param id
-	 *            the id of the account to update.
+	 *            the id of account to find it.
 	 * @param status
-	 *            the new {@link UserStatus} to be set.
+	 *            new status of account
+	 *
+	 * @author Denys Ryhal
 	 */
 	void updateStatus(Long id, UserStatus status);
 

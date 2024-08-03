@@ -1,8 +1,6 @@
 package com.academy.orders.application.order.usecase;
 
 import com.academy.orders.domain.account.entity.enumerated.Role;
-import com.academy.orders.domain.account.exception.AccountRoleNotFoundException;
-import com.academy.orders.domain.account.repository.AccountRepository;
 import com.academy.orders.domain.order.dto.OrderStatusInfo;
 import com.academy.orders.domain.order.dto.UpdateOrderStatusDto;
 import com.academy.orders.domain.order.entity.Order;
@@ -25,15 +23,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class UpdateOrderStatusUseCaseImpl implements UpdateOrderStatusUseCase {
 	private final OrderRepository orderRepository;
-	private final AccountRepository accountRepository;
 	private static final String ROLE_ADMIN = "role_admin";
 
 	@Override
-	public OrderStatusInfo updateOrderStatus(UUID orderId, UpdateOrderStatusDto updateOrderStatus,
-			String currentAccountEmail) {
+	public OrderStatusInfo updateOrderStatus(UUID orderId, UpdateOrderStatusDto updateOrderStatus, String role) {
 		var currentOrder = getOrderById(orderId);
-		var accountRole = getAccountRoleByEmail(currentAccountEmail);
-		boolean isAdmin = isAdminRole(accountRole);
+		boolean isAdmin = isAdminRole(Role.valueOf(role));
 
 		if (!isAdmin) {
 			validateOrderStatusUpdate(currentOrder, updateOrderStatus);
@@ -46,10 +41,6 @@ public class UpdateOrderStatusUseCaseImpl implements UpdateOrderStatusUseCase {
 
 	private Order getOrderById(UUID orderId) {
 		return orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException(orderId));
-	}
-
-	private Role getAccountRoleByEmail(String email) {
-		return accountRepository.findRoleByEmail(email).orElseThrow(() -> new AccountRoleNotFoundException(email));
 	}
 
 	private boolean isAdminRole(Role accountRole) {
@@ -78,14 +69,14 @@ public class UpdateOrderStatusUseCaseImpl implements UpdateOrderStatusUseCase {
 		}
 	}
 
-	private List<String> getAvailableStatuses(boolean isAdmin, UpdateOrderStatusDto updateOrderStatus) {
+	private List<OrderStatus> getAvailableStatuses(boolean isAdmin, UpdateOrderStatusDto updateOrderStatus) {
 		return isAdmin
 				? OrderStatus.getAllTransitions()
 				: OrderStatus.getAllowedTransitions(updateOrderStatus.status(), false);
 	}
 
 	private OrderStatusInfo buildOrderStatusInfo(Order currentOrder, UpdateOrderStatusDto updateOrderStatus,
-			List<String> availableStatuses) {
+			List<OrderStatus> availableStatuses) {
 		return OrderStatusInfo.builder().availableStatuses(availableStatuses)
 				.isPaid(updateOrderStatus.isPaid() != null ? updateOrderStatus.isPaid() : currentOrder.isPaid())
 				.build();

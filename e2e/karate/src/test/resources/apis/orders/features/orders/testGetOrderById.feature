@@ -1,4 +1,3 @@
-@ignore
 Feature: Get order by id
 
   Background:
@@ -10,7 +9,7 @@ Feature: Get order by id
     * if (<role> == 'ADMIN') {karate.set('credentials.username', 'admin@mail.com'); karate.set('credentials.password', 'Admin_1234');}
     * if (<role> == 'MANAGER') {karate.set('credentials.username', 'manager@mail.com'); karate.set('credentials.password', 'Manager_1234');}
     And def authHeader = call read('classpath:karate-auth.js') testDataFile.auth
-    And path '/v1/orders', <orderId>
+    And path '/v1/management/orders', <orderId>
     And headers authHeader
 
     When method Get
@@ -20,7 +19,7 @@ Feature: Get order by id
 
     Examples:
       | status | testDataFile                                            | role      | orderId                                |
-      | 200    | 'classpath:apis/orders/test-data/getOrderById_200.json' | 'MANAGER' | '550e8400-e29b-41d4-a716-446655440000' |
-      | 404    | 'classpath:apis/orders/test-data/response_4xx.json'     | 'MANAGER' | '550e8400-e29b-41d4-a716-446655440001' |
-      | 403    | 'classpath:apis/orders/test-data/response_4xx.json'     | 'USER'    | '550e8400-e29b-41d4-a716-446655440000' |
-      | 403    | 'classpath:apis/orders/test-data/response_4xx.json'     | 'ADMIN'   | '550e8400-e29b-41d4-a716-446655440000' |
+      | 200    | 'classpath:apis/orders/test-data/getOrderById_200.json' | 'MANAGER' | '550e8400-e29b-41d4-a716-446655440015' |
+      | 404    | 'classpath:apis/orders/test-data/response_4xx.json'     | 'MANAGER' | '11111111-e29b-41d4-a716-446655440001' |
+      | 403    | 'classpath:apis/orders/test-data/response_4xx.json'     | 'USER'    | '550e8400-e29b-41d4-a716-446655440015' |
+      | 200    | 'classpath:apis/orders/test-data/getOrderById_200.json'     | 'ADMIN'   | '550e8400-e29b-41d4-a716-446655440015' |
