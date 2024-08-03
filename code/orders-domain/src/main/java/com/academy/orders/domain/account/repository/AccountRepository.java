@@ -1,12 +1,12 @@
 package com.academy.orders.domain.account.repository;
 
+import com.academy.orders.domain.account.dto.AccountManagementFilterDto;
 import com.academy.orders.domain.account.entity.Account;
 import com.academy.orders.domain.account.entity.CreateAccountDTO;
 import com.academy.orders.domain.account.entity.enumerated.Role;
 import com.academy.orders.domain.account.entity.enumerated.UserStatus;
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
-
 import java.util.Optional;
 
 public interface AccountRepository {
@@ -73,14 +73,19 @@ public interface AccountRepository {
 	void updateStatus(Long id, UserStatus status);
 
 	/**
-	 * Retrieves a paginated list of accounts.
+	 * Retrieves a paginated list of accounts based on the provided filter and
+	 * pagination information.
 	 *
+	 * @param filter
+	 *            the {@link AccountManagementFilterDto} containing the filtering
+	 *            criteria for accounts.
 	 * @param pageable
-	 *            the {@link Pageable} object containing pagination information.
-	 * @return a {@link Page} containing the paginated list of {@link Account}
-	 *         entities.
+	 *            the {@link Pageable} object containing pagination information such
+	 *            as page number and size.
+	 * @return a {@link Page} object containing the paginated list of
+	 *         {@link Account} entities that match the filtering criteria.
 	 *
 	 * @author Yurii Osovskyi
 	 */
-	Page<Account> getAccounts(Pageable pageable);
+	Page<Account> getAccounts(AccountManagementFilterDto filter, Pageable pageable);
 }

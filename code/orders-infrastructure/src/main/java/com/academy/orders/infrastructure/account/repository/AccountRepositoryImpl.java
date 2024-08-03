@@ -1,5 +1,6 @@
 package com.academy.orders.infrastructure.account.repository;
 
+import com.academy.orders.domain.account.dto.AccountManagementFilterDto;
 import com.academy.orders.domain.account.entity.Account;
 import com.academy.orders.domain.account.entity.CreateAccountDTO;
 import com.academy.orders.domain.account.entity.enumerated.Role;
@@ -13,7 +14,6 @@ import com.academy.orders.infrastructure.account.entity.AccountEntity;
 import com.academy.orders.infrastructure.common.PageableMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
@@ -67,10 +67,9 @@ public class AccountRepositoryImpl implements AccountRepository {
 	}
 
 	@Override
-	public Page<Account> getAccounts(Pageable pageableDomain) {
+	public Page<Account> getAccounts(AccountManagementFilterDto filter, Pageable pageableDomain) {
 		var pageable = pageableMapper.fromDomain(pageableDomain);
-		var pageRequest = PageRequest.of(pageableDomain.page(), pageableDomain.size(), pageable.getSort());
-		var accountPage = accountJpaAdapter.findAll(pageRequest);
+		var accountPage = accountJpaAdapter.findAllByRoleAndStatus(filter, pageable);
 		return accountPageMapper.toDomain(accountPage);
 	}
 }

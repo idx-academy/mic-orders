@@ -2,12 +2,10 @@ package com.academy.orders.apirest.accounts.controller;
 
 import com.academy.orders.apirest.accounts.mapper.AccountDTOMapper;
 import com.academy.orders.apirest.accounts.mapper.AccountResponseDTOMapper;
-import com.academy.orders.domain.account.entity.Account;
 import com.academy.orders.domain.account.usecase.ChangeAccountStatusUseCase;
 import com.academy.orders.domain.account.usecase.GetAllUsersUseCase;
-import com.academy.orders.domain.common.Page;
-import com.academy.orders.domain.common.Pageable;
 import com.academy.orders_api_rest.generated.api.UsersManagementApi;
+import com.academy.orders_api_rest.generated.model.AccountFilterDTO;
 import com.academy.orders_api_rest.generated.model.AccountStatusDTO;
 import com.academy.orders_api_rest.generated.model.PageAccountsDTO;
 import com.academy.orders_api_rest.generated.model.PageableDTO;
@@ -21,7 +19,7 @@ public class AccountsManagementController implements UsersManagementApi {
 	private final AccountDTOMapper accountDTOMapper;
 	private final ChangeAccountStatusUseCase changeAccountStatusUseCase;
 	private final GetAllUsersUseCase getAllUsersUseCase;
-	private final AccountResponseDTOMapper accountMapper;
+	private final AccountResponseDTOMapper accountResponseDTOMapper;
 
 	@Override
 	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
@@ -32,11 +30,10 @@ public class AccountsManagementController implements UsersManagementApi {
 
 	@Override
 	@PreAuthorize("hasAuthority('ROLE_ADMIN')")
-	public PageAccountsDTO getAccounts(PageableDTO pageableDTO) {
-		Pageable pageable = Pageable.builder().page(pageableDTO.getPage()).size(pageableDTO.getSize())
-				.sort(pageableDTO.getSort()).build();
-
-		Page<Account> accountPage = getAllUsersUseCase.getAllUsers(pageable);
-		return accountMapper.toResponse(accountPage);
+	public PageAccountsDTO getAccounts(AccountFilterDTO filterDTO, PageableDTO pageableDTO) {
+		var filter = accountDTOMapper.toDomain(filterDTO);
+		var pageable = accountDTOMapper.toDomain(pageableDTO);
+		var accountPage = getAllUsersUseCase.getAllUsers(filter, pageable);
+		return accountResponseDTOMapper.toResponse(accountPage);
 	}
 }

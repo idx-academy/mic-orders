@@ -580,6 +580,11 @@ paths:
       description: The endpoint for getting all accounts from the database.
       operationId: getAccounts
       parameters:
+        - in: query
+          description: filter for accounts
+          name: accountFilter
+          schema:
+            $ref: '#/components/schemas/AccountFilter'
         - $ref: '#/components/parameters/Pageable'
       responses:
         '200':
@@ -588,6 +593,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PageAccounts'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
 
 
 
@@ -1670,3 +1681,19 @@ components:
         - ACTIVE
         - DEACTIVATED
       description: Status of the account
+
+    AccountFilter:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/AccountStatus'
+        role:
+          $ref: '#/components/schemas/AccountManagementRoles'
+
+    AccountManagementRoles:
+      type: string
+      enum:
+        - USER
+        - ADMIN
+        - MANAGER
+      description: Role of the account
