@@ -1,5 +1,6 @@
 package com.academy.orders.application.account.usecase;
 
+import com.academy.orders.application.ModelUtils;
 import com.academy.orders.domain.account.dto.AccountManagementFilterDto;
 import com.academy.orders.domain.account.entity.Account;
 import com.academy.orders.domain.account.repository.AccountRepository;
@@ -11,7 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,7 +35,7 @@ class GetAllUsersUseCaseImplTest {
 
 	@BeforeEach
 	void setUp() {
-		pageable = Pageable.builder().page(0).size(10).sort(Collections.emptyList()).build();
+		pageable = ModelUtils.getDefaultPageable();
 		filter = AccountManagementFilterDto.builder().build();
 	}
 
@@ -56,7 +56,7 @@ class GetAllUsersUseCaseImplTest {
 
 	@Test
 	void getAllUsersWithNonEmptySortTest() {
-		Pageable pageableWithSort = Pageable.builder().page(0).size(10).sort(List.of("email,asc")).build();
+		Pageable pageableWithSort = ModelUtils.getPageableWithSort();
 
 		when(accountRepository.getAccounts(any(AccountManagementFilterDto.class), eq(pageableWithSort)))
 				.thenReturn(accountPage);

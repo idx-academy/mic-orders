@@ -266,4 +266,12 @@ public class ModelUtils {
 				List.of(OrderStatus.SHIPPED, OrderStatus.DELIVERED, OrderStatus.COMPLETED, OrderStatus.CANCELED))
 				.isPaid(false).build();
 	}
+
+	public static Pageable getPageableWithSort() {
+		return Pageable.builder().page(0).size(10).sort(List.of("email,asc")).build();
+	}
+
+	public static Pageable getDefaultPageable() {
+		return Pageable.builder().page(0).size(10).sort(Collections.emptyList()).build();
+	}
 }

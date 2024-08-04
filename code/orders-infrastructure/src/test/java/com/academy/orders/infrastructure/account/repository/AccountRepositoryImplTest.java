@@ -1,6 +1,5 @@
 package com.academy.orders.infrastructure.account.repository;
 
-import com.academy.orders.domain.account.dto.AccountManagementFilterDto;
 import com.academy.orders.domain.account.entity.Account;
 import com.academy.orders.domain.account.entity.CreateAccountDTO;
 import com.academy.orders.domain.account.entity.enumerated.Role;
@@ -18,13 +17,20 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import java.util.List;
 import java.util.Optional;
-import static com.academy.orders.infrastructure.ModelUtils.*;
+import static com.academy.orders.infrastructure.ModelUtils.getAccount;
+import static com.academy.orders.infrastructure.ModelUtils.getAccountEntity;
+import static com.academy.orders.infrastructure.ModelUtils.getCreateAccountDTO;
 import static com.academy.orders.infrastructure.TestConstants.TEST_EMAIL;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AccountRepositoryImplTest {
@@ -133,10 +139,10 @@ class AccountRepositoryImplTest {
 
 	@Test
 	void getAccountsTest() {
-		var filter = AccountManagementFilterDto.builder().status(UserStatus.ACTIVE).role(Role.ROLE_USER).build();
+		var filter = ModelUtils.getAccountManagementFilterDto();
 		var pageableDomain = ModelUtils.getPageable();
 
-		var pageable = PageRequest.of(0, 10, org.springframework.data.domain.Sort.by("id").ascending());
+		var pageable = ModelUtils.getPageRequest();
 		var accountEntities = List.of(getAccountEntity());
 		var accountEntityPage = new PageImpl<>(accountEntities, pageable, accountEntities.size());
 		var accountDomains = List.of(getAccount());
@@ -149,5 +155,9 @@ class AccountRepositoryImplTest {
 		var actualPage = repository.getAccounts(filter, pageableDomain);
 
 		assertEquals(expectedPage, actualPage);
+
+		verify(pageableMapper).fromDomain(pageableDomain);
+		verify(accountJpaAdapter).findAllByRoleAndStatus(filter, pageable);
+		verify(accountPageMapper).toDomain(accountEntityPage);
 	}
 }
