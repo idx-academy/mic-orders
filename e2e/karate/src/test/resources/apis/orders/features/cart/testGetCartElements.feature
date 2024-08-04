@@ -1,6 +1,7 @@
 Feature: Get cart items
   Background:
     * def authHeader = callonce read('classpath:karate-auth.js')
+    * def responseSchema = call utils.readTestData 'classpath:apis/orders/test-data/responses/getCartItemsResponse.json'
     * def productFeature = callonce read('classpath:apis/orders/helpers/getProductId.feature')
     * def productId = productFeature.productId
     * def userId = credentials.id
@@ -17,22 +18,7 @@ Feature: Get cart items
     When method GET
     Then status 200
     And match response.items[*].productId contains productId
-    And match response ==
-    """
-    {
-      "items": [
-        {
-          "productId": "#string",
-          "image": "#string",
-          "name": "#string",
-          "productPrice": "#number",
-          "quantity": "#number",
-          "calculatedPrice": "#number"
-        }
-      ],
-      "totalPrice": "#number"
-    }
-    """
+    And match response == responseSchema
 
     Given headers authHeader
     And path 'v1/users/' + userId +'/cart/items/' + productId

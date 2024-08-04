@@ -4,9 +4,8 @@ Feature: Get orders history by user id
 
   Scenario Outline: getOrdersHistoryByUserId <status> and role <role>
     Given def responseDataFile = call utils.readTestData <responseDataFile>
-    * if (<role> == 'USER') {karate.set('credentials.username', 'user@mail.com'); karate.set('credentials.password', 'User_1234');}
-    * if (<role> == 'ADMIN') {karate.set('credentials.username', 'admin@mail.com'); karate.set('credentials.password', 'Admin_1234');}
-    And def authHeader = call read('classpath:karate-auth.js')
+    * def credentials = { username: <username>, password: <password> }
+    * def authHeader = call read('classpath:karate-auth.js')(credentials)
     And path '/v1/users', <userId>, 'orders'
     And headers authHeader
 
@@ -16,8 +15,8 @@ Feature: Get orders history by user id
     And match response == responseDataFile
 
     Examples:
-      | status | userId | role    | responseDataFile                                            |
-      | 200    | 2      | 'USER'  | 'classpath:apis/orders/test-data/page_200.json' |
-      | 403    | 3      | 'USER'  | 'classpath:apis/orders/test-data/response_4xx.json'         |
-      | 200    | 2      | 'ADMIN' | 'classpath:apis/orders/test-data/page_200.json' |
+      | status | userId | role    | username                  | password                  | responseDataFile                                             |
+      | 200    | 2      | 'USER'  | '#(user.username)'        | '#(user.password)'        | 'classpath:apis/orders/test-data/responses/page_200.json'    |
+      | 403    | 3      | 'USER'  | '#(user.username)'        | '#(user.password)'        | 'classpath:apis/orders/test-data/responses/response_4xx.json'|
+      | 200    | 2      | 'ADMIN' | '#(credentials.username)' | '#(credentials.password)' | 'classpath:apis/orders/test-data/responses/page_200.json'    |
 
