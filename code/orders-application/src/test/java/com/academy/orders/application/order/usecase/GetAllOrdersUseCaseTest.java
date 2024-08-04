@@ -1,10 +1,12 @@
 package com.academy.orders.application.order.usecase;
 
 import com.academy.orders.application.ModelUtils;
+import com.academy.orders.domain.account.entity.enumerated.Role;
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
 import com.academy.orders.domain.order.entity.Order;
+import com.academy.orders.domain.order.entity.OrderManagement;
 import com.academy.orders.domain.order.repository.OrderRepository;
 import com.academy.orders.domain.order.usecase.CalculateOrderTotalPriceUseCase;
 import java.util.List;
@@ -14,7 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static com.academy.orders.application.ModelUtils.getOrder;
+import static com.academy.orders.application.ModelUtils.getOrderManagementForManager;
 import static com.academy.orders.application.ModelUtils.getOrderWithoutTotal;
 import static com.academy.orders.application.ModelUtils.getPageOf;
 import static com.academy.orders.application.ModelUtils.getPageable;
@@ -37,20 +39,23 @@ class GetAllOrdersUseCaseTest {
 		OrdersFilterParametersDto filterParametersDto = ModelUtils.getOrdersFilterParametersDto();
 		Pageable pageable = getPageable();
 		Order withoutTotal = getOrderWithoutTotal();
-		Order withTotal = getOrder();
+		OrderManagement withTotal = getOrderManagementForManager();
 		Page<Order> orderPage = getPageOf(withoutTotal);
-		Page<Order> expected = getPageOf(withTotal);
+		Page<OrderManagement> expected = getPageOf(withTotal);
 
 		when(orderRepository.findAll(filterParametersDto, pageable)).thenReturn(orderPage);
-		when(calculateOrderTotalPriceUseCase.calculateTotalPriceFor(orderPage.content()))
-				.thenReturn(expected.content());
+		when(calculateOrderTotalPriceUseCase.calculateTotalPriceAndAvailableStatuses(orderPage.content(),
+				String.valueOf(Role.ROLE_MANAGER))).thenReturn(expected.content());
 
 		// When
-		Page<Order> ordersByUserId = getAllOrdersUseCase.getAllOrders(filterParametersDto, pageable);
+		Page<OrderManagement> ordersByUserId = getAllOrdersUseCase.getAllOrders(filterParametersDto, pageable,
+				String.valueOf(Role.ROLE_MANAGER));
 
 		// Then
 		assertEquals(expected, ordersByUserId);
 		verify(orderRepository).findAll(filterParametersDto, pageable);
+		verify(calculateOrderTotalPriceUseCase).calculateTotalPriceAndAvailableStatuses(orderPage.content(),
+				String.valueOf(Role.ROLE_MANAGER));
 	}
 
 	@Test
@@ -60,16 +65,17 @@ class GetAllOrdersUseCaseTest {
 		Pageable pageable = new Pageable(0, 8, List.of());
 		Pageable defaultPageable = new Pageable(0, 8, List.of("createdAt,desc"));
 		Order withoutTotal = getOrderWithoutTotal();
-		Order withTotal = getOrder();
+		OrderManagement withTotal = getOrderManagementForManager();
 		Page<Order> orderPage = getPageOf(withoutTotal);
-		Page<Order> expected = getPageOf(withTotal);
+		Page<OrderManagement> expected = getPageOf(withTotal);
 
 		when(orderRepository.findAll(filterParametersDto, defaultPageable)).thenReturn(orderPage);
-		when(calculateOrderTotalPriceUseCase.calculateTotalPriceFor(orderPage.content()))
-				.thenReturn(expected.content());
+		when(calculateOrderTotalPriceUseCase.calculateTotalPriceAndAvailableStatuses(orderPage.content(),
+				String.valueOf(Role.ROLE_MANAGER))).thenReturn(expected.content());
 
 		// When
-		Page<Order> ordersByUserId = getAllOrdersUseCase.getAllOrders(filterParametersDto, pageable);
+		Page<OrderManagement> ordersByUserId = getAllOrdersUseCase.getAllOrders(filterParametersDto, pageable,
+				String.valueOf(Role.ROLE_MANAGER));
 
 		// Then
 		assertEquals(expected, ordersByUserId);

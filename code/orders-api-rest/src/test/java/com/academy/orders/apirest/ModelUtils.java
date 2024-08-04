@@ -8,6 +8,7 @@ import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
 import com.academy.orders.domain.order.dto.UpdateOrderStatusDto;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.entity.OrderItem;
+import com.academy.orders.domain.order.entity.OrderManagement;
 import com.academy.orders.domain.order.entity.OrderReceiver;
 import com.academy.orders.domain.order.entity.PostAddress;
 import com.academy.orders.domain.order.entity.enumerated.DeliveryMethod;
@@ -165,6 +166,18 @@ public class ModelUtils {
 	public static Order getOrder() {
 		return Order.builder().id(TEST_UUID).createdAt(LocalDateTime.of(1, 1, 1, 1, 1)).isPaid(false)
 				.orderStatus(OrderStatus.IN_PROGRESS)
+				.postAddress(PostAddress.builder().city(TEST_CITY).deliveryMethod(DeliveryMethod.NOVA)
+						.department(TEST_DEPARTMENT).build())
+				.receiver(OrderReceiver.builder().firstName(TEST_FIRST_NAME).lastName(TEST_LAST_NAME).email(TEST_EMAIL)
+						.build())
+				.orderItems(List.of(getOrderItem())).build();
+	}
+
+	public static OrderManagement getOrderManagement() {
+		return OrderManagement.builder().id(TEST_UUID).createdAt(LocalDateTime.of(1, 1, 1, 1, 1)).isPaid(false)
+				.orderStatus(OrderStatus.IN_PROGRESS)
+				.availableStatuses(List.of(OrderStatus.SHIPPED, OrderStatus.DELIVERED, OrderStatus.COMPLETED,
+						OrderStatus.CANCELED))
 				.postAddress(PostAddress.builder().city(TEST_CITY).deliveryMethod(DeliveryMethod.NOVA)
 						.department(TEST_DEPARTMENT).build())
 				.receiver(OrderReceiver.builder().firstName(TEST_FIRST_NAME).lastName(TEST_LAST_NAME).email(TEST_EMAIL)
@@ -453,13 +466,15 @@ public class ModelUtils {
 
 	public static OrderStatusInfoDTO getOrderStatusInfoDTO() {
 		var orderStatusInfoDTO = new OrderStatusInfoDTO();
-		orderStatusInfoDTO.setAvailableStatuses(List.of("SHIPPED, DELIVERED, COMPLETED, CANCELED"));
+		orderStatusInfoDTO.setAvailableStatuses(List.of(OrderStatusDTO.SHIPPED, OrderStatusDTO.DELIVERED,
+				OrderStatusDTO.COMPLETED, OrderStatusDTO.CANCELED));
 		orderStatusInfoDTO.setIsPaid(false);
 		return orderStatusInfoDTO;
 	}
 
 	public static OrderStatusInfo getOrderStatusInfo() {
-		return OrderStatusInfo.builder().availableStatuses(List.of("SHIPPED, DELIVERED, COMPLETED, CANCELED"))
+		return OrderStatusInfo.builder().availableStatuses(
+				List.of(OrderStatus.SHIPPED, OrderStatus.DELIVERED, OrderStatus.COMPLETED, OrderStatus.CANCELED))
 				.isPaid(false).build();
 	}
 
