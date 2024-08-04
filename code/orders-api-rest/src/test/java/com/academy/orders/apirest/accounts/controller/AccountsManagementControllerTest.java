@@ -19,7 +19,6 @@ import com.academy.orders_api_rest.generated.model.PageAccountsDTO;
 import com.academy.orders_api_rest.generated.model.PageableDTO;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.aop.AopAutoConfiguration;
@@ -30,7 +29,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -123,65 +121,5 @@ class AccountsManagementControllerTest {
 		Mockito.verify(accountDTOMapper).toDomain(any(PageableDTO.class));
 		Mockito.verify(getAllUsersUseCase).getAllUsers(filterDto, pageable);
 		Mockito.verify(accountResponseDTOMapper).toResponse(accountPage);
-	}
-
-	@Test
-	@WithMockUser(authorities = "ROLE_ADMIN")
-	void getAccountsTest1() throws Exception {
-		PageableDTO pageableDTO = new PageableDTO();
-		pageableDTO.setPage(0);
-		pageableDTO.setSize(5);
-		pageableDTO.setSort(List.of("createdAt,desc"));
-
-		AccountManagementFilterDto filterDto = AccountManagementFilterDto.builder().status(UserStatus.ACTIVE)
-				.role(Role.ROLE_USER).build();
-
-		Pageable pageable = new Pageable(0, 5, List.of("createdAt,desc"));
-
-		when(accountDTOMapper.toDomain(any(AccountFilterDTO.class))).thenReturn(filterDto);
-		when(accountDTOMapper.toDomain(any(PageableDTO.class))).thenReturn(pageable);
-
-		Account account = new Account(1L, "username", "firstName", "lastName", "email@example.com", Role.ROLE_USER,
-				UserStatus.ACTIVE, LocalDateTime.now());
-
-		Page<Account> accountPage = Page.<Account>builder().totalElements(1L).totalPages(1).first(true).last(true)
-				.number(0).numberOfElements(1).size(5).empty(false).content(Collections.singletonList(account)).build();
-
-		PageAccountsDTO pageAccountsDTO = new PageAccountsDTO();
-		pageAccountsDTO.setTotalElements(1L);
-		pageAccountsDTO.setTotalPages(1);
-		pageAccountsDTO.setFirst(true);
-		pageAccountsDTO.setLast(true);
-		pageAccountsDTO.setNumber(0);
-		pageAccountsDTO.setNumberOfElements(1);
-		pageAccountsDTO.setSize(5);
-		pageAccountsDTO.setEmpty(false);
-		pageAccountsDTO.setContent(Collections.emptyList());
-
-		when(getAllUsersUseCase.getAllUsers(filterDto, pageable)).thenReturn(accountPage);
-		when(accountResponseDTOMapper.toResponse(accountPage)).thenReturn(pageAccountsDTO);
-
-		var result = mockMvc.perform(get("/v1/management/users").queryParam("page", "0").queryParam("size", "5")
-				.queryParam("sort", "createdAt,desc")).andExpect(status().isOk()).andReturn();
-
-		assertThat(result.getResponse().getContentAsString()).isNotNull();
-
-		var captor = ArgumentCaptor.forClass(Page.class);
-		verify(accountDTOMapper).toDomain(any(AccountFilterDTO.class));
-		verify(accountDTOMapper).toDomain(any(PageableDTO.class));
-		verify(getAllUsersUseCase).getAllUsers(filterDto, pageable);
-		verify(accountResponseDTOMapper).toResponse(captor.capture());
-
-		var capturedPage = captor.getValue();
-		assertThat(capturedPage).isEqualTo(accountPage);
-
-		assertThat(pageAccountsDTO.getTotalElements()).isEqualTo(1L);
-		assertThat(pageAccountsDTO.getTotalPages()).isEqualTo(1);
-		assertThat(pageAccountsDTO.getFirst()).isTrue();
-		assertThat(pageAccountsDTO.getLast()).isTrue();
-		assertThat(pageAccountsDTO.getNumber()).isZero();
-		assertThat(pageAccountsDTO.getNumberOfElements()).isEqualTo(1);
-		assertThat(pageAccountsDTO.getSize()).isEqualTo(5);
-		assertThat(pageAccountsDTO.getEmpty()).isFalse();
 	}
 }
