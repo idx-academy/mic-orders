@@ -15,11 +15,7 @@ import com.academy.orders.domain.order.entity.PostAddress;
 import com.academy.orders.domain.order.entity.enumerated.DeliveryMethod;
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import com.academy.orders.domain.product.dto.ProductManagementFilterDto;
-import com.academy.orders.domain.product.entity.Language;
-import com.academy.orders.domain.product.entity.Product;
-import com.academy.orders.domain.product.entity.ProductManagement;
-import com.academy.orders.domain.product.entity.ProductTranslationManagement;
-import com.academy.orders.domain.product.entity.Tag;
+import com.academy.orders.domain.product.entity.*;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders.infrastructure.account.entity.AccountEntity;
 import com.academy.orders.infrastructure.cart.entity.CartItemEntity;
@@ -33,17 +29,16 @@ import com.academy.orders.infrastructure.product.entity.ProductEntity;
 import com.academy.orders.infrastructure.product.entity.ProductTranslationEntity;
 import com.academy.orders.infrastructure.product.entity.ProductTranslationId;
 import com.academy.orders.infrastructure.tag.entity.TagEntity;
+import org.springframework.data.domain.PageImpl;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import org.springframework.data.domain.PageImpl;
 
 import static com.academy.orders.domain.order.entity.enumerated.DeliveryMethod.NOVA;
-import static com.academy.orders.infrastructure.TestConstants.LANGUAGE_EN;
-import static com.academy.orders.infrastructure.TestConstants.TEST_ID;
-import static com.academy.orders.infrastructure.TestConstants.TEST_UUID;
+import static com.academy.orders.infrastructure.TestConstants.*;
 
 public class ModelUtils {
 	private static final LocalDateTime DATE_TIME = LocalDateTime.of(1, 1, 1, 1, 1);
@@ -197,5 +192,13 @@ public class ModelUtils {
 
 	public static Language getLanguage() {
 		return Language.builder().id(1L).code("en").build();
+	}
+
+	public static Page<Account> getAccountPage(List<Account> accountDomains, Pageable pageableDomain,
+			long totalElements, int totalPages) {
+		return Page.<Account>builder().content(accountDomains).number(pageableDomain.page()).size(pageableDomain.size())
+				.totalElements(totalElements).totalPages(totalPages).first(pageableDomain.page() == 0)
+				.last(pageableDomain.page() == totalPages - 1).numberOfElements(accountDomains.size())
+				.empty(accountDomains.isEmpty()).build();
 	}
 }

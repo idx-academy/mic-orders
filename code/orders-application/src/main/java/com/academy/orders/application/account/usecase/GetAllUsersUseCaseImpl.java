@@ -8,6 +8,7 @@ import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -16,6 +17,9 @@ public class GetAllUsersUseCaseImpl implements GetAllUsersUseCase {
 
 	@Override
 	public Page<Account> getAllUsers(AccountManagementFilterDto filter, Pageable pageable) {
+		if (pageable.sort().isEmpty()) {
+			pageable = new Pageable(pageable.page(), pageable.size(), List.of("createdAt,desc"));
+		}
 		return accountRepository.getAccounts(filter, pageable);
 	}
 }

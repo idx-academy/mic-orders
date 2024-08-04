@@ -1,16 +1,15 @@
 package com.academy.orders.apirest;
 
+import com.academy.orders.domain.account.entity.Account;
+import com.academy.orders.domain.account.entity.enumerated.Role;
+import com.academy.orders.domain.account.entity.enumerated.UserStatus;
 import com.academy.orders.domain.cart.dto.UpdatedCartItemDto;
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.order.dto.OrderStatusInfo;
 import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
 import com.academy.orders.domain.order.dto.UpdateOrderStatusDto;
-import com.academy.orders.domain.order.entity.Order;
-import com.academy.orders.domain.order.entity.OrderItem;
-import com.academy.orders.domain.order.entity.OrderManagement;
-import com.academy.orders.domain.order.entity.OrderReceiver;
-import com.academy.orders.domain.order.entity.PostAddress;
+import com.academy.orders.domain.order.entity.*;
 import com.academy.orders.domain.order.entity.enumerated.DeliveryMethod;
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import com.academy.orders.domain.product.dto.ProductManagementFilterDto;
@@ -21,46 +20,7 @@ import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.ProductTranslation;
 import com.academy.orders.domain.product.entity.Tag;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
-import com.academy.orders_api_rest.generated.model.AccountResponseDTO;
-import com.academy.orders_api_rest.generated.model.CartItemDTO;
-import com.academy.orders_api_rest.generated.model.CartItemsResponseDTO;
-import com.academy.orders_api_rest.generated.model.ManagerOrderDTO;
-import com.academy.orders_api_rest.generated.model.OrderItemDTO;
-import com.academy.orders_api_rest.generated.model.OrderReceiverDTO;
-import com.academy.orders_api_rest.generated.model.OrderStatusDTO;
-import com.academy.orders_api_rest.generated.model.OrderStatusInfoDTO;
-import com.academy.orders_api_rest.generated.model.OrdersFilterParametersDTO;
-import com.academy.orders_api_rest.generated.model.PageManagerOrderPreviewDTO;
-import com.academy.orders_api_rest.generated.model.PageProductSearchResultDTO;
-import com.academy.orders_api_rest.generated.model.PageProductsDTO;
-import com.academy.orders_api_rest.generated.model.PageUserOrderDTO;
-import com.academy.orders_api_rest.generated.model.PageableDTO;
-import com.academy.orders_api_rest.generated.model.PlaceOrderRequestDTO;
-import com.academy.orders_api_rest.generated.model.PostAddressDTO;
-import com.academy.orders_api_rest.generated.model.ProductDetailsResponseDTO;
-import com.academy.orders_api_rest.generated.model.ProductManagementContentDTO;
-import com.academy.orders_api_rest.generated.model.ProductManagementPageDTO;
-import com.academy.orders_api_rest.generated.model.ProductManagementStatusDTO;
-import com.academy.orders_api_rest.generated.model.ProductPreviewDTO;
-import com.academy.orders_api_rest.generated.model.ProductRequestDTO;
-import com.academy.orders_api_rest.generated.model.ProductResponseDTO;
-import com.academy.orders_api_rest.generated.model.ProductSearchResultDTO;
-import com.academy.orders_api_rest.generated.model.ProductStatusDTO;
-import com.academy.orders_api_rest.generated.model.ProductTranslationDTO;
-import com.academy.orders_api_rest.generated.model.TagDTO;
-import com.academy.orders_api_rest.generated.model.UpdateOrderStatusRequestDTO;
-import com.academy.orders_api_rest.generated.model.UpdatedCartItemDTO;
-import com.academy.orders_api_rest.generated.model.UserOrderDTO;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import com.academy.orders_api_rest.generated.model.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
@@ -68,25 +28,16 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import static com.academy.orders.apirest.TestConstants.IMAGE_URL;
-import static com.academy.orders.apirest.TestConstants.LANGUAGE_UK;
-import static com.academy.orders.apirest.TestConstants.PRODUCT_DESCRIPTION;
-import static com.academy.orders.apirest.TestConstants.PRODUCT_NAME;
-import static com.academy.orders.apirest.TestConstants.TAG_NAME;
-import static com.academy.orders.apirest.TestConstants.TEST_CITY;
-import static com.academy.orders.apirest.TestConstants.TEST_DEPARTMENT;
-import static com.academy.orders.apirest.TestConstants.TEST_EMAIL;
-import static com.academy.orders.apirest.TestConstants.TEST_FIRST_NAME;
-import static com.academy.orders.apirest.TestConstants.TEST_FLOAT_PRICE;
-import static com.academy.orders.apirest.TestConstants.TEST_ID;
-import static com.academy.orders.apirest.TestConstants.TEST_LAST_NAME;
-import static com.academy.orders.apirest.TestConstants.TEST_PRICE;
-import static com.academy.orders.apirest.TestConstants.TEST_QUANTITY;
-import static com.academy.orders.apirest.TestConstants.TEST_UUID;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.academy.orders.apirest.TestConstants.*;
 import static com.academy.orders_api_rest.generated.model.DeliveryMethodDTO.NOVA;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.emptySet;
-import static java.util.Collections.singletonList;
+import static java.util.Collections.*;
 
 public class ModelUtils {
 	private static final LocalDateTime DATE_TIME = LocalDateTime.of(1, 1, 1, 1, 1);
@@ -523,5 +474,15 @@ public class ModelUtils {
 		productDetailsResponseDTO.quantity(TEST_QUANTITY);
 		productDetailsResponseDTO.price(TEST_PRICE);
 		return productDetailsResponseDTO;
+	}
+
+	public static Account getAccount() {
+		return new Account(TEST_ID, TEST_PASSWORD, TEST_EMAIL, TEST_FIRST_NAME, TEST_LAST_NAME, Role.ROLE_USER,
+				UserStatus.ACTIVE, LocalDateTime.now());
+	}
+
+	public static Page<Account> getAccountPage() {
+		return Page.<Account>builder().totalElements(1L).totalPages(1).first(true).last(true).number(0)
+				.numberOfElements(1).size(5).empty(false).content(Collections.singletonList(getAccount())).build();
 	}
 }
