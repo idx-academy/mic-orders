@@ -20,7 +20,6 @@ import com.academy.orders_api_rest.generated.model.PageAccountsDTO;
 import com.academy.orders_api_rest.generated.model.PageableDTO;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.aop.AopAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -33,7 +32,10 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -120,9 +122,9 @@ class AccountsManagementControllerTest {
 				.contains("\"numberOfElements\":0").contains("\"size\":5").contains("\"empty\":true")
 				.contains("\"content\":[]");
 
-		Mockito.verify(accountDTOMapper).toDomain(any(AccountFilterDTO.class));
-		Mockito.verify(accountDTOMapper).toDomain(any(PageableDTO.class));
-		Mockito.verify(getAllUsersUseCase).getAllUsers(filterDto, pageable);
-		Mockito.verify(accountResponseDTOMapper).toResponse(accountPage);
+		verify(accountDTOMapper).toDomain(any(AccountFilterDTO.class));
+		verify(accountDTOMapper).toDomain(any(PageableDTO.class));
+		verify(getAllUsersUseCase).getAllUsers(filterDto, pageable);
+		verify(accountResponseDTOMapper).toResponse(accountPage);
 	}
 }

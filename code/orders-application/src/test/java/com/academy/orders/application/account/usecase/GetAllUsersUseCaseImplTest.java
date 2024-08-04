@@ -11,13 +11,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,7 +40,7 @@ class GetAllUsersUseCaseImplTest {
 	}
 
 	@Test
-	void getAllUsers_withEmptySort_shouldApplyDefaultSortTest() {
+	void getAllUsersWithEmptySortTest() {
 		when(accountRepository.getAccounts(any(AccountManagementFilterDto.class), any(Pageable.class)))
 				.thenAnswer(invocation -> {
 					Pageable pageableArgument = invocation.getArgument(1);
@@ -51,10 +51,11 @@ class GetAllUsersUseCaseImplTest {
 		Page<Account> result = getAllUsersUseCase.getAllUsers(filter, pageable);
 
 		assertEquals(accountPage, result);
+		verify(accountRepository).getAccounts(eq(filter), any(Pageable.class));
 	}
 
 	@Test
-	void getAllUsers_withNonEmptySort_shouldNotChangeSortTest() {
+	void getAllUsersWithNonEmptySortTest() {
 		Pageable pageableWithSort = Pageable.builder().page(0).size(10).sort(List.of("email,asc")).build();
 
 		when(accountRepository.getAccounts(any(AccountManagementFilterDto.class), eq(pageableWithSort)))
@@ -63,5 +64,6 @@ class GetAllUsersUseCaseImplTest {
 		Page<Account> result = getAllUsersUseCase.getAllUsers(filter, pageableWithSort);
 
 		assertEquals(accountPage, result);
+		verify(accountRepository).getAccounts(filter, pageableWithSort);
 	}
 }
