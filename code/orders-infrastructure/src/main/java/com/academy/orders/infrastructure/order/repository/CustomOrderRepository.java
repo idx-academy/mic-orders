@@ -60,7 +60,7 @@ public class CustomOrderRepository {
 		Join<OrderEntity, AccountEntity> aj = mainRoot.join(ACCOUNT, JoinType.LEFT);
 
 		List<Order> order = getOrder(pageable, mainRoot, oij);
-		List<Predicate> predicates = getAllPredicates(mainRoot, aj, paj, filterParametersDto);
+		List<Predicate> predicates = getAllPredicates(mainRoot, paj, filterParametersDto);
 		List<Predicate> totalPredicates = getTotalPredicates(oij, filterParametersDto);
 
 		mainQuery.where(predicates.toArray(new Predicate[0])).groupBy(mainRoot.get("id"), paj.get("id"), aj.get("id"))
@@ -126,9 +126,8 @@ public class CustomOrderRepository {
 
 		Join<OrderEntity, OrderItemEntity> oij = countRoot.join(ORDER_ITEMS, JoinType.LEFT);
 		Join<OrderEntity, PostAddressEntity> paj = countRoot.join(POST_ADDRESS, JoinType.LEFT);
-		Join<OrderEntity, AccountEntity> aj = countRoot.join(ACCOUNT, JoinType.LEFT);
 
-		List<Predicate> predicatesCount = getAllPredicates(countRoot, aj, paj, filterParametersDto);
+		List<Predicate> predicatesCount = getAllPredicates(countRoot, paj, filterParametersDto);
 		List<Predicate> totalCountPredicates = getTotalPredicates(oij, filterParametersDto);
 		countQuery.select(countRoot.get("id")).where(predicatesCount.toArray(new Predicate[0]))
 				.groupBy(countRoot.get("id"));
@@ -153,8 +152,8 @@ public class CustomOrderRepository {
 		return predicates;
 	}
 
-	private List<Predicate> getAllPredicates(Root<OrderEntity> root, Join<OrderEntity, AccountEntity> aj,
-			Join<OrderEntity, PostAddressEntity> paj, OrdersFilterParametersDto filterParametersDto) {
+	private List<Predicate> getAllPredicates(Root<OrderEntity> root, Join<OrderEntity, PostAddressEntity> paj,
+			OrdersFilterParametersDto filterParametersDto) {
 		List<Predicate> predicates = new LinkedList<>();
 		if (filterParametersDto.isPaid() != null) {
 			predicates.add(cb.equal(root.get("isPaid"), filterParametersDto.isPaid()));
@@ -172,7 +171,7 @@ public class CustomOrderRepository {
 			predicates.add(cb.greaterThanOrEqualTo(root.get("createdAt"), filterParametersDto.createdAfter()));
 		}
 		if (filterParametersDto.accountEmail() != null) {
-			predicates.add(cb.equal(aj.get("email"), filterParametersDto.accountEmail()));
+			predicates.add(cb.like(root.get("email"), "%" + filterParametersDto.accountEmail() + "%"));
 		}
 		return predicates;
 	}
