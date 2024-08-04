@@ -1,5 +1,6 @@
 package com.academy.orders.apirest.accounts.controller;
 
+import com.academy.orders.apirest.ModelUtils;
 import com.academy.orders.apirest.accounts.mapper.AccountDTOMapper;
 import com.academy.orders.apirest.accounts.mapper.AccountResponseDTOMapper;
 import com.academy.orders.apirest.common.ErrorHandler;
@@ -28,8 +29,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -90,7 +89,8 @@ class AccountsManagementControllerTest {
 
 	@Test
 	@WithMockUser(authorities = "ROLE_ADMIN")
-	void getAccountsTest() throws Exception {
+	@SneakyThrows
+	void getAccountsTest() {
 		PageableDTO pageableDTO = new PageableDTO();
 		pageableDTO.setPage(0);
 		pageableDTO.setSize(5);
@@ -104,10 +104,9 @@ class AccountsManagementControllerTest {
 		when(accountDTOMapper.toDomain(any(AccountFilterDTO.class))).thenReturn(filterDto);
 		when(accountDTOMapper.toDomain(any(PageableDTO.class))).thenReturn(pageable);
 
-		Page<Account> accountPage = Page.<Account>builder().totalElements(0L).totalPages(0).first(true).last(true)
-				.number(0).numberOfElements(0).size(5).empty(true).content(Collections.emptyList()).build();
+		Page<Account> accountPage = ModelUtils.getAccountPage();
 
-		PageAccountsDTO pageAccountsDTO = new PageAccountsDTO();
+		PageAccountsDTO pageAccountsDTO = ModelUtils.getPageAccountsDTO();
 
 		when(getAllUsersUseCase.getAllUsers(filterDto, pageable)).thenReturn(accountPage);
 		when(accountResponseDTOMapper.toResponse(accountPage)).thenReturn(pageAccountsDTO);
@@ -115,7 +114,11 @@ class AccountsManagementControllerTest {
 		var result = mockMvc.perform(get("/v1/management/users").queryParam("page", "0").queryParam("size", "5")
 				.queryParam("sort", "createdAt,desc")).andExpect(status().isOk()).andReturn();
 
-		assertThat(result.getResponse().getContentAsString()).isNotNull();
+		String responseBody = result.getResponse().getContentAsString();
+		assertThat(responseBody).isNotNull().contains("\"totalElements\":0").contains("\"totalPages\":0")
+				.contains("\"first\":true").contains("\"last\":true").contains("\"number\":0")
+				.contains("\"numberOfElements\":0").contains("\"size\":5").contains("\"empty\":true")
+				.contains("\"content\":[]");
 
 		Mockito.verify(accountDTOMapper).toDomain(any(AccountFilterDTO.class));
 		Mockito.verify(accountDTOMapper).toDomain(any(PageableDTO.class));

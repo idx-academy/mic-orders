@@ -485,4 +485,18 @@ public class ModelUtils {
 		return Page.<Account>builder().totalElements(1L).totalPages(1).first(true).last(true).number(0)
 				.numberOfElements(1).size(5).empty(false).content(Collections.singletonList(getAccount())).build();
 	}
+
+	public static PageAccountsDTO getPageAccountsDTO() {
+		var pageAccountsDTO = new PageAccountsDTO();
+		pageAccountsDTO.setTotalElements(0L);
+		pageAccountsDTO.setTotalPages(0);
+		pageAccountsDTO.setFirst(true);
+		pageAccountsDTO.setLast(true);
+		pageAccountsDTO.setNumber(0);
+		pageAccountsDTO.setNumberOfElements(0);
+		pageAccountsDTO.setSize(5);
+		pageAccountsDTO.setEmpty(true);
+		pageAccountsDTO.setContent(Collections.emptyList());
+		return pageAccountsDTO;
+	}
 }
