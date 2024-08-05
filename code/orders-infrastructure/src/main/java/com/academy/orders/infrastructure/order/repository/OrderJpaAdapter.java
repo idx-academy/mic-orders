@@ -42,7 +42,20 @@ public interface OrderJpaAdapter extends CrudRepository<OrderEntity, UUID> {
 	 * @author Denys Liubchenko
 	 */
 	@Query("select o from OrderEntity o left join fetch o.postAddress pa left join fetch o.orderItems oa "
-			+ "left join fetch oa.product p left join o.account a where o.id = :id")
+			+ "left join fetch oa.product p left join fetch o.account a where o.id = :id")
+	Optional<OrderEntity> findByIdFetchOrderItemsData(UUID id);
+
+	/**
+	 * Retrieves an OrderEntity by his id, including related entities such as post
+	 * addresses and product ids.
+	 *
+	 * @param id
+	 *            the ID of the account for which orders are to be retrieved.
+	 * @return {@link Optional} containing the {@link OrderEntity} if it is present.
+	 *
+	 * @author Denys Liubchenko
+	 */
+	@Query("select o from OrderEntity o left join fetch o.postAddress pa left join fetch o.account a where o.id = :id")
 	Optional<OrderEntity> findByIdFetchData(UUID id);
 
 	/**
