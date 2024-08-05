@@ -2,7 +2,6 @@ package com.academy.orders.boot.infrastructure.product.repository;
 
 import com.academy.orders.boot.infrastructure.common.repository.AbstractRepository;
 import com.academy.orders.domain.common.Page;
-import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.product.dto.ProductManagementFilterDto;
 import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.ProductTranslation;
@@ -15,9 +14,20 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static com.academy.orders.domain.product.entity.enumerated.ProductStatus.VISIBLE;
-import static java.math.BigDecimal.valueOf;
-import static java.util.Collections.emptyList;
+import static com.academy.orders.ModelUtils.getPageable;
+import static com.academy.orders.ModelUtils.getPageableSortAsc;
+import static com.academy.orders.ModelUtils.getPageableSortDesc;
+import static com.academy.orders.ModelUtils.getProductManagement;
+import static com.academy.orders.ModelUtils.getProductManagementFilterDto;
+import static com.academy.orders.ModelUtils.getProductManagementFilterDtoWithPrices;
+import static com.academy.orders.ModelUtils.getProductManagementFilterSearchByName;
+import static com.academy.orders.ModelUtils.getProductToSave;
+import static com.academy.orders.boot.TestConstants.LANGUAGE_UK;
+import static com.academy.orders.boot.TestConstants.NUMBER_OF_TRANSLATIONS_UK_AND_EN;
+import static com.academy.orders.boot.TestConstants.PRODUCT_UUID;
+import static com.academy.orders.boot.TestConstants.TAG_COMPUTERS;
+import static com.academy.orders.boot.TestConstants.TOTAL_ELEMENTS_COMPUTERS;
+import static com.academy.orders.boot.TestConstants.TOTAL_ELEMENTS_PRODUCTS;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,32 +35,26 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ProductRepositoryIT extends AbstractRepository {
-	private final Pageable pageable = new Pageable(0, 10, emptyList());
-	private final String lang = "uk";
-
 	@Autowired
 	private ProductRepository productRepository;
 
 	@Test
 	void findAllByLanguageWithFilterTest() {
-		final var totalElements = 34;
-		final var filter = ProductManagementFilterDto.builder().tags(emptyList()).build();
-
-		final var actual = productRepository.findAllByLanguageWithFilter(lang, filter, pageable);
+		final var pageable = getPageable();
+		final var filter = getProductManagementFilterDto();
+		final var actual = productRepository.findAllByLanguageWithFilter(LANGUAGE_UK, filter, pageable);
 		final var firstImageLink = actual.content().get(0).image();
 
 		assertContentSchema(actual);
-		assertEquals(totalElements, actual.totalElements());
+		assertEquals(TOTAL_ELEMENTS_PRODUCTS, actual.totalElements());
 		assertDoesNotThrow(() -> URI.create(firstImageLink));
 	}
 
 	@Test
 	void findAllByLanguageWithFilterForPriceQuantityAndStatusTest() {
 		final var totalElements = 5;
-		final var filter = ProductManagementFilterDto.builder().priceMore(valueOf(1000)).priceLess(valueOf(1500))
-				.quantityMore(5).quantityLess(11).status(VISIBLE).tags(emptyList()).build();
-
-		final var result = productRepository.findAllByLanguageWithFilter(lang, filter, pageable);
+		final var filter = getProductManagementFilterDtoWithPrices();
+		final var result = productRepository.findAllByLanguageWithFilter(LANGUAGE_UK, filter, getPageable());
 
 		assertContentSchema(result);
 		assertEquals(totalElements, result.totalElements());
@@ -59,10 +63,10 @@ class ProductRepositoryIT extends AbstractRepository {
 
 	@Test
 	void findAllByLanguageWithFilterForNameRegexTest() {
+		final var pageable = getPageable();
 		final var totalElements = 5;
-		final var filter = ProductManagementFilterDto.builder().searchByName("iphone").tags(emptyList()).build();
-
-		final var result = productRepository.findAllByLanguageWithFilter(lang, filter, pageable);
+		final var filter = getProductManagementFilterSearchByName();
+		final var result = productRepository.findAllByLanguageWithFilter(LANGUAGE_UK, filter, pageable);
 
 		assertContentSchema(result);
 		assertEquals(totalElements, result.totalElements());
@@ -71,14 +75,116 @@ class ProductRepositoryIT extends AbstractRepository {
 
 	@Test
 	void findAllByLanguageWithFilterForTagsTest() {
-		final var totalElements = 16;
-		final var filter = ProductManagementFilterDto.builder().tags(singletonList("category:computer")).build();
-
-		final var result = productRepository.findAllByLanguageWithFilter(lang, filter, pageable);
+		final var pageable = getPageable();
+		final var filter = ProductManagementFilterDto.builder().tags(singletonList(TAG_COMPUTERS)).build();
+		final var result = productRepository.findAllByLanguageWithFilter(LANGUAGE_UK, filter, pageable);
 
 		assertContentSchema(result);
-		assertEquals(totalElements, result.totalElements());
+		assertEquals(TOTAL_ELEMENTS_COMPUTERS, result.totalElements());
 		assertTrue(isFilteredByTags(result, filter.tags()));
+	}
+
+	@Test
+	void findAllProductsTest() {
+		final var pageable = getPageable();
+		final var result = productRepository.findAllProducts(LANGUAGE_UK, pageable, List.of());
+
+		assertContentSchema(result);
+		assertEquals(TOTAL_ELEMENTS_PRODUCTS, result.totalElements());
+		assertTrue(areAllProductsVisible(result));
+	}
+
+	@Test
+	void findAllProductsForSpecificTagsTest() {
+		final var pageable = getPageable();
+		final var result = productRepository.findAllProducts(LANGUAGE_UK, pageable, List.of(TAG_COMPUTERS));
+
+		assertContentSchema(result);
+		assertEquals(TOTAL_ELEMENTS_COMPUTERS, result.totalElements());
+		assertTrue(isFilteredByTags(result, List.of(TAG_COMPUTERS)));
+		assertTrue(areAllProductsVisible(result));
+	}
+
+	@Test
+	void findAllProductsSortedByPriceAscTest() {
+		final var pageable = getPageableSortAsc();
+		final var result = productRepository.findAllProducts(LANGUAGE_UK, pageable, List.of());
+
+		assertTrue(isSortedByPriceAsc(result));
+		assertTrue(areAllProductsVisible(result));
+	}
+
+	@Test
+	void findAllProductsSortedByPriceDescTest() {
+		final var pageable = getPageableSortDesc();
+		final var result = productRepository.findAllProducts(LANGUAGE_UK, pageable, List.of());
+
+		assertTrue(isSortedByPriceDesc(result));
+		assertTrue(areAllProductsVisible(result));
+	}
+
+	@Test
+	void setNewProductQuantityTest() {
+		productRepository.setNewProductQuantity(PRODUCT_UUID, 2);
+		final var product = productRepository.getById(PRODUCT_UUID);
+
+		assertEquals(product.get().quantity(), 2);
+	}
+
+	@Test
+	void existByIdTest() {
+		final var result = productRepository.existById(PRODUCT_UUID);
+		assertTrue(result);
+	}
+
+	@Test
+	void updateStatusTest() {
+		productRepository.updateStatus(PRODUCT_UUID, ProductStatus.HIDDEN);
+		final var product = productRepository.getById(PRODUCT_UUID);
+		assertEquals(product.get().status(), ProductStatus.HIDDEN);
+	}
+
+	@Test
+	void findTranslationsByProductId() {
+		final var result = productRepository.findTranslationsByProductId(PRODUCT_UUID);
+
+		assertNotNull(result);
+		assertEquals(result.size(), NUMBER_OF_TRANSLATIONS_UK_AND_EN);
+	}
+
+	@Test
+	void updateTest() {
+		productRepository.update(getProductManagement());
+		final var product = productRepository.getById(getProductManagement().id());
+
+		assertEquals(product.get().quantity(), 1000);
+	}
+
+	@Test
+	void getByIdTest() {
+		final var result = productRepository.getById(PRODUCT_UUID);
+		assertNotNull(result);
+	}
+
+	@Test
+	void saveTest() {
+		final var product = productRepository.save(getProductToSave());
+		assertNotNull(product);
+	}
+
+	@Test
+	void searchProductsByNameTest() {
+		final var pageable = getPageable();
+		final var searchQuery = "Samsung";
+		final var result = productRepository.searchProductsByName(searchQuery, LANGUAGE_UK, pageable);
+
+		assertTrue(result.totalElements() > 0);
+	}
+
+	@Test
+	void getByIdAndLanguageCodeTest() {
+		final var result = productRepository.getByIdAndLanguageCode(PRODUCT_UUID, LANGUAGE_UK);
+		assertNotNull(result);
 	}
 
 	private boolean isFilteredByTags(Page<Product> actual, List<String> tagNames) {
@@ -122,5 +228,30 @@ class ProductRepositoryIT extends AbstractRepository {
 	private boolean isFilteredByNameRegex(Page<Product> actual, String nameRegex) {
 		return actual.content().stream().flatMap(p -> p.productTranslations().stream()).map(ProductTranslation::name)
 				.allMatch(name -> name.toLowerCase().contains(nameRegex));
+	}
+
+	private boolean isSortedByPriceAsc(Page<Product> result) {
+		var products = result.content();
+		for (int i = 0; i < products.size() - 1; i++) {
+			if (products.get(i).price().compareTo(products.get(i + 1).price()) > 0) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private boolean isSortedByPriceDesc(Page<Product> result) {
+		var products = result.content();
+		for (int i = 0; i < products.size() - 1; i++) {
+			if (products.get(i).price().compareTo(products.get(i + 1).price()) < 0) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private boolean areAllProductsVisible(Page<Product> result) {
+		var products = result.content();
+		return products.stream().allMatch(product -> product.status() == ProductStatus.VISIBLE);
 	}
 }
