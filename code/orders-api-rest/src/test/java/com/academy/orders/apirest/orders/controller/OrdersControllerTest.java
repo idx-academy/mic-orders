@@ -1,5 +1,6 @@
 package com.academy.orders.apirest.orders.controller;
 
+import com.academy.orders.apirest.ModelUtils;
 import com.academy.orders.apirest.auth.validator.CheckAccountIdUseCaseImpl;
 import com.academy.orders.apirest.common.ErrorHandler;
 import com.academy.orders.apirest.common.TestSecurityConfig;
@@ -12,6 +13,7 @@ import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.order.dto.CreateOrderDto;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.exception.InsufficientProductQuantityException;
+import com.academy.orders.domain.order.usecase.CancelOrderUseCase;
 import com.academy.orders.domain.order.usecase.CreateOrderUseCase;
 import com.academy.orders.domain.order.usecase.GetOrdersByUserIdUseCase;
 import com.academy.orders_api_rest.generated.model.PageUserOrderDTO;
@@ -41,9 +43,11 @@ import static com.academy.orders.apirest.ModelUtils.getPlaceOrderRequestDTO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -59,6 +63,8 @@ class OrdersControllerTest {
 	private MockMvc mockMvc;
 	@MockBean
 	private CreateOrderUseCase createOrderUseCase;
+	@MockBean
+	private CancelOrderUseCase cancelOrderUseCase;
 	@MockBean
 	private OrderDTOMapper mapper;
 	@MockBean
@@ -152,5 +158,22 @@ class OrdersControllerTest {
 		verify(pageableDTOMapper).fromDto(pageableDTO);
 		verify(getOrdersByUserIdUseCase).getOrdersByUserId(userId, language, pageable);
 		verify(pageOrderDTOMapper).toUserDto(orderPage);
+	}
+
+	@Test
+	@SneakyThrows
+	void cancelOrderTest() {
+		// Given
+		Long userId = 1L;
+		UUID orderId = ModelUtils.getOrder().id();
+		doNothing().when(cancelOrderUseCase).cancelOrder(userId, orderId);
+
+		// When
+		mockMvc.perform(patch("/v1/users/{userId}/orders/{orderId}/cancel", userId, orderId)
+				.with(getJwtRequest(userId, "ROLE_USER")).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+
+		// Then
+		verify(cancelOrderUseCase).cancelOrder(userId, orderId);
 	}
 }
