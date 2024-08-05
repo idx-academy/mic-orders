@@ -1,0 +1,1 @@
+CREATE INDEX ix_orders_email ON orders (email);

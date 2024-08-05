@@ -170,6 +170,10 @@ public class CustomOrderRepository {
 		if (filterParametersDto.createdAfter() != null) {
 			predicates.add(cb.greaterThanOrEqualTo(root.get("createdAt"), filterParametersDto.createdAfter()));
 		}
+		if (filterParametersDto.accountEmail() != null) {
+			predicates.add(cb.like(cb.lower(root.get("receiver").get("email")),
+					filterParametersDto.accountEmail().toLowerCase() + "%"));
+		}
 		return predicates;
 	}
 }

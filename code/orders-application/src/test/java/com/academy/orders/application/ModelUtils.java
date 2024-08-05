@@ -186,7 +186,8 @@ public class ModelUtils {
 	public static OrdersFilterParametersDto getOrdersFilterParametersDto() {
 		return OrdersFilterParametersDto.builder().deliveryMethods(List.of(DeliveryMethod.NOVA))
 				.statuses(List.of(OrderStatus.IN_PROGRESS)).isPaid(false).createdBefore(DATE_TIME)
-				.createdAfter(DATE_TIME).totalMore(BigDecimal.ZERO).totalLess(BigDecimal.TEN).build();
+				.createdAfter(DATE_TIME).totalMore(BigDecimal.ZERO).accountEmail("test@mail.com")
+				.totalLess(BigDecimal.TEN).build();
 	}
 
 	public static Product getProductWithQuantity(int quantity) {
