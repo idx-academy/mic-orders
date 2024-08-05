@@ -102,6 +102,9 @@ class CustomOrderRepositoryTest {
 	private JpaRoot<OrderEntity> jpaRoot;
 
 	@Mock
+	private Expression<String> expressionString;
+
+	@Mock
 	private JpaPath jpaPath;
 
 	@InjectMocks
@@ -138,6 +141,7 @@ class CustomOrderRepositoryTest {
 		when(path.in(ArgumentMatchers.<Object>any())).thenReturn(predicate);
 		when(criteriaBuilder.lessThanOrEqualTo(any(), any(LocalDateTime.class))).thenReturn(predicate);
 		when(criteriaBuilder.like(any(), anyString())).thenReturn(predicate);
+		when(criteriaBuilder.lower(any())).thenReturn(expressionString);
 		when(criteriaBuilder.greaterThanOrEqualTo(any(), any(LocalDateTime.class))).thenReturn(predicate);
 		when(criteriaQuery.orderBy(any(List.class))).thenReturn(criteriaQuery);
 		when(criteriaQuery.groupBy(path, path, path)).thenReturn(criteriaQuery);
