@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class OrderRepositoryIT extends AbstractRepository {
+	public static final UUID NOT_EXISTING_ORDER_ID = UUID.fromString("11111111-1111-1111-1111-111111111111");
 	private final Pageable pageable = new Pageable(0, 10, emptyList());
 	private final String lang = "uk";
 	private final Long accountId = 4L;
@@ -52,13 +53,13 @@ class OrderRepositoryIT extends AbstractRepository {
 
 	@Test
 	void findByIdReturnsEmptyOptionalIfOrderNotFoundTest() {
-		var actual = orderRepository.findById(UUID.fromString("11111111-1111-1111-1111-111111111111"));
+		var actual = orderRepository.findById(NOT_EXISTING_ORDER_ID);
 
 		assertTrue(actual.isEmpty());
 	}
 
 	@Test
-	void findByIdFetchDataTest() {
+	void findByIdFetchOrderItemsDataTest() {
 		var actual = orderRepository.findById(orderId, lang);
 		assertTrue(actual.isPresent());
 
@@ -68,8 +69,8 @@ class OrderRepositoryIT extends AbstractRepository {
 	}
 
 	@Test
-	void findByIdFetchDataReturnsEmptyOptionalIfOrderNotFoundTest() {
-		var actual = orderRepository.findById(UUID.fromString("11111111-1111-1111-1111-111111111111"), lang);
+	void findByIdFetchOrderItemsDataReturnsEmptyOptionalIfOrderNotFoundTest() {
+		var actual = orderRepository.findById(NOT_EXISTING_ORDER_ID, lang);
 
 		assertTrue(actual.isEmpty());
 	}
@@ -214,6 +215,23 @@ class OrderRepositoryIT extends AbstractRepository {
 		orderPage.content().forEach(this::validateBasicOrderNotNull);
 		orderPage.content()
 				.forEach(order -> assertTrue(deliveryMethods.contains(order.postAddress().deliveryMethod())));
+	}
+
+	@Test
+	void findByIdFetchDataTest() {
+		var actual = orderRepository.findByIdFetchData(orderId);
+		assertTrue(actual.isPresent());
+
+		Order order = actual.get();
+		validateBasicOrderNotNull(order);
+		assertEquals(orderId, order.id());
+	}
+
+	@Test
+	void findByIdFetchDataWhenOrderNotFoundTest() {
+		var actual = orderRepository.findByIdFetchData(NOT_EXISTING_ORDER_ID);
+
+		assertTrue(actual.isEmpty());
 	}
 
 	private void validatePageNotNull(Page<Order> orderPage) {
