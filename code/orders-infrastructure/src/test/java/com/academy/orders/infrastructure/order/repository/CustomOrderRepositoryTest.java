@@ -78,9 +78,6 @@ class CustomOrderRepositoryTest {
 	private TypedQuery<OrderEntity> typedQuery;
 
 	@Mock
-	private JpaCriteriaQuery<UUID> countTypedQuery;
-
-	@Mock
 	private Predicate predicate;
 
 	@Mock
