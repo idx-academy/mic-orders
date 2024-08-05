@@ -93,4 +93,6 @@ public interface OrderRepository {
 	 * @author Denys Liubchenko
 	 */
 	Page<Order> findAll(OrdersFilterParametersDto filterParametersDto, Pageable pageable);
+
+	Optional<Order> findByIdFetchData(UUID orderId);
 }
