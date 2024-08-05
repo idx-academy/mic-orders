@@ -1,0 +1,13 @@
+{
+  "items": [
+  {
+  "productId": "#string",
+  "image": "#string",
+  "name": "#string",
+  "productPrice": "#number",
+  "quantity": "#number",
+  "calculatedPrice": "#number"
+  }
+  ],
+  "totalPrice": "#number"
+}

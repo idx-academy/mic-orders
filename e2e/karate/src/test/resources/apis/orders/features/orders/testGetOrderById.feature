@@ -5,10 +5,8 @@ Feature: Get order by id
 
   Scenario Outline: getOrderById <status> and role <role>
     Given def testDataFile = call utils.readTestData <testDataFile>
-    * if (<role> == 'USER') {karate.set('credentials.username', 'user@mail.com'); karate.set('credentials.password', 'User_1234');}
-    * if (<role> == 'ADMIN') {karate.set('credentials.username', 'admin@mail.com'); karate.set('credentials.password', 'Admin_1234');}
-    * if (<role> == 'MANAGER') {karate.set('credentials.username', 'manager@mail.com'); karate.set('credentials.password', 'Manager_1234');}
-    And def authHeader = call read('classpath:karate-auth.js') testDataFile.auth
+    * def credentials = { username: <username>, password: <password> }
+    * def authHeader = call read('classpath:karate-auth.js')(credentials)
     And path '/v1/management/orders', <orderId>
     And headers authHeader
 
@@ -18,8 +16,8 @@ Feature: Get order by id
     And match response == testDataFile
 
     Examples:
-      | status | testDataFile                                            | role      | orderId                                |
-      | 200    | 'classpath:apis/orders/test-data/getOrderById_200.json' | 'MANAGER' | '550e8400-e29b-41d4-a716-446655440015' |
-      | 404    | 'classpath:apis/orders/test-data/response_4xx.json'     | 'MANAGER' | '11111111-e29b-41d4-a716-446655440001' |
-      | 403    | 'classpath:apis/orders/test-data/response_4xx.json'     | 'USER'    | '550e8400-e29b-41d4-a716-446655440015' |
-      | 200    | 'classpath:apis/orders/test-data/getOrderById_200.json'     | 'ADMIN'   | '550e8400-e29b-41d4-a716-446655440015' |
+      | status | role      | username                  | password                  | orderId                               | testDataFile                                                     |
+      | 200    | 'MANAGER' | '#(manager.username)'     | '#(manager.password)'     |'550e8400-e29b-41d4-a716-446655440015' |'classpath:apis/orders/test-data/responses/getOrderById_200.json' |
+      | 404    | 'MANAGER' | '#(manager.username)'     | '#(manager.password)'     |'11111111-e29b-41d4-a716-446655440001' |'classpath:apis/orders/test-data/responses/response_4xx.json'     |
+      | 403    | 'USER'    | '#(user.username)'        | '#(user.password)'        |'550e8400-e29b-41d4-a716-446655440015' |'classpath:apis/orders/test-data/responses/response_4xx.json'     |
+      | 200    | 'ADMIN'   | '#(credentials.username)' | '#(credentials.password)' |'550e8400-e29b-41d4-a716-446655440015' |'classpath:apis/orders/test-data/responses/getOrderById_200.json' |
