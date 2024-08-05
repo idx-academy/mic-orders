@@ -1,5 +1,6 @@
 package com.academy.orders.apirest;
 
+import com.academy.orders.domain.account.dto.AccountManagementFilterDto;
 import com.academy.orders.domain.account.entity.Account;
 import com.academy.orders.domain.account.entity.enumerated.Role;
 import com.academy.orders.domain.account.entity.enumerated.UserStatus;
@@ -554,5 +555,9 @@ public class ModelUtils {
 		pageAccountsDTO.setEmpty(true);
 		pageAccountsDTO.setContent(Collections.emptyList());
 		return pageAccountsDTO;
+	}
+
+	public static AccountManagementFilterDto getAccountManagementFilterDto() {
+		return AccountManagementFilterDto.builder().status(UserStatus.ACTIVE).role(Role.ROLE_USER).build();
 	}
 }

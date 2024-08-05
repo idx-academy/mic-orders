@@ -1,22 +1,15 @@
 package com.academy.orders.apirest.accounts.controller;
 
-import com.academy.orders.apirest.ModelUtils;
 import com.academy.orders.apirest.accounts.mapper.AccountDTOMapper;
 import com.academy.orders.apirest.accounts.mapper.AccountResponseDTOMapper;
 import com.academy.orders.apirest.common.ErrorHandler;
 import com.academy.orders.apirest.common.TestSecurityConfig;
-import com.academy.orders.domain.account.dto.AccountManagementFilterDto;
-import com.academy.orders.domain.account.entity.Account;
-import com.academy.orders.domain.account.entity.enumerated.Role;
 import com.academy.orders.domain.account.entity.enumerated.UserStatus;
 import com.academy.orders.domain.account.exception.AccountNotFoundException;
 import com.academy.orders.domain.account.usecase.ChangeAccountStatusUseCase;
 import com.academy.orders.domain.account.usecase.GetAllUsersUseCase;
-import com.academy.orders.domain.common.Page;
-import com.academy.orders.domain.common.Pageable;
 import com.academy.orders_api_rest.generated.model.AccountFilterDTO;
 import com.academy.orders_api_rest.generated.model.AccountStatusDTO;
-import com.academy.orders_api_rest.generated.model.PageAccountsDTO;
 import com.academy.orders_api_rest.generated.model.PageableDTO;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
@@ -28,8 +21,10 @@ import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import java.util.List;
-
+import static com.academy.orders.apirest.ModelUtils.getAccountManagementFilterDto;
+import static com.academy.orders.apirest.ModelUtils.getAccountPage;
+import static com.academy.orders.apirest.ModelUtils.getPageAccountsDTO;
+import static com.academy.orders.apirest.ModelUtils.getPageable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -93,23 +88,13 @@ class AccountsManagementControllerTest {
 	@WithMockUser(authorities = "ROLE_ADMIN")
 	@SneakyThrows
 	void getAccountsTest() {
-		PageableDTO pageableDTO = new PageableDTO();
-		pageableDTO.setPage(0);
-		pageableDTO.setSize(5);
-		pageableDTO.setSort(List.of("createdAt,desc"));
-
-		AccountManagementFilterDto filterDto = AccountManagementFilterDto.builder().status(UserStatus.ACTIVE)
-				.role(Role.ROLE_USER).build();
-
-		Pageable pageable = new Pageable(0, 5, List.of("createdAt,desc"));
+		var filterDto = getAccountManagementFilterDto();
+		var pageable = getPageable();
+		var accountPage = getAccountPage();
+		var pageAccountsDTO = getPageAccountsDTO();
 
 		when(accountDTOMapper.toDomain(any(AccountFilterDTO.class))).thenReturn(filterDto);
 		when(accountDTOMapper.toDomain(any(PageableDTO.class))).thenReturn(pageable);
-
-		Page<Account> accountPage = ModelUtils.getAccountPage();
-
-		PageAccountsDTO pageAccountsDTO = ModelUtils.getPageAccountsDTO();
-
 		when(getAllUsersUseCase.getAllUsers(filterDto, pageable)).thenReturn(accountPage);
 		when(accountResponseDTOMapper.toResponse(accountPage)).thenReturn(pageAccountsDTO);
 
