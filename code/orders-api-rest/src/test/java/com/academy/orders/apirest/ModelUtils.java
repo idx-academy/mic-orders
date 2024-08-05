@@ -1,5 +1,9 @@
 package com.academy.orders.apirest;
 
+import com.academy.orders.domain.account.dto.AccountManagementFilterDto;
+import com.academy.orders.domain.account.entity.Account;
+import com.academy.orders.domain.account.entity.enumerated.Role;
+import com.academy.orders.domain.account.entity.enumerated.UserStatus;
 import com.academy.orders.domain.cart.dto.UpdatedCartItemDto;
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
@@ -8,6 +12,7 @@ import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
 import com.academy.orders.domain.order.dto.UpdateOrderStatusDto;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.entity.OrderItem;
+import com.academy.orders.domain.order.entity.OrderManagement;
 import com.academy.orders.domain.order.entity.OrderReceiver;
 import com.academy.orders.domain.order.entity.PostAddress;
 import com.academy.orders.domain.order.entity.enumerated.DeliveryMethod;
@@ -29,6 +34,7 @@ import com.academy.orders_api_rest.generated.model.OrderReceiverDTO;
 import com.academy.orders_api_rest.generated.model.OrderStatusDTO;
 import com.academy.orders_api_rest.generated.model.OrderStatusInfoDTO;
 import com.academy.orders_api_rest.generated.model.OrdersFilterParametersDTO;
+import com.academy.orders_api_rest.generated.model.PageAccountsDTO;
 import com.academy.orders_api_rest.generated.model.PageManagerOrderPreviewDTO;
 import com.academy.orders_api_rest.generated.model.PageProductSearchResultDTO;
 import com.academy.orders_api_rest.generated.model.PageProductsDTO;
@@ -50,22 +56,24 @@ import com.academy.orders_api_rest.generated.model.TagDTO;
 import com.academy.orders_api_rest.generated.model.UpdateOrderStatusRequestDTO;
 import com.academy.orders_api_rest.generated.model.UpdatedCartItemDTO;
 import com.academy.orders_api_rest.generated.model.UserOrderDTO;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.academy.orders.apirest.TestConstants.IMAGE_URL;
 import static com.academy.orders.apirest.TestConstants.LANGUAGE_UK;
@@ -79,6 +87,7 @@ import static com.academy.orders.apirest.TestConstants.TEST_FIRST_NAME;
 import static com.academy.orders.apirest.TestConstants.TEST_FLOAT_PRICE;
 import static com.academy.orders.apirest.TestConstants.TEST_ID;
 import static com.academy.orders.apirest.TestConstants.TEST_LAST_NAME;
+import static com.academy.orders.apirest.TestConstants.TEST_PASSWORD;
 import static com.academy.orders.apirest.TestConstants.TEST_PRICE;
 import static com.academy.orders.apirest.TestConstants.TEST_QUANTITY;
 import static com.academy.orders.apirest.TestConstants.TEST_UUID;
@@ -165,6 +174,18 @@ public class ModelUtils {
 	public static Order getOrder() {
 		return Order.builder().id(TEST_UUID).createdAt(LocalDateTime.of(1, 1, 1, 1, 1)).isPaid(false)
 				.orderStatus(OrderStatus.IN_PROGRESS)
+				.postAddress(PostAddress.builder().city(TEST_CITY).deliveryMethod(DeliveryMethod.NOVA)
+						.department(TEST_DEPARTMENT).build())
+				.receiver(OrderReceiver.builder().firstName(TEST_FIRST_NAME).lastName(TEST_LAST_NAME).email(TEST_EMAIL)
+						.build())
+				.orderItems(List.of(getOrderItem())).build();
+	}
+
+	public static OrderManagement getOrderManagement() {
+		return OrderManagement.builder().id(TEST_UUID).createdAt(LocalDateTime.of(1, 1, 1, 1, 1)).isPaid(false)
+				.orderStatus(OrderStatus.IN_PROGRESS)
+				.availableStatuses(List.of(OrderStatus.SHIPPED, OrderStatus.DELIVERED, OrderStatus.COMPLETED,
+						OrderStatus.CANCELED))
 				.postAddress(PostAddress.builder().city(TEST_CITY).deliveryMethod(DeliveryMethod.NOVA)
 						.department(TEST_DEPARTMENT).build())
 				.receiver(OrderReceiver.builder().firstName(TEST_FIRST_NAME).lastName(TEST_LAST_NAME).email(TEST_EMAIL)
@@ -456,13 +477,15 @@ public class ModelUtils {
 
 	public static OrderStatusInfoDTO getOrderStatusInfoDTO() {
 		var orderStatusInfoDTO = new OrderStatusInfoDTO();
-		orderStatusInfoDTO.setAvailableStatuses(List.of("SHIPPED, DELIVERED, COMPLETED, CANCELED"));
+		orderStatusInfoDTO.setAvailableStatuses(List.of(OrderStatusDTO.SHIPPED, OrderStatusDTO.DELIVERED,
+				OrderStatusDTO.COMPLETED, OrderStatusDTO.CANCELED));
 		orderStatusInfoDTO.setIsPaid(false);
 		return orderStatusInfoDTO;
 	}
 
 	public static OrderStatusInfo getOrderStatusInfo() {
-		return OrderStatusInfo.builder().availableStatuses(List.of("SHIPPED, DELIVERED, COMPLETED, CANCELED"))
+		return OrderStatusInfo.builder().availableStatuses(
+				List.of(OrderStatus.SHIPPED, OrderStatus.DELIVERED, OrderStatus.COMPLETED, OrderStatus.CANCELED))
 				.isPaid(false).build();
 	}
 
@@ -511,5 +534,33 @@ public class ModelUtils {
 		productDetailsResponseDTO.quantity(TEST_QUANTITY);
 		productDetailsResponseDTO.price(TEST_PRICE);
 		return productDetailsResponseDTO;
+	}
+
+	public static Account getAccount() {
+		return new Account(TEST_ID, TEST_PASSWORD, TEST_EMAIL, TEST_FIRST_NAME, TEST_LAST_NAME, Role.ROLE_USER,
+				UserStatus.ACTIVE, LocalDateTime.now());
+	}
+
+	public static Page<Account> getAccountPage() {
+		return Page.<Account>builder().totalElements(1L).totalPages(1).first(true).last(true).number(0)
+				.numberOfElements(1).size(5).empty(false).content(Collections.singletonList(getAccount())).build();
+	}
+
+	public static PageAccountsDTO getPageAccountsDTO() {
+		var pageAccountsDTO = new PageAccountsDTO();
+		pageAccountsDTO.setTotalElements(0L);
+		pageAccountsDTO.setTotalPages(0);
+		pageAccountsDTO.setFirst(true);
+		pageAccountsDTO.setLast(true);
+		pageAccountsDTO.setNumber(0);
+		pageAccountsDTO.setNumberOfElements(0);
+		pageAccountsDTO.setSize(5);
+		pageAccountsDTO.setEmpty(true);
+		pageAccountsDTO.setContent(Collections.emptyList());
+		return pageAccountsDTO;
+	}
+
+	public static AccountManagementFilterDto getAccountManagementFilterDto() {
+		return AccountManagementFilterDto.builder().status(UserStatus.ACTIVE).role(Role.ROLE_USER).build();
 	}
 }

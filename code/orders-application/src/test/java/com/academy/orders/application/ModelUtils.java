@@ -1,5 +1,6 @@
 package com.academy.orders.application;
 
+import com.academy.orders.domain.account.dto.AccountManagementFilterDto;
 import com.academy.orders.domain.account.entity.Account;
 import com.academy.orders.domain.account.entity.enumerated.Role;
 import com.academy.orders.domain.account.entity.enumerated.UserStatus;
@@ -14,6 +15,7 @@ import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
 import com.academy.orders.domain.order.dto.UpdateOrderStatusDto;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.entity.OrderItem;
+import com.academy.orders.domain.order.entity.OrderManagement;
 import com.academy.orders.domain.order.entity.OrderReceiver;
 import com.academy.orders.domain.order.entity.PostAddress;
 import com.academy.orders.domain.order.entity.enumerated.DeliveryMethod;
@@ -111,6 +113,26 @@ public class ModelUtils {
 				.orderItems(List.of(getOrderItem())).editedAt(DATE_TIME).total(BigDecimal.valueOf(200)).build();
 	}
 
+	public static OrderManagement getOrderManagementForManager() {
+		return OrderManagement.builder().id(TEST_UUID).createdAt(DATE_TIME).isPaid(false)
+				.orderStatus(OrderStatus.IN_PROGRESS)
+				.availableStatuses(List.of(OrderStatus.SHIPPED, OrderStatus.DELIVERED, OrderStatus.COMPLETED,
+						OrderStatus.CANCELED))
+				.postAddress(PostAddress.builder().city("Kyiv").deliveryMethod(NOVA).department("1").build())
+				.receiver(OrderReceiver.builder().firstName("John").lastName("Doe").email("test@mail.com").build())
+				.orderItems(List.of(getOrderItem())).editedAt(DATE_TIME).total(BigDecimal.valueOf(200)).build();
+	}
+
+	public static OrderManagement getOrderManagementForAdmin() {
+		return OrderManagement.builder().id(TEST_UUID).createdAt(DATE_TIME).isPaid(false)
+				.orderStatus(OrderStatus.IN_PROGRESS)
+				.availableStatuses(List.of(OrderStatus.IN_PROGRESS, OrderStatus.SHIPPED, OrderStatus.DELIVERED,
+						OrderStatus.COMPLETED, OrderStatus.CANCELED))
+				.postAddress(PostAddress.builder().city("Kyiv").deliveryMethod(NOVA).department("1").build())
+				.receiver(OrderReceiver.builder().firstName("John").lastName("Doe").email("test@mail.com").build())
+				.orderItems(List.of(getOrderItem())).editedAt(DATE_TIME).total(BigDecimal.valueOf(200)).build();
+	}
+
 	public static Order getPaidOrder() {
 		return Order.builder().id(TEST_UUID).createdAt(DATE_TIME).isPaid(true).orderStatus(OrderStatus.IN_PROGRESS)
 				.postAddress(PostAddress.builder().city("Kyiv").deliveryMethod(NOVA).department("1").build())
@@ -120,6 +142,13 @@ public class ModelUtils {
 
 	public static Order getCanceledOrder() {
 		return Order.builder().id(TEST_UUID).createdAt(DATE_TIME).isPaid(false).orderStatus(OrderStatus.CANCELED)
+				.postAddress(PostAddress.builder().city("Kyiv").deliveryMethod(NOVA).department("1").build())
+				.receiver(OrderReceiver.builder().firstName("John").lastName("Doe").email("test@mail.com").build())
+				.orderItems(List.of(getOrderItem())).editedAt(DATE_TIME).total(BigDecimal.valueOf(200)).build();
+	}
+
+	public static Order getCompletedOrder() {
+		return Order.builder().id(TEST_UUID).createdAt(DATE_TIME).isPaid(false).orderStatus(OrderStatus.COMPLETED)
 				.postAddress(PostAddress.builder().city("Kyiv").deliveryMethod(NOVA).department("1").build())
 				.receiver(OrderReceiver.builder().firstName("John").lastName("Doe").email("test@mail.com").build())
 				.orderItems(List.of(getOrderItem())).editedAt(DATE_TIME).total(BigDecimal.valueOf(200)).build();
@@ -242,8 +271,24 @@ public class ModelUtils {
 	}
 
 	public static OrderStatusInfo getOrderStatusInfo() {
-		return OrderStatusInfo.builder().availableStatuses(List.of("SHIPPED, DELIVERED, COMPLETED, CANCELED"))
+		return OrderStatusInfo.builder().availableStatuses(
+				List.of(OrderStatus.SHIPPED, OrderStatus.DELIVERED, OrderStatus.COMPLETED, OrderStatus.CANCELED))
 				.isPaid(false).build();
 	}
 
+	public static Pageable getPageableWithSort() {
+		return Pageable.builder().page(0).size(10).sort(List.of("email,asc")).build();
+	}
+
+	public static Pageable getDefaultPageable() {
+		return Pageable.builder().page(0).size(10).sort(Collections.emptyList()).build();
+	}
+	public static AccountManagementFilterDto getAccountManagementFilterDto() {
+		return AccountManagementFilterDto.builder().build();
+	}
+
+	public static Page<Account> getAccountPage() {
+		return Page.<Account>builder().totalElements(1L).totalPages(1).first(true).last(true).number(0)
+				.numberOfElements(1).size(5).empty(false).content(Collections.singletonList(getAccount())).build();
+	}
 }

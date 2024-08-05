@@ -7,7 +7,7 @@ Feature: Create Order
     * def productId = productFeature.productId
     * def authHeader = callonce read('classpath:karate-auth.js')
     * def userId = credentials.id
-    * def requestData = call utils.readTestData 'classpath:apis/orders/test-data/createOrderRequest.json'
+    * def requestData = call utils.readTestData 'classpath:apis/orders/test-data/requests/createOrderRequest.json'
     * url urls.retailApiUrl
 
   Scenario: Create order (Created 201)

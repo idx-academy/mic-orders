@@ -204,6 +204,37 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
+  /v1/users/{userId}/orders/{orderId}/cancel:
+    patch:
+      tags:
+        - Orders
+      summary: Cancel order status for user by order ID
+      operationId: cancelOrder
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+        - in: path
+          name: orderId
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: The ID of the order to update
+          example: '8efbee82-8a0c-407a-a4c0-16bbad40a23e'
+      responses:
+        '200':
+          description: Order was canceled successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+
+
   /v1/management/orders:
     get:
       tags:
@@ -571,6 +602,34 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFoundResponse'
+
+  /v1/management/users:
+    get:
+      tags:
+        - UsersManagement
+      summary: Get list of all users
+      description: The endpoint for getting all accounts from the database.
+      operationId: getAccounts
+      parameters:
+        - in: query
+          description: filter for accounts
+          name: accountFilter
+          schema:
+            $ref: '#/components/schemas/AccountFilter'
+        - $ref: '#/components/parameters/Pageable'
+      responses:
+        '200':
+          description: Short information about all accounts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageAccounts'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
 
 
 
@@ -1056,6 +1115,10 @@ components:
           description: Indicates whether the order has been paid
         orderStatus:
           $ref: '#/components/schemas/OrderStatus'
+        availableStatuses:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderStatus'
         createdAt:
           type: string
           format: date-time
@@ -1074,6 +1137,7 @@ components:
           $ref: '#/components/schemas/OrderReceiver'
         postAddress:
           $ref: '#/components/schemas/PostAddress'
+
 
     ManagerOrder:
       type: object
@@ -1485,9 +1549,7 @@ components:
         availableStatuses:
           type: array
           items:
-            type: string
-            description: List of statuses that the order can transition to from its current state
-            example: 'DELIVERED, COMPLETED, CANCELED'
+            $ref: '#/components/schemas/OrderStatus'
         isPaid:
           type: boolean
           description: Indicates if the order is paid
@@ -1603,9 +1665,73 @@ components:
       example: VISIBLE
       description: Status of the product
 
+    PageAccounts:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/AbstractPage'
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/AccountResponseManagement'
+
+    AccountResponseManagement:
+      type: object
+      properties:
+        id:
+          type: number
+          format: id
+          example: "1"
+        email:
+          type: string
+          format: email
+          example: "john.doe@example.com"
+        firstName:
+          type: string
+          example: "John"
+        lastName:
+          type: string
+          example: "Doe"
+        role:
+          type: string
+          default: ROLE_USER
+          enum:
+            - ROLE_USER
+            - ROLE_ADMIN
+            - ROLE_MANAGER
+          example: "ROLE_USER"
+        status:
+          type: string
+          default: ACTIVE
+          enum:
+            - ACTIVE
+            - DEACTIVATED
+          example: ACTIVE
+          description: Account Status
+        createdAt:
+          type: string
+          format: date-time
+
     AccountStatus:
       type: string
       enum:
         - ACTIVE
         - DEACTIVATED
       description: Status of the account
+
+    AccountFilter:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/AccountStatus'
+        role:
+          $ref: '#/components/schemas/AccountManagementRoles'
+
+    AccountManagementRoles:
+      type: string
+      enum:
+        - USER
+        - ADMIN
+        - MANAGER
+      description: Role of the account

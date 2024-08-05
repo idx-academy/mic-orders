@@ -12,6 +12,7 @@ import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
 import com.academy.orders.domain.order.entity.Order;
+import com.academy.orders.domain.order.entity.OrderManagement;
 import com.academy.orders.domain.order.usecase.GetAllOrdersUseCase;
 import com.academy.orders.domain.order.usecase.GetOrderByIdUseCase;
 import com.academy.orders.domain.order.usecase.UpdateOrderStatusUseCase;
@@ -35,6 +36,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import static com.academy.orders.apirest.ModelUtils.getManagerOrderDTO;
 import static com.academy.orders.apirest.ModelUtils.getOrder;
+import static com.academy.orders.apirest.ModelUtils.getOrderManagement;
 import static com.academy.orders.apirest.ModelUtils.getOrderStatusInfo;
 import static com.academy.orders.apirest.ModelUtils.getOrderStatusInfoDTO;
 import static com.academy.orders.apirest.ModelUtils.getOrdersFilterParametersDTO;
@@ -90,14 +92,14 @@ class OrdersManagementControllerTest {
 		Long userId = 1L;
 		PageableDTO pageableDTO = new PageableDTO();
 		Pageable pageable = getPageable();
-		Page<Order> orderPage = getPageOf(getOrder());
+		Page<OrderManagement> orderPage = getPageOf(getOrderManagement());
 		OrdersFilterParametersDto orderFilterParametersDto = getOrdersFilterParametersDto();
 		OrdersFilterParametersDTO orderFilterParametersDTO = getOrdersFilterParametersDTO();
 		PageManagerOrderPreviewDTO pageOrderDTO = getPageManagerOrderPreviewDTO();
 
 		when(pageableDTOMapper.fromDto(pageableDTO)).thenReturn(pageable);
 		when(orderFilterParametersDTOMapper.fromDTO(orderFilterParametersDTO)).thenReturn(orderFilterParametersDto);
-		when(getAllOrdersUseCase.getAllOrders(orderFilterParametersDto, pageable)).thenReturn(orderPage);
+		when(getAllOrdersUseCase.getAllOrders(orderFilterParametersDto, pageable, ROLE_MANAGER)).thenReturn(orderPage);
 		when(pageOrderDTOMapper.toManagerDto(orderPage)).thenReturn(pageOrderDTO);
 
 		// When
@@ -112,7 +114,7 @@ class OrdersManagementControllerTest {
 
 		verify(pageableDTOMapper).fromDto(pageableDTO);
 		verify(orderFilterParametersDTOMapper).fromDTO(orderFilterParametersDTO);
-		verify(getAllOrdersUseCase).getAllOrders(orderFilterParametersDto, pageable);
+		verify(getAllOrdersUseCase).getAllOrders(orderFilterParametersDto, pageable, ROLE_MANAGER);
 		assertEquals(pageOrderDTO, objectMapper.readValue(contentAsString, PageManagerOrderPreviewDTO.class));
 	}
 
@@ -127,7 +129,7 @@ class OrdersManagementControllerTest {
 		var orderStatusInfo = getOrderStatusInfo();
 
 		when(updateOrderStatusRequestDTOMapper.fromDTO(updateOrderStatusRequestDTO)).thenReturn(updateOrderStatusDto);
-		when(updateOrderStatusUseCase.updateOrderStatus(orderId, updateOrderStatusDto, "user"))
+		when(updateOrderStatusUseCase.updateOrderStatus(orderId, updateOrderStatusDto, ROLE_MANAGER))
 				.thenReturn(orderStatusInfo);
 		when(orderStatusInfoDTOMapper.toDTO(orderStatusInfo)).thenReturn(orderStatusInfoDTO);
 
@@ -140,7 +142,7 @@ class OrdersManagementControllerTest {
 		assertEquals(orderStatusInfoDTO, objectMapper.readValue(contentAsString, OrderStatusInfoDTO.class));
 
 		verify(updateOrderStatusRequestDTOMapper).fromDTO(updateOrderStatusRequestDTO);
-		verify(updateOrderStatusUseCase).updateOrderStatus(orderId, updateOrderStatusDto, "user");
+		verify(updateOrderStatusUseCase).updateOrderStatus(orderId, updateOrderStatusDto, ROLE_MANAGER);
 		verify(orderStatusInfoDTOMapper).toDTO(orderStatusInfo);
 
 	}

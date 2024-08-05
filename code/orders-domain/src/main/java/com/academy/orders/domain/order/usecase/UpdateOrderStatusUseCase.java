@@ -13,12 +13,12 @@ public interface UpdateOrderStatusUseCase {
 	 * @param updateOrderStatus
 	 *            the DTO containing the new status and payment information to be
 	 *            set for the order.
-	 * @param currentAccountEmail
-	 *            the email of the current user performing the update.
+	 * @param role
+	 *            the role of the current user performing the update.
 	 * @return an {@link OrderStatusInfo} object containing a list of available
 	 *         statuses that the order can transition to from its new state and the
 	 *         payment status of the order.
 	 * @author Anton Bondar
 	 */
-	OrderStatusInfo updateOrderStatus(UUID orderId, UpdateOrderStatusDto updateOrderStatus, String currentAccountEmail);
+	OrderStatusInfo updateOrderStatus(UUID orderId, UpdateOrderStatusDto updateOrderStatus, String role);
 }

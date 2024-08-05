@@ -86,21 +86,6 @@ class OrderRepositoryImplTest {
 		verify(jpaAdapter).save(any());
 	}
 
-	private OrderEntity createOrderEntityWithDependencies() {
-		var orderEntity = getOrderEntity();
-		var orderItemEntity = getOrderItemEntity();
-		orderItemEntity.setProduct(getProductEntity());
-		orderEntity.getOrderItems().add(orderItemEntity);
-
-		var postAddressEntity = getPostAddressEntity();
-		orderEntity.setPostAddress(postAddressEntity);
-		postAddressEntity.setOrder(orderEntity);
-
-		var accountEntity = getAccountEntity();
-		orderEntity.setAccount(accountEntity);
-		return orderEntity;
-	}
-
 	@Test
 	void findByIdTest() {
 		// Given
@@ -198,7 +183,7 @@ class OrderRepositoryImplTest {
 	}
 
 	@Test
-	void findByIdFetchDataTest() {
+	void findByIdFetchOrderItemsDataTest() {
 		// Given
 		String language = "uk";
 		OrderEntity order = getOrderEntity();
@@ -210,7 +195,7 @@ class OrderRepositoryImplTest {
 				.map(orderItemEntity -> orderItemEntity.getProduct().getId()).toList();
 		var products = List.of(getProductEntity());
 
-		when(jpaAdapter.findByIdFetchData(orderId)).thenReturn(optionalOrderEntity);
+		when(jpaAdapter.findByIdFetchOrderItemsData(orderId)).thenReturn(optionalOrderEntity);
 		when(productJpaAdapter.findAllByIdAndLanguageCode(productIds, language)).thenReturn(products);
 		when(mapper.fromEntity(order)).thenReturn(orderDomain);
 
@@ -219,26 +204,62 @@ class OrderRepositoryImplTest {
 
 		// Then
 		assertEquals(optionalOrder, result);
-		verify(jpaAdapter).findByIdFetchData(orderId);
+		verify(jpaAdapter).findByIdFetchOrderItemsData(orderId);
 		verify(productJpaAdapter).findAllByIdAndLanguageCode(productIds, language);
 		verify(mapper).fromEntity(order);
 	}
 
 	@Test
-	void findByIdFetchDataWhenOrderNotFoundTest() {
+	void findByIdFetchOrderItemsDataWhenOrderNotFoundTest() {
 		// Given
 		String language = "uk";
 		UUID orderId = TEST_UUID;
 		Optional<OrderEntity> optionalOrderEntity = Optional.empty();
 		Optional<Order> optionalOrder = Optional.empty();
 
-		when(jpaAdapter.findByIdFetchData(orderId)).thenReturn(optionalOrderEntity);
+		when(jpaAdapter.findByIdFetchOrderItemsData(orderId)).thenReturn(optionalOrderEntity);
 
 		// When
 		Optional<Order> result = orderRepository.findById(orderId, language);
 
 		// Then
 		assertEquals(optionalOrder, result);
+		verify(jpaAdapter).findByIdFetchOrderItemsData(orderId);
+	}
+
+	@Test
+	void findByIdFetchDataTest() {
+		// Given
+		OrderEntity order = getOrderEntity();
+		UUID orderId = order.getId();
+		Optional<OrderEntity> optionalOrderEntity = Optional.of(order);
+		Order orderDomain = getOrder();
+		Optional<Order> optionalOrder = Optional.of(orderDomain);
+
+		when(jpaAdapter.findByIdFetchData(orderId)).thenReturn(optionalOrderEntity);
+		when(mapper.fromEntity(order)).thenReturn(orderDomain);
+
+		// When
+		Optional<Order> result = orderRepository.findByIdFetchData(orderId);
+
+		// Then
+		assertEquals(optionalOrder, result);
 		verify(jpaAdapter).findByIdFetchData(orderId);
+		verify(mapper).fromEntity(order);
+	}
+
+	private OrderEntity createOrderEntityWithDependencies() {
+		var orderEntity = getOrderEntity();
+		var orderItemEntity = getOrderItemEntity();
+		orderItemEntity.setProduct(getProductEntity());
+		orderEntity.getOrderItems().add(orderItemEntity);
+
+		var postAddressEntity = getPostAddressEntity();
+		orderEntity.setPostAddress(postAddressEntity);
+		postAddressEntity.setOrder(orderEntity);
+
+		var accountEntity = getAccountEntity();
+		orderEntity.setAccount(accountEntity);
+		return orderEntity;
 	}
 }

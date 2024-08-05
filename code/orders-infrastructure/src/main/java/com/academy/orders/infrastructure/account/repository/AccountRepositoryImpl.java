@@ -1,17 +1,22 @@
 package com.academy.orders.infrastructure.account.repository;
 
+import com.academy.orders.domain.account.dto.AccountManagementFilterDto;
 import com.academy.orders.domain.account.entity.Account;
 import com.academy.orders.domain.account.entity.CreateAccountDTO;
 import com.academy.orders.domain.account.entity.enumerated.Role;
 import com.academy.orders.domain.account.entity.enumerated.UserStatus;
 import com.academy.orders.domain.account.repository.AccountRepository;
+import com.academy.orders.domain.common.Page;
+import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.infrastructure.account.AccountMapper;
+import com.academy.orders.infrastructure.account.AccountPageMapper;
 import com.academy.orders.infrastructure.account.entity.AccountEntity;
-import java.util.Optional;
+import com.academy.orders.infrastructure.common.PageableMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -20,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class AccountRepositoryImpl implements AccountRepository {
 	private final AccountJpaAdapter accountJpaAdapter;
 	private final AccountMapper accountMapper;
+	private final AccountPageMapper accountPageMapper;
+	private final PageableMapper pageableMapper;
 
 	@Override
 	public Optional<Account> findAccountByEmail(String email) {
@@ -57,5 +64,12 @@ public class AccountRepositoryImpl implements AccountRepository {
 	@Override
 	public void updateStatus(Long id, UserStatus status) {
 		accountJpaAdapter.updateStatus(id, status);
+	}
+
+	@Override
+	public Page<Account> getAccounts(AccountManagementFilterDto filter, Pageable pageableDomain) {
+		var pageable = pageableMapper.fromDomain(pageableDomain);
+		var accountPage = accountJpaAdapter.findAllByRoleAndStatus(filter, pageable);
+		return accountPageMapper.toDomain(accountPage);
 	}
 }

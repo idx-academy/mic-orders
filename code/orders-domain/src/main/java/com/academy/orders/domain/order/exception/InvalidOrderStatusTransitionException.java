@@ -1,10 +1,11 @@
 package com.academy.orders.domain.order.exception;
 
+import com.academy.orders.domain.exception.BadRequestException;
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import lombok.Getter;
 
 @Getter
-public class InvalidOrderStatusTransitionException extends RuntimeException {
+public class InvalidOrderStatusTransitionException extends BadRequestException {
 	private final OrderStatus currentStatus;
 	private final OrderStatus newStatus;
 
