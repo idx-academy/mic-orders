@@ -603,6 +603,34 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
 
+  /v1/management/users:
+    get:
+      tags:
+        - UsersManagement
+      summary: Get list of all users
+      description: The endpoint for getting all accounts from the database.
+      operationId: getAccounts
+      parameters:
+        - in: query
+          description: filter for accounts
+          name: accountFilter
+          schema:
+            $ref: '#/components/schemas/AccountFilter'
+        - $ref: '#/components/parameters/Pageable'
+      responses:
+        '200':
+          description: Short information about all accounts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageAccounts'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
 
 
 #COMPONENTS
@@ -1633,9 +1661,73 @@ components:
       example: VISIBLE
       description: Status of the product
 
+    PageAccounts:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/AbstractPage'
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/AccountResponseManagement'
+
+    AccountResponseManagement:
+      type: object
+      properties:
+        id:
+          type: number
+          format: id
+          example: "1"
+        email:
+          type: string
+          format: email
+          example: "john.doe@example.com"
+        firstName:
+          type: string
+          example: "John"
+        lastName:
+          type: string
+          example: "Doe"
+        role:
+          type: string
+          default: ROLE_USER
+          enum:
+            - ROLE_USER
+            - ROLE_ADMIN
+            - ROLE_MANAGER
+          example: "ROLE_USER"
+        status:
+          type: string
+          default: ACTIVE
+          enum:
+            - ACTIVE
+            - DEACTIVATED
+          example: ACTIVE
+          description: Account Status
+        createdAt:
+          type: string
+          format: date-time
+
     AccountStatus:
       type: string
       enum:
         - ACTIVE
         - DEACTIVATED
       description: Status of the account
+
+    AccountFilter:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/AccountStatus'
+        role:
+          $ref: '#/components/schemas/AccountManagementRoles'
+
+    AccountManagementRoles:
+      type: string
+      enum:
+        - USER
+        - ADMIN
+        - MANAGER
+      description: Role of the account
