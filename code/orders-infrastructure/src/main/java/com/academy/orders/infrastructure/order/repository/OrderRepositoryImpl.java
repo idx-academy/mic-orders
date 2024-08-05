@@ -40,7 +40,7 @@ public class OrderRepositoryImpl implements OrderRepository {
 
 	@Override
 	public Optional<Order> findById(UUID id, String language) {
-		Optional<OrderEntity> order = jpaAdapter.findByIdFetchData(id);
+		Optional<OrderEntity> order = jpaAdapter.findByIdFetchOrderItemsData(id);
 		order.ifPresent(orderEntity -> loadProducts(language, orderEntity));
 		return order.map(mapper::fromEntity);
 	}
@@ -68,6 +68,11 @@ public class OrderRepositoryImpl implements OrderRepository {
 		var springPageable = pageableMapper.fromDomain(pageable);
 		var orderEntityPage = customOrderRepository.findAllByFilterParameters(filterParametersDto, springPageable);
 		return pageMapper.toDomain(orderEntityPage);
+	}
+
+	@Override
+	public Optional<Order> findByIdFetchData(UUID orderId) {
+		return jpaAdapter.findByIdFetchData(orderId).map(mapper::fromEntity);
 	}
 
 	@Override
