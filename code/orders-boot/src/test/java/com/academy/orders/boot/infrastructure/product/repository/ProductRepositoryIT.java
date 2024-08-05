@@ -128,7 +128,7 @@ class ProductRepositoryIT extends AbstractRepository {
 		productRepository.setNewProductQuantity(PRODUCT_UUID, 2);
 		final var product = productRepository.getById(PRODUCT_UUID);
 
-		assertEquals(product.get().quantity(), 2);
+		assertEquals(2, product.get().quantity());
 	}
 
 	@Test
@@ -141,7 +141,7 @@ class ProductRepositoryIT extends AbstractRepository {
 	void updateStatusTest() {
 		productRepository.updateStatus(PRODUCT_UUID, ProductStatus.HIDDEN);
 		final var product = productRepository.getById(PRODUCT_UUID);
-		assertEquals(product.get().status(), ProductStatus.HIDDEN);
+		assertEquals(ProductStatus.HIDDEN, product.get().status());
 	}
 
 	@Test
@@ -149,7 +149,7 @@ class ProductRepositoryIT extends AbstractRepository {
 		final var result = productRepository.findTranslationsByProductId(PRODUCT_UUID);
 
 		assertNotNull(result);
-		assertEquals(result.size(), NUMBER_OF_TRANSLATIONS_UK_AND_EN);
+		assertEquals(NUMBER_OF_TRANSLATIONS_UK_AND_EN, result.size());
 	}
 
 	@Test
@@ -157,7 +157,7 @@ class ProductRepositoryIT extends AbstractRepository {
 		productRepository.update(getProductManagement());
 		final var product = productRepository.getById(getProductManagement().id());
 
-		assertEquals(product.get().quantity(), 1000);
+		assertEquals(1000, product.get().quantity());
 	}
 
 	@Test
