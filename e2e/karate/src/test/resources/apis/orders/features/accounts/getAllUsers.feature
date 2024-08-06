@@ -2,8 +2,6 @@ Feature: Get all users
 
   Background:
     * url urls.retailApiUrl
-    * eval karate.set('credentials.username', admin.username)
-    * eval karate.set('credentials.password', admin.password)
     * def authHeader = callonce read('classpath:karate-auth.js')
 
   Scenario Outline: Get all users
@@ -70,10 +68,3 @@ Feature: Get all users
     And params {page: 0, size: 8, sort: ['email,desc']}
     When method get
     Then status 200
-
-
-
-
-
-
-
