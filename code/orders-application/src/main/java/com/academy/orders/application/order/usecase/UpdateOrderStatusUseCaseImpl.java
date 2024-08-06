@@ -52,7 +52,7 @@ public class UpdateOrderStatusUseCaseImpl implements UpdateOrderStatusUseCase {
 			throw new OrderAlreadyPaidException(currentOrder.id());
 		}
 
-		if (!currentOrder.isPaid() && updateOrderStatus.status().equals(OrderStatus.COMPLETED)) {
+		if (Boolean.TRUE.equals(!currentOrder.isPaid()) && updateOrderStatus.status().equals(OrderStatus.COMPLETED)) {
 			throw new OrderUnpaidException(currentOrder.id(), updateOrderStatus.status().toString());
 		}
 

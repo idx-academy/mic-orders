@@ -1,14 +1,12 @@
 package com.academy.orders.domain.order.entity.enumerated;
 
 import com.academy.orders.domain.order.exception.OrderFinalStateException;
-
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public enum OrderStatus {
@@ -41,6 +39,6 @@ public enum OrderStatus {
 	}
 
 	public static List<OrderStatus> getAllTransitions() {
-		return Stream.of(OrderStatus.values()).collect(Collectors.toList());
+		return Stream.of(OrderStatus.values()).toList();
 	}
 }

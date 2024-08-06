@@ -37,10 +37,9 @@ resilience4j:
   circuitbreaker:
     instances:
       imagesCircuit:
-        minimumNumberOfCalls: 5
-        slowCallRateThreshold: 50
-        slowCallDurationThreshold: 500
-        failureRateThreshold: 55
+        minimumNumberOfCalls: 4
+        slowCallRateThreshold: 34
+        failureRateThreshold: 30
         permittedNumberOfCallsInHalfOpenState: 3
         waitDurationInOpenState: 30000
   retry:

@@ -9,6 +9,7 @@ import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.ProductManagement;
 import com.academy.orders.domain.product.entity.ProductTranslationManagement;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
+import com.academy.orders.domain.product.repository.ProductImageRepository;
 import com.academy.orders.domain.product.repository.ProductRepository;
 import com.academy.orders.domain.product.usecase.CreateProductUseCase;
 import com.academy.orders.domain.tag.repository.TagRepository;
@@ -26,6 +27,7 @@ public class CreateProductUseCaseImpl implements CreateProductUseCase {
 	private final ProductRepository productRepository;
 	private final TagRepository tagRepository;
 	private final LanguageRepository languageRepository;
+	private final ProductImageRepository productImageRepository;
 
 	@Override
 	public Product createProduct(ProductRequestDto request) {
@@ -52,6 +54,7 @@ public class CreateProductUseCaseImpl implements CreateProductUseCase {
 				product.image(), product.createdAt(), product.quantity(), product.price(), product.tags(),
 				productTranslations);
 
-		return productRepository.save(productWithTranslations);
+		var savedProduct = productRepository.save(productWithTranslations);
+		return productImageRepository.loadImageForProduct(savedProduct);
 	}
 }

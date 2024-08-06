@@ -17,5 +17,4 @@ public record Page<T> (Long totalElements, Integer totalPages, Boolean first, Bo
 				.number(number).numberOfElements(numberOfElements).size(size).empty(empty).content(list).build();
 
 	}
-
 }
