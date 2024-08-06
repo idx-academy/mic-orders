@@ -18,7 +18,12 @@ public class GetAllProductsUseCaseImpl implements GetAllProductsUseCase {
 
 	@Override
 	public Page<Product> getAllProducts(String language, Pageable pageable, List<String> tags) {
-		return productRepository.findAllProducts(language, pageable, tags)
-				.map(productImageRepository::loadImageForProduct);
+		Page<Product> products;
+		if (pageable.sort().isEmpty()) {
+			products = productRepository.findAllProductsWithDefaultSorting(language, pageable, tags);
+		} else {
+			products = productRepository.findAllProducts(language, pageable, tags);
+		}
+		return products.map(productImageRepository::loadImageForProduct);
 	}
 }

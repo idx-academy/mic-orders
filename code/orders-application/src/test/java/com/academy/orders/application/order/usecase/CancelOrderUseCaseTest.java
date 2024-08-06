@@ -28,8 +28,8 @@ class CancelOrderUseCaseTest {
 	@InjectMocks
 	private CancelOrderUseCaseImpl cancelOrderUseCase;
 
-	private Long userId = 1L;
-	private Order order = getOrder();
+	private final Long userId = 1L;
+	private final Order order = getOrder();
 
 	@Test
 	void cancelOrderTest() {
@@ -71,10 +71,10 @@ class CancelOrderUseCaseTest {
 
 	@Test
 	void cancelOrderThrowsOrderFinalStateExceptionWhenOrderCompletedTest() {
-		Order order = getCompletedOrder();
+		Order completedOrder = getCompletedOrder();
 		// Given
-		UUID orderId = order.id();
-		when(orderRepository.findByIdFetchData(orderId)).thenReturn(Optional.of(order));
+		UUID orderId = completedOrder.id();
+		when(orderRepository.findByIdFetchData(orderId)).thenReturn(Optional.of(completedOrder));
 
 		// Then
 		assertThrows(OrderFinalStateException.class, () -> cancelOrderUseCase.cancelOrder(userId, orderId));

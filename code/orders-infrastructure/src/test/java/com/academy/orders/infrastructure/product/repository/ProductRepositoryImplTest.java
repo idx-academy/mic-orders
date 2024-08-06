@@ -113,6 +113,32 @@ class ProductRepositoryImplTest {
 		verify(productPageMapper).toDomain(page);
 	}
 
+	@ParameterizedTest
+	@MethodSource("findAllProductsMethodSourceProvider")
+	void findAllProductsWithDefaultSortingTest(List<String> tagsParams, List<String> mockedTags) {
+		var pageable = getPageable();
+		var productEntity = getProductEntity();
+		var product = getProduct();
+		var pageDomain = getPageOf(product);
+		var page = getPageImplOf(productEntity);
+		var pageRequest = getPageRequest();
+
+		when(pageableMapper.fromDomain(pageable)).thenReturn(pageRequest);
+		when(productJpaAdapter.findAllByLanguageCodeAndStatusVisibleOrderedByDefault(LANGUAGE_EN, pageRequest,
+				mockedTags)).thenReturn(page);
+		when(productJpaAdapter.findAllByIdAndLanguageCode(List.of(productEntity.getId()), LANGUAGE_EN))
+				.thenReturn(List.of(productEntity));
+		when(productPageMapper.toDomain(page)).thenReturn(pageDomain);
+		var products = productRepository.findAllProductsWithDefaultSorting(LANGUAGE_EN, pageable, tagsParams);
+
+		assertEquals(pageDomain, products);
+		verify(pageableMapper).fromDomain(pageable);
+		verify(productJpaAdapter).findAllByLanguageCodeAndStatusVisibleOrderedByDefault(LANGUAGE_EN, pageRequest,
+				mockedTags);
+		verify(productJpaAdapter).findAllByIdAndLanguageCode(List.of(productEntity.getId()), LANGUAGE_EN);
+		verify(productPageMapper).toDomain(page);
+	}
+
 	static Stream<Arguments> findAllProductsMethodSourceProvider() {
 		return Stream.of(of(emptyList(), emptyList()), of(null, emptyList()),
 				of(singletonList("category:computer"), singletonList("category:computer")));
