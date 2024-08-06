@@ -114,6 +114,14 @@ class ProductRepositoryIT extends AbstractRepository {
 	}
 
 	@Test
+	void findAllProductsWithDefaultSortingTest() {
+		final var pageable = getPageableSortDesc();
+		final var result = productRepository.findAllProductsWithDefaultSorting(LANGUAGE_UK, pageable, List.of());
+
+		assertContentSchema(result);
+	}
+
+	@Test
 	void setNewProductQuantityTest() {
 		productRepository.setNewProductQuantity(PRODUCT_UUID, 2);
 		final var product = productRepository.getById(PRODUCT_UUID);
