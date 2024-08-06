@@ -2,6 +2,7 @@ package com.academy.orders.infrastructure.order.repository;
 
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import com.academy.orders.infrastructure.order.entity.OrderEntity;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.PageImpl;
@@ -27,9 +28,27 @@ public interface OrderJpaAdapter extends CrudRepository<OrderEntity, UUID> {
 	 *
 	 * @author Denys Liubchenko
 	 */
-	@Query("select o from OrderEntity o left join fetch o.postAddress pa left join fetch o.orderItems oa "
-			+ "left join fetch oa.product p left join fetch o.account a where a.id = :accountId")
+	@Query("select o from OrderEntity o left join o.postAddress pa " + "left join o.account a where a.id = :accountId")
 	PageImpl<OrderEntity> findAllByAccountId(Long accountId, Pageable pageable);
+
+	/**
+	 * Retrieves a list of orders by their IDs, fetching associated product data.
+	 * The method uses a complex query to eagerly fetch related entities such as
+	 * account, post address, order items, products, product translations,
+	 * languages, and tags.
+	 *
+	 * @param orderIds
+	 *            the list of order IDs to retrieve
+	 * @param language
+	 *            the language code to filter product translations
+	 *
+	 * @return a list of {@link OrderEntity} with fetched related data
+	 */
+	@Query("SELECT o FROM OrderEntity o left join fetch o.account a left join fetch o.postAddress pa "
+			+ "LEFT JOIN FETCH o.orderItems oi LEFT JOIN FETCH oi.product p "
+			+ "LEFT JOIN FETCH p.productTranslations pt LEFT JOIN FETCH pt.language l LEFT JOIN FETCH p.tags t "
+			+ "WHERE oi.order.id in (:orderIds) and l.code = :language")
+	List<OrderEntity> findAllOrdersByOrderIdsFetchProductData(List<UUID> orderIds, String language);
 
 	/**
 	 * Retrieves an OrderEntity by his id, including related entities such as post
