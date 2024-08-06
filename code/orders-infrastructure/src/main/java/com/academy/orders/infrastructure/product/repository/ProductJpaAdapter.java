@@ -29,26 +29,15 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 	 *            the language code for filtering products.
 	 * @param pageable
 	 *            the pagination information.
-	 * @param sort
-	 *            the sort criteria.
 	 * @return a {@link Page} containing the filtered list of {@link ProductEntity}
 	 *         objects.
 	 *
 	 * @author Anton Bondar
 	 */
-	@Query(value = "SELECT p FROM ProductEntity p JOIN FETCH p.productTranslations pt "
-			+ "JOIN FETCH pt.language l LEFT JOIN FETCH p.tags t WHERE l.code = :language AND p.status = 'VISIBLE' "
-			+ "AND (:#{#tags.isEmpty()} = true OR t.name IN :tags) ORDER BY "
-			+ "CASE WHEN :sort = 'name,asc' THEN pt.name END ASC, "
-			+ "CASE WHEN :sort = 'name,desc' THEN pt.name END DESC, "
-			+ "CASE WHEN :sort = 'createdAt,asc' THEN p.createdAt END ASC, "
-			+ "CASE WHEN :sort = 'createdAt,desc' THEN p.createdAt END DESC, "
-			+ "CASE WHEN :sort = 'price,asc' THEN p.price END ASC, "
-			+ "CASE WHEN :sort = 'price,desc' THEN p.price END DESC", countQuery = "SELECT COUNT(p) FROM ProductEntity p JOIN p.productTranslations pt "
-					+ "JOIN pt.language l LEFT JOIN p.tags t WHERE l.code = :language AND p.status = 'VISIBLE'"
-					+ "AND (:#{#tags.isEmpty()} = true OR t.name IN :tags)")
-	Page<ProductEntity> findAllByLanguageCodeAndStatusVisible(String language, Pageable pageable, String sort,
-			List<String> tags);
+	@Query(value = "SELECT p FROM ProductEntity p LEFT JOIN p.productTranslations pt "
+			+ "LEFT JOIN pt.language l LEFT JOIN p.tags t WHERE l.code = :language AND p.status = 'VISIBLE' "
+			+ "AND (:#{#tags.isEmpty()} = true OR t.name IN :tags)")
+	Page<ProductEntity> findAllByLanguageCodeAndStatusVisible(String language, Pageable pageable, List<String> tags);
 
 	/**
 	 * Finds a list of products by their IDs and language code.

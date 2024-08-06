@@ -22,7 +22,6 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,11 +43,12 @@ public class ProductRepositoryImpl implements ProductRepository {
 
 	@Override
 	public Page<Product> findAllProducts(String language, Pageable pageable, List<String> tags) {
-		log.debug("Fetching all products by language code with pagination and sorting");
-		String sort = String.join(",", pageable.sort());
 		List<String> tagList = isNull(tags) ? emptyList() : tags;
-		var productEntities = productJpaAdapter.findAllByLanguageCodeAndStatusVisible(language,
-				PageRequest.of(pageable.page(), pageable.size()), sort, tagList);
+		var pageableSpring = pageableMapper.fromDomain(pageable);
+		var productEntities = productJpaAdapter.findAllByLanguageCodeAndStatusVisible(language, pageableSpring,
+				tagList);
+		productJpaAdapter.findAllByIdAndLanguageCode(
+				productEntities.getContent().stream().map(ProductEntity::getId).toList(), language);
 		setImageNames(productEntities.getContent());
 
 		return productPageMapper.toDomain(productEntities);
