@@ -1,0 +1,8 @@
+{
+  "name": "#string",
+  "description": "#string",
+  "image": "#string",
+  "tags": "#array",
+  "quantity": "#number",
+  "price": "#number"
+}
