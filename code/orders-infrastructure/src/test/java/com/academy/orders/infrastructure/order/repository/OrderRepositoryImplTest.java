@@ -140,14 +140,12 @@ class OrderRepositoryImplTest {
 		var orderDomainPage = getPageOf(getOrder());
 		var springPageable = PageRequest.of(pageable.page(), pageable.size());
 		var orderEntityPage = getPageImplOf(getOrderEntity());
-		var productIds = orderEntityPage.getContent().stream()
-				.flatMap(orderEntity -> orderEntity.getOrderItems().stream())
-				.map(orderItemEntity -> orderItemEntity.getProduct().getId()).toList();
-		var products = List.of(getProductEntity());
 
 		when(pageableMapper.fromDomain(pageable)).thenReturn(springPageable);
 		when(jpaAdapter.findAllByAccountId(userId, springPageable)).thenReturn(orderEntityPage);
-		when(productJpaAdapter.findAllByIdAndLanguageCode(productIds, language)).thenReturn(products);
+		when(jpaAdapter.findAllOrdersByOrderIdsFetchProductData(
+				orderEntityPage.getContent().stream().map(OrderEntity::getId).toList(), language))
+						.thenReturn(orderEntityPage.getContent());
 		when(pageMapper.toDomain(orderEntityPage)).thenReturn(orderDomainPage);
 
 		// When
@@ -157,7 +155,8 @@ class OrderRepositoryImplTest {
 		assertEquals(orderDomainPage, actual);
 		verify(pageableMapper).fromDomain(pageable);
 		verify(jpaAdapter).findAllByAccountId(userId, springPageable);
-		verify(productJpaAdapter).findAllByIdAndLanguageCode(productIds, language);
+		verify(jpaAdapter).findAllOrdersByOrderIdsFetchProductData(
+				orderEntityPage.getContent().stream().map(OrderEntity::getId).toList(), language);
 		verify(pageMapper).toDomain(orderEntityPage);
 	}
 

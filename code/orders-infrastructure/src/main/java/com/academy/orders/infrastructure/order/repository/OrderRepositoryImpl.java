@@ -49,7 +49,8 @@ public class OrderRepositoryImpl implements OrderRepository {
 	public Page<Order> findAllByUserId(Long userId, String language, Pageable pageable) {
 		var springPageable = pageableMapper.fromDomain(pageable);
 		var orderEntityPage = jpaAdapter.findAllByAccountId(userId, springPageable);
-		loadProducts(language, orderEntityPage.getContent().toArray(new OrderEntity[0]));
+		jpaAdapter.findAllOrdersByOrderIdsFetchProductData(
+				orderEntityPage.getContent().stream().map(OrderEntity::getId).toList(), language);
 		return pageMapper.toDomain(orderEntityPage);
 	}
 
