@@ -4,14 +4,13 @@ import com.academy.orders.domain.common.respository.ImageRepository;
 import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.infrastructure.ModelUtils;
 import com.academy.orders.infrastructure.product.ProductMapper;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
