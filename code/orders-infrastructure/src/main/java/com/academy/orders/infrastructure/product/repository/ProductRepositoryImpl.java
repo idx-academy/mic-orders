@@ -55,6 +55,19 @@ public class ProductRepositoryImpl implements ProductRepository {
 	}
 
 	@Override
+	public Page<Product> findAllProductsWithDefaultSorting(String language, Pageable pageable, List<String> tags) {
+		List<String> tagList = isNull(tags) ? emptyList() : tags;
+		var pageableSpring = pageableMapper.fromDomain(pageable);
+		var productEntities = productJpaAdapter.findAllByLanguageCodeAndStatusVisibleOrderedByDefault(language,
+				pageableSpring, tagList);
+		productJpaAdapter.findAllByIdAndLanguageCode(
+				productEntities.getContent().stream().map(ProductEntity::getId).toList(), language);
+		setImageNames(productEntities.getContent());
+
+		return productPageMapper.toDomain(productEntities);
+	}
+
+	@Override
 	@Transactional
 	public void setNewProductQuantity(UUID productId, Integer quantity) {
 		productJpaAdapter.setNewProductQuantity(productId, quantity);

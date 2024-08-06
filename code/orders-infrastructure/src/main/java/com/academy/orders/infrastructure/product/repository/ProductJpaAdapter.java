@@ -29,6 +29,7 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 	 *            the language code for filtering products.
 	 * @param pageable
 	 *            the pagination information.
+	 *
 	 * @return a {@link Page} containing the filtered list of {@link ProductEntity}
 	 *         objects.
 	 *
@@ -40,6 +41,27 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 	Page<ProductEntity> findAllByLanguageCodeAndStatusVisible(String language, Pageable pageable, List<String> tags);
 
 	/**
+	 * Finds a paginated list of products by language code and with a visible
+	 * status, sorted by amount of order items with this product.
+	 *
+	 * @param language
+	 *            the language code for filtering products.
+	 * @param pageable
+	 *            the pagination information.
+	 *
+	 * @return a {@link Page} containing the filtered list of {@link ProductEntity}
+	 *         objects.
+	 *
+	 * @author Denys Liubchenko
+	 */
+	@Query("SELECT p FROM ProductEntity p LEFT JOIN p.orderItems oi LEFT JOIN p.productTranslations pt "
+			+ "LEFT JOIN pt.language l LEFT JOIN p.tags t  WHERE l.code = :language AND p.status = 'VISIBLE' "
+			+ "AND (:#{#tags.isEmpty()} = true OR t.name IN :tags) GROUP BY p.id "
+			+ "ORDER BY count(oi.orderItemId.productId) desc")
+	Page<ProductEntity> findAllByLanguageCodeAndStatusVisibleOrderedByDefault(String language, Pageable pageable,
+			List<String> tags);
+
+	/**
 	 * Finds a list of products by their IDs and language code.
 	 *
 	 * @param productIds
@@ -47,7 +69,6 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 	 * @param language
 	 *            the language code for filtering products.
 	 * @return a {@link List} of {@link ProductEntity} objects.
-	 *
 	 * @author Denys Liubchenko
 	 */
 	@Query("SELECT p FROM ProductEntity p LEFT JOIN FETCH p.productTranslations pt "
@@ -62,7 +83,6 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 	 *            the ID of the product.
 	 * @param quantity
 	 *            the new quantity to set.
-	 *
 	 * @author Denys Ryhal
 	 */
 	@Modifying
@@ -79,7 +99,6 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 	 * @param pageable
 	 *            the pagination information.
 	 * @return a {@link Page} containing the filtered list of product IDs.
-	 *
 	 * @author Denys Ryhal
 	 */
 	@Query("SELECT p.id FROM ProductEntity p JOIN p.productTranslations pt JOIN pt.language l "
@@ -107,7 +126,6 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 	 * @param sort
 	 *            the sort criteria.
 	 * @return a {@link List} of {@link ProductEntity} objects.
-	 *
 	 * @author Denys Ryhal
 	 */
 	@Query("SELECT p FROM ProductEntity p JOIN FETCH p.productTranslations pt "
@@ -121,7 +139,6 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 	 *            the ID of the product.
 	 * @param status
 	 *            the new status to set.
-	 *
 	 * @author Denys Liubchenko
 	 */
 	@Modifying
@@ -134,7 +151,6 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 	 * @param id
 	 *            the ID of the product.
 	 * @return a {@link List} of {@link ProductTranslationEntity} objects.
-	 *
 	 * @author Anton Bondar
 	 */
 	@Query("SELECT pt FROM ProductTranslationEntity pt LEFT JOIN FETCH pt.product p "
@@ -151,7 +167,6 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 	 *            the language code to filter product translations
 	 * @param pageable
 	 *            the pagination information
-	 *
 	 * @return a paginated list of ProductTranslationEntity objects that match the
 	 *         search criteria
 	 */
@@ -169,7 +184,6 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 	 *            the ID of the product to find.
 	 * @return an {@link Optional} containing the {@link ProductEntity} if found, or
 	 *         an empty {@link Optional} if no product with the given ID exists.
-	 *
 	 * @author Anton Bondar
 	 */
 	@Query("SELECT p FROM ProductEntity p LEFT JOIN FETCH p.productTranslations pt "
@@ -189,7 +203,6 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 	 * @return an {@link Optional} containing the {@link ProductEntity} if found, or
 	 *         an empty {@link Optional} if no product with the given ID and
 	 *         language code exists.
-	 *
 	 * @author Anton Bondar
 	 */
 	@Query("SELECT p FROM ProductEntity p LEFT JOIN FETCH p.productTranslations pt "

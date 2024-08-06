@@ -1,6 +1,7 @@
 package com.academy.orders.infrastructure.product.entity;
 
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
+import com.academy.orders.infrastructure.order.entity.OrderItemEntity;
 import com.academy.orders.infrastructure.tag.entity.TagEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -16,6 +17,8 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -70,4 +73,9 @@ public class ProductEntity {
 
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<ProductTranslationEntity> productTranslations;
+
+	@Setter(AccessLevel.PRIVATE)
+	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@Builder.Default
+	private List<OrderItemEntity> orderItems = new ArrayList<>();
 }
