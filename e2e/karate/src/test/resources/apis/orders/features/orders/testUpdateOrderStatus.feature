@@ -1,3 +1,4 @@
+@test
 Feature: Update Order Status
   Background:
     * url urls.retailApiUrl
@@ -14,8 +15,8 @@ Feature: Update Order Status
 
     Examples:
       | response   | orderStatus    | username                  | password                  | orderId                                 | role      | isPaid   |
-      | 200        | 'SHIPPED'      | '#(manager.username)'     | '#(manager.password)'     | '9583956f-5ee4-4c37-880f-33f0ed925c0b'  | 'MANAGER' | 'false'  |
-      | 400        | 'COMPLETED'    | '#(manager.username)'     | '#(manager.password)'     | '9583956f-5ee4-4c37-880f-33f0ed925c0b'  | 'MANAGER' | 'false'  |
-      | 403        | 'SHIPPED'      | '#(user.username)'        | '#(user.password)'        | '9583956f-5ee4-4c37-880f-33f0ed925c0b'  | 'USER'    | 'false'  |
+      | 200        | 'SHIPPED'      | '#(manager.username)'     | '#(manager.password)'     | '550e8400-e29b-41d4-a716-446655440016'  | 'MANAGER' | 'false'  |
+      | 400        | 'COMPLETED'    | '#(manager.username)'     | '#(manager.password)'     | '550e8400-e29b-41d4-a716-446655440016'  | 'MANAGER' | 'false'  |
+      | 403        | 'SHIPPED'      | '#(user.username)'        | '#(user.password)'        | '550e8400-e29b-41d4-a716-446655440016'  | 'USER'    | 'false'  |
       | 404        | 'SHIPPED'      | '#(manager.username)'     | '#(manager.password)'     | '84b7e490-0dcf-44c3-beb6-7496dc6ef3b0'  | 'MANAGER' | 'false'  |
 
