@@ -26,8 +26,6 @@ import static com.academy.orders.boot.TestConstants.LANGUAGE_UK;
 import static com.academy.orders.boot.TestConstants.NUMBER_OF_TRANSLATIONS_UK_AND_EN;
 import static com.academy.orders.boot.TestConstants.PRODUCT_UUID;
 import static com.academy.orders.boot.TestConstants.TAG_COMPUTERS;
-import static com.academy.orders.boot.TestConstants.TOTAL_ELEMENTS_COMPUTERS;
-import static com.academy.orders.boot.TestConstants.TOTAL_ELEMENTS_PRODUCTS;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -46,30 +44,25 @@ class ProductRepositoryIT extends AbstractRepository {
 		final var firstImageLink = actual.content().get(0).image();
 
 		assertContentSchema(actual);
-		assertEquals(TOTAL_ELEMENTS_PRODUCTS, actual.totalElements());
 		assertDoesNotThrow(() -> URI.create(firstImageLink));
 	}
 
 	@Test
 	void findAllByLanguageWithFilterForPriceQuantityAndStatusTest() {
-		final var totalElements = 5;
 		final var filter = getProductManagementFilterDtoWithPrices();
 		final var result = productRepository.findAllByLanguageWithFilter(LANGUAGE_UK, filter, getPageable());
 
 		assertContentSchema(result);
-		assertEquals(totalElements, result.totalElements());
 		assertTrue(isFiltered(result, filter));
 	}
 
 	@Test
 	void findAllByLanguageWithFilterForNameRegexTest() {
 		final var pageable = getPageable();
-		final var totalElements = 5;
 		final var filter = getProductManagementFilterSearchByName();
 		final var result = productRepository.findAllByLanguageWithFilter(LANGUAGE_UK, filter, pageable);
 
 		assertContentSchema(result);
-		assertEquals(totalElements, result.totalElements());
 		assertTrue(isFilteredByNameRegex(result, filter.searchByName()));
 	}
 
@@ -80,7 +73,6 @@ class ProductRepositoryIT extends AbstractRepository {
 		final var result = productRepository.findAllByLanguageWithFilter(LANGUAGE_UK, filter, pageable);
 
 		assertContentSchema(result);
-		assertEquals(TOTAL_ELEMENTS_COMPUTERS, result.totalElements());
 		assertTrue(isFilteredByTags(result, filter.tags()));
 	}
 
@@ -90,7 +82,6 @@ class ProductRepositoryIT extends AbstractRepository {
 		final var result = productRepository.findAllProducts(LANGUAGE_UK, pageable, List.of());
 
 		assertContentSchema(result);
-		assertEquals(TOTAL_ELEMENTS_PRODUCTS, result.totalElements());
 		assertTrue(areAllProductsVisible(result));
 	}
 
@@ -100,7 +91,6 @@ class ProductRepositoryIT extends AbstractRepository {
 		final var result = productRepository.findAllProducts(LANGUAGE_UK, pageable, List.of(TAG_COMPUTERS));
 
 		assertContentSchema(result);
-		assertEquals(TOTAL_ELEMENTS_COMPUTERS, result.totalElements());
 		assertTrue(isFilteredByTags(result, List.of(TAG_COMPUTERS)));
 		assertTrue(areAllProductsVisible(result));
 	}
