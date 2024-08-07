@@ -50,7 +50,7 @@ class GetAllProductsUseCaseTest {
 	@Test
 	void getAllProductsUnsortedTest() {
 		var pageable = Pageable.builder().page(0).size(10).sort(List.of()).build();
-		var product = getProduct();
+		var product = getProductWithImageLink();
 		var expectedProducts = singletonList(product);
 		var expectedPage = getPage(expectedProducts, 1L, 1, 0, 10);
 		List<String> tags = Collections.emptyList();
