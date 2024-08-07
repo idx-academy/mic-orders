@@ -45,8 +45,8 @@ resilience4j:
   retry:
     instances:
       imagesRetry:
-        maxAttempts: 3
-        waitDuration: 200
+        maxAttempts: 2
+        waitDuration: 10
         fail-after-max-attempts: true
 
 images:

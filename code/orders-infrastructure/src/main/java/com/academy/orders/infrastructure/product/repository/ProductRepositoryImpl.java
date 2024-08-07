@@ -13,8 +13,6 @@ import com.academy.orders.infrastructure.product.ProductManagementMapper;
 import com.academy.orders.infrastructure.product.ProductMapper;
 import com.academy.orders.infrastructure.product.ProductPageMapper;
 import com.academy.orders.infrastructure.product.ProductTranslationManagementMapper;
-import com.academy.orders.infrastructure.product.entity.ProductEntity;
-import com.academy.orders.infrastructure.product.entity.ProductTranslationEntity;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -49,8 +47,6 @@ public class ProductRepositoryImpl implements ProductRepository {
 		List<String> tagList = isNull(tags) ? emptyList() : tags;
 		var productEntities = productJpaAdapter.findAllByLanguageCodeAndStatusVisible(language,
 				PageRequest.of(pageable.page(), pageable.size()), sort, tagList);
-		setImageNames(productEntities.getContent());
-
 		return productPageMapper.toDomain(productEntities);
 	}
 
@@ -110,7 +106,6 @@ public class ProductRepositoryImpl implements ProductRepository {
 	public Page<Product> searchProductsByName(String searchQuery, String lang, Pageable pageableDomain) {
 		var pageable = pageableMapper.fromDomain(pageableDomain);
 		var translations = productJpaAdapter.findProductsByNameWithSearchQuery(searchQuery, lang, pageable);
-		setImageNames(translations.getContent().stream().map(ProductTranslationEntity::getProduct).toList());
 		return productPageMapper.fromProductTranslationEntity(translations);
 	}
 
@@ -118,12 +113,5 @@ public class ProductRepositoryImpl implements ProductRepository {
 	public Optional<Product> getByIdAndLanguageCode(UUID productId, String lang) {
 		var productEntity = productJpaAdapter.findProductByProductIdAndLanguageCode(productId, lang);
 		return productEntity.map(productMapper::fromEntity);
-	}
-
-	private void setImageNames(List<ProductEntity> products) {
-		products.forEach(p -> {
-			var name = p.getImage().substring(p.getImage().lastIndexOf("/") + 1);
-			p.setImage(name);
-		});
 	}
 }

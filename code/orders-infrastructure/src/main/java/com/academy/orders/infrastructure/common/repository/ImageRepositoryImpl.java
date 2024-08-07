@@ -2,7 +2,7 @@ package com.academy.orders.infrastructure.common.repository;
 
 import com.academy.colors_api.generated.api.ImagesApi;
 import com.academy.orders.domain.common.respository.ImageRepository;
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,10 +19,11 @@ public class ImageRepositoryImpl implements ImageRepository {
 	@Value("${images.default.url}")
 	private String defaultImageUrl;
 
-	@CircuitBreaker(name = "imagesCircuit", fallbackMethod = "getDefaultUrl")
+	//@CircuitBreaker(name = "imagesCircuit", fallbackMethod = "getDefaultUrl")
+	@Retry(name = "imagesRetry", fallbackMethod = "getDefaultUrl" )
 	@CachePut(value = "images", key = "#name")
 	public String getImageLinkByName(String name) {
-		log.info("Call images api with with name param: {}", name);
+		log.info("Call api with name param: {}", name);
 		return imagesApi.getImageByName(name).getImageUrl();
 	}
 

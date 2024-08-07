@@ -12,6 +12,7 @@ import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders.domain.product.repository.ProductImageRepository;
 import com.academy.orders.domain.product.repository.ProductRepository;
 import com.academy.orders.domain.product.usecase.CreateProductUseCase;
+import com.academy.orders.domain.product.usecase.ExtractNameFromUrlUseCase;
 import com.academy.orders.domain.tag.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ public class CreateProductUseCaseImpl implements CreateProductUseCase {
 	private final TagRepository tagRepository;
 	private final LanguageRepository languageRepository;
 	private final ProductImageRepository productImageRepository;
+	private final ExtractNameFromUrlUseCase extractNameFromUrlUseCase;
 
 	@Override
 	public Product createProduct(ProductRequestDto request) {
@@ -35,9 +37,10 @@ public class CreateProductUseCaseImpl implements CreateProductUseCase {
 			throw new BadRequestException("Request cannot be null") {
 			};
 		}
+		var imageName = extractNameFromUrlUseCase.extractNameFromUrl(request.image());
 		var tags = tagRepository.getTagsByIds(request.tagIds());
 
-		var product = ProductManagement.builder().status(ProductStatus.valueOf(request.status())).image(request.image())
+		var product = ProductManagement.builder().status(ProductStatus.valueOf(request.status())).image(imageName)
 				.createdAt(LocalDateTime.now()).quantity(request.quantity()).price(request.price()).tags(tags)
 				.productTranslationManagement(Set.of()).build();
 
