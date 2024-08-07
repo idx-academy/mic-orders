@@ -359,6 +359,7 @@ paths:
           schema:
             $ref: '#/components/schemas/ProductFilter'
         - $ref: '#/components/parameters/Pageable'
+          description: For sorting by product id/status/createdAt/quantity/price you need to add "product." before field and name/description you need to send just name or description followed by ',' asc or desc. For example, sort=product.price,desc or sort=name,desc.
         - $ref: '#/components/parameters/Language'
       responses:
         '200':

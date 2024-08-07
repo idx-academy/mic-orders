@@ -3,19 +3,31 @@ package com.academy.orders;
 import com.academy.orders.domain.account.entity.Account;
 import com.academy.orders.domain.account.entity.enumerated.Role;
 import com.academy.orders.domain.account.entity.enumerated.UserStatus;
+import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.entity.OrderItem;
 import com.academy.orders.domain.order.entity.OrderReceiver;
 import com.academy.orders.domain.order.entity.PostAddress;
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
+import com.academy.orders.domain.product.dto.ProductManagementFilterDto;
 import com.academy.orders.domain.product.entity.Product;
+import com.academy.orders.domain.product.entity.ProductManagement;
+import com.academy.orders.domain.product.entity.ProductTranslationManagement;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
+import static com.academy.orders.boot.TestConstants.PRODUCT_IMAGE;
+import static com.academy.orders.boot.TestConstants.SORT_BY_PRICE_ASC;
+import static com.academy.orders.boot.TestConstants.SORT_BY_PRICE_DESC;
 import static com.academy.orders.domain.order.entity.enumerated.DeliveryMethod.NOVA;
+import static com.academy.orders.domain.product.entity.enumerated.ProductStatus.VISIBLE;
+import static java.math.BigDecimal.valueOf;
+import static java.util.Collections.emptyList;
 
 public class ModelUtils {
 
@@ -45,5 +57,51 @@ public class ModelUtils {
 
 	public static OrderReceiver getOrderReceiver() {
 		return OrderReceiver.builder().email("mock@mail.com").firstName("MockFirst").lastName("MockLast").build();
+	}
+
+	public static Pageable getPageableSortAsc() {
+		return Pageable.builder().page(0).size(10).sort(List.of(SORT_BY_PRICE_ASC)).build();
+	}
+
+	public static Pageable getPageableSortDesc() {
+		return Pageable.builder().page(0).size(10).sort(List.of(SORT_BY_PRICE_DESC)).build();
+	}
+
+	public static Pageable getPageable() {
+		return Pageable.builder().page(0).size(10).sort(Collections.emptyList()).build();
+	}
+
+	public static ProductManagementFilterDto getProductManagementFilterDto() {
+		return ProductManagementFilterDto.builder().tags(emptyList()).build();
+	}
+
+	public static ProductManagementFilterDto getProductManagementFilterDtoWithPrices() {
+		return ProductManagementFilterDto.builder().priceMore(valueOf(1000)).priceLess(valueOf(1500)).quantityMore(5)
+				.quantityLess(11).status(VISIBLE).tags(emptyList()).build();
+	}
+
+	public static ProductManagementFilterDto getProductManagementFilterSearchByName() {
+		return ProductManagementFilterDto.builder().searchByName("iphone").tags(emptyList()).build();
+	}
+
+	public static ProductManagement getProductManagement() {
+		return ProductManagement.builder().id(UUID.fromString("84b7e491-0dcf-44c3-beb6-7496dc6ef3b1")).status(VISIBLE)
+				.image(PRODUCT_IMAGE).createdAt(DATE_TIME).quantity(1000).price(BigDecimal.valueOf(559.00))
+				.productTranslationManagement(getProductTranslations()).build();
+	}
+
+	public static ProductManagement getProductToSave() {
+		return ProductManagement.builder().status(VISIBLE).image(PRODUCT_IMAGE).createdAt(DATE_TIME).quantity(1000)
+				.price(BigDecimal.valueOf(559.00)).productTranslationManagement(Set.of()).build();
+	}
+
+	public static Set<ProductTranslationManagement> getProductTranslations() {
+		return Set.of(
+				ProductTranslationManagement.builder()
+						.productId(UUID.fromString("84b7e491-0dcf-44c3-beb6-7496dc6ef3b1")).languageId(1L)
+						.name("New name").description("New description").build(),
+				ProductTranslationManagement.builder()
+						.productId(UUID.fromString("84b7e491-0dcf-44c3-beb6-7496dc6ef3b1")).languageId(2L)
+						.name("Нове ім'я").description("Новий опис").build());
 	}
 }

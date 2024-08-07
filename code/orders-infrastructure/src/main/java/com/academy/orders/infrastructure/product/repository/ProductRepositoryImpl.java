@@ -13,6 +13,8 @@ import com.academy.orders.infrastructure.product.ProductManagementMapper;
 import com.academy.orders.infrastructure.product.ProductMapper;
 import com.academy.orders.infrastructure.product.ProductPageMapper;
 import com.academy.orders.infrastructure.product.ProductTranslationManagementMapper;
+import com.academy.orders.infrastructure.product.entity.ProductEntity;
+import com.academy.orders.infrastructure.product.entity.ProductTranslationEntity;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -20,7 +22,6 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,11 +43,25 @@ public class ProductRepositoryImpl implements ProductRepository {
 
 	@Override
 	public Page<Product> findAllProducts(String language, Pageable pageable, List<String> tags) {
-		log.debug("Fetching all products by language code with pagination and sorting");
-		String sort = String.join(",", pageable.sort());
 		List<String> tagList = isNull(tags) ? emptyList() : tags;
-		var productEntities = productJpaAdapter.findAllByLanguageCodeAndStatusVisible(language,
-				PageRequest.of(pageable.page(), pageable.size()), sort, tagList);
+		var pageableSpring = pageableMapper.fromDomain(pageable);
+		var translations = productJpaAdapter.findAllByLanguageCodeAndStatusVisible(language, pageableSpring, tagList);
+		List<ProductEntity> products = translations.getContent().stream().map(ProductTranslationEntity::getProduct)
+				.toList();
+		productJpaAdapter.findAllByIdAndLanguageCode(products.stream().map(ProductEntity::getId).toList(), language);
+
+		return productPageMapper.fromProductTranslationEntity(translations);
+	}
+
+	@Override
+	public Page<Product> findAllProductsWithDefaultSorting(String language, Pageable pageable, List<String> tags) {
+		List<String> tagList = isNull(tags) ? emptyList() : tags;
+		var pageableSpring = pageableMapper.fromDomain(pageable);
+		var productEntities = productJpaAdapter.findAllByLanguageCodeAndStatusVisibleOrderedByDefault(language,
+				pageableSpring, tagList);
+		productJpaAdapter.findAllByIdAndLanguageCode(
+				productEntities.getContent().stream().map(ProductEntity::getId).toList(), language);
+
 		return productPageMapper.toDomain(productEntities);
 	}
 

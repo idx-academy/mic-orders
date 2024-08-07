@@ -30,6 +30,7 @@ import org.springframework.data.domain.Sort;
 import static com.academy.orders.infrastructure.ModelUtils.getManagementFilterDto;
 import static com.academy.orders.infrastructure.ModelUtils.getPageImplOf;
 import static com.academy.orders.infrastructure.ModelUtils.getPageOf;
+import static com.academy.orders.infrastructure.ModelUtils.getPageRequest;
 import static com.academy.orders.infrastructure.ModelUtils.getPageable;
 import static com.academy.orders.infrastructure.ModelUtils.getProduct;
 import static com.academy.orders.infrastructure.ModelUtils.getProductEntity;
@@ -91,20 +92,53 @@ class ProductRepositoryImplTest {
 	@MethodSource("findAllProductsMethodSourceProvider")
 	void findAllProductsTest(List<String> tagsParams, List<String> mockedTags) {
 		var pageable = getPageable();
-		var sort = String.join(",", pageable.sort());
+		var productTranslationEntity = getProductTranslationEntity();
 		var productEntity = getProductEntity();
 		var product = getProduct();
 		var pageDomain = getPageOf(product);
+		var page = getPageImplOf(productTranslationEntity);
+		var pageRequest = getPageRequest();
 
-		var page = new PageImpl<>(List.of(productEntity));
-		when(productJpaAdapter.findAllByLanguageCodeAndStatusVisible(LANGUAGE_EN,
-				PageRequest.of(pageable.page(), pageable.size()), sort, mockedTags)).thenReturn(page);
-		when(productPageMapper.toDomain(page)).thenReturn(pageDomain);
+		when(pageableMapper.fromDomain(pageable)).thenReturn(pageRequest);
+		when(productJpaAdapter.findAllByLanguageCodeAndStatusVisible(LANGUAGE_EN, pageRequest, mockedTags))
+				.thenReturn(page);
+		when(productJpaAdapter.findAllByIdAndLanguageCode(List.of(productTranslationEntity.getProduct().getId()),
+				LANGUAGE_EN)).thenReturn(List.of(productEntity));
+		when(productPageMapper.fromProductTranslationEntity(page)).thenReturn(pageDomain);
+
 		var products = productRepository.findAllProducts(LANGUAGE_EN, pageable, tagsParams);
 
 		assertEquals(pageDomain, products);
-		verify(productJpaAdapter).findAllByLanguageCodeAndStatusVisible(LANGUAGE_EN,
-				PageRequest.of(pageable.page(), pageable.size()), sort, mockedTags);
+		verify(pageableMapper).fromDomain(pageable);
+		verify(productJpaAdapter).findAllByLanguageCodeAndStatusVisible(LANGUAGE_EN, pageRequest, mockedTags);
+		verify(productJpaAdapter).findAllByIdAndLanguageCode(List.of(productTranslationEntity.getProduct().getId()),
+				LANGUAGE_EN);
+		verify(productPageMapper).fromProductTranslationEntity(page);
+	}
+
+	@ParameterizedTest
+	@MethodSource("findAllProductsMethodSourceProvider")
+	void findAllProductsWithDefaultSortingTest(List<String> tagsParams, List<String> mockedTags) {
+		var pageable = getPageable();
+		var productEntity = getProductEntity();
+		var product = getProduct();
+		var pageDomain = getPageOf(product);
+		var page = getPageImplOf(productEntity);
+		var pageRequest = getPageRequest();
+
+		when(pageableMapper.fromDomain(pageable)).thenReturn(pageRequest);
+		when(productJpaAdapter.findAllByLanguageCodeAndStatusVisibleOrderedByDefault(LANGUAGE_EN, pageRequest,
+				mockedTags)).thenReturn(page);
+		when(productJpaAdapter.findAllByIdAndLanguageCode(List.of(productEntity.getId()), LANGUAGE_EN))
+				.thenReturn(List.of(productEntity));
+		when(productPageMapper.toDomain(page)).thenReturn(pageDomain);
+		var products = productRepository.findAllProductsWithDefaultSorting(LANGUAGE_EN, pageable, tagsParams);
+
+		assertEquals(pageDomain, products);
+		verify(pageableMapper).fromDomain(pageable);
+		verify(productJpaAdapter).findAllByLanguageCodeAndStatusVisibleOrderedByDefault(LANGUAGE_EN, pageRequest,
+				mockedTags);
+		verify(productJpaAdapter).findAllByIdAndLanguageCode(List.of(productEntity.getId()), LANGUAGE_EN);
 		verify(productPageMapper).toDomain(page);
 	}
 

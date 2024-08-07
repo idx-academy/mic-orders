@@ -36,7 +36,7 @@ class OrderRepositoryIT extends AbstractRepository {
 	public static final UUID NOT_EXISTING_ORDER_ID = UUID.fromString("11111111-1111-1111-1111-111111111111");
 	private final Pageable pageable = new Pageable(0, 10, emptyList());
 	private final String lang = "uk";
-	private final Long accountId = 4L;
+	private final Long accountId = 2L;
 	private final UUID orderId = UUID.fromString("550e8400-e29b-41d4-a716-446655440015");
 	@Autowired
 	private OrderRepository orderRepository;

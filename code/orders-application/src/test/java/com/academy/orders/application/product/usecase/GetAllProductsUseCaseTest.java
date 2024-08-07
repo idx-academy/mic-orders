@@ -31,7 +31,7 @@ class GetAllProductsUseCaseTest {
 	private GetAllProductsUseCaseImpl getAllProductsUseCase;
 
 	@Test
-	void testGetAllProducts() {
+	void getAllProductsTest() {
 		var pageable = Pageable.builder().page(0).size(10).sort(List.of("name,desc")).build();
 		var product = getProductWithImageLink();
 		var expectedProducts = singletonList(product);
@@ -48,7 +48,24 @@ class GetAllProductsUseCaseTest {
 	}
 
 	@Test
-	void testGetAllProductsReturnsEmptyList() {
+	void getAllProductsUnsortedTest() {
+		var pageable = Pageable.builder().page(0).size(10).sort(List.of()).build();
+		var product = getProduct();
+		var expectedProducts = singletonList(product);
+		var expectedPage = getPage(expectedProducts, 1L, 1, 0, 10);
+		List<String> tags = Collections.emptyList();
+
+		when(productRepository.findAllProductsWithDefaultSorting(LANGUAGE_UK, pageable, tags)).thenReturn(expectedPage);
+		when(productImageRepository.loadImageForProduct(product)).thenReturn(product);
+		var actualPage = getAllProductsUseCase.getAllProducts(LANGUAGE_UK, pageable, tags);
+
+		assertEquals(expectedPage, actualPage);
+		verify(productRepository).findAllProductsWithDefaultSorting(LANGUAGE_UK, pageable, tags);
+		verify(productImageRepository).loadImageForProduct(product);
+	}
+
+	@Test
+	void getAllProductsReturnsEmptyListTest() {
 		var pageable = Pageable.builder().page(0).size(10).sort(List.of("price,desc")).build();
 		var expectedPage = getPage(List.<Product>of(), 0L, 0, 0, 10);
 		List<String> tags = Collections.emptyList();

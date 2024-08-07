@@ -29,25 +29,37 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 	 *            the language code for filtering products.
 	 * @param pageable
 	 *            the pagination information.
-	 * @param sort
-	 *            the sort criteria.
+	 *
 	 * @return a {@link Page} containing the filtered list of {@link ProductEntity}
 	 *         objects.
 	 *
-	 * @author Anton Bondar
+	 * @author Anton Bondar, Denys Liubchenko
 	 */
-	@Query(value = "SELECT p FROM ProductEntity p JOIN FETCH p.productTranslations pt "
-			+ "JOIN FETCH pt.language l LEFT JOIN FETCH p.tags t WHERE l.code = :language AND p.status = 'VISIBLE' "
-			+ "AND (:#{#tags.isEmpty()} = true OR t.name IN :tags) ORDER BY "
-			+ "CASE WHEN :sort = 'name,asc' THEN pt.name END ASC, "
-			+ "CASE WHEN :sort = 'name,desc' THEN pt.name END DESC, "
-			+ "CASE WHEN :sort = 'createdAt,asc' THEN p.createdAt END ASC, "
-			+ "CASE WHEN :sort = 'createdAt,desc' THEN p.createdAt END DESC, "
-			+ "CASE WHEN :sort = 'price,asc' THEN p.price END ASC, "
-			+ "CASE WHEN :sort = 'price,desc' THEN p.price END DESC", countQuery = "SELECT COUNT(p) FROM ProductEntity p JOIN p.productTranslations pt "
-					+ "JOIN pt.language l LEFT JOIN p.tags t WHERE l.code = :language AND p.status = 'VISIBLE'"
-					+ "AND (:#{#tags.isEmpty()} = true OR t.name IN :tags)")
-	Page<ProductEntity> findAllByLanguageCodeAndStatusVisible(String language, Pageable pageable, String sort,
+	@Query(value = "SELECT pt FROM ProductTranslationEntity pt LEFT JOIN FETCH pt.product p "
+			+ "LEFT JOIN pt.language l LEFT JOIN p.tags t WHERE l.code = :language AND p.status = 'VISIBLE' "
+			+ "AND (:#{#tags.isEmpty()} = true OR t.name IN :tags)")
+	Page<ProductTranslationEntity> findAllByLanguageCodeAndStatusVisible(String language, Pageable pageable,
+			List<String> tags);
+
+	/**
+	 * Finds a paginated list of products by language code and with a visible
+	 * status, sorted by amount of order items with this product.
+	 *
+	 * @param language
+	 *            the language code for filtering products.
+	 * @param pageable
+	 *            the pagination information.
+	 *
+	 * @return a {@link Page} containing the filtered list of {@link ProductEntity}
+	 *         objects.
+	 *
+	 * @author Denys Liubchenko
+	 */
+	@Query("SELECT p FROM ProductEntity p LEFT JOIN p.orderItems oi LEFT JOIN p.productTranslations pt "
+			+ "LEFT JOIN pt.language l LEFT JOIN p.tags t  WHERE l.code = :language AND p.status = 'VISIBLE' "
+			+ "AND (:#{#tags.isEmpty()} = true OR t.name IN :tags) GROUP BY p.id "
+			+ "ORDER BY count(oi.orderItemId.productId) desc")
+	Page<ProductEntity> findAllByLanguageCodeAndStatusVisibleOrderedByDefault(String language, Pageable pageable,
 			List<String> tags);
 
 	/**
@@ -58,7 +70,6 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 	 * @param language
 	 *            the language code for filtering products.
 	 * @return a {@link List} of {@link ProductEntity} objects.
-	 *
 	 * @author Denys Liubchenko
 	 */
 	@Query("SELECT p FROM ProductEntity p LEFT JOIN FETCH p.productTranslations pt "
@@ -73,7 +84,6 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 	 *            the ID of the product.
 	 * @param quantity
 	 *            the new quantity to set.
-	 *
 	 * @author Denys Ryhal
 	 */
 	@Modifying
@@ -90,7 +100,6 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 	 * @param pageable
 	 *            the pagination information.
 	 * @return a {@link Page} containing the filtered list of product IDs.
-	 *
 	 * @author Denys Ryhal
 	 */
 	@Query("SELECT p.id FROM ProductEntity p JOIN p.productTranslations pt JOIN pt.language l "
@@ -118,7 +127,6 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 	 * @param sort
 	 *            the sort criteria.
 	 * @return a {@link List} of {@link ProductEntity} objects.
-	 *
 	 * @author Denys Ryhal
 	 */
 	@Query("SELECT p FROM ProductEntity p JOIN FETCH p.productTranslations pt "
@@ -132,7 +140,6 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 	 *            the ID of the product.
 	 * @param status
 	 *            the new status to set.
-	 *
 	 * @author Denys Liubchenko
 	 */
 	@Modifying
@@ -145,7 +152,6 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 	 * @param id
 	 *            the ID of the product.
 	 * @return a {@link List} of {@link ProductTranslationEntity} objects.
-	 *
 	 * @author Anton Bondar
 	 */
 	@Query("SELECT pt FROM ProductTranslationEntity pt LEFT JOIN FETCH pt.product p "
@@ -162,7 +168,6 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 	 *            the language code to filter product translations
 	 * @param pageable
 	 *            the pagination information
-	 *
 	 * @return a paginated list of ProductTranslationEntity objects that match the
 	 *         search criteria
 	 */
@@ -180,7 +185,6 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 	 *            the ID of the product to find.
 	 * @return an {@link Optional} containing the {@link ProductEntity} if found, or
 	 *         an empty {@link Optional} if no product with the given ID exists.
-	 *
 	 * @author Anton Bondar
 	 */
 	@Query("SELECT p FROM ProductEntity p LEFT JOIN FETCH p.productTranslations pt "
@@ -200,7 +204,6 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 	 * @return an {@link Optional} containing the {@link ProductEntity} if found, or
 	 *         an empty {@link Optional} if no product with the given ID and
 	 *         language code exists.
-	 *
 	 * @author Anton Bondar
 	 */
 	@Query("SELECT p FROM ProductEntity p LEFT JOIN FETCH p.productTranslations pt "
