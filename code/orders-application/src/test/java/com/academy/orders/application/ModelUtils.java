@@ -1,5 +1,6 @@
 package com.academy.orders.application;
 
+import com.academy.orders.domain.account.dto.AccountManagementFilterDto;
 import com.academy.orders.domain.account.entity.Account;
 import com.academy.orders.domain.account.entity.enumerated.Role;
 import com.academy.orders.domain.account.entity.enumerated.UserStatus;
@@ -185,7 +186,8 @@ public class ModelUtils {
 	public static OrdersFilterParametersDto getOrdersFilterParametersDto() {
 		return OrdersFilterParametersDto.builder().deliveryMethods(List.of(DeliveryMethod.NOVA))
 				.statuses(List.of(OrderStatus.IN_PROGRESS)).isPaid(false).createdBefore(DATE_TIME)
-				.createdAfter(DATE_TIME).totalMore(BigDecimal.ZERO).totalLess(BigDecimal.TEN).build();
+				.createdAfter(DATE_TIME).totalMore(BigDecimal.ZERO).accountEmail("test@mail.com")
+				.totalLess(BigDecimal.TEN).build();
 	}
 
 	public static Product getProductWithQuantity(int quantity) {
@@ -274,4 +276,19 @@ public class ModelUtils {
 				.isPaid(false).build();
 	}
 
+	public static Pageable getPageableWithSort() {
+		return Pageable.builder().page(0).size(10).sort(List.of("email,asc")).build();
+	}
+
+	public static Pageable getDefaultPageable() {
+		return Pageable.builder().page(0).size(10).sort(Collections.emptyList()).build();
+	}
+	public static AccountManagementFilterDto getAccountManagementFilterDto() {
+		return AccountManagementFilterDto.builder().build();
+	}
+
+	public static Page<Account> getAccountPage() {
+		return Page.<Account>builder().totalElements(1L).totalPages(1).first(true).last(true).number(0)
+				.numberOfElements(1).size(5).empty(false).content(Collections.singletonList(getAccount())).build();
+	}
 }

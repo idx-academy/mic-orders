@@ -1,5 +1,6 @@
 package com.academy.orders.infrastructure;
 
+import com.academy.orders.domain.account.dto.AccountManagementFilterDto;
 import com.academy.orders.domain.account.entity.Account;
 import com.academy.orders.domain.account.entity.CreateAccountDTO;
 import com.academy.orders.domain.account.entity.enumerated.Role;
@@ -33,12 +34,14 @@ import com.academy.orders.infrastructure.product.entity.ProductEntity;
 import com.academy.orders.infrastructure.product.entity.ProductTranslationEntity;
 import com.academy.orders.infrastructure.product.entity.ProductTranslationId;
 import com.academy.orders.infrastructure.tag.entity.TagEntity;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import org.springframework.data.domain.PageImpl;
 
 import static com.academy.orders.domain.order.entity.enumerated.DeliveryMethod.NOVA;
 import static com.academy.orders.infrastructure.TestConstants.LANGUAGE_EN;
@@ -153,7 +156,8 @@ public class ModelUtils {
 	public static OrdersFilterParametersDto getOrdersFilterParametersDto() {
 		return OrdersFilterParametersDto.builder().deliveryMethods(List.of(DeliveryMethod.NOVA))
 				.statuses(List.of(OrderStatus.IN_PROGRESS)).isPaid(false).createdBefore(DATE_TIME)
-				.createdAfter(DATE_TIME).totalMore(BigDecimal.ZERO).totalLess(BigDecimal.TEN).build();
+				.createdAfter(DATE_TIME).totalMore(BigDecimal.ZERO).totalLess(BigDecimal.TEN)
+				.accountEmail("test@mail.com").build();
 	}
 
 	public static ProductManagementFilterDto getManagementFilterDto() {
@@ -197,5 +201,21 @@ public class ModelUtils {
 
 	public static Language getLanguage() {
 		return Language.builder().id(1L).code("en").build();
+	}
+
+	public static Page<Account> getAccountPage(List<Account> accountDomains, Pageable pageableDomain,
+			long totalElements, int totalPages) {
+		return Page.<Account>builder().content(accountDomains).number(pageableDomain.page()).size(pageableDomain.size())
+				.totalElements(totalElements).totalPages(totalPages).first(pageableDomain.page() == 0)
+				.last(pageableDomain.page() == totalPages - 1).numberOfElements(accountDomains.size())
+				.empty(accountDomains.isEmpty()).build();
+	}
+
+	public static AccountManagementFilterDto getAccountManagementFilterDto() {
+		return AccountManagementFilterDto.builder().status(UserStatus.ACTIVE).role(Role.ROLE_USER).build();
+	}
+
+	public static PageRequest getPageRequest() {
+		return PageRequest.of(0, 10, org.springframework.data.domain.Sort.by("id").ascending());
 	}
 }

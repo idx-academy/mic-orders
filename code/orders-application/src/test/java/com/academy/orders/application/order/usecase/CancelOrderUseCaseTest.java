@@ -5,13 +5,13 @@ import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import com.academy.orders.domain.order.exception.OrderFinalStateException;
 import com.academy.orders.domain.order.exception.OrderNotFoundException;
 import com.academy.orders.domain.order.repository.OrderRepository;
-import java.util.Optional;
-import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import java.util.Optional;
+import java.util.UUID;
 
 import static com.academy.orders.application.ModelUtils.getCanceledOrder;
 import static com.academy.orders.application.ModelUtils.getCompletedOrder;
@@ -28,8 +28,8 @@ class CancelOrderUseCaseTest {
 	@InjectMocks
 	private CancelOrderUseCaseImpl cancelOrderUseCase;
 
-	private Long userId = 1L;
-	private Order order = getOrder();
+	private final Long userId = 1L;
+	private final Order order = getOrder();
 
 	@Test
 	void cancelOrderTest() {
@@ -59,10 +59,10 @@ class CancelOrderUseCaseTest {
 
 	@Test
 	void cancelOrderThrowsOrderFinalStateExceptionWhenOrderCanceledTest() {
-		Order order = getCanceledOrder();
+		Order canceledOrder = getCanceledOrder();
 		// Given
-		UUID orderId = order.id();
-		when(orderRepository.findByIdFetchData(orderId)).thenReturn(Optional.of(order));
+		UUID orderId = canceledOrder.id();
+		when(orderRepository.findByIdFetchData(orderId)).thenReturn(Optional.of(canceledOrder));
 
 		// Then
 		assertThrows(OrderFinalStateException.class, () -> cancelOrderUseCase.cancelOrder(userId, orderId));
@@ -71,10 +71,10 @@ class CancelOrderUseCaseTest {
 
 	@Test
 	void cancelOrderThrowsOrderFinalStateExceptionWhenOrderCompletedTest() {
-		Order order = getCompletedOrder();
+		Order completedOrder = getCompletedOrder();
 		// Given
-		UUID orderId = order.id();
-		when(orderRepository.findByIdFetchData(orderId)).thenReturn(Optional.of(order));
+		UUID orderId = completedOrder.id();
+		when(orderRepository.findByIdFetchData(orderId)).thenReturn(Optional.of(completedOrder));
 
 		// Then
 		assertThrows(OrderFinalStateException.class, () -> cancelOrderUseCase.cancelOrder(userId, orderId));

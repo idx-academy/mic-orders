@@ -27,9 +27,25 @@ public interface ProductRepository {
 	 *            list of tag's names for filtering.
 	 * @return a page containing the products that match the criteria.
 	 *
-	 * @author Anton Bondar, Yurii Osovskyi
+	 * @author Anton Bondar, Yurii Osovskyi, Denys Liubchenko
 	 */
 	Page<Product> findAllProducts(String language, Pageable pageable, List<String> tags);
+
+	/**
+	 * Retrieves a paginated list of products based on the provided language and
+	 * pageable information sorted by default. Sorting in pageable will be ignored.
+	 *
+	 * @param language
+	 *            the language code to filter the products.
+	 * @param pageable
+	 *            the pageable information for pagination.
+	 * @param tags
+	 *            list of tag's names for filtering.
+	 * @return a page containing the products that match the criteria.
+	 *
+	 * @author Denys Liubchenko
+	 */
+	Page<Product> findAllProductsWithDefaultSorting(String language, Pageable pageable, List<String> tags);
 
 	/**
 	 * Method sets new quantity of products.
