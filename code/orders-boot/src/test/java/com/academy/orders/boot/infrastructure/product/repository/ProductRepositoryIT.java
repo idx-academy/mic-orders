@@ -115,7 +115,7 @@ class ProductRepositoryIT extends AbstractRepository {
 
 	@Test
 	void findAllProductsWithDefaultSortingTest() {
-		final var pageable = getPageableSortDesc();
+		final var pageable = getPageable();
 		final var result = productRepository.findAllProductsWithDefaultSorting(LANGUAGE_UK, pageable, List.of());
 
 		assertContentSchema(result);
