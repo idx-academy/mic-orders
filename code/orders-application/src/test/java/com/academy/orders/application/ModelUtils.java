@@ -34,6 +34,8 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+
+import static com.academy.orders.application.TestConstants.IMAGE_NAME;
 import static com.academy.orders.application.TestConstants.IMAGE_URL;
 import static com.academy.orders.application.TestConstants.LANGUAGE_EN;
 import static com.academy.orders.application.TestConstants.LANGUAGE_UK;
@@ -49,8 +51,13 @@ import static com.academy.orders.domain.order.entity.enumerated.DeliveryMethod.N
 public class ModelUtils {
 	private static final LocalDateTime DATE_TIME = LocalDateTime.of(1, 1, 1, 1, 1, 1);
 
-	public static Product getProduct() {
+	public static Product getProductWithImageLink() {
 		return Product.builder().id(TEST_UUID).status(ProductStatus.VISIBLE).image(IMAGE_URL).quantity(TEST_QUANTITY)
+				.price(TEST_PRICE).tags(Set.of(getTag())).productTranslations(Set.of(getProductTranslation())).build();
+	}
+
+	public static Product getProductWithImageName() {
+		return Product.builder().id(TEST_UUID).status(ProductStatus.VISIBLE).image(IMAGE_NAME).quantity(TEST_QUANTITY)
 				.price(TEST_PRICE).tags(Set.of(getTag())).productTranslations(Set.of(getProductTranslation())).build();
 	}
 
@@ -83,7 +90,7 @@ public class ModelUtils {
 	}
 
 	public static CartItem getCartItem() {
-		return CartItem.builder().product(getProduct()).quantity(1).build();
+		return CartItem.builder().product(getProductWithImageLink()).quantity(1).build();
 	}
 
 	public static <T> Page<T> getPage(List<T> content, long totalElements, int totalPages, int number, int size) {
@@ -169,7 +176,8 @@ public class ModelUtils {
 	}
 
 	public static OrderItem getOrderItem() {
-		return OrderItem.builder().product(getProduct()).quantity(3).price(BigDecimal.valueOf(200)).build();
+		return OrderItem.builder().product(getProductWithImageLink()).quantity(3).price(BigDecimal.valueOf(200))
+				.build();
 	}
 
 	public static CartItemDto getCartItemDto(CartItem cartItem, BigDecimal cartPrice) {

@@ -13,7 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.academy.orders.application.ModelUtils.getPage;
-import static com.academy.orders.application.ModelUtils.getProduct;
+import static com.academy.orders.application.ModelUtils.getProductWithImageLink;
 import static com.academy.orders.application.TestConstants.LANGUAGE_UK;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,13 +26,14 @@ class GetAllProductsUseCaseTest {
 	private ProductRepository productRepository;
 	@Mock
 	private ProductImageRepository productImageRepository;
+
 	@InjectMocks
 	private GetAllProductsUseCaseImpl getAllProductsUseCase;
 
 	@Test
 	void getAllProductsTest() {
 		var pageable = Pageable.builder().page(0).size(10).sort(List.of("name,desc")).build();
-		var product = getProduct();
+		var product = getProductWithImageLink();
 		var expectedProducts = singletonList(product);
 		var expectedPage = getPage(expectedProducts, 1L, 1, 0, 10);
 		List<String> tags = Collections.emptyList();
@@ -49,7 +50,7 @@ class GetAllProductsUseCaseTest {
 	@Test
 	void getAllProductsUnsortedTest() {
 		var pageable = Pageable.builder().page(0).size(10).sort(List.of()).build();
-		var product = getProduct();
+		var product = getProductWithImageLink();
 		var expectedProducts = singletonList(product);
 		var expectedPage = getPage(expectedProducts, 1L, 1, 0, 10);
 		List<String> tags = Collections.emptyList();

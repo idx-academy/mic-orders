@@ -3,6 +3,7 @@ package com.academy.orders.application.cart.usecase;
 import com.academy.orders.domain.cart.dto.CartItemDto;
 import com.academy.orders.domain.cart.dto.CartResponseDto;
 import com.academy.orders.domain.cart.entity.CartItem;
+import com.academy.orders.domain.cart.repository.CartItemImageRepository;
 import com.academy.orders.domain.cart.repository.CartItemRepository;
 import com.academy.orders.domain.cart.usecase.GetCartItemsUseCase;
 import com.academy.orders.domain.product.entity.ProductTranslation;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 public class GetCartItemsUseCaseImpl implements GetCartItemsUseCase {
 	private final CartItemRepository cartItemRepository;
 	private final CalculatePriceUseCase calculatePriceUseCase;
+	private final CartItemImageRepository cartItemImageRepository;
 
 	@Override
 	public CartResponseDto getCartItems(Long accountId, String lang) {
@@ -28,7 +30,8 @@ public class GetCartItemsUseCaseImpl implements GetCartItemsUseCase {
 	}
 
 	private List<CartItem> getCartItemsByAccountIdAndLang(Long accountId, String lang) {
-		return cartItemRepository.findCartItemsByAccountIdAndLang(accountId, lang);
+		return cartItemRepository.findCartItemsByAccountIdAndLang(accountId, lang).stream()
+				.map(cartItemImageRepository::loadImageForProductInCart).toList();
 	}
 
 	private List<CartItemDto> mapToCartItemsDtos(List<CartItem> cartItems) {

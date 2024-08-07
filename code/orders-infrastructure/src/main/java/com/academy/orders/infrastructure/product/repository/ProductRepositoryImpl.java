@@ -50,7 +50,6 @@ public class ProductRepositoryImpl implements ProductRepository {
 				.toList();
 		productJpaAdapter.findAllByIdAndLanguageCode(products.stream().map(ProductEntity::getId).toList(), language);
 
-		setImageNames(products);
 		return productPageMapper.fromProductTranslationEntity(translations);
 	}
 
@@ -62,7 +61,6 @@ public class ProductRepositoryImpl implements ProductRepository {
 				pageableSpring, tagList);
 		productJpaAdapter.findAllByIdAndLanguageCode(
 				productEntities.getContent().stream().map(ProductEntity::getId).toList(), language);
-		setImageNames(productEntities.getContent());
 
 		return productPageMapper.toDomain(productEntities);
 	}
@@ -123,7 +121,6 @@ public class ProductRepositoryImpl implements ProductRepository {
 	public Page<Product> searchProductsByName(String searchQuery, String lang, Pageable pageableDomain) {
 		var pageable = pageableMapper.fromDomain(pageableDomain);
 		var translations = productJpaAdapter.findProductsByNameWithSearchQuery(searchQuery, lang, pageable);
-		setImageNames(translations.getContent().stream().map(ProductTranslationEntity::getProduct).toList());
 		return productPageMapper.fromProductTranslationEntity(translations);
 	}
 
@@ -131,12 +128,5 @@ public class ProductRepositoryImpl implements ProductRepository {
 	public Optional<Product> getByIdAndLanguageCode(UUID productId, String lang) {
 		var productEntity = productJpaAdapter.findProductByProductIdAndLanguageCode(productId, lang);
 		return productEntity.map(productMapper::fromEntity);
-	}
-
-	private void setImageNames(List<ProductEntity> products) {
-		products.forEach(p -> {
-			var name = p.getImage().substring(p.getImage().lastIndexOf("/") + 1);
-			p.setImage(name);
-		});
 	}
 }

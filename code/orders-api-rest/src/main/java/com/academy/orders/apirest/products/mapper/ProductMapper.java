@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Set;
 import org.mapstruct.Named;
 
+import static java.util.Collections.emptyList;
+import static java.util.Objects.nonNull;
+
 public interface ProductMapper {
 	@Named("mapProductName")
 	default String mapProductName(Set<ProductTranslation> productTranslations) {
@@ -25,7 +28,7 @@ public interface ProductMapper {
 
 	@Named("mapTags")
 	default List<String> mapTags(Set<Tag> tags) {
-		return tags.stream().map(Tag::name).toList();
+		return nonNull(tags) ? tags.stream().map(Tag::name).toList() : emptyList();
 	}
 
 }

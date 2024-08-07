@@ -2,6 +2,7 @@ package com.academy.orders.infrastructure.cart;
 
 import com.academy.orders.domain.cart.entity.CartItem;
 import com.academy.orders.domain.cart.entity.CreateCartItemDTO;
+import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.infrastructure.cart.entity.CartItemEntity;
 import com.academy.orders.infrastructure.product.ProductMapper;
 import java.util.List;
@@ -29,4 +30,9 @@ public interface CartItemMapper {
 
 	@IterableMapping(qualifiedByName = "fromEntityWithProductTranslations")
 	List<CartItem> fromEntitiesWithProductsTranslations(List<CartItemEntity> cartItemEntities);
+
+	@Mapping(target = "product", source = "product")
+	@Mapping(target = "quantity", source = "cartItem.quantity")
+	CartItem fromDomainWithProduct(CartItem cartItem, Product product);
+
 }

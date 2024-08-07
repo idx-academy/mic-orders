@@ -13,6 +13,7 @@ import org.hibernate.Hibernate;
 import org.mapstruct.Condition;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 @Mapper(componentModel = "spring", uses = {TagMapper.class, ProductTranslationMapper.class})
 public interface ProductMapper {
@@ -36,6 +37,7 @@ public interface ProductMapper {
 		return Hibernate.isInitialized(source);
 	}
 
+	@Named("mapDomainImage")
 	@Mapping(target = "image", source = "image")
 	Product mapDomainImage(Product product, String image);
 }

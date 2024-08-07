@@ -7,6 +7,7 @@ public class TestConstants {
 	public static final String LANGUAGE_UK = "uk";
 	public static final String LANGUAGE_EN = "en";
 	public static final String IMAGE_URL = "https://example.com/image.jpg";
+	public static final String IMAGE_NAME = "image.jpg";
 	public static final Long TEST_ID = 1L;
 	public static final UUID TEST_UUID = UUID.fromString("123e4567-e89b-12d3-a456-426614174000");
 	public static final int TEST_QUANTITY = 10;

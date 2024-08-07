@@ -18,4 +18,5 @@ public class ProductImageRepositoryImpl implements ProductImageRepository {
 		var imageUrl = imageRepository.getImageLinkByName(product.image());
 		return productMapper.mapDomainImage(product, imageUrl);
 	}
+
 }

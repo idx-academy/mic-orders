@@ -16,12 +16,7 @@
         "jsonBody": {
           "imageUrl": "https://j65jb0fdkxuua0go.public.blob.vercel-storage.com/{{request.path.imageName}}"
         },
-        "transformers": ["response-template"],
-        "delayDistribution": {
-          "type": "uniform",
-          "lower": 20,
-          "upper": 100
-        }
+        "transformers": ["response-template"]
       }
     },
     {
@@ -40,12 +35,7 @@
         "jsonBody": {
           "imageUrl": "https://j65jb0fdkxuua0go.public.blob.vercel-storage.com/{{request.path.imageName}}"
         },
-        "transformers": ["response-template"],
-        "delayDistribution": {
-          "type": "uniform",
-          "lower": 50,
-          "upper": 100
-        }
+        "transformers": ["response-template"]
       }
     },
     {
@@ -64,12 +54,7 @@
         "jsonBody": {
           "imageUrl": "https://j65jb0fdkxuua0go.public.blob.vercel-storage.com/{{request.path.imageName}}"
         },
-        "transformers": ["response-template"],
-        "delayDistribution": {
-          "type": "uniform",
-          "lower": 10,
-          "upper": 100
-        }
+        "transformers": ["response-template"]
       }
     },
     {
@@ -119,12 +104,7 @@
         "jsonBody": {
           "imageUrl": "https://j65jb0fdkxuua0go.public.blob.vercel-storage.com/{{request.path.imageName}}"
         },
-        "transformers": ["response-template"],
-        "delayDistribution": {
-          "type": "uniform",
-          "lower": 40,
-          "upper": 100
-        }
+        "transformers": ["response-template"]
       }
     },
     {
@@ -143,12 +123,7 @@
         "jsonBody": {
           "imageUrl": "https://j65jb0fdkxuua0go.public.blob.vercel-storage.com/{{request.path.imageName}}"
         },
-        "transformers": ["response-template"],
-        "delayDistribution": {
-          "type": "uniform",
-          "lower": 100,
-          "upper": 500
-        }
+        "transformers": ["response-template"]
       }
     },
     {
@@ -184,6 +159,18 @@
         "method": "GET"
       },
       "response": {
+        "status": 503
+      }
+    },
+    {
+      "scenarioName": "Get picture URL",
+      "requiredScenarioState": "Eleventh",
+      "newScenarioState": "Twelve",
+      "request": {
+        "urlPathTemplate": "/colors/v1/images/{imageName}",
+        "method": "GET"
+      },
+      "response": {
         "status": 404,
         "headers": {
           "Content-Type": "application/json"
@@ -196,7 +183,7 @@
     },
     {
       "scenarioName": "Get picture URL",
-      "requiredScenarioState": "Eleventh",
+      "requiredScenarioState": "Twelve",
       "newScenarioState": "Started",
       "request": {
         "urlPathTemplate": "/colors/v1/images/{imageName}",
@@ -210,12 +197,7 @@
         "jsonBody": {
           "imageUrl": "https://j65jb0fdkxuua0go.public.blob.vercel-storage.com/{{request.path.imageName}}"
         },
-        "transformers": ["response-template"],
-        "delayDistribution": {
-          "type": "uniform",
-          "lower": 100,
-          "upper": 400
-        }
+        "transformers": ["response-template"]
       }
     }
   ]

@@ -133,7 +133,6 @@ public class SecurityConfig {
 	}
 
 	@Bean("jwtKeyPairProvider")
-	// @Profile("local") TODO in case of env need to load from base64 keys/files
 	public Supplier<KeyPair> generatedJwtKeyPairProvider() throws NoSuchAlgorithmException {
 		var keyPairGenerator = KeyPairGenerator.getInstance("RSA");
 		keyPairGenerator.initialize(2048);

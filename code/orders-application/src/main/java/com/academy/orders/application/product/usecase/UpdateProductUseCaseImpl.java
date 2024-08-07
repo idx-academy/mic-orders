@@ -10,6 +10,7 @@ import com.academy.orders.domain.product.entity.Tag;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders.domain.product.exception.ProductNotFoundException;
 import com.academy.orders.domain.product.repository.ProductRepository;
+import com.academy.orders.domain.product.usecase.ExtractNameFromUrlUseCase;
 import com.academy.orders.domain.product.usecase.UpdateProductUseCase;
 import com.academy.orders.domain.tag.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,12 +26,15 @@ public class UpdateProductUseCaseImpl implements UpdateProductUseCase {
 	private final ProductRepository productRepository;
 	private final TagRepository tagRepository;
 	private final LanguageRepository languageRepository;
+	private final ExtractNameFromUrlUseCase extractNameFromUrlUseCase;
 
 	@Transactional
 	@Override
 	public void updateProduct(UUID productId, ProductRequestDto request) {
 		var existingProduct = productRepository.getById(productId)
 				.orElseThrow(() -> new ProductNotFoundException(productId));
+
+		var imageName = extractNameFromUrlUseCase.extractNameFromUrl(request.image());
 		var existingTranslations = productRepository.findTranslationsByProductId(productId);
 
 		var tags = getTags(request, existingProduct);
@@ -50,7 +54,7 @@ public class UpdateProductUseCaseImpl implements UpdateProductUseCase {
 
 		var updatedProduct = new ProductManagement(existingProduct.id(),
 				ProductStatus.valueOf(getValue(request.status(), String.valueOf(existingProduct.status()))),
-				getValue(request.image(), existingProduct.image()), existingProduct.createdAt(),
+				getValue(imageName, existingProduct.image()), existingProduct.createdAt(),
 				getValue(request.quantity(), existingProduct.quantity()),
 				getValue(request.price(), existingProduct.price()), tags, updatedTranslations);
 

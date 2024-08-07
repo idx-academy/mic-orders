@@ -32,7 +32,7 @@ class GetProductSearchResultsUseCaseTest {
 		var pageable = ModelUtils.getPageable();
 		String searchQuery = "some text";
 		String lang = "en";
-		Product product = ModelUtils.getProduct();
+		Product product = ModelUtils.getProductWithImageLink();
 		var productPage = ModelUtils.getPageOf(product);
 
 		when(productRepository.searchProductsByName(searchQuery, lang, pageable)).thenReturn(productPage);
@@ -54,7 +54,7 @@ class GetProductSearchResultsUseCaseTest {
 		Pageable defaultPageable = new Pageable(0, 8, List.of("name,desc"));
 		String searchQuery = "some text";
 		String lang = "en";
-		Product product = ModelUtils.getProduct();
+		Product product = ModelUtils.getProductWithImageLink();
 		var productPage = ModelUtils.getPageOf(product);
 
 		when(productRepository.searchProductsByName(searchQuery, lang, defaultPageable)).thenReturn(productPage);
