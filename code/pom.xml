@@ -17,7 +17,7 @@
     <module>jacoco-report-aggregate</module>
     <module>orders-api-rest</module>
     <module>orders-api-rest-clients</module>
-    <module>orders-api-rest-clients/colors-api</module>
+    <module>orders-api-rest-clients/images-api</module>
     <module>orders-application</module>
     <module>orders-boot</module>
     <module>orders-domain</module>
