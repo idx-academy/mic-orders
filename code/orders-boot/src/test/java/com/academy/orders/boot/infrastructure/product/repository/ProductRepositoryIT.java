@@ -1,6 +1,6 @@
 package com.academy.orders.boot.infrastructure.product.repository;
 
-import com.academy.orders.boot.infrastructure.common.repository.AbstractRepository;
+import com.academy.orders.boot.infrastructure.common.repository.AbstractRepositoryIT;
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.product.dto.ProductManagementFilterDto;
 import com.academy.orders.domain.product.entity.Product;
@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ProductRepositoryIT extends AbstractRepository {
+class ProductRepositoryIT extends AbstractRepositoryIT {
 	@Autowired
 	private ProductRepository productRepository;
 
