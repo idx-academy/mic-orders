@@ -45,13 +45,13 @@ public class ProductRepositoryImpl implements ProductRepository {
 	public Page<Product> findAllProducts(String language, Pageable pageable, List<String> tags) {
 		List<String> tagList = isNull(tags) ? emptyList() : tags;
 		var pageableSpring = pageableMapper.fromDomain(pageable);
-		var productEntities = productJpaAdapter.findAllByLanguageCodeAndStatusVisible(language, pageableSpring,
-				tagList);
-		productJpaAdapter.findAllByIdAndLanguageCode(
-				productEntities.getContent().stream().map(ProductEntity::getId).toList(), language);
-		setImageNames(productEntities.getContent());
+		var translations = productJpaAdapter.findAllByLanguageCodeAndStatusVisible(language, pageableSpring, tagList);
+		List<ProductEntity> products = translations.getContent().stream().map(ProductTranslationEntity::getProduct)
+				.toList();
+		productJpaAdapter.findAllByIdAndLanguageCode(products.stream().map(ProductEntity::getId).toList(), language);
 
-		return productPageMapper.toDomain(productEntities);
+		setImageNames(products);
+		return productPageMapper.fromProductTranslationEntity(translations);
 	}
 
 	@Override
