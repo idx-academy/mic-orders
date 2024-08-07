@@ -19,8 +19,8 @@ public class ImageRepositoryImpl implements ImageRepository {
 	@Value("${images.default.url}")
 	private String defaultImageUrl;
 
-	//@CircuitBreaker(name = "imagesCircuit", fallbackMethod = "getDefaultUrl")
-	@Retry(name = "imagesRetry", fallbackMethod = "getDefaultUrl" )
+	// @CircuitBreaker(name = "imagesCircuit", fallbackMethod = "getDefaultUrl")
+	@Retry(name = "imagesRetry", fallbackMethod = "getDefaultUrl")
 	@CachePut(value = "images", key = "#name")
 	public String getImageLinkByName(String name) {
 		log.info("Call api with name param: {}", name);

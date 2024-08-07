@@ -31,8 +31,7 @@ public class GetCartItemsUseCaseImpl implements GetCartItemsUseCase {
 
 	private List<CartItem> getCartItemsByAccountIdAndLang(Long accountId, String lang) {
 		return cartItemRepository.findCartItemsByAccountIdAndLang(accountId, lang).stream()
-			.map(cartItemImageRepository::loadImageForProductInCart)
-			.toList();
+				.map(cartItemImageRepository::loadImageForProductInCart).toList();
 	}
 
 	private List<CartItemDto> mapToCartItemsDtos(List<CartItem> cartItems) {

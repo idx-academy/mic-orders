@@ -1,6 +1,7 @@
 package com.academy.orders.application.cart.usecase;
 
 import com.academy.orders.domain.cart.entity.CartItem;
+import com.academy.orders.domain.cart.repository.CartItemImageRepository;
 import com.academy.orders.domain.cart.repository.CartItemRepository;
 import com.academy.orders.domain.product.usecase.CalculatePriceUseCase;
 import java.math.BigDecimal;
@@ -30,6 +31,8 @@ class GetCartUseCaseImplTest {
 	private CartItemRepository cartItemRepository;
 	@Mock
 	private CalculatePriceUseCase calculatePriceUseCase;
+	@Mock
+	private CartItemImageRepository cartItemImageRepository;
 
 	@Test
 	void getCartItemsTest() {
@@ -44,6 +47,7 @@ class GetCartUseCaseImplTest {
 				.thenReturn(singletonList(cartItem));
 		when(calculatePriceUseCase.calculateCartItemPrice(any(CartItem.class))).thenReturn(cartItemPrice);
 		when(calculatePriceUseCase.calculateCartTotalPrice(anyList())).thenReturn(totalPrice);
+		when(cartItemImageRepository.loadImageForProductInCart(cartItem)).thenReturn(cartItem);
 
 		var actualCartItemDto = getCartItemsUseCase.getCartItems(accountId, lang);
 		assertEquals(cartResponseDto, actualCartItemDto);
@@ -51,6 +55,7 @@ class GetCartUseCaseImplTest {
 		verify(cartItemRepository).findCartItemsByAccountIdAndLang(anyLong(), anyString());
 		verify(calculatePriceUseCase).calculateCartItemPrice(any(CartItem.class));
 		verify(calculatePriceUseCase).calculateCartTotalPrice(anyList());
+		verify(cartItemImageRepository).loadImageForProductInCart(cartItem);
 	}
 
 }

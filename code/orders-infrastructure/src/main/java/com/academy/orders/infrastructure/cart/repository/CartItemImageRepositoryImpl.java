@@ -11,15 +11,15 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RequiredArgsConstructor
 public class CartItemImageRepositoryImpl implements CartItemImageRepository {
-    private final ImageRepository imageRepository;
-    private final CartItemMapper cartItemMapper;
-    private final ProductMapper productMapper;
+	private final ImageRepository imageRepository;
+	private final CartItemMapper cartItemMapper;
+	private final ProductMapper productMapper;
 
-    @Override
-    public CartItem loadImageForProductInCart(CartItem cartItem) {
-        var product = cartItem.product();
-        var imageLink = imageRepository.getImageLinkByName(product.image());
-        var productWithImage = productMapper.mapDomainImage(product, imageLink);
-        return cartItemMapper.fromDomainWithProduct(cartItem, productWithImage);
-    }
+	@Override
+	public CartItem loadImageForProductInCart(CartItem cartItem) {
+		var product = cartItem.product();
+		var imageLink = imageRepository.getImageLinkByName(product.image());
+		var productWithImage = productMapper.mapDomainImage(product, imageLink);
+		return cartItemMapper.fromDomainWithProduct(cartItem, productWithImage);
+	}
 }

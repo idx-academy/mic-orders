@@ -20,8 +20,7 @@ public class GetOrderByIdUseCaseImpl implements GetOrderByIdUseCase {
 	@Override
 	public Order getOrderById(UUID id, String language) {
 		return calculateOrderTotalPriceUseCase.calculateTotalPriceFor(
-				orderRepository.findById(id, language)
-					.map(orderImageRepository::loadImageForProductInOrder)
-					.orElseThrow(() -> new OrderNotFoundException(id)));
+				orderRepository.findById(id, language).map(orderImageRepository::loadImageForProductInOrder)
+						.orElseThrow(() -> new OrderNotFoundException(id)));
 	}
 }

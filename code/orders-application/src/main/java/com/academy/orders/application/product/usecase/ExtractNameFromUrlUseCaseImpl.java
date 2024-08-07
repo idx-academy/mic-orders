@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ExtractNameFromUrlUseCaseImpl implements ExtractNameFromUrlUseCase {
-    @Override
-    public String extractNameFromUrl(String url) {
-        return url.substring(url.lastIndexOf('/') + 1);
-    }
+	@Override
+	public String extractNameFromUrl(String url) {
+		return url.substring(url.lastIndexOf('/') + 1);
+	}
 }

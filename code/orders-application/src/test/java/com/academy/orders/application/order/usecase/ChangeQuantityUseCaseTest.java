@@ -13,7 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static com.academy.orders.application.ModelUtils.getProduct;
+import static com.academy.orders.application.ModelUtils.getProductWithImageLink;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -40,7 +40,7 @@ class ChangeQuantityUseCaseTest {
 	}
 
 	private static Stream<Arguments> testChangeQuantityDataProvider() {
-		var product = getProduct();
+		var product = getProductWithImageLink();
 		return Stream.of(Arguments.of(product, product.quantity() - 1), Arguments.of(product, product.quantity()));
 	}
 
@@ -54,7 +54,7 @@ class ChangeQuantityUseCaseTest {
 	}
 
 	private static Stream<Arguments> testChangeQuantityThrowsExceptionProvider() {
-		var product = getProduct();
+		var product = getProductWithImageLink();
 		return Stream.of(Arguments.of(product, product.quantity() + 10), Arguments.of(product, -10),
 				Arguments.of(product, 0));
 	}

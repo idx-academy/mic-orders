@@ -28,7 +28,7 @@ public interface ProductMapper {
 
 	@Named("mapTags")
 	default List<String> mapTags(Set<Tag> tags) {
-		return nonNull(tags)? tags.stream().map(Tag::name).toList() : emptyList();
+		return nonNull(tags) ? tags.stream().map(Tag::name).toList() : emptyList();
 	}
 
 }

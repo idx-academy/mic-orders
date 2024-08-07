@@ -17,7 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.academy.orders.application.ModelUtils.getAccount;
-import static com.academy.orders.application.ModelUtils.getProduct;
+import static com.academy.orders.application.ModelUtils.getProductWithImageLink;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
@@ -42,7 +42,7 @@ class CreateCartItemByUserUseCaseTest {
 	@BeforeEach
 	void setUp() {
 		Account account = getAccount();
-		product = getProduct();
+		product = getProductWithImageLink();
 		cartItemDTO = CreateCartItemDTO.builder().productId(product.id()).userId(account.id()).quantity(1).build();
 	}
 
