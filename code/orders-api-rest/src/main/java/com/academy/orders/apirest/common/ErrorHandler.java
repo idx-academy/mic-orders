@@ -1,5 +1,6 @@
 package com.academy.orders.apirest.common;
 
+import com.academy.orders.domain.account.exception.AccountRoleNotFoundException;
 import com.academy.orders.domain.cart.exception.EmptyCartException;
 import com.academy.orders.domain.cart.exception.QuantityExceedsAvailableException;
 import com.academy.orders.domain.exception.AlreadyExistsException;
@@ -144,5 +145,13 @@ public class ErrorHandler {
 	public ErrorObjectDTO handleUsernameNotFoundException(final UsernameNotFoundException ex) {
 		return new ErrorObjectDTO().status(HttpStatus.UNAUTHORIZED.value())
 				.title(HttpStatus.UNAUTHORIZED.getReasonPhrase()).detail(ex.getMessage());
+	}
+
+	@ExceptionHandler(AccountRoleNotFoundException.class)
+	@ResponseStatus(value = HttpStatus.NOT_FOUND)
+	public ErrorObjectDTO handleAccountRoleNotFoundException(final AccountRoleNotFoundException ex) {
+		log.warn("Account role not found", ex);
+		return new ErrorObjectDTO().status(HttpStatus.NOT_FOUND.value()).title(HttpStatus.NOT_FOUND.getReasonPhrase())
+				.detail(ex.getMessage());
 	}
 }

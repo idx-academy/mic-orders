@@ -1,6 +1,7 @@
 package com.academy.orders.apirest.common;
 
 import com.academy.orders.domain.account.exception.AccountAlreadyExistsException;
+import com.academy.orders.domain.account.exception.AccountRoleNotFoundException;
 import com.academy.orders.domain.cart.exception.EmptyCartException;
 import com.academy.orders.domain.cart.exception.QuantityExceedsAvailableException;
 import com.academy.orders.domain.exception.NotFoundException;
@@ -10,7 +11,6 @@ import com.academy.orders.domain.order.exception.InsufficientProductQuantityExce
 import com.academy.orders.domain.order.exception.InvalidOrderStatusTransitionException;
 import com.academy.orders.domain.order.exception.OrderFinalStateException;
 import com.academy.orders_api_rest.generated.model.ErrorObjectDTO;
-import java.util.UUID;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +23,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -170,6 +171,15 @@ class ErrorHandlerTest {
 		var ex = new UsernameNotFoundException(DEFAULT_ERROR_MESSAGE);
 
 		assertEquals(buildErrorObjectDTO(UNAUTHORIZED), errorHandler.handleUsernameNotFoundException(ex));
+	}
+
+	@Test
+	void handleAccountRoleNotFoundExceptionTest() {
+		var accountEmail = "test@mail.com";
+		var ex = new AccountRoleNotFoundException(accountEmail);
+		var message = String.format("The Role of account with email: %s is not found", accountEmail);
+
+		assertEquals(buildErrorObjectDTO(NOT_FOUND, message), errorHandler.handleAccountRoleNotFoundException(ex));
 	}
 
 	private ErrorObjectDTO buildErrorObjectDTO(HttpStatus status, String detail) {
