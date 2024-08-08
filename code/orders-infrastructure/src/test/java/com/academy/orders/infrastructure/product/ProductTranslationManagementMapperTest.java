@@ -18,7 +18,7 @@ class ProductTranslationManagementMapperTest {
 	}
 
 	@Test
-	void testFromEntity() {
+	void fromEntityTest() {
 		var productTranslationEntity = getProductTranslationEntity();
 		var expected = getProductTranslationManagement();
 		var result = mapper.fromEntity(productTranslationEntity);
@@ -26,7 +26,7 @@ class ProductTranslationManagementMapperTest {
 	}
 
 	@Test
-	void testFromEntities() {
+	void fromEntitiesTest() {
 		var productTranslationEntity = getProductTranslationEntity();
 		var expected = getProductTranslationManagement();
 		var result = mapper.fromEntities(Set.of(productTranslationEntity));

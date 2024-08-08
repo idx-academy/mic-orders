@@ -35,7 +35,7 @@ class UpdateCartItemQuantityUseCaseTest {
 	private CalculatePriceUseCase calculatePriceUseCase;
 
 	@Test
-	void setQuantitySuccessfulUpdate() {
+	void setQuantitySuccessfulUpdateTest() {
 		UUID productId = UUID.randomUUID();
 		Long userId = 1L;
 		Integer quantity = 2;
@@ -69,7 +69,7 @@ class UpdateCartItemQuantityUseCaseTest {
 	}
 
 	@Test
-	void setQuantityCartItemNotFound() {
+	void setQuantityCartItemNotFoundTest() {
 		UUID productId = UUID.randomUUID();
 		Long userId = 1L;
 		int quantity = 2;
@@ -87,7 +87,7 @@ class UpdateCartItemQuantityUseCaseTest {
 	}
 
 	@Test
-	void setQuantityExceedsAvailableException() {
+	void setQuantityExceedsAvailableExceptionTest() {
 		UUID productId = UUID.randomUUID();
 		Long userId = 1L;
 		Integer quantity = 6;
@@ -117,7 +117,7 @@ class UpdateCartItemQuantityUseCaseTest {
 	}
 
 	@Test
-	void setQuantityEqualProductQuantity() {
+	void setQuantityEqualProductQuantityTest() {
 		UUID productId = UUID.randomUUID();
 		Long userId = 1L;
 		Integer quantity = 5;
@@ -151,7 +151,7 @@ class UpdateCartItemQuantityUseCaseTest {
 	}
 
 	@Test
-	void setQuantityUpdateQuantityOfCartItemReturnsNull() {
+	void setQuantityUpdateQuantityOfCartItemReturnsNullTest() {
 		UUID productId = UUID.randomUUID();
 		Long userId = 1L;
 		Integer quantity = 2;

@@ -99,7 +99,7 @@ class ErrorHandlerTest {
 	}
 
 	@Test
-	void handleInsufficientProductQuantityException() {
+	void handleInsufficientProductQuantityExceptionTest() {
 		var productId = UUID.randomUUID();
 		var ex = new InsufficientProductQuantityException(productId);
 		var message = "Ordered quantity exceeds available stock for product: " + productId;
@@ -109,7 +109,7 @@ class ErrorHandlerTest {
 	}
 
 	@Test
-	void handleEmptyCartException() {
+	void handleEmptyCartExceptionTest() {
 		var ex = new EmptyCartException();
 		var message = "Cannot place an order with an empty cart.";
 
@@ -125,7 +125,7 @@ class ErrorHandlerTest {
 	}
 
 	@Test
-	void handleExceedsAvailableException() {
+	void handleExceedsAvailableExceptionTest() {
 		var productId = UUID.randomUUID();
 		var quantity = 10;
 		var availableQuantity = 5;

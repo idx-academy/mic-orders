@@ -31,7 +31,7 @@ class ChangeQuantityUseCaseTest {
 	private ProductRepository productRepository;
 
 	@ParameterizedTest
-	@MethodSource("testChangeQuantityDataProvider")
+	@MethodSource("changeQuantityDataProviderTest")
 	void changeQuantityTest(Product product, int quantity) {
 		var quantityDifference = product.quantity() - quantity;
 		doNothing().when(productRepository).setNewProductQuantity(product.id(), quantityDifference);
@@ -40,13 +40,13 @@ class ChangeQuantityUseCaseTest {
 		verify(productRepository).setNewProductQuantity(product.id(), quantityDifference);
 	}
 
-	private static Stream<Arguments> testChangeQuantityDataProvider() {
+	private static Stream<Arguments> changeQuantityDataProviderTest() {
 		var product = getProductWithImageLink();
 		return Stream.of(Arguments.of(product, product.quantity() - 1), Arguments.of(product, product.quantity()));
 	}
 
 	@ParameterizedTest
-	@MethodSource("testChangeQuantityThrowsExceptionProvider")
+	@MethodSource("changeQuantityThrowsExceptionProviderTest")
 	void changeQuantityThrowsInsufficientProductQuantityExceptionTest(Product product, int quantity) {
 		assertThrows(InsufficientProductQuantityException.class,
 				() -> changeQuantityUseCase.changeQuantityOfProduct(product, quantity));
@@ -54,7 +54,7 @@ class ChangeQuantityUseCaseTest {
 		verify(productRepository, never()).setNewProductQuantity(any(UUID.class), anyInt());
 	}
 
-	private static Stream<Arguments> testChangeQuantityThrowsExceptionProvider() {
+	private static Stream<Arguments> changeQuantityThrowsExceptionProviderTest() {
 		var product = getProductWithImageLink();
 		return Stream.of(Arguments.of(product, product.quantity() + 10), Arguments.of(product, -10),
 				Arguments.of(product, 0));

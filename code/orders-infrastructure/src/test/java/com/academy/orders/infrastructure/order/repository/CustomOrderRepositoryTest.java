@@ -114,7 +114,7 @@ class CustomOrderRepositoryTest {
 	}
 
 	@Test
-	void testFindAllByFilterParameters() {
+	void findAllByFilterParametersTest() {
 		// Given
 		OrdersFilterParametersDto filterParametersDto = ModelUtils.getOrdersFilterParametersDto();
 		Pageable pageable = PageRequest.of(1, 2, Sort.by("total"));

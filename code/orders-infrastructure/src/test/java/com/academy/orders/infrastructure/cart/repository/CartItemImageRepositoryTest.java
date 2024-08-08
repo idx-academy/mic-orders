@@ -29,7 +29,7 @@ class CartItemImageRepositoryTest {
 	private ProductMapper productMapper;
 
 	@Test
-	void loadImageForProductInCart() {
+	void loadImageForProductInCartTest() {
 		var cartItem = ModelUtils.getCartItem();
 		var product = cartItem.product();
 

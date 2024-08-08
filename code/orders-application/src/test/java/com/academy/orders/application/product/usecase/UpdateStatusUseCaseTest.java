@@ -24,7 +24,7 @@ class UpdateStatusUseCaseTest {
 	private UpdateStatusUseCaseImpl updateStatusUseCase;
 
 	@Test
-	void testGetAllProductsTest() {
+	void getAllProductsTest() {
 		// Given
 		UUID productId = TEST_UUID;
 		ProductStatus status = ProductStatus.VISIBLE;
@@ -41,7 +41,7 @@ class UpdateStatusUseCaseTest {
 	}
 
 	@Test
-	void testGetAllProductsThrowProductNotFoundExceptionTest() {
+	void getAllProductsThrowProductNotFoundExceptionTest() {
 		// Given
 		UUID productId = TEST_UUID;
 		ProductStatus status = ProductStatus.VISIBLE;
