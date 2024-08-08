@@ -3,6 +3,9 @@ package com.academy.orders.domain.product.usecase;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import java.util.UUID;
 
+/**
+ * Use case interface for updating product status.
+ */
 public interface UpdateStatusUseCase {
 	/**
 	 * Updates the status of a product identified by its UUID.

@@ -1,6 +1,6 @@
 package com.academy.orders.domain.order.exception;
 
-import com.academy.orders.domain.exception.PaidException;
+import com.academy.orders.domain.common.exception.PaidException;
 import lombok.Getter;
 
 import java.util.UUID;

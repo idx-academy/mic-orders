@@ -1,7 +1,7 @@
 package com.academy.orders.application.product.usecase;
 
 import com.academy.orders.domain.language.repository.LanguageRepository;
-import com.academy.orders.domain.language.repository.exception.LanguageNotFoundException;
+import com.academy.orders.domain.language.exception.LanguageNotFoundException;
 import com.academy.orders.domain.product.dto.ProductRequestDto;
 import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.ProductManagement;

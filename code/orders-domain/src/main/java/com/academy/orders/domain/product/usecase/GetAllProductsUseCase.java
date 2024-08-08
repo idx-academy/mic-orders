@@ -5,6 +5,9 @@ import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.product.entity.Product;
 import java.util.List;
 
+/**
+ * Use case interface for getting all prodcuts.
+ */
 public interface GetAllProductsUseCase {
 	/**
 	 * Retrieves a paginated list of products based on the provided language,
@@ -18,9 +21,9 @@ public interface GetAllProductsUseCase {
 	 * @param tags
 	 *            a {@link List} of tags to filter the products by. Can be empty to
 	 *            retrieve products without tag filtering.
+	 *
 	 * @return a {@link Page} of {@link Product} objects that match the specified
 	 *         criteria.
-	 *
 	 *
 	 * @author Anton Bodnar, Yurii Osovskyi, Denys Ryhal
 	 */

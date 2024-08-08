@@ -11,7 +11,7 @@ import com.academy.orders.domain.cart.exception.CartItemNotFoundException;
 import com.academy.orders.domain.cart.usecase.CreateCartItemByUserUseCase;
 import com.academy.orders.domain.cart.usecase.DeleteProductFromCartUseCase;
 import com.academy.orders.domain.cart.usecase.GetCartItemsUseCase;
-import com.academy.orders.domain.cart.usecase.SetCartItemQuantityUseCase;
+import com.academy.orders.domain.cart.usecase.UpdateCartItemQuantityUseCase;
 import com.academy.orders.domain.product.exception.ProductNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.UUID;
@@ -70,7 +70,7 @@ class CartItemControllerTest {
 	private GetCartItemsUseCase getCartItemsUseCase;
 
 	@MockBean
-	private SetCartItemQuantityUseCase setCartItemQuantityUseCase;
+	private UpdateCartItemQuantityUseCase updateCartItemQuantityUseCase;
 
 	@MockBean
 	private CartItemDTOMapper cartItemDTOMapper;
@@ -146,14 +146,14 @@ class CartItemControllerTest {
 		var updateCartItemDto = getUpdatedCartItemDto();
 		var updateCartItemDTO = getUpdatedCartItemDTO();
 
-		when(setCartItemQuantityUseCase.setQuantity(TEST_UUID, 1L, 1)).thenReturn(updateCartItemDto);
+		when(updateCartItemQuantityUseCase.setQuantity(TEST_UUID, 1L, 1)).thenReturn(updateCartItemDto);
 		when(cartItemDTOMapper.toUpdatedCartItemDTO(updateCartItemDto)).thenReturn(updateCartItemDTO);
 
 		mockMvc.perform(patch("/v1/users/{userId}/cart/{productId}/setquantity", 1L, TEST_UUID).param("quantity", "1")
 				.with(getJwtRequest(1L, ROLE_ADMIN)).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andExpect(content().json(objectMapper.writeValueAsString(updateCartItemDto)));
 
-		verify(setCartItemQuantityUseCase).setQuantity(TEST_UUID, 1L, 1);
+		verify(updateCartItemQuantityUseCase).setQuantity(TEST_UUID, 1L, 1);
 		verify(cartItemDTOMapper).toUpdatedCartItemDTO(updateCartItemDto);
 	}
 }

@@ -9,6 +9,9 @@ import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
 import java.util.Optional;
 
+/**
+ * Repository interface for managing accounts.
+ */
 public interface AccountRepository {
 	/**
 	 * Retrieves an {@link Account} entity by its email address.

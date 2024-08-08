@@ -5,6 +5,9 @@ import com.academy.orders.domain.product.dto.ProductRequestDto;
 import com.academy.orders.domain.product.exception.ProductNotFoundException;
 import java.util.UUID;
 
+/**
+ * Use case interface for updating product information.
+ */
 public interface UpdateProductUseCase {
 	/**
 	 * Updates the details of an existing product based on the provided product ID

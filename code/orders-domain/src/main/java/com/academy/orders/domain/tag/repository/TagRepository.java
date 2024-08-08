@@ -5,6 +5,9 @@ import com.academy.orders.domain.product.entity.Tag;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Repository interface for managing and loading tags by tag ids.
+ */
 public interface TagRepository {
 	/**
 	 * Retrieves a set of tags based on the provided list of tag IDs.

@@ -1,5 +1,6 @@
 package com.academy.orders.application.order.usecase;
 
+import com.academy.orders.application.product.usecase.ChangeQuantityUseCaseImpl;
 import com.academy.orders.domain.order.exception.InsufficientProductQuantityException;
 import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.repository.ProductRepository;

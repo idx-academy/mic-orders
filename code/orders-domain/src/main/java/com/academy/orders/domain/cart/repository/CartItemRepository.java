@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Repository interface for managing shopping cart.
+ */
 public interface CartItemRepository {
 
 	/**

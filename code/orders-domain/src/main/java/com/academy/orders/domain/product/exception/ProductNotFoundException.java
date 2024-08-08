@@ -1,6 +1,6 @@
 package com.academy.orders.domain.product.exception;
 
-import com.academy.orders.domain.exception.NotFoundException;
+import com.academy.orders.domain.common.exception.NotFoundException;
 import java.util.UUID;
 import lombok.Getter;
 

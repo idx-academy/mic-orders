@@ -4,6 +4,9 @@ import com.academy.orders.domain.product.entity.Language;
 
 import java.util.Optional;
 
+/**
+ * Repository interface for loading and managing language info.
+ */
 public interface LanguageRepository {
 	/**
 	 * Finds a language entity by its code.

@@ -4,8 +4,8 @@ import com.academy.orders.domain.account.exception.AccountAlreadyExistsException
 import com.academy.orders.domain.account.exception.AccountRoleNotFoundException;
 import com.academy.orders.domain.cart.exception.EmptyCartException;
 import com.academy.orders.domain.cart.exception.QuantityExceedsAvailableException;
-import com.academy.orders.domain.exception.NotFoundException;
-import com.academy.orders.domain.exception.PaidException;
+import com.academy.orders.domain.common.exception.NotFoundException;
+import com.academy.orders.domain.common.exception.PaidException;
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import com.academy.orders.domain.order.exception.InsufficientProductQuantityException;
 import com.academy.orders.domain.order.exception.InvalidOrderStatusTransitionException;

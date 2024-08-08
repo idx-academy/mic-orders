@@ -4,7 +4,9 @@ import com.academy.orders.domain.product.entity.Product;
 
 import com.academy.orders.domain.product.exception.ProductNotFoundException;
 import java.util.UUID;
-
+/**
+ * Use case interface for getting product by id.
+ */
 public interface GetProductByIdUseCase {
 	/**
 	 * Retrieves a product by its unique identifier.

@@ -1,8 +1,8 @@
 package com.academy.orders.application.product.usecase;
 
-import com.academy.orders.domain.exception.BadRequestException;
+import com.academy.orders.domain.common.exception.BadRequestException;
 import com.academy.orders.domain.language.repository.LanguageRepository;
-import com.academy.orders.domain.language.repository.exception.LanguageNotFoundException;
+import com.academy.orders.domain.language.exception.LanguageNotFoundException;
 import com.academy.orders.domain.product.dto.ProductRequestDto;
 import com.academy.orders.domain.product.entity.Language;
 import com.academy.orders.domain.product.entity.Product;

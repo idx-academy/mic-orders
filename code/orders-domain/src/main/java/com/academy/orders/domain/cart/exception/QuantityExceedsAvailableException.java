@@ -1,6 +1,6 @@
 package com.academy.orders.domain.cart.exception;
 
-import com.academy.orders.domain.exception.ExceedsAvailableException;
+import com.academy.orders.domain.common.exception.ExceedsAvailableException;
 import lombok.Getter;
 import java.util.UUID;
 

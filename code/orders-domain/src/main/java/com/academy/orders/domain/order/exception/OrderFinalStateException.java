@@ -1,5 +1,5 @@
 package com.academy.orders.domain.order.exception;
-import com.academy.orders.domain.exception.BadRequestException;
+import com.academy.orders.domain.common.exception.BadRequestException;
 import lombok.Getter;
 
 @Getter
