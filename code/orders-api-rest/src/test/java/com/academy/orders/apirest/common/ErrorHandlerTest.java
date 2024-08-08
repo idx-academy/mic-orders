@@ -4,8 +4,8 @@ import com.academy.orders.domain.account.exception.AccountAlreadyExistsException
 import com.academy.orders.domain.account.exception.AccountRoleNotFoundException;
 import com.academy.orders.domain.cart.exception.EmptyCartException;
 import com.academy.orders.domain.cart.exception.QuantityExceedsAvailableException;
-import com.academy.orders.domain.exception.NotFoundException;
-import com.academy.orders.domain.exception.PaidException;
+import com.academy.orders.domain.common.exception.NotFoundException;
+import com.academy.orders.domain.common.exception.PaidException;
 import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import com.academy.orders.domain.order.exception.InsufficientProductQuantityException;
 import com.academy.orders.domain.order.exception.InvalidOrderStatusTransitionException;
@@ -99,7 +99,7 @@ class ErrorHandlerTest {
 	}
 
 	@Test
-	void handleInsufficientProductQuantityException() {
+	void handleInsufficientProductQuantityExceptionTest() {
 		var productId = UUID.randomUUID();
 		var ex = new InsufficientProductQuantityException(productId);
 		var message = "Ordered quantity exceeds available stock for product: " + productId;
@@ -109,7 +109,7 @@ class ErrorHandlerTest {
 	}
 
 	@Test
-	void handleEmptyCartException() {
+	void handleEmptyCartExceptionTest() {
 		var ex = new EmptyCartException();
 		var message = "Cannot place an order with an empty cart.";
 
@@ -125,7 +125,7 @@ class ErrorHandlerTest {
 	}
 
 	@Test
-	void handleExceedsAvailableException() {
+	void handleExceedsAvailableExceptionTest() {
 		var productId = UUID.randomUUID();
 		var quantity = 10;
 		var availableQuantity = 5;

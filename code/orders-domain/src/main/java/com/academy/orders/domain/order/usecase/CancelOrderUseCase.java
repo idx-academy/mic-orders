@@ -4,6 +4,9 @@ import com.academy.orders.domain.order.exception.OrderFinalStateException;
 import com.academy.orders.domain.order.exception.OrderNotFoundException;
 import java.util.UUID;
 
+/**
+ * Use case interface for canceling order.
+ */
 public interface CancelOrderUseCase {
 	/**
 	 * Cancels the order for a specific user.

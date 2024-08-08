@@ -1,7 +1,9 @@
 package com.academy.orders.domain.product.usecase;
 
+/**
+ * Use case interface for extracting image name from url.
+ */
 public interface ExtractNameFromUrlUseCase {
-
 	/**
 	 * Extracts the name or identifier from the given URL.
 	 *

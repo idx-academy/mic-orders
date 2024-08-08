@@ -24,7 +24,7 @@ class ProductManagementMapperTest {
 	}
 
 	@Test
-	void testFromEntity() {
+	void fromEntityTest() {
 		var productEntity = new ProductEntity();
 		productEntity.setId(UUID.randomUUID());
 
@@ -41,7 +41,7 @@ class ProductManagementMapperTest {
 	}
 
 	@Test
-	void testToEntity() {
+	void toEntityTest() {
 		var productTranslationManagement = getProductTranslationManagement();
 		var productManagement = getProductManagement();
 		var productEntity = productManagementMapper.toEntity(productManagement);
@@ -73,7 +73,7 @@ class ProductManagementMapperTest {
 	}
 
 	@Test
-	void testMapProductTranslationManagement() {
+	void mapProductTranslationManagementTest() {
 		var productTranslationManagement = getProductTranslationManagement();
 		Set<ProductTranslationEntity> result = productManagementMapper
 				.mapProductTranslationManagement(Set.of(productTranslationManagement));
@@ -89,7 +89,7 @@ class ProductManagementMapperTest {
 	}
 
 	@Test
-	void testProductTranslationManagement() {
+	void productTranslationManagementTest() {
 		var productTranslationManagement = getProductTranslationManagement();
 		ProductTranslationEntity result = productManagementMapper
 				.productTranslationManagement(productTranslationManagement);
@@ -103,7 +103,7 @@ class ProductManagementMapperTest {
 	}
 
 	@Test
-	void testMapLanguage() {
+	void mapLanguageTest() {
 		var language = new Language(1L, "en");
 		LanguageEntity result = productManagementMapper.mapLanguage(language);
 		Assertions.assertNotNull(result);
@@ -112,13 +112,13 @@ class ProductManagementMapperTest {
 	}
 
 	@Test
-	void testMapLanguageWithNull() {
+	void mapLanguageWithNullTest() {
 		LanguageEntity result = productManagementMapper.mapLanguage(null);
 		Assertions.assertNull(result);
 	}
 
 	@Test
-	void testMapProduct() {
+	void mapProductTest() {
 		UUID productId = UUID.randomUUID();
 		ProductEntity result = productManagementMapper.mapProduct(productId);
 		Assertions.assertNotNull(result);
@@ -126,7 +126,7 @@ class ProductManagementMapperTest {
 	}
 
 	@Test
-	void testMapProductWithNull() {
+	void mapProductWithNullTest() {
 		ProductEntity result = productManagementMapper.mapProduct(null);
 		Assertions.assertNull(result);
 	}

@@ -38,9 +38,9 @@ paths:
     post:
       tags:
         - Security
-      summary: Sign in user
+      summary: Sign in account
       operationId: signIn
-      description: The endpoint sign in the user to the DB.
+      description: The endpoint sign in account.
       requestBody:
         content:
           application/json:
@@ -184,7 +184,7 @@ paths:
     get:
       tags:
         - Orders
-      summary: View the orders history
+      summary: View the orders history for user by id
       operationId: getOrdersByUser
       security:
         - bearerAuth: [ ]
@@ -239,7 +239,8 @@ paths:
     get:
       tags:
         - OrdersManagement
-      summary: View all orders
+      summary: View all orders filtered and sorted
+      description: Endpoint allows users to view all orders with optional filtering and sorting. It supports pagination, language localization, and requires bearer token authentication.
       operationId: getAllOrders
       security:
         - bearerAuth: [ ]
@@ -269,7 +270,8 @@ paths:
     patch:
       tags:
         - ProductsManagement
-      summary: Change visibility status for product
+      summary: Change visibility status for product by id
+      description: Endpoint allows users to change the visibility status of a specific product. The product is identified by productId, and the desired visibility status must be provided as a query parameter.
       operationId: updateStatus
       security:
         - bearerAuth: [ ]
@@ -298,6 +300,7 @@ paths:
       tags:
         - ProductsManagement
       summary: Get product by ID
+      description: Endpoint retrieves details of a specific product by its productId.
       operationId: getProductById
       security:
         - bearerAuth: [ ]
@@ -323,6 +326,7 @@ paths:
       tags:
         - ProductsManagement
       summary: Update existing product details
+      description: Endpoint updates the details of an existing product identified by productId.
       operationId: updateProduct
       security:
         - bearerAuth: [ ]
@@ -403,6 +407,7 @@ paths:
       tags:
         - Products
       summary: Get product by ID
+      description: Endpoint retrieves the details of an existing product identified by productId. It supports optional language localization.
       operationId: getProductDetailsById
       parameters:
           - $ref: '#/components/parameters/ProductId'

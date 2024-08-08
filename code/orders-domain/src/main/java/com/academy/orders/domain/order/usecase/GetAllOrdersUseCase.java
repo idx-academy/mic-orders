@@ -5,6 +5,9 @@ import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
 import com.academy.orders.domain.order.entity.OrderManagement;
 
+/**
+ * Use case interface for getting all orders.
+ */
 public interface GetAllOrdersUseCase {
 	/**
 	 * Retrieves a paginated list of orders based on the specified filter parameters

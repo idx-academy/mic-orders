@@ -7,7 +7,7 @@ import com.academy.orders.domain.cart.repository.CartItemImageRepository;
 import com.academy.orders.domain.cart.repository.CartItemRepository;
 import com.academy.orders.domain.cart.usecase.GetCartItemsUseCase;
 import com.academy.orders.domain.product.entity.ProductTranslation;
-import com.academy.orders.domain.product.usecase.CalculatePriceUseCase;
+import com.academy.orders.domain.cart.usecase.CalculatePriceUseCase;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;

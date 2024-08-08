@@ -2,6 +2,9 @@ package com.academy.orders.domain.product.repository;
 
 import com.academy.orders.domain.product.entity.Product;
 
+/**
+ * Repository interface for loading images for products.
+ */
 public interface ProductImageRepository {
 	/**
 	 * Loads an image for the given product.

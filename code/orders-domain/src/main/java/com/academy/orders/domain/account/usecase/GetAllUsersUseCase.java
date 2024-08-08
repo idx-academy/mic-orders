@@ -5,6 +5,9 @@ import com.academy.orders.domain.account.entity.Account;
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
 
+/**
+ * Use case interface for getting all accounts.
+ */
 public interface GetAllUsersUseCase {
 	/**
 	 * Retrieves a paginated list of accounts based on the provided filter criteria.

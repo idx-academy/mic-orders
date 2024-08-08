@@ -4,6 +4,9 @@ import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.product.entity.Product;
 
+/**
+ * Use case interface for getting products in search.
+ */
 public interface GetProductSearchResultsUseCase {
 	/**
 	 * Retrieves a paginated list of Product objects based on a search query and

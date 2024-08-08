@@ -47,7 +47,7 @@ class GetOrderByIdUseCaseTest {
 	}
 
 	@Test
-	void testGetOrderById_OrderExists() {
+	void getOrderByIdWhenOrderExistsTest() {
 		when(orderRepository.findById(orderId, language)).thenReturn(Optional.of(orderWithoutTotal));
 		when(orderImageRepository.loadImageForProductInOrder(orderWithoutTotal)).thenReturn(orderWithoutTotal);
 		when(calculateOrderTotalPriceUseCase.calculateTotalPriceFor(orderWithoutTotal)).thenReturn(order);
@@ -62,7 +62,7 @@ class GetOrderByIdUseCaseTest {
 	}
 
 	@Test
-	void testGetOrderById_OrderNotFound() {
+	void getOrderByIdWhenOrderNotFoundTest() {
 		when(orderRepository.findById(orderId, language)).thenReturn(Optional.empty());
 
 		var exception = assertThrows(OrderNotFoundException.class,

@@ -1,6 +1,6 @@
 package com.academy.orders.domain.account.exception;
 
-import com.academy.orders.domain.exception.AlreadyExistsException;
+import com.academy.orders.domain.common.exception.AlreadyExistsException;
 import lombok.Getter;
 
 public class AccountAlreadyExistsException extends AlreadyExistsException {

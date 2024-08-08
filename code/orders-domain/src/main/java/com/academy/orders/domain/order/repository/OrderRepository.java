@@ -8,6 +8,9 @@ import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Repository interface for managing and loading orders.
+ */
 public interface OrderRepository {
 	/**
 	 * Method find {@link Order} by order's id
@@ -16,6 +19,8 @@ public interface OrderRepository {
 	 *            with type {@link UUID}
 	 *
 	 * @return {@link Optional} of {@link Order}
+	 *
+	 * @author Denys Liubchenko
 	 */
 	Optional<Order> findById(UUID id);
 
@@ -40,6 +45,7 @@ public interface OrderRepository {
 	 *            to save
 	 *
 	 * @return {@link UUID} id of created order
+	 *
 	 * @author Denys Ryhal
 	 */
 	UUID save(Order order, Long accountId);
@@ -53,6 +59,7 @@ public interface OrderRepository {
 	 *            the language in which the orders should be retrieved.
 	 * @param pageable
 	 *            the pagination and sorting information.
+	 *
 	 * @return a Page of OrderEntity objects matching the specified criteria.
 	 *
 	 * @author Denys Liubchenko
@@ -66,6 +73,7 @@ public interface OrderRepository {
 	 *            the unique identifier of the order to be updated.
 	 * @param orderStatus
 	 *            the new status to be set for the order.
+	 *
 	 * @author Anton Bondar
 	 */
 	void updateOrderStatus(UUID orderId, OrderStatus orderStatus);
@@ -78,6 +86,7 @@ public interface OrderRepository {
 	 * @param isPaid
 	 *            a boolean indicating whether the order is paid or not. `true` if
 	 *            the order is paid, `false` otherwise.
+	 *
 	 * @author Anton Bondar
 	 */
 	void updateIsPaidStatus(UUID orderId, Boolean isPaid);
@@ -89,7 +98,9 @@ public interface OrderRepository {
 	 *            filter parameters to sort orders.
 	 * @param pageable
 	 *            the pagination and sorting information.
+	 *
 	 * @return a Page of OrderEntity objects matching the specified criteria.
+	 *
 	 * @author Denys Liubchenko
 	 */
 	Page<Order> findAll(OrdersFilterParametersDto filterParametersDto, Pageable pageable);
@@ -99,6 +110,7 @@ public interface OrderRepository {
 	 *
 	 * @param orderId
 	 *            the UUID of the order to be retrieved.
+	 *
 	 * @return an {@link Optional} containing the {@link Order} with related data if
 	 *         found, or empty if not found.
 	 *

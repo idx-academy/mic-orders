@@ -16,7 +16,6 @@ public interface GetCartItemsUseCase {
 	 *            the language preference for the response.
 	 * @return a {@link CartResponseDto} containing the details of the cart items.
 	 *
-	 *
 	 * @author Denys Ryhal
 	 */
 	CartResponseDto getCartItems(Long userId, String lang);

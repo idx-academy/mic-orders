@@ -14,6 +14,9 @@ import java.util.Set;
 import java.util.UUID;
 import org.springframework.lang.NonNull;
 
+/**
+ * Repository interface for managing and loading products.
+ */
 public interface ProductRepository {
 	/**
 	 * Retrieves a paginated list of products based on the provided language and
@@ -25,6 +28,7 @@ public interface ProductRepository {
 	 *            the pageable information for pagination and sorting.
 	 * @param tags
 	 *            list of tag's names for filtering.
+	 *
 	 * @return a page containing the products that match the criteria.
 	 *
 	 * @author Anton Bondar, Yurii Osovskyi, Denys Liubchenko
@@ -41,6 +45,7 @@ public interface ProductRepository {
 	 *            the pageable information for pagination.
 	 * @param tags
 	 *            list of tag's names for filtering.
+	 *
 	 * @return a page containing the products that match the criteria.
 	 *
 	 * @author Denys Liubchenko
@@ -51,9 +56,9 @@ public interface ProductRepository {
 	 * Method sets new quantity of products.
 	 *
 	 * @param productId
-	 *            id of the product
+	 *            id of the product.
 	 * @param quantity
-	 *            new quantity of the product
+	 *            new quantity of the product.
 	 *
 	 * @author Denys Ryhal
 	 */
@@ -63,9 +68,10 @@ public interface ProductRepository {
 	 * Method checks if product with id already exists.
 	 *
 	 * @param id
-	 *            id of the product
+	 *            id of the product.
 	 *
-	 * @return {@link Boolean}
+	 * @return {@link Boolean} true if product exists and false otherwise.
+	 *
 	 * @author Denys Ryhal
 	 */
 	boolean existById(UUID id);
@@ -78,6 +84,7 @@ public interface ProductRepository {
 	 * @param status
 	 *            The new status for the product, represented by
 	 *            {@link ProductStatus}.
+	 *
 	 * @author Denys Liubchenko
 	 */
 	void updateStatus(UUID productId, ProductStatus status);
@@ -89,6 +96,7 @@ public interface ProductRepository {
 	 * @param productId
 	 *            the unique identifier of the product.
 	 * @return a set of {@link ProductTranslationManagement} entities.
+	 *
 	 * @author Anton Bondar
 	 */
 	Set<ProductTranslationManagement> findTranslationsByProductId(UUID productId);
@@ -99,8 +107,9 @@ public interface ProductRepository {
 	 *
 	 * @param product
 	 *            the DTO containing the information necessary to create a new
-	 *            product
-	 * @return the saved product entity
+	 *            product.
+	 * @return the saved product entity.
+	 *
 	 * @author Yurii Osovskyi
 	 */
 	Product save(ProductManagement product);
@@ -110,6 +119,7 @@ public interface ProductRepository {
 	 *
 	 * @param product
 	 *            the {@link ProductManagement} entity to be updated.
+	 *
 	 * @author Anton Bondar
 	 */
 	void update(ProductManagement product);
@@ -124,6 +134,7 @@ public interface ProductRepository {
 	 *            the additional criteria to filter the products.
 	 * @param pageable
 	 *            the pagination information.
+	 *
 	 * @return a {@link Page} containing the filtered list of {@link Product}
 	 *         objects.
 	 *
@@ -137,6 +148,7 @@ public interface ProductRepository {
 	 *
 	 * @param productId
 	 *            the unique identifier of the product.
+	 *
 	 * @return the {@link Product} entity.
 	 *
 	 * @author Anton Bondar
@@ -166,11 +178,12 @@ public interface ProductRepository {
 	 * Retrieves an optional product based on its ID and language code.
 	 *
 	 * @param productId
-	 *            the unique identifier of the product
+	 *            the unique identifier of the product.
 	 * @param lang
-	 *            the language code to filter the product translation
+	 *            the language code to filter the product translation.
+	 *
 	 * @return an {@link Optional} containing the product if found, otherwise an
-	 *         empty {@link Optional}
+	 *         empty {@link Optional}.
 	 */
 	Optional<Product> getByIdAndLanguageCode(UUID productId, String lang);
 }

@@ -1,6 +1,7 @@
 package com.academy.orders.application.product.usecase;
 
 import com.academy.orders.application.ModelUtils;
+import com.academy.orders.application.cart.usecase.CalculatePriceUseCaseImpl;
 import com.academy.orders.domain.cart.entity.CartItem;
 import com.academy.orders.domain.product.entity.Product;
 import java.math.BigDecimal;

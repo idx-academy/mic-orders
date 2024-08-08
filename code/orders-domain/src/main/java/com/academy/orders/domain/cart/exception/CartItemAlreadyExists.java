@@ -1,6 +1,6 @@
 package com.academy.orders.domain.cart.exception;
 
-import com.academy.orders.domain.exception.AlreadyExistsException;
+import com.academy.orders.domain.common.exception.AlreadyExistsException;
 import java.util.UUID;
 import lombok.Getter;
 

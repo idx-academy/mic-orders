@@ -6,9 +6,9 @@ import com.academy.orders.domain.cart.entity.CreateCartItemDTO;
 import com.academy.orders.domain.cart.exception.CartItemNotFoundException;
 import com.academy.orders.domain.cart.exception.QuantityExceedsAvailableException;
 import com.academy.orders.domain.cart.repository.CartItemRepository;
-import com.academy.orders.domain.cart.usecase.SetCartItemQuantityUseCase;
+import com.academy.orders.domain.cart.usecase.UpdateCartItemQuantityUseCase;
 import com.academy.orders.domain.product.entity.Product;
-import com.academy.orders.domain.product.usecase.CalculatePriceUseCase;
+import com.academy.orders.domain.cart.usecase.CalculatePriceUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +16,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class UpdateCartItemQuantityUseCaseImpl implements SetCartItemQuantityUseCase {
+public class UpdateCartItemQuantityUseCaseImpl implements UpdateCartItemQuantityUseCase {
 	private final CartItemRepository cartItemRepository;
 	private final CalculatePriceUseCase calculatePriceUseCase;
 

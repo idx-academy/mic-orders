@@ -2,6 +2,9 @@ package com.academy.orders.domain.cart.usecase;
 
 import com.academy.orders.domain.cart.entity.CreateCartItemDTO;
 
+/**
+ * Use case interface for adding cart item to user's cart.
+ */
 public interface CreateCartItemByUserUseCase {
 
 	/**
