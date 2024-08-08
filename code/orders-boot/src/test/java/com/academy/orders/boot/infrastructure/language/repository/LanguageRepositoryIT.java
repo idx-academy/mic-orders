@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import static com.academy.orders.boot.TestConstants.LANGUAGE_UK;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -16,8 +17,9 @@ class LanguageRepositoryIT extends AbstractRepository {
 
 	@Test
 	void findByCodeUkrainianTest() {
-		String code = "uk";
+		String code = LANGUAGE_UK;
 		Optional<Language> language = languageRepository.findByCode(code);
+
 		assertTrue(language.isPresent());
 		assertEquals(code, language.get().code());
 	}
@@ -25,6 +27,7 @@ class LanguageRepositoryIT extends AbstractRepository {
 	@Test
 	void findByCodeNotFoundTest() {
 		Optional<Language> language = languageRepository.findByCode("--");
+
 		assertTrue(language.isEmpty());
 	}
 }
