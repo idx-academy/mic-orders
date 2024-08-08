@@ -1,6 +1,6 @@
 package com.academy.orders.boot.infrastructure.account.repository;
 
-import com.academy.orders.boot.infrastructure.common.repository.AbstractRepository;
+import com.academy.orders.boot.infrastructure.common.repository.AbstractRepositoryIT;
 import com.academy.orders.domain.account.entity.Account;
 import com.academy.orders.domain.account.entity.CreateAccountDTO;
 import com.academy.orders.domain.account.entity.enumerated.Role;
@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.*;
 
-class AccountRepositoryIT extends AbstractRepository {
+class AccountRepositoryITIT extends AbstractRepositoryIT {
 	private final Long accountId = 2L;
 	private final String accountEmail = "user@mail.com";
 

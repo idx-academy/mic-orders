@@ -1,7 +1,7 @@
 package com.academy.orders.boot.config.rest;
 
-import com.academy.colors_api.generated.ApiClient;
-import com.academy.colors_api.generated.api.ImagesApi;
+import com.academy.images_api.generated.ApiClient;
+import com.academy.images_api.generated.api.ImagesApi;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
