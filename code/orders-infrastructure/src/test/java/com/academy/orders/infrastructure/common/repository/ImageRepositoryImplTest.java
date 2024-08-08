@@ -1,7 +1,7 @@
 package com.academy.orders.infrastructure.common.repository;
 
-import com.academy.colors_api.generated.api.ImagesApi;
-import com.academy.colors_api.generated.model.ImageUrlDTO;
+import com.academy.images_api.generated.api.ImagesApi;
+import com.academy.images_api.generated.model.ImageUrlDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

@@ -1,6 +1,6 @@
 package com.academy.orders.infrastructure.common.repository;
 
-import com.academy.colors_api.generated.api.ImagesApi;
+import com.academy.images_api.generated.api.ImagesApi;
 import com.academy.orders.domain.common.respository.ImageRepository;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
