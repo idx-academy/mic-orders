@@ -94,5 +94,16 @@ public interface OrderRepository {
 	 */
 	Page<Order> findAll(OrdersFilterParametersDto filterParametersDto, Pageable pageable);
 
+	/**
+	 * Retrieves an order by its ID and fetches related data.
+	 *
+	 * @param orderId
+	 *            the UUID of the order to be retrieved.
+	 * @return an {@link Optional} containing the {@link Order} with related data if
+	 *         found, or empty if not found.
+	 *
+	 * @author Denys Liubchenko
+	 */
 	Optional<Order> findByIdFetchData(UUID orderId);
+
 }

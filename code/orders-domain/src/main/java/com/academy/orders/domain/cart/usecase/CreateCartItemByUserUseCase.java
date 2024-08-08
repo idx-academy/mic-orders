@@ -5,7 +5,7 @@ import com.academy.orders.domain.cart.entity.CreateCartItemDTO;
 public interface CreateCartItemByUserUseCase {
 
 	/**
-	 * method adds product to the cart
+	 * Adds product to the cart
 	 *
 	 * @param cartItem
 	 *            with type {@link CreateCartItemDTO}
