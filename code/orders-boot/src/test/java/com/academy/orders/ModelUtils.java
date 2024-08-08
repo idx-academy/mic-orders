@@ -3,6 +3,7 @@ package com.academy.orders;
 import com.academy.orders.domain.account.entity.Account;
 import com.academy.orders.domain.account.entity.enumerated.Role;
 import com.academy.orders.domain.account.entity.enumerated.UserStatus;
+import com.academy.orders.domain.cart.entity.CartItem;
 import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.entity.OrderItem;
@@ -30,8 +31,9 @@ import static java.math.BigDecimal.valueOf;
 import static java.util.Collections.emptyList;
 
 public class ModelUtils {
-
 	public static final LocalDateTime DATE_TIME = LocalDateTime.of(1, 1, 1, 1, 1);
+	public static final String IMAGE_LINK = "https://j65jb0fdkxuua0go.public.blob.vercel-storage.com/image.jpg";
+	public static final String IMAGE_NAME = "image.jpg";
 
 	public static Account getAccount() {
 		return Account.builder().id(1L).email("user@mail.com").firstName("first").lastName("last")
@@ -46,13 +48,21 @@ public class ModelUtils {
 	}
 
 	public static OrderItem getOrderItem() {
-		return OrderItem.builder().product(getProduct()).quantity(3).price(BigDecimal.valueOf(200)).build();
+		return OrderItem.builder().product(getProductWithImageName()).quantity(3).price(BigDecimal.valueOf(200))
+				.build();
 	}
 
-	public static Product getProduct() {
+	public static Product getProductWithImageName() {
+		return getProductBuilderWithoutImage().image(IMAGE_NAME).build();
+	}
+
+	public static Product getProductWithImageLink() {
+		return getProductBuilderWithoutImage().image(IMAGE_LINK).build();
+	}
+
+	private static Product.ProductBuilder getProductBuilderWithoutImage() {
 		return Product.builder().id(UUID.fromString("93063b3f-7c61-47ee-8612-4bfae9f3ff0f"))
-				.status(ProductStatus.VISIBLE).image("some_image").createdAt(DATE_TIME).quantity(100)
-				.price(BigDecimal.valueOf(100.00)).build();
+				.status(ProductStatus.VISIBLE).createdAt(DATE_TIME).quantity(100).price(BigDecimal.valueOf(100.00));
 	}
 
 	public static OrderReceiver getOrderReceiver() {
@@ -103,5 +113,9 @@ public class ModelUtils {
 				ProductTranslationManagement.builder()
 						.productId(UUID.fromString("84b7e491-0dcf-44c3-beb6-7496dc6ef3b1")).languageId(2L)
 						.name("Нове ім'я").description("Новий опис").build());
+	}
+
+	public static CartItem getCartItem() {
+		return CartItem.builder().product(getProductWithImageName()).quantity(10).build();
 	}
 }

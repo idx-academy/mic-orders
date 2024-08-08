@@ -1,4 +1,3 @@
-@run
 Feature: Update Product Status
   Background:
     * url urls.retailApiUrl

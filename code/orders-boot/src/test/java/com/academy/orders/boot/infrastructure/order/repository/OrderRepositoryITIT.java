@@ -1,6 +1,6 @@
 package com.academy.orders.boot.infrastructure.order.repository;
 
-import com.academy.orders.boot.infrastructure.common.repository.AbstractRepository;
+import com.academy.orders.boot.infrastructure.common.repository.AbstractRepositoryIT;
 import com.academy.orders.domain.account.entity.Account;
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class OrderRepositoryIT extends AbstractRepository {
+class OrderRepositoryITIT extends AbstractRepositoryIT {
 	public static final UUID NOT_EXISTING_ORDER_ID = UUID.fromString("11111111-1111-1111-1111-111111111111");
 	private final Pageable pageable = new Pageable(0, 10, emptyList());
 	private final String lang = "uk";

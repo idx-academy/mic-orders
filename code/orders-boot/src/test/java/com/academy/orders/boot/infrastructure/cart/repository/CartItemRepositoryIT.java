@@ -1,6 +1,6 @@
 package com.academy.orders.boot.infrastructure.cart.repository;
 
-import com.academy.orders.boot.infrastructure.common.repository.AbstractRepository;
+import com.academy.orders.boot.infrastructure.common.repository.AbstractRepositoryIT;
 import com.academy.orders.domain.cart.entity.CartItem;
 import com.academy.orders.domain.cart.entity.CreateCartItemDTO;
 import com.academy.orders.domain.cart.repository.CartItemRepository;
@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.of;
 
-class CartItemRepositoryIT extends AbstractRepository {
+class CartItemRepositoryIT extends AbstractRepositoryIT {
 	private final UUID productId = UUID.fromString("f4831fef-35a8-4766-b50e-dcb25d7b2e7b");
 	private final Long userId = 2L;
 
