@@ -1,0 +1,13 @@
+{
+  "status": "VISIBLE",
+  "image": "image",
+  "quantity": 10,
+  "price": 10.99,
+  "productTranslations": [
+    {
+      "name": "Name",
+      "description": "Desc",
+      "languageCode": "en"
+    }
+  ]
+}
