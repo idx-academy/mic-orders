@@ -10,21 +10,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class LanguageRepositoryIT extends AbstractRepository {
-    @Autowired
-    private LanguageRepository languageRepository;
+class LanguageRepositoryIT extends AbstractRepository {
+	@Autowired
+	private LanguageRepository languageRepository;
 
-    @Test
-    void findByCodeUkrainianTest() {
-        String code = "uk";
-        Optional<Language> language = languageRepository.findByCode(code);
-        assertTrue(language.isPresent());
-        assertEquals(code, language.get().code());
-    }
+	@Test
+	void findByCodeUkrainianTest() {
+		String code = "uk";
+		Optional<Language> language = languageRepository.findByCode(code);
+		assertTrue(language.isPresent());
+		assertEquals(code, language.get().code());
+	}
 
-    @Test
-    void findByCodeNotFoundTest() {
-        Optional<Language> language = languageRepository.findByCode("--");
-        assertTrue(language.isEmpty());
-    }
+	@Test
+	void findByCodeNotFoundTest() {
+		Optional<Language> language = languageRepository.findByCode("--");
+		assertTrue(language.isEmpty());
+	}
 }

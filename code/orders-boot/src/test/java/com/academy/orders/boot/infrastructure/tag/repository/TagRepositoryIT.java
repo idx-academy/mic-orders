@@ -13,35 +13,35 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TagRepositoryIT extends AbstractRepository {
-    @Autowired
-    private TagRepository tagRepository;
+class TagRepositoryIT extends AbstractRepository {
+	@Autowired
+	private TagRepository tagRepository;
 
-    @Test
-    void getTagsByIdsTest() {
-        List<Long> tagList = List.of(1L, 2L);
-        Set<Tag> tagsByIds = tagRepository.getTagsByIds(tagList);
+	@Test
+	void getTagsByIdsTest() {
+		List<Long> tagList = List.of(1L, 2L);
+		Set<Tag> tagsByIds = tagRepository.getTagsByIds(tagList);
 
-        assertNotNull(tagsByIds);
-        assertFalse(tagsByIds.isEmpty());
-        tagsByIds.forEach(tag -> assertTrue(tagList.stream().anyMatch(id-> Objects.equals(id, tag.id()))));
-    }
+		assertNotNull(tagsByIds);
+		assertFalse(tagsByIds.isEmpty());
+		tagsByIds.forEach(tag -> assertTrue(tagList.stream().anyMatch(id -> Objects.equals(id, tag.id()))));
+	}
 
-    @Test
-    void getTagsByIdsWithEmptyListTest() {
-        List<Long> tagList = List.of();
-        Set<Tag> tagsByIds = tagRepository.getTagsByIds(tagList);
+	@Test
+	void getTagsByIdsWithEmptyListTest() {
+		List<Long> tagList = List.of();
+		Set<Tag> tagsByIds = tagRepository.getTagsByIds(tagList);
 
-        assertNotNull(tagsByIds);
-        assertTrue(tagsByIds.isEmpty());
-    }
+		assertNotNull(tagsByIds);
+		assertTrue(tagsByIds.isEmpty());
+	}
 
-    @Test
-    void getTagsByIdsWithNoResponseTest() {
-        List<Long> tagList = List.of(-1L);
-        Set<Tag> tagsByIds = tagRepository.getTagsByIds(tagList);
+	@Test
+	void getTagsByIdsWithNoResponseTest() {
+		List<Long> tagList = List.of(-1L);
+		Set<Tag> tagsByIds = tagRepository.getTagsByIds(tagList);
 
-        assertNotNull(tagsByIds);
-        assertTrue(tagsByIds.isEmpty());
-    }
+		assertNotNull(tagsByIds);
+		assertTrue(tagsByIds.isEmpty());
+	}
 }
