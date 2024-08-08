@@ -19,17 +19,15 @@ import com.academy.orders_api_rest.generated.model.ProductManagementPageDTO;
 import com.academy.orders_api_rest.generated.model.ProductRequestDTO;
 import com.academy.orders_api_rest.generated.model.ProductResponseDTO;
 import com.academy.orders_api_rest.generated.model.ProductStatusDTO;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin
 public class ProductsManagementController implements ProductsManagementApi {
 	private final UpdateStatusUseCase updateStatusUseCase;
 	private final UpdateProductUseCase updateProductUseCase;

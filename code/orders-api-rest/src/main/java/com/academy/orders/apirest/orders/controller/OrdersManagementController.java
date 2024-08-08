@@ -20,21 +20,18 @@ import com.academy.orders_api_rest.generated.model.OrderStatusInfoDTO;
 import com.academy.orders_api_rest.generated.model.OrdersFilterParametersDTO;
 import com.academy.orders_api_rest.generated.model.PageManagerOrderPreviewDTO;
 import com.academy.orders_api_rest.generated.model.PageableDTO;
-import java.util.UUID;
-
 import com.academy.orders_api_rest.generated.model.UpdateOrderStatusRequestDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin
 public class OrdersManagementController implements OrdersManagementApi {
 	private final UpdateOrderStatusUseCase updateOrderStatusUseCase;
 	private final GetAllOrdersUseCase getAllOrdersUseCase;

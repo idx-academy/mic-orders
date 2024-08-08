@@ -8,18 +8,16 @@ import com.academy.orders.domain.cart.usecase.GetCartItemsUseCase;
 import com.academy.orders.domain.cart.usecase.SetCartItemQuantityUseCase;
 import com.academy.orders_api_rest.generated.api.CartApi;
 import com.academy.orders_api_rest.generated.model.CartItemsResponseDTO;
-import java.util.UUID;
 import com.academy.orders_api_rest.generated.model.UpdatedCartItemDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin
 public class CartItemController implements CartApi {
 	private final CreateCartItemByUserUseCase cartItemByUserUseCase;
 	private final DeleteProductFromCartUseCase deleteProductFromCartUseCase;
