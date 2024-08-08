@@ -1,6 +1,6 @@
 package com.academy.orders.infrastructure.common.repository;
 
-import com.academy.colors_api.generated.api.ImagesApi;
+import com.academy.images_api.generated.api.ImagesApi;
 import com.academy.orders.domain.common.respository.ImageRepository;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,6 @@ public class ImageRepositoryImpl implements ImageRepository {
 	@Value("${images.default.url}")
 	private String defaultImageUrl;
 
-	// @CircuitBreaker(name = "imagesCircuit", fallbackMethod = "getDefaultUrl")
 	@Retry(name = "imagesRetry", fallbackMethod = "getDefaultUrl")
 	@CachePut(value = "images", key = "#name")
 	public String getImageLinkByName(String name) {
