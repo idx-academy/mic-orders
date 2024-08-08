@@ -1,0 +1,10 @@
+{
+  "id": "#string",
+  "status": "#string",
+  "image": "#string",
+  "createdAt": "#string",
+  "quantity": "#number",
+  "price": "#number",
+  "tags": "#array",
+  "productTranslations": "#array"
+}
