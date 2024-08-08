@@ -1,6 +1,6 @@
 package com.academy.orders.boot.infrastructure.language.repository;
 
-import com.academy.orders.boot.infrastructure.common.repository.AbstractRepository;
+import com.academy.orders.boot.infrastructure.common.repository.AbstractRepositoryIT;
 import com.academy.orders.domain.language.repository.LanguageRepository;
 import com.academy.orders.domain.product.entity.Language;
 import java.util.Optional;
@@ -11,7 +11,7 @@ import static com.academy.orders.boot.TestConstants.LANGUAGE_UK;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class LanguageRepositoryIT extends AbstractRepository {
+class LanguageRepositoryIT extends AbstractRepositoryIT {
 	@Autowired
 	private LanguageRepository languageRepository;
 

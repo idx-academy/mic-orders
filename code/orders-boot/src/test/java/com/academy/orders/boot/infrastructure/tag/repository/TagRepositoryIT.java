@@ -1,6 +1,6 @@
 package com.academy.orders.boot.infrastructure.tag.repository;
 
-import com.academy.orders.boot.infrastructure.common.repository.AbstractRepository;
+import com.academy.orders.boot.infrastructure.common.repository.AbstractRepositoryIT;
 import com.academy.orders.domain.product.entity.Tag;
 import com.academy.orders.domain.tag.repository.TagRepository;
 import java.util.List;
@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class TagRepositoryIT extends AbstractRepository {
+class TagRepositoryIT extends AbstractRepositoryIT {
 	@Autowired
 	private TagRepository tagRepository;
 
