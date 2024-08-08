@@ -33,4 +33,14 @@ class ImageRepositoryTest {
 		assertEquals(imageUrl, result);
 		verify(imagesApi, times(1)).getImageByName(imageName);
 	}
+
+	@Test
+	void getDefaultUrlTest() {
+		String imageName = "example";
+		var defaultImageUrlTest = imageRepository.getDefaultUrl("default", new Throwable());
+
+		String result = imageRepository.getDefaultUrl(imageName, new RuntimeException("API error"));
+
+		assertEquals(defaultImageUrlTest, result);
+	}
 }
