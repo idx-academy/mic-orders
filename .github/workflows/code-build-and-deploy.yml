@@ -13,9 +13,12 @@ permissions:
 
 jobs:
   build-and-push-image:
+    strategy:
+      matrix:
+        env: [ 'dev', 'prod' ]
     runs-on: ubuntu-latest
     environment:
-      name: ${{ github.ref == 'refs/heads/main' && 'prod' || github.ref == 'refs/heads/develop' && 'dev' || 'test'}}
+      name: ${{ matrix.env }}
     env:
       APP_NAME: ${{ github.event.repository.name }}
       ACR_REGISTRY: ${{ secrets.AZURE_ACR_NAME }}.azurecr.io
