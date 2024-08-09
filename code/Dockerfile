@@ -16,4 +16,3 @@ ENTRYPOINT ["java", \
             "-Dspring.profiles.active=secrets", \
             "-jar", \
             "app.jar"]
-
