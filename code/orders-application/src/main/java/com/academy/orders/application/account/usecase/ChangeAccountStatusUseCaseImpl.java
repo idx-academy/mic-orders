@@ -5,9 +5,11 @@ import com.academy.orders.domain.account.exception.AccountNotFoundException;
 import com.academy.orders.domain.account.repository.AccountRepository;
 import com.academy.orders.domain.account.usecase.ChangeAccountStatusUseCase;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ChangeAccountStatusUseCaseImpl implements ChangeAccountStatusUseCase {
@@ -27,6 +29,7 @@ public class ChangeAccountStatusUseCaseImpl implements ChangeAccountStatusUseCas
 	}
 
 	private void updateStatus(Long id, UserStatus status) {
+		log.debug("Updating account status to {} for account with id {}", status, id);
 		accountRepository.updateStatus(id, status);
 	}
 }
