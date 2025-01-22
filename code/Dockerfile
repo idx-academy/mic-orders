@@ -1,13 +1,14 @@
+FROM maven:3.8.5-openjdk-17 AS BUILDER
+
+WORKDIR /opt/app/build
+COPY . ./
+
+RUN mvn -B -e clean install -DskipTests
+
 FROM openjdk:17-jdk-slim
 
-RUN mkdir -p /opt/app/build
-WORKDIR /opt/app/build
-
-COPY . ./
-RUN ./mvnw -B -DskipTests -DskipITs clean package
-
-WORKDIR /opt/app/build/orders-boot/target
-COPY orders-boot-*.jar ./app.jar
+WORKDIR /opt/app
+COPY --from=BUILDER /opt/app/build/orders-boot/target/orders-boot-*.jar /app.jar
 
 EXPOSE 8080
 ENTRYPOINT ["java", \
