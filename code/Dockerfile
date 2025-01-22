@@ -11,4 +11,4 @@ ENTRYPOINT ["java", \
             "-XX:MaxRAMPercentage=80", \
             "-Dspring.profiles.active=secrets", \
             "-jar", \
-            "orders-boot/target/orders-boot-*.jar"]
+            "/opt/app/build/orders-boot/target/orders-boot-*.jar"]
