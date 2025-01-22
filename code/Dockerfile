@@ -1,20 +1,14 @@
-FROM eclipse-temurin:17-jre-alpine
+FROM openjdk:17-jdk-slim
 
-RUN addgroup -S executor && adduser -S executor -G executor
+RUN mkdir -p /opt/app/build
+WORKDIR /opt/app/build
 
-RUN mkdir -p /opt/app
-RUN chown executor:executor /opt/app/
-RUN ./code/mvnw -DoutputFile=target/mvn-dependency-list.log -B -DskipTests clean dependency:list install
-COPY code/orders-boot/target/orders-boot-*.jar /opt/app/app.jar
+COPY . ./
+RUN ./mvnw -B -DskipTests -DskipITs clean package
 
 EXPOSE 8080
-USER executor
-WORKDIR /opt/app
 ENTRYPOINT ["java", \
-#            "-XX:InitialRAMPercentage=80", \
-#            "-XX:MinRAMPercentage=80", \
             "-XX:MaxRAMPercentage=80", \
             "-Dspring.profiles.active=secrets", \
             "-jar", \
-            "app.jar"]
-
+            "orders-boot/target/orders-boot-*.jar"]
