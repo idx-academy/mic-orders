@@ -2,9 +2,9 @@ springdoc.swagger-ui.enabled: true
 
 spring:
   datasource:
-    url: ${DATASOURCE_URL}
-    username: ${DATASOURCE_USER}
-    password: ${DATASOURCE_PASSWORD}
+    url: ${DATASOURCE_URL:jdbc:postgresql://localhost:5432/retail}
+    username: ${DATASOURCE_USER:pgusr}
+    password: ${DATASOURCE_PASSWORD:pgpwd}
   flyway:
     enabled: true
 
