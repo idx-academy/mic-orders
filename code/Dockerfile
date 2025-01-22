@@ -8,7 +8,13 @@ RUN mvn -B -e clean install -DskipTests
 FROM openjdk:17-jdk-slim
 
 WORKDIR /opt/app
-COPY --from=BUILDER /opt/app/build/orders-boot/target/orders-boot-*.jar /app.jar
+COPY --from=BUILDER /opt/app/build/orders-boot/target/orders-boot-*.jar /opt/app/app.jar
 
 EXPOSE 8080
-CMD ["sh", "-c", "java -XX:MaxRAMPercentage=80 -Dspring.profiles.active=secrets -jar app.jar"]
+ENTRYPOINT ["java", \
+#            "-XX:InitialRAMPercentage=80", \
+#            "-XX:MinRAMPercentage=80", \
+            "-XX:MaxRAMPercentage=80", \
+            "-Dspring.profiles.active=secrets", \
+            "-jar", \
+            "app.jar"]
