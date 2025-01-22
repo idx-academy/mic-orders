@@ -8,7 +8,7 @@ RUN mvn -B -e clean install -DskipTests
 FROM openjdk:17-jdk-slim
 
 WORKDIR /opt/app
-COPY --from=BUILDER /opt/app/build/orders-boot/target/orders-boot-*.jar /opt/app/app.jar
+COPY --from=BUILDER /opt/app/build/orders-boot/target/orders-boot-*.jar ./app.jar
 
 EXPOSE 8080
 ENTRYPOINT ["java", \

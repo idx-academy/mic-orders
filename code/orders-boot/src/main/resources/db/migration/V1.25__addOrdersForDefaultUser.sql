@@ -1,7 +1,7 @@
 INSERT INTO orders (id, is_paid, order_status, created_at, edited_at, first_name, last_name, email, account_id)
 VALUES
-    ('550e8400-e29b-41d4-a716-446655440015', true, 'COMPLETED', '2020-06-25 12:44:44.518239', '2024-07-31 12:34:56', 'John', 'Doe', 'john.doe@example.com', 4),
-    ('550e8400-e29b-41d4-a716-446655440016', false, 'IN_PROGRESS', '2024-06-25 12:44:44.518239', '2024-07-31 13:45:12', 'Jane', 'Smith', 'jane.smith@example.com', 4);
+    ('550e8400-e29b-41d4-a716-446655440015', true, 'COMPLETED', '2020-06-25 12:44:44.518239', '2024-07-31 12:34:56', 'John', 'Doe', 'john.doe@example.com', 2),
+    ('550e8400-e29b-41d4-a716-446655440016', false, 'IN_PROGRESS', '2024-06-25 12:44:44.518239', '2024-07-31 13:45:12', 'Jane', 'Smith', 'jane.smith@example.com', 2);
 
 INSERT INTO order_items (order_id, product_id, price, quantity)
 VALUES
