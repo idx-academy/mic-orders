@@ -6,9 +6,10 @@ WORKDIR /opt/app/build
 COPY . ./
 RUN ./mvnw -B -DskipTests -DskipITs clean package
 
+WORKDIR /opt/app/build/orders-boot/target
 EXPOSE 8080
 ENTRYPOINT ["java", \
             "-XX:MaxRAMPercentage=80", \
             "-Dspring.profiles.active=secrets", \
             "-jar", \
-            "/opt/app/build/orders-boot/target/orders-boot-*.jar"]
+            "orders-boot-*.jar"]
