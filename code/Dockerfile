@@ -11,8 +11,4 @@ WORKDIR /opt/app
 COPY --from=BUILDER /opt/app/build/orders-boot/target/orders-boot-*.jar /app.jar
 
 EXPOSE 8080
-ENTRYPOINT ["java", \
-            "-XX:MaxRAMPercentage=80", \
-            "-Dspring.profiles.active=secrets", \
-            "-jar", \
-            "app.jar"]
+CMD ["sh", "-c", "java -XX:MaxRAMPercentage=80 -Dspring.profiles.active=secrets -jar app.jar"]
