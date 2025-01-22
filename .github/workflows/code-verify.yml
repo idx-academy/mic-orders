@@ -7,10 +7,9 @@ on:
     branches: [ "develop", "main" ]
 
 jobs:
-  build:
-
+  verify:
+    name: Build and verify
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
         with:
@@ -38,7 +37,7 @@ jobs:
       - name: JaCoCo analyze
         uses: PavanMudigonda/jacoco-reporter@v5.0
         with:
-          coverage_results_path: "$GITHUB_WORKSPACE/code/jacoco-report-aggregate/target/site/jacoco-aggregate/jacoco.xml"
+          coverage_results_path: "code/jacoco-report-aggregate/target/site/jacoco-aggregate/jacoco.xml"
           output_level: detailed
 
           # Comma-separated list of one or more directories to scan for code
