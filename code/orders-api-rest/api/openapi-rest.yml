@@ -993,8 +993,16 @@ components:
           example: 10
         price:
           type: number
-          example: 999.99
-
+          example: 90.00
+          description: Final price
+        discountedAmount:
+          type: integer
+          example: 10
+          description: The amount of the discount applied to the original price. This field is only returned if a discount is applied.
+        originalPrice:
+          type: number
+          example: 100.00
+          description: The original price before any discount is applied. This field is only returned if a discount is applied.
 
     ProductSearchResult:
       type: object

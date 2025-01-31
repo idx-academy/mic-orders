@@ -4,9 +4,7 @@ import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.Tag;
 import com.academy.orders.domain.product.entity.ProductTranslation;
 import com.academy.orders_api_rest.generated.model.ProductDetailsResponseDTO;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import org.mapstruct.*;
 
 import java.util.List;
 import java.util.Set;
@@ -18,8 +16,16 @@ public interface ProductDetailsResponseDTOMapper {
 	@Mapping(source = "image", target = "image")
 	@Mapping(source = "tags", target = "tags", qualifiedByName = "mapTags")
 	@Mapping(source = "quantity", target = "quantity")
-	@Mapping(source = "price", target = "price")
+	@Mapping(source = "discount.amount", target = "discountedAmount")
 	ProductDetailsResponseDTO toDTO(Product product);
+
+	@AfterMapping
+	default void defineDiscountRules(@MappingTarget Product.ProductBuilder builder, Product productEntity) {
+		if (productEntity.getDiscount() != null) {
+			builder.originalPrice(productEntity.getPrice());
+			builder.price(Product.calculatePrice(productEntity.getPrice(), productEntity.getDiscount().getAmount()));
+		}
+	}
 
 	@Named("mapName")
 	default String mapName(Set<ProductTranslation> translations) {

@@ -17,33 +17,35 @@ import org.mapstruct.*;
 
 @Mapper(componentModel = "spring", uses = {TagMapper.class, ProductTranslationMapper.class})
 public interface ProductMapper {
-    Product fromEntity(ProductEntity productEntity);
+	Product fromEntity(ProductEntity productEntity);
 
-    @AfterMapping
-    default void defineDiscountRules(@MappingTarget Product.ProductBuilder builder, ProductEntity productEntity) {
-        builder.originalPrice(productEntity.getPrice());
-        builder.price(Product.calculatePrice(productEntity.getPrice(), productEntity.getDiscount().getAmount()));
-    }
+	@AfterMapping
+	default void defineDiscountRules(@MappingTarget Product.ProductBuilder builder, ProductEntity productEntity) {
+		if (productEntity.getDiscount() != null) {
+			builder.originalPrice(productEntity.getPrice());
+			builder.price(Product.calculatePrice(productEntity.getPrice(), productEntity.getDiscount().getAmount()));
+		}
+	}
 
-    default Product fromEntity(ProductTranslationEntity translationEntity) {
-        ProductEntity product = translationEntity.getProduct();
-        product.setProductTranslations(Set.of(translationEntity));
-        return fromEntity(product);
-    }
+	default Product fromEntity(ProductTranslationEntity translationEntity) {
+		ProductEntity product = translationEntity.getProduct();
+		product.setProductTranslations(Set.of(translationEntity));
+		return fromEntity(product);
+	}
 
-    List<Product> fromEntities(List<ProductEntity> productEntities);
+	List<Product> fromEntities(List<ProductEntity> productEntities);
 
-    ProductEntity toEntity(Product product);
+	ProductEntity toEntity(Product product);
 
-    @Mapping(target = "id", ignore = true)
-    ProductEntity toEntity(ProductRequestDto dto);
+	@Mapping(target = "id", ignore = true)
+	ProductEntity toEntity(ProductRequestDto dto);
 
-    @Condition
-    default boolean isNotLazyLoadedTagEntity(Collection<TagEntity> source) {
-        return Hibernate.isInitialized(source);
-    }
+	@Condition
+	default boolean isNotLazyLoadedTagEntity(Collection<TagEntity> source) {
+		return Hibernate.isInitialized(source);
+	}
 
-    @Named("mapDomainImage")
-    @Mapping(target = "image", source = "image")
-    Product mapDomainImage(Product product, String image);
+	@Named("mapDomainImage")
+	@Mapping(target = "image", source = "image")
+	Product mapDomainImage(Product product, String image);
 }
