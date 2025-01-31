@@ -29,11 +29,11 @@ class ProductDetailsResponseDTOMapperTest {
 
 		Assertions.assertEquals(PRODUCT_NAME, dto.getName());
 		Assertions.assertEquals(PRODUCT_DESCRIPTION, dto.getDescription());
-		Assertions.assertEquals(product.image(), dto.getImage());
+		Assertions.assertEquals(product.getImage(), dto.getImage());
 		Assertions.assertEquals(1, dto.getTags().size());
 		Assertions.assertEquals(TAG_NAME, dto.getTags().get(0));
-		Assertions.assertEquals(product.quantity(), dto.getQuantity());
-		Assertions.assertEquals(product.price(), dto.getPrice());
+		Assertions.assertEquals(product.getQuantity(), dto.getQuantity());
+		Assertions.assertEquals(product.getPrice(), dto.getPrice());
 	}
 
 	@Test
@@ -43,11 +43,11 @@ class ProductDetailsResponseDTOMapperTest {
 
 		Assertions.assertNull(dto.getName());
 		Assertions.assertNull(dto.getDescription());
-		Assertions.assertEquals(product.image(), dto.getImage());
+		Assertions.assertEquals(product.getImage(), dto.getImage());
 		Assertions.assertEquals(1, dto.getTags().size());
 		Assertions.assertEquals(TAG_NAME, dto.getTags().get(0));
-		Assertions.assertEquals(product.quantity(), dto.getQuantity());
-		Assertions.assertEquals(product.price(), dto.getPrice());
+		Assertions.assertEquals(product.getQuantity(), dto.getQuantity());
+		Assertions.assertEquals(product.getPrice(), dto.getPrice());
 	}
 
 	@Test
@@ -57,9 +57,9 @@ class ProductDetailsResponseDTOMapperTest {
 
 		Assertions.assertEquals(PRODUCT_NAME, dto.getName());
 		Assertions.assertEquals(PRODUCT_DESCRIPTION, dto.getDescription());
-		Assertions.assertEquals(product.image(), dto.getImage());
+		Assertions.assertEquals(product.getImage(), dto.getImage());
 		Assertions.assertEquals(0, dto.getTags().size());
-		Assertions.assertEquals(product.quantity(), dto.getQuantity());
-		Assertions.assertEquals(product.price(), dto.getPrice());
+		Assertions.assertEquals(product.getQuantity(), dto.getQuantity());
+		Assertions.assertEquals(product.getPrice(), dto.getPrice());
 	}
 }

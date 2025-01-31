@@ -47,16 +47,16 @@ public class UpdateProductUseCaseImpl implements UpdateProductUseCase {
 
 		var updatedTranslations = request.productTranslations().stream().map(dto -> {
 			var existingTranslation = existingTranslationsMap.get(dto.languageCode());
-			return new ProductTranslationManagement(existingProduct.id(), existingTranslation.language().id(),
+			return new ProductTranslationManagement(existingProduct.getId(), existingTranslation.language().id(),
 					getValue(dto.name(), existingTranslation.name()),
 					getValue(dto.description(), existingTranslation.description()), existingTranslation.language());
 		}).collect(Collectors.toSet());
 
-		var updatedProduct = new ProductManagement(existingProduct.id(),
-				ProductStatus.valueOf(getValue(request.status(), String.valueOf(existingProduct.status()))),
-				getValue(imageName, existingProduct.image()), existingProduct.createdAt(),
-				getValue(request.quantity(), existingProduct.quantity()),
-				getValue(request.price(), existingProduct.price()), tags, updatedTranslations);
+		var updatedProduct = new ProductManagement(existingProduct.getId(),
+				ProductStatus.valueOf(getValue(request.status(), String.valueOf(existingProduct.getStatus()))),
+				getValue(imageName, existingProduct.getImage()), existingProduct.getCreatedAt(),
+				getValue(request.quantity(), existingProduct.getQuantity()),
+				getValue(request.price(), existingProduct.getPrice()), tags, updatedTranslations);
 
 		productRepository.update(updatedProduct);
 	}
@@ -70,7 +70,7 @@ public class UpdateProductUseCaseImpl implements UpdateProductUseCase {
 	 */
 	private Set<Tag> getTags(ProductRequestDto request, Product existingProduct) {
 		if (request.tagIds().isEmpty()) {
-			return existingProduct.tags();
+			return existingProduct.getTags();
 		}
 
 		if (request.tagIds().size() == 1 && request.tagIds().get(0) == -1) {

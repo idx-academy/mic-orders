@@ -14,6 +14,7 @@ public interface ProductPreviewDTOMapper extends ProductMapper {
 	@Mapping(target = "description", source = "product.productTranslations", qualifiedByName = "mapProductDescription")
 	@Mapping(source = "product.tags", target = "tags", qualifiedByName = "mapTags")
 	@Mapping(target = "status", ignore = true) // Ignoring status until impl calculating amount statuses
+	@Mapping(target = "discountedAmount", source = "discount.amount")
 	ProductPreviewDTO toDto(Product product);
 
 	PageProductsDTO toPageProductsDTO(Page<Product> products);

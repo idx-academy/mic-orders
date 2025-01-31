@@ -59,7 +59,7 @@ class CreateOrderUseCaseTest {
 	void setUp() {
 		createOrderDto = getCreateOrderDto();
 		cartItem = getCartItem();
-		calculatedPrice = cartItem.product().price().multiply(BigDecimal.valueOf(cartItem.quantity()));
+		calculatedPrice = cartItem.product().getPrice().multiply(BigDecimal.valueOf(cartItem.quantity()));
 
 	}
 

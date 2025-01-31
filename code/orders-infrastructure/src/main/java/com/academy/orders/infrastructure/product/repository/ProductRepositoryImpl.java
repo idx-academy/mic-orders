@@ -2,6 +2,7 @@ package com.academy.orders.infrastructure.product.repository;
 
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
+import com.academy.orders.domain.discount.entity.Discount;
 import com.academy.orders.domain.product.dto.ProductManagementFilterDto;
 import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.ProductManagement;
@@ -9,16 +10,19 @@ import com.academy.orders.domain.product.entity.ProductTranslationManagement;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders.domain.product.repository.ProductRepository;
 import com.academy.orders.infrastructure.common.PageableMapper;
+import com.academy.orders.infrastructure.discount.DiscountMapper;
 import com.academy.orders.infrastructure.product.ProductManagementMapper;
 import com.academy.orders.infrastructure.product.ProductMapper;
 import com.academy.orders.infrastructure.product.ProductPageMapper;
 import com.academy.orders.infrastructure.product.ProductTranslationManagementMapper;
 import com.academy.orders.infrastructure.product.entity.ProductEntity;
 import com.academy.orders.infrastructure.product.entity.ProductTranslationEntity;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageImpl;
@@ -39,6 +43,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 	private final ProductManagementMapper productManagementMapper;
 	private final ProductTranslationManagementMapper productTranslationManagementMapper;
 	private final ProductPageMapper productPageMapper;
+	private final DiscountMapper discountMapper;
 	private final PageableMapper pageableMapper;
 
 	@Override
@@ -50,6 +55,14 @@ public class ProductRepositoryImpl implements ProductRepository {
 				.toList();
 		productJpaAdapter.findAllByIdAndLanguageCode(products.stream().map(ProductEntity::getId).toList(), language);
 
+		return productPageMapper.fromProductTranslationEntity(translations);
+	}
+
+	@Override
+	public Page<Product> findProductsWhereDiscountIsNotNull(String language, Pageable pageable) {
+		var pageableSpring = pageableMapper.fromDomain(pageable);
+		var translations = productJpaAdapter.findAllByLanguageCodeAndStatusVisibleAndDiscountNotNull(language,
+				pageableSpring);
 		return productPageMapper.fromProductTranslationEntity(translations);
 	}
 
@@ -128,5 +141,17 @@ public class ProductRepositoryImpl implements ProductRepository {
 	public Optional<Product> getByIdAndLanguageCode(UUID productId, String lang) {
 		var productEntity = productJpaAdapter.findProductByProductIdAndLanguageCode(productId, lang);
 		return productEntity.map(productMapper::fromEntity);
+	}
+
+	@Override
+	public boolean updateProductDiscount(UUID productId, Discount discount) {
+		var discountEntity = discountMapper.toEntity(discount);
+		var productEntity = productJpaAdapter.findProductByProductId(productId);
+		if (productEntity.isPresent()) {
+			productEntity.get().setDiscount(discountEntity);
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

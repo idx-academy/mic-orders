@@ -25,7 +25,7 @@ public class OrderImageRepositoryImpl implements OrderImageRepository {
 
 	private OrderItem loadOrderItemForProductInOrderItem(OrderItem orderItem) {
 		var product = orderItem.product();
-		var link = imageRepository.getImageLinkByName(product.image());
+		var link = imageRepository.getImageLinkByName(product.getImage());
 		var productWithLink = productMapper.mapDomainImage(product, link);
 		return orderMapper.mapOrderItemWithUpdatedProduct(orderItem, productWithLink);
 	}

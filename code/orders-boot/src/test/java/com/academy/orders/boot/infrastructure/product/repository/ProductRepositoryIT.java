@@ -41,7 +41,7 @@ class ProductRepositoryIT extends AbstractRepositoryIT {
 		final var pageable = getPageable();
 		final var filter = getProductManagementFilterDto();
 		final var actual = productRepository.findAllByLanguageWithFilter(LANGUAGE_UK, filter, pageable);
-		final var firstImageLink = actual.content().get(0).image();
+		final var firstImageLink = actual.content().get(0).getImage();
 
 		assertContentSchema(actual);
 		assertDoesNotThrow(() -> URI.create(firstImageLink));
@@ -126,7 +126,7 @@ class ProductRepositoryIT extends AbstractRepositoryIT {
 		productRepository.setNewProductQuantity(PRODUCT_UUID, 2);
 		final var product = productRepository.getById(PRODUCT_UUID);
 
-		assertEquals(2, product.get().quantity());
+		assertEquals(2, product.get().getQuantity());
 	}
 
 	@Test
@@ -139,7 +139,7 @@ class ProductRepositoryIT extends AbstractRepositoryIT {
 	void updateStatusTest() {
 		productRepository.updateStatus(PRODUCT_UUID, ProductStatus.HIDDEN);
 		final var product = productRepository.getById(PRODUCT_UUID);
-		assertEquals(ProductStatus.HIDDEN, product.get().status());
+		assertEquals(ProductStatus.HIDDEN, product.get().getStatus());
 	}
 
 	@Test
@@ -155,7 +155,7 @@ class ProductRepositoryIT extends AbstractRepositoryIT {
 		productRepository.update(getProductManagement());
 		final var product = productRepository.getById(getProductManagement().id());
 
-		assertEquals(1000, product.get().quantity());
+		assertEquals(1000, product.get().getQuantity());
 	}
 
 	@Test
@@ -189,7 +189,7 @@ class ProductRepositoryIT extends AbstractRepositoryIT {
 		var products = actual.content();
 		var isFiltered = false;
 		for (var product : products) {
-			isFiltered = product.tags().stream().map(Tag::name).anyMatch(tagNames::contains);
+			isFiltered = product.getTags().stream().map(Tag::name).anyMatch(tagNames::contains);
 		}
 		return isFiltered;
 	}
@@ -198,8 +198,8 @@ class ProductRepositoryIT extends AbstractRepositoryIT {
 		var product = actual.content().get(0);
 		assertNotNull(actual);
 		assertNotNull(actual.content());
-		assertEquals(1, product.productTranslations().size());
-		assertNotNull(product.tags());
+		assertEquals(1, product.getProductTranslations().size());
+		assertNotNull(product.getTags());
 	}
 
 	private boolean isFiltered(Page<Product> actual, ProductManagementFilterDto filter) {
@@ -210,28 +210,28 @@ class ProductRepositoryIT extends AbstractRepositoryIT {
 	}
 
 	private boolean isPricesInBounds(Product product, BigDecimal priceMore, BigDecimal priceLess) {
-		var price = product.price();
+		var price = product.getPrice();
 		return price.compareTo(priceMore) > 0 && price.compareTo(priceLess) < 0;
 	}
 
 	private boolean isQuantityInBounds(Product product, Integer priceMore, Integer priceLess) {
-		var price = product.quantity();
+		var price = product.getQuantity();
 		return price.compareTo(priceMore) > 0 && price.compareTo(priceLess) < 0;
 	}
 
 	private boolean isStatusesEqual(Product product, ProductStatus status) {
-		return product.status().equals(status);
+		return product.getStatus().equals(status);
 	}
 
 	private boolean isFilteredByNameRegex(Page<Product> actual, String nameRegex) {
-		return actual.content().stream().flatMap(p -> p.productTranslations().stream()).map(ProductTranslation::name)
+		return actual.content().stream().flatMap(p -> p.getProductTranslations().stream()).map(ProductTranslation::name)
 				.allMatch(name -> name.toLowerCase().contains(nameRegex));
 	}
 
 	private boolean isSortedByPriceAsc(Page<Product> result) {
 		var products = result.content();
 		for (int i = 0; i < products.size() - 1; i++) {
-			if (products.get(i).price().compareTo(products.get(i + 1).price()) > 0) {
+			if (products.get(i).getPrice().compareTo(products.get(i + 1).getPrice()) > 0) {
 				return false;
 			}
 		}
@@ -241,7 +241,7 @@ class ProductRepositoryIT extends AbstractRepositoryIT {
 	private boolean isSortedByPriceDesc(Page<Product> result) {
 		var products = result.content();
 		for (int i = 0; i < products.size() - 1; i++) {
-			if (products.get(i).price().compareTo(products.get(i + 1).price()) < 0) {
+			if (products.get(i).getPrice().compareTo(products.get(i + 1).getPrice()) < 0) {
 				return false;
 			}
 		}
@@ -250,6 +250,6 @@ class ProductRepositoryIT extends AbstractRepositoryIT {
 
 	private boolean areAllProductsVisible(Page<Product> result) {
 		var products = result.content();
-		return products.stream().allMatch(product -> product.status() == ProductStatus.VISIBLE);
+		return products.stream().allMatch(product -> product.getStatus() == ProductStatus.VISIBLE);
 	}
 }

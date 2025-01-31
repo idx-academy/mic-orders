@@ -148,7 +148,7 @@ public class ModelUtils {
 		productDTO.setImage(IMAGE_URL);
 		productDTO.setName(PRODUCT_NAME);
 		productDTO.setDescription(PRODUCT_DESCRIPTION);
-		productDTO.setPrice(TEST_FLOAT_PRICE);
+		productDTO.setPrice(TEST_PRICE);
 		productDTO.setTags(List.of(TAG_NAME));
 		productDTO.setStatus(ProductPreviewDTO.StatusEnum.AVAILABLE);
 

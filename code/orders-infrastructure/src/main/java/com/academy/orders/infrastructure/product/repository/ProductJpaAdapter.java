@@ -42,6 +42,22 @@ public interface ProductJpaAdapter extends JpaRepository<ProductEntity, UUID> {
 			List<String> tags);
 
 	/**
+	 * Retrieves a paginated list of {@link ProductTranslationEntity} based on the
+	 * specified language code, visible product status, and non-null discount.
+	 *
+	 * @param language
+	 *            The language code to filter the product translations.
+	 * @param pageable
+	 *            The pagination information.
+	 * @return A paginated {@link Page} of {@link ProductTranslationEntity}.
+	 */
+	@Query("SELECT pt " + "FROM ProductTranslationEntity AS pt " + "INNER JOIN FETCH pt.product AS p "
+			+ "INNER JOIN FETCH pt.language AS l " + "INNER JOIN FETCH p.discount "
+			+ "WHERE l.code= :language AND p.status = 'VISIBLE'")
+	Page<ProductTranslationEntity> findAllByLanguageCodeAndStatusVisibleAndDiscountNotNull(String language,
+			Pageable pageable);
+
+	/**
 	 * Finds a paginated list of products by language code and with a visible
 	 * status, sorted by amount of order items with this product.
 	 *

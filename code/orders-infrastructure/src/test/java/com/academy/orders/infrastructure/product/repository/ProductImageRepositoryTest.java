@@ -29,12 +29,12 @@ class ProductImageRepositoryTest {
 		var imageLink = ModelUtils.TEST_IMAGE_LINK;
 		var productWithLink = Product.builder().image(imageLink).build();
 
-		when(imageRepository.getImageLinkByName(product.image())).thenReturn(imageLink);
+		when(imageRepository.getImageLinkByName(product.getImage())).thenReturn(imageLink);
 		when(productMapper.mapDomainImage(product, imageLink)).thenReturn(productWithLink);
 		var result = productImageRepository.loadImageForProduct(product);
 
 		assertEquals(productWithLink, result);
-		verify(imageRepository).getImageLinkByName(product.image());
+		verify(imageRepository).getImageLinkByName(product.getImage());
 		verify(productMapper).mapDomainImage(product, imageLink);
 	}
 

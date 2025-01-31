@@ -16,13 +16,13 @@ public class ChangeQuantityUseCaseImpl implements ChangeQuantityUseCase {
 	@Override
 	public void changeQuantityOfProduct(Product product, Integer orderedQuantity) {
 		var quantityOfProductsLeft = getQuantityOfProductsLeft(product, orderedQuantity);
-		setNewQuantity(product.id(), quantityOfProductsLeft);
+		setNewQuantity(product.getId(), quantityOfProductsLeft);
 	}
 
 	private int getQuantityOfProductsLeft(Product product, Integer orderedQuantity) {
-		var quantityDifference = product.quantity() - orderedQuantity;
+		var quantityDifference = product.getQuantity() - orderedQuantity;
 		if (quantityDifference < 0 || orderedQuantity <= 0)
-			throw new InsufficientProductQuantityException(product.id());
+			throw new InsufficientProductQuantityException(product.getId());
 
 		return quantityDifference;
 	}

@@ -268,14 +268,14 @@ class OrderRepositoryITIT extends AbstractRepositoryIT {
 
 	private void validateProductNotNull(Product product) {
 		assertNotNull(product);
-		assertNotNull(product.id());
-		assertNotNull(product.status());
-		assertNotNull(product.image());
-		assertNotNull(product.createdAt());
-		assertNotNull(product.quantity());
-		assertNotNull(product.price());
-		validateTagsNotNull(product.tags());
-		validateProductTranslationsNotNull(product.productTranslations());
+		assertNotNull(product.getId());
+		assertNotNull(product.getStatus());
+		assertNotNull(product.getImage());
+		assertNotNull(product.getCreatedAt());
+		assertNotNull(product.getQuantity());
+		assertNotNull(product.getPrice());
+		validateTagsNotNull(product.getTags());
+		validateProductTranslationsNotNull(product.getProductTranslations());
 	}
 
 	private void validateProductTranslationsNotNull(Set<ProductTranslation> productTranslations) {

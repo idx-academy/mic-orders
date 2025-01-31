@@ -41,7 +41,7 @@ class OrderImageRepositoryImplTest {
 		var orderItemsWithProducts = singletonList(orderItemWithProduct);
 		var orderWithMappedItems = Order.builder().orderItems(orderItemsWithProducts).build();
 
-		when(imageRepository.getImageLinkByName(product.image())).thenReturn(TEST_IMAGE_LINK);
+		when(imageRepository.getImageLinkByName(product.getImage())).thenReturn(TEST_IMAGE_LINK);
 		when(productMapper.mapDomainImage(product, TEST_IMAGE_LINK)).thenReturn(productWithLink);
 		when(orderMapper.mapOrderItemWithUpdatedProduct(orderItem, productWithLink)).thenReturn(orderItemWithProduct);
 		when(orderMapper.mapOrderItemWithUpdatedProduct(orderItem, productWithLink)).thenReturn(orderItemWithProduct);
@@ -51,7 +51,7 @@ class OrderImageRepositoryImplTest {
 
 		assertEquals(orderWithMappedItems, actualOrder);
 
-		verify(imageRepository).getImageLinkByName(product.image());
+		verify(imageRepository).getImageLinkByName(product.getImage());
 		verify(productMapper).mapDomainImage(product, TEST_IMAGE_LINK);
 		verify(orderMapper).mapOrderItemWithUpdatedProduct(orderItem, productWithLink);
 		verify(orderMapper).mapOrderItemWithUpdatedProduct(orderItem, productWithLink);

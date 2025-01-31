@@ -36,7 +36,7 @@ class CartItemImageRepositoryTest {
 		var productWithLink = Product.builder().image(TEST_IMAGE_LINK).build();
 		var cartItemWithProduct = CartItem.builder().product(productWithLink).build();
 
-		when(imageRepository.getImageLinkByName(product.image())).thenReturn(TEST_IMAGE_LINK);
+		when(imageRepository.getImageLinkByName(product.getImage())).thenReturn(TEST_IMAGE_LINK);
 		when(productMapper.mapDomainImage(product, TEST_IMAGE_LINK)).thenReturn(productWithLink);
 		when(cartItemMapper.fromDomainWithProduct(cartItem, productWithLink)).thenReturn(cartItemWithProduct);
 
@@ -44,7 +44,7 @@ class CartItemImageRepositoryTest {
 
 		assertEquals(cartItemWithProduct, actualCartItem);
 
-		verify(imageRepository).getImageLinkByName(product.image());
+		verify(imageRepository).getImageLinkByName(product.getImage());
 		verify(productMapper).mapDomainImage(product, TEST_IMAGE_LINK);
 		verify(cartItemMapper).fromDomainWithProduct(cartItem, productWithLink);
 	}

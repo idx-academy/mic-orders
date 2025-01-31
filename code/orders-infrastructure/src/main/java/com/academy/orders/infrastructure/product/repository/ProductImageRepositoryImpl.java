@@ -15,7 +15,7 @@ public class ProductImageRepositoryImpl implements ProductImageRepository {
 
 	@Override
 	public Product loadImageForProduct(Product product) {
-		var imageUrl = imageRepository.getImageLinkByName(product.image());
+		var imageUrl = imageRepository.getImageLinkByName(product.getImage());
 		return productMapper.mapDomainImage(product, imageUrl);
 	}
 

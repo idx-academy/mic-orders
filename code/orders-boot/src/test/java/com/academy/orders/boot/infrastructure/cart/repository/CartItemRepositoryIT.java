@@ -42,7 +42,7 @@ class CartItemRepositoryIT extends AbstractRepositoryIT {
 
 		assertNotNull(savedCartItem);
 		assertNotNull(savedCartItem.product());
-		assertEquals(productId, savedCartItem.product().id());
+		assertEquals(productId, savedCartItem.product().getId());
 		assertEquals(quantity, savedCartItem.quantity());
 	}
 
@@ -95,7 +95,7 @@ class CartItemRepositoryIT extends AbstractRepositoryIT {
 		var cartItems = cartItemRepository.findCartItemsByAccountIdAndLang(userId, lang);
 		assertEquals(expectedSize, cartItems.size());
 		assertSchemaIsNotNull(cartItems);
-		assertEquals(1, cartItems.get(0).product().productTranslations().size());
+		assertEquals(1, cartItems.get(0).product().getProductTranslations().size());
 	}
 
 	static Stream<Arguments> productIdAndUserIdMethodSourceProvider() {

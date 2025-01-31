@@ -31,14 +31,14 @@ public class UpdateCartItemQuantityUseCaseImpl implements UpdateCartItemQuantity
 
 		Product product = updatedCartItem.product();
 
-		if (quantity > product.quantity()) {
-			throw new QuantityExceedsAvailableException(productId, quantity, product.quantity());
+		if (quantity > product.getQuantity()) {
+			throw new QuantityExceedsAvailableException(productId, quantity, product.getQuantity());
 		}
 
 		var cartItemPrice = calculatePriceUseCase.calculateCartItemPrice(updatedCartItem);
 		var totalPrice = calculatePriceUseCase.calculateCartTotalPrice(getAll);
 
-		return new UpdatedCartItemDto(productId, quantity, product.price(), cartItemPrice, totalPrice);
+		return new UpdatedCartItemDto(productId, quantity, product.getPrice(), cartItemPrice, totalPrice);
 	}
 
 	private void checkCartItemExists(UUID productId, Long userId) {
@@ -53,6 +53,6 @@ public class UpdateCartItemQuantityUseCaseImpl implements UpdateCartItemQuantity
 		CartItem updatedCartItem = new CartItem(cartItem.product(), quantity);
 
 		return cartItemRepository
-				.save(new CreateCartItemDTO(updatedCartItem.product().id(), userId, updatedCartItem.quantity()));
+				.save(new CreateCartItemDTO(updatedCartItem.product().getId(), userId, updatedCartItem.quantity()));
 	}
 }

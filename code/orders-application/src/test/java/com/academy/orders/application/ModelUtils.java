@@ -181,9 +181,9 @@ public class ModelUtils {
 	}
 
 	public static CartItemDto getCartItemDto(CartItem cartItem, BigDecimal cartPrice) {
-		return CartItemDto.builder().productId(cartItem.product().id()).image(cartItem.product().image())
-				.name(cartItem.product().productTranslations().iterator().next().name())
-				.productPrice(cartItem.product().price()).quantity(cartItem.quantity()).calculatedPrice(cartPrice)
+		return CartItemDto.builder().productId(cartItem.product().getId()).image(cartItem.product().getImage())
+				.name(cartItem.product().getProductTranslations().iterator().next().name())
+				.productPrice(cartItem.product().getPrice()).quantity(cartItem.quantity()).calculatedPrice(cartPrice)
 				.build();
 	}
 

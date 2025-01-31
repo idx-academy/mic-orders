@@ -18,7 +18,7 @@ public class CartItemImageRepositoryImpl implements CartItemImageRepository {
 	@Override
 	public CartItem loadImageForProductInCart(CartItem cartItem) {
 		var product = cartItem.product();
-		var imageLink = imageRepository.getImageLinkByName(product.image());
+		var imageLink = imageRepository.getImageLinkByName(product.getImage());
 		var productWithImage = productMapper.mapDomainImage(product, imageLink);
 		return cartItemMapper.fromDomainWithProduct(cartItem, productWithImage);
 	}

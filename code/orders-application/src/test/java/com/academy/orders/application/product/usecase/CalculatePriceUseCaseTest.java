@@ -21,7 +21,7 @@ class CalculatePriceUseCaseTest {
 	@Test
 	void calculatePriceTest() {
 		var cartItem = ModelUtils.getCartItem();
-		var expectedResult = cartItem.product().price().multiply(BigDecimal.valueOf(cartItem.quantity()));
+		var expectedResult = cartItem.product().getPrice().multiply(BigDecimal.valueOf(cartItem.quantity()));
 
 		var actualPrice = calculatePriceUseCase.calculateCartItemPrice(cartItem);
 		assertEquals(expectedResult, actualPrice);

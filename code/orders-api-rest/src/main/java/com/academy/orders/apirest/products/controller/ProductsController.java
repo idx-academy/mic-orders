@@ -8,6 +8,7 @@ import com.academy.orders.domain.common.Pageable;
 import com.academy.orders.domain.product.usecase.GetAllProductsUseCase;
 import com.academy.orders.domain.product.usecase.GetProductDetailsByIdUseCase;
 import com.academy.orders.domain.product.usecase.GetProductSearchResultsUseCase;
+import com.academy.orders.domain.product.usecase.GetProductsOnSaleUseCase;
 import com.academy.orders_api_rest.generated.api.ProductsApi;
 import com.academy.orders_api_rest.generated.model.PageProductSearchResultDTO;
 import com.academy.orders_api_rest.generated.model.PageProductsDTO;
@@ -27,6 +28,7 @@ import java.util.UUID;
 @CrossOrigin
 public class ProductsController implements ProductsApi {
 	private final GetAllProductsUseCase getAllProductsUseCase;
+	private final GetProductsOnSaleUseCase getProductsOnSaleUseCase;
 	private final GetProductDetailsByIdUseCase getProductDetailsByIdUseCase;
 	private final GetProductSearchResultsUseCase getProductSearchResultsUseCase;
 	private final ProductPreviewDTOMapper productPreviewDTOMapper;
@@ -38,6 +40,14 @@ public class ProductsController implements ProductsApi {
 	public ProductDetailsResponseDTO getProductDetailsById(UUID productId, String lang) {
 		var product = getProductDetailsByIdUseCase.getProductDetailsById(productId, lang);
 		return productDetailsResponseDTOMapper.toDTO(product);
+	}
+
+	@Override
+	public PageProductsDTO getProductsOnSale(PageableDTO pageableDTO, String lang) {
+		pageableDTO.setSize(3);
+		var pageable = pageableDTOMapper.fromDto(pageableDTO);
+		var productsOnSale = getProductsOnSaleUseCase.getProductsOnSale(pageable, lang);
+		return productPreviewDTOMapper.toPageProductsDTO(productsOnSale);
 	}
 
 	@Override

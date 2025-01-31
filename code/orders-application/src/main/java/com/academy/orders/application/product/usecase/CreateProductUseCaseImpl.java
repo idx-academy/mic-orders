@@ -49,11 +49,11 @@ public class CreateProductUseCaseImpl implements CreateProductUseCase {
 		var productTranslations = request.productTranslations().stream().map(dto -> {
 			var language = languageRepository.findByCode(dto.languageCode())
 					.orElseThrow(() -> new LanguageNotFoundException(dto.languageCode()));
-			return new ProductTranslationManagement(productWithoutTranslation.id(), language.id(), dto.name(),
+			return new ProductTranslationManagement(productWithoutTranslation.getId(), language.id(), dto.name(),
 					dto.description(), new Language(language.id(), dto.languageCode()));
 		}).collect(Collectors.toSet());
 
-		var productWithTranslations = new ProductManagement(productWithoutTranslation.id(), product.status(),
+		var productWithTranslations = new ProductManagement(productWithoutTranslation.getId(), product.status(),
 				product.image(), product.createdAt(), product.quantity(), product.price(), product.tags(),
 				productTranslations);
 

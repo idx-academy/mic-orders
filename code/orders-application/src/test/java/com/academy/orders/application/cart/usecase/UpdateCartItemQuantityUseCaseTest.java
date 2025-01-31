@@ -56,7 +56,7 @@ class UpdateCartItemQuantityUseCaseTest {
 
 		Assertions.assertEquals(productId, updatedCartItemDto.productId());
 		Assertions.assertEquals(quantity, updatedCartItemDto.quantity());
-		Assertions.assertEquals(product.price(), updatedCartItemDto.productPrice());
+		Assertions.assertEquals(product.getPrice(), updatedCartItemDto.productPrice());
 		Assertions.assertEquals(BigDecimal.TEN, updatedCartItemDto.calculatedPrice());
 		Assertions.assertEquals(BigDecimal.valueOf(100), updatedCartItemDto.totalPrice());
 
@@ -138,7 +138,7 @@ class UpdateCartItemQuantityUseCaseTest {
 
 		Assertions.assertEquals(productId, updatedCartItemDto.productId());
 		Assertions.assertEquals(quantity, updatedCartItemDto.quantity());
-		Assertions.assertEquals(product.price(), updatedCartItemDto.productPrice());
+		Assertions.assertEquals(product.getPrice(), updatedCartItemDto.productPrice());
 		Assertions.assertEquals(BigDecimal.TEN, updatedCartItemDto.calculatedPrice());
 		Assertions.assertEquals(BigDecimal.valueOf(100), updatedCartItemDto.totalPrice());
 

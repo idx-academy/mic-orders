@@ -43,14 +43,14 @@ class CreateCartItemByUserUseCaseTest {
 	void setUp() {
 		Account account = getAccount();
 		product = getProductWithImageLink();
-		cartItemDTO = CreateCartItemDTO.builder().productId(product.id()).userId(account.id()).quantity(1).build();
+		cartItemDTO = CreateCartItemDTO.builder().productId(product.getId()).userId(account.id()).quantity(1).build();
 	}
 
 	@Test
 	void createCartItemByUserIfProductIsNotAddedToTheCartTest() {
 		var cartItem = CartItem.builder().product(product).quantity(1).build();
 
-		when(productRepository.existById(product.id())).thenReturn(true);
+		when(productRepository.existById(product.getId())).thenReturn(true);
 		when(cartItemRepository.existsByProductIdAndUserId(cartItemDTO.productId(), cartItemDTO.userId()))
 				.thenReturn(false);
 		when(cartItemRepository.save(cartItemDTO)).thenReturn(cartItem);
@@ -64,7 +64,7 @@ class CreateCartItemByUserUseCaseTest {
 
 	@Test
 	void createCartItemByUserIfProductIsAddedToTheCartTest() {
-		when(productRepository.existById(product.id())).thenReturn(true);
+		when(productRepository.existById(product.getId())).thenReturn(true);
 		when(cartItemRepository.existsByProductIdAndUserId(cartItemDTO.productId(), cartItemDTO.userId()))
 				.thenReturn(true);
 
@@ -78,7 +78,7 @@ class CreateCartItemByUserUseCaseTest {
 
 	@Test
 	void createCartItemByUserIfProductDoesNotExistsTest() {
-		when(productRepository.existById(product.id())).thenReturn(false);
+		when(productRepository.existById(product.getId())).thenReturn(false);
 
 		assertThrowsExactly(ProductNotFoundException.class, () -> createCartItemByUserUseCase.create(cartItemDTO));
 		verify(productRepository).existById(any(UUID.class));

@@ -13,7 +13,7 @@ public class CalculatePriceUseCaseImpl implements CalculatePriceUseCase {
 
 	@Override
 	public BigDecimal calculateCartItemPrice(CartItem cartItem) {
-		return cartItem.product().price().multiply(new BigDecimal(cartItem.quantity()));
+		return cartItem.product().getPrice().multiply(new BigDecimal(cartItem.quantity()));
 	}
 
 	@Override

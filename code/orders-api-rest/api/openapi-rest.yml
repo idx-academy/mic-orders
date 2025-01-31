@@ -349,6 +349,24 @@ paths:
         '404':
           $ref: '#/components/responses/NotFoundResponse'
 
+  /v1/products/sales:
+    get:
+      tags:
+        - Products
+      summary: Get list of products on sale
+      operationId: getProductsOnSale
+      parameters:
+        - $ref: '#/components/parameters/Pageable'
+          description: For pagination
+        - $ref: '#/components/parameters/Language'
+      responses:
+        '200':
+          description: Short information about all products which are currently on sale
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageProducts'
+
   /v1/products:
     get:
       tags:
@@ -1377,9 +1395,16 @@ components:
           description: Image URLs associated with the product.
         price:
           type: number
-          format: float
-          example: 999.99
-          description: Price of the product
+          example: 90.00
+          description: Final price
+        discountedAmount:
+          type: integer
+          example: 10
+          description: The amount of the discount applied to the original price. This field is only returned if a discount is applied.
+        originalPrice:
+          type: number
+          example: 100.00
+          description: The original price before any discount is applied. This field is only returned if a discount is applied.
 
     ProductStatus:
       type: string

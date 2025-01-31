@@ -41,8 +41,8 @@ public class GetCartItemsUseCaseImpl implements GetCartItemsUseCase {
 	private CartItemDto toCartItemDto(CartItem cartItem) {
 		var productItem = cartItem.product();
 
-		return CartItemDto.builder().productId(productItem.id()).image(productItem.image())
-				.name(mapName(productItem.productTranslations())).productPrice(productItem.price())
+		return CartItemDto.builder().productId(productItem.getId()).image(productItem.getImage())
+				.name(mapName(productItem.getProductTranslations())).productPrice(productItem.getPrice())
 				.quantity(cartItem.quantity()).calculatedPrice(calculatePriceUseCase.calculateCartItemPrice(cartItem))
 				.build();
 	}

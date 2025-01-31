@@ -6,38 +6,44 @@ import com.academy.orders.infrastructure.product.entity.ProductEntity;
 import com.academy.orders.infrastructure.product.entity.ProductTranslationEntity;
 import com.academy.orders.infrastructure.tag.TagMapper;
 import com.academy.orders.infrastructure.tag.entity.TagEntity;
+
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+
 import org.hibernate.Hibernate;
-import org.mapstruct.Condition;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import org.mapstruct.*;
 
 @Mapper(componentModel = "spring", uses = {TagMapper.class, ProductTranslationMapper.class})
 public interface ProductMapper {
-	Product fromEntity(ProductEntity productEntity);
+    Product fromEntity(ProductEntity productEntity);
 
-	default Product fromEntity(ProductTranslationEntity translationEntity) {
-		ProductEntity product = translationEntity.getProduct();
-		product.setProductTranslations(Set.of(translationEntity));
-		return fromEntity(product);
-	}
+    @AfterMapping
+    default void defineDiscountRules(@MappingTarget Product.ProductBuilder builder, ProductEntity productEntity) {
+        builder.originalPrice(productEntity.getPrice());
+        builder.price(Product.calculatePrice(productEntity.getPrice(), productEntity.getDiscount().getAmount()));
+    }
 
-	List<Product> fromEntities(List<ProductEntity> productEntities);
+    default Product fromEntity(ProductTranslationEntity translationEntity) {
+        ProductEntity product = translationEntity.getProduct();
+        product.setProductTranslations(Set.of(translationEntity));
+        return fromEntity(product);
+    }
 
-	ProductEntity toEntity(Product product);
+    List<Product> fromEntities(List<ProductEntity> productEntities);
 
-	@Mapping(target = "id", ignore = true)
-	ProductEntity toEntity(ProductRequestDto dto);
+    ProductEntity toEntity(Product product);
 
-	@Condition
-	default boolean isNotLazyLoadedTagEntity(Collection<TagEntity> source) {
-		return Hibernate.isInitialized(source);
-	}
+    @Mapping(target = "id", ignore = true)
+    ProductEntity toEntity(ProductRequestDto dto);
 
-	@Named("mapDomainImage")
-	@Mapping(target = "image", source = "image")
-	Product mapDomainImage(Product product, String image);
+    @Condition
+    default boolean isNotLazyLoadedTagEntity(Collection<TagEntity> source) {
+        return Hibernate.isInitialized(source);
+    }
+
+    @Named("mapDomainImage")
+    @Mapping(target = "image", source = "image")
+    Product mapDomainImage(Product product, String image);
 }
