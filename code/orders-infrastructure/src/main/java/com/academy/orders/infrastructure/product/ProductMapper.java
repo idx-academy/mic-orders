@@ -21,9 +21,11 @@ public interface ProductMapper {
 
 	@AfterMapping
 	default void defineDiscountRules(@MappingTarget Product.ProductBuilder builder, ProductEntity productEntity) {
+		builder.originalPrice(productEntity.getPrice());
 		if (productEntity.getDiscount() != null) {
-			builder.originalPrice(productEntity.getPrice());
 			builder.price(Product.calculatePrice(productEntity.getPrice(), productEntity.getDiscount().getAmount()));
+		} else {
+			builder.price(null);
 		}
 	}
 

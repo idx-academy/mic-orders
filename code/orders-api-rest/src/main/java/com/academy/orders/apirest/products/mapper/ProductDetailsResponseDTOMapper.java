@@ -19,14 +19,6 @@ public interface ProductDetailsResponseDTOMapper {
 	@Mapping(source = "discount.amount", target = "discountedAmount")
 	ProductDetailsResponseDTO toDTO(Product product);
 
-	@AfterMapping
-	default void defineDiscountRules(@MappingTarget Product.ProductBuilder builder, Product productEntity) {
-		if (productEntity.getDiscount() != null) {
-			builder.originalPrice(productEntity.getPrice());
-			builder.price(Product.calculatePrice(productEntity.getPrice(), productEntity.getDiscount().getAmount()));
-		}
-	}
-
 	@Named("mapName")
 	default String mapName(Set<ProductTranslation> translations) {
 		return translations.stream().findFirst().map(ProductTranslation::name).orElse(null);
