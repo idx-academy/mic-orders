@@ -1,19 +1,25 @@
 package com.academy.orders.infrastructure.product.repository;
 
 import com.academy.orders.domain.common.Page;
+import com.academy.orders.domain.discount.entity.Discount;
 import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders.infrastructure.ModelUtils;
 import com.academy.orders.infrastructure.common.PageableMapper;
+import com.academy.orders.infrastructure.discount.DiscountMapper;
 import com.academy.orders.infrastructure.product.ProductManagementMapper;
 import com.academy.orders.infrastructure.product.ProductMapper;
 import com.academy.orders.infrastructure.product.ProductPageMapper;
 import com.academy.orders.infrastructure.product.ProductTranslationManagementMapper;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -27,24 +33,13 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
-import static com.academy.orders.infrastructure.ModelUtils.getManagementFilterDto;
-import static com.academy.orders.infrastructure.ModelUtils.getPageImplOf;
-import static com.academy.orders.infrastructure.ModelUtils.getPageOf;
-import static com.academy.orders.infrastructure.ModelUtils.getPageRequest;
-import static com.academy.orders.infrastructure.ModelUtils.getPageable;
-import static com.academy.orders.infrastructure.ModelUtils.getProduct;
-import static com.academy.orders.infrastructure.ModelUtils.getProductEntity;
-import static com.academy.orders.infrastructure.ModelUtils.getProductEntityWithTranslation;
-import static com.academy.orders.infrastructure.ModelUtils.getProductManagement;
-import static com.academy.orders.infrastructure.ModelUtils.getProductTranslationEntity;
-import static com.academy.orders.infrastructure.ModelUtils.getProductTranslationManagement;
+import static com.academy.orders.infrastructure.ModelUtils.*;
 import static com.academy.orders.infrastructure.TestConstants.LANGUAGE_EN;
 import static com.academy.orders.infrastructure.TestConstants.TEST_UUID;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.of;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -62,13 +57,13 @@ class ProductRepositoryTest {
 	@Mock
 	private ProductMapper productMapper;
 	@Mock
+	private DiscountMapper discountMapper;
+	@Mock
 	private ProductPageMapper productPageMapper;
 	@Mock
 	private PageableMapper pageableMapper;
-
 	@Mock
 	private ProductTranslationManagementMapper productTranslationManagementMapper;
-
 	@Mock
 	private ProductManagementMapper productManagementMapper;
 
@@ -290,5 +285,39 @@ class ProductRepositoryTest {
 
 		verify(productJpaAdapter).findProductByProductIdAndLanguageCode(TEST_UUID, LANGUAGE_EN);
 		verify(productMapper).fromEntity(productEntity);
+	}
+
+	@Test
+	void updateProductDiscountWhenNotFoundTest() {
+		var product = getProduct();
+		var discount = getDiscount();
+		var discountEntity = getDiscountEntity();
+
+		when(productJpaAdapter.findProductByProductId(product.getId())).thenReturn(Optional.empty());
+		when(discountMapper.toEntity(discount)).thenReturn(discountEntity);
+
+		var result = productRepository.updateProductDiscount(product.getId(), discount);
+
+		assertFalse(result);
+	}
+
+	@Test
+	void updateProductDiscountTest() {
+		var product = getProduct();
+		var productEntity = getProductEntityWithDiscount();
+		var discount = getDiscount();
+		discount.setEndDate(LocalDateTime.of(2025, 4, 6, 10, 10, 19));
+		var discountEntity = getDiscountEntity();
+
+		assertNull(product.getDiscount());
+
+		when(productJpaAdapter.findProductByProductId(product.getId())).thenReturn(Optional.of(productEntity));
+		when(discountMapper.toEntity(discount)).thenReturn(discountEntity);
+
+		var result = productRepository.updateProductDiscount(product.getId(), discount);
+
+		assertNotNull(productEntity.getDiscount());
+
+		assertTrue(result);
 	}
 }

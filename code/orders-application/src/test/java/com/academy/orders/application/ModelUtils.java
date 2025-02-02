@@ -9,6 +9,7 @@ import com.academy.orders.domain.cart.dto.CartResponseDto;
 import com.academy.orders.domain.cart.entity.CartItem;
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
+import com.academy.orders.domain.discount.entity.Discount;
 import com.academy.orders.domain.order.dto.CreateOrderDto;
 import com.academy.orders.domain.order.dto.OrderStatusInfo;
 import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
@@ -23,33 +24,30 @@ import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import com.academy.orders.domain.product.dto.ProductRequestDto;
 import com.academy.orders.domain.product.dto.ProductManagementFilterDto;
 import com.academy.orders.domain.product.dto.ProductTranslationDto;
+import com.academy.orders.domain.product.dto.UpdateProductDiscountRequestDto;
 import com.academy.orders.domain.product.entity.Language;
 import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.ProductTranslation;
 import com.academy.orders.domain.product.entity.ProductTranslationManagement;
 import com.academy.orders.domain.product.entity.Tag;
 import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import static com.academy.orders.application.TestConstants.IMAGE_NAME;
-import static com.academy.orders.application.TestConstants.IMAGE_URL;
-import static com.academy.orders.application.TestConstants.LANGUAGE_EN;
-import static com.academy.orders.application.TestConstants.LANGUAGE_UK;
-import static com.academy.orders.application.TestConstants.PRODUCT_DESCRIPTION;
-import static com.academy.orders.application.TestConstants.PRODUCT_NAME;
-import static com.academy.orders.application.TestConstants.TAG_NAME;
-import static com.academy.orders.application.TestConstants.TEST_ID;
-import static com.academy.orders.application.TestConstants.TEST_PRICE;
-import static com.academy.orders.application.TestConstants.TEST_QUANTITY;
-import static com.academy.orders.application.TestConstants.TEST_UUID;
+import static com.academy.orders.application.TestConstants.*;
 import static com.academy.orders.domain.order.entity.enumerated.DeliveryMethod.NOVA;
 
 public class ModelUtils {
 	private static final LocalDateTime DATE_TIME = LocalDateTime.of(1, 1, 1, 1, 1, 1);
+
+	public static Discount getDiscount() {
+		return Discount.builder().id(TEST_UUID).amount(TEST_QUANTITY).startDate(TEST_START_DATE).endDate(TEST_END_DATE)
+				.build();
+	}
 
 	public static Product getProductWithImageLink() {
 		return Product.builder().id(TEST_UUID).status(ProductStatus.VISIBLE).image(IMAGE_URL).quantity(TEST_QUANTITY)
@@ -59,6 +57,18 @@ public class ModelUtils {
 	public static Product getProductWithImageName() {
 		return Product.builder().id(TEST_UUID).status(ProductStatus.VISIBLE).image(IMAGE_NAME).quantity(TEST_QUANTITY)
 				.price(TEST_PRICE).tags(Set.of(getTag())).productTranslations(Set.of(getProductTranslation())).build();
+	}
+
+	public static Product getProductWithImageUrlAndDiscount() {
+		return Product.builder().id(TEST_UUID).status(ProductStatus.VISIBLE).image(IMAGE_NAME).quantity(TEST_QUANTITY)
+				.price(TEST_PRICE).discount(getDiscount()).tags(Set.of(getTag()))
+				.productTranslations(Set.of(getProductTranslation())).build();
+	}
+
+	public static Product getProductWithImageUrlAndAppliedDiscount() {
+		return Product.builder().id(TEST_UUID).status(ProductStatus.VISIBLE).image(IMAGE_NAME).quantity(TEST_QUANTITY)
+				.price(TEST_PRICE).priceWithDiscount(TEST_DISCOUNT_PRICE).discount(getDiscount()).tags(Set.of(getTag()))
+				.productTranslations(Set.of(getProductTranslation())).build();
 	}
 
 	public static Tag getTag() {
@@ -291,8 +301,14 @@ public class ModelUtils {
 	public static Pageable getDefaultPageable() {
 		return Pageable.builder().page(0).size(10).sort(Collections.emptyList()).build();
 	}
+
 	public static AccountManagementFilterDto getAccountManagementFilterDto() {
 		return AccountManagementFilterDto.builder().build();
+	}
+
+	public static UpdateProductDiscountRequestDto getUpdateProductDiscountRequestDto() {
+		return new UpdateProductDiscountRequestDto(getProductWithImageLink().getId(), 25,
+				LocalDateTime.of(2022, 12, 12, 18, 10, 0), LocalDateTime.of(2023, 1, 12, 18, 10, 0));
 	}
 
 	public static Page<Account> getAccountPage() {

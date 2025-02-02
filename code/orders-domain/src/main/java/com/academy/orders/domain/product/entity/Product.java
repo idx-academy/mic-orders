@@ -32,7 +32,7 @@ public class Product {
 	public Product applyDiscount() {
 		if (discount != null) {
 			BigDecimal percentage = BigDecimal.valueOf(100 - discount.getAmount()).divide(BigDecimal.valueOf(100));
-			this.priceWithDiscount = price.multiply(percentage).setScale(2);
+			this.priceWithDiscount = price.multiply(percentage).setScale(2, RoundingMode.HALF_DOWN);
 		}
 		return this;
 	}

@@ -9,6 +9,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Setter
 @Getter
+@EqualsAndHashCode
 @Builder
 public class Discount {
 	private UUID id;

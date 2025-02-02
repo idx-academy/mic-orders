@@ -8,6 +8,7 @@ import com.academy.orders.domain.account.entity.enumerated.UserStatus;
 import com.academy.orders.domain.cart.entity.CartItem;
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
+import com.academy.orders.domain.discount.entity.Discount;
 import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
 import com.academy.orders.domain.order.entity.Order;
 import com.academy.orders.domain.order.entity.OrderItem;
@@ -25,6 +26,7 @@ import com.academy.orders.domain.product.entity.enumerated.ProductStatus;
 import com.academy.orders.infrastructure.account.entity.AccountEntity;
 import com.academy.orders.infrastructure.cart.entity.CartItemEntity;
 import com.academy.orders.infrastructure.cart.entity.CartItemId;
+import com.academy.orders.infrastructure.discount.entity.DiscountEntity;
 import com.academy.orders.infrastructure.language.entity.LanguageEntity;
 import com.academy.orders.infrastructure.order.entity.OrderEntity;
 import com.academy.orders.infrastructure.order.entity.OrderItemEntity;
@@ -44,14 +46,20 @@ import java.util.Set;
 import java.util.UUID;
 
 import static com.academy.orders.domain.order.entity.enumerated.DeliveryMethod.NOVA;
-import static com.academy.orders.infrastructure.TestConstants.LANGUAGE_EN;
-import static com.academy.orders.infrastructure.TestConstants.TEST_ID;
-import static com.academy.orders.infrastructure.TestConstants.TEST_UUID;
+import static com.academy.orders.infrastructure.TestConstants.*;
 
 public class ModelUtils {
 	private static final LocalDateTime DATE_TIME = LocalDateTime.of(1, 1, 1, 1, 1);
 	private static final String TEST_IMAGE_NAME = "image-1";
 	public static final String TEST_IMAGE_LINK = "http://localhost:8080/image-1";
+
+	public static DiscountEntity getDiscountEntity() {
+		return DiscountEntity.builder().amount(TEST_AMOUNT).startDate(TEST_START_DATE).endDate(TEST_END_DATE).build();
+	}
+
+	public static Discount getDiscount() {
+		return Discount.builder().amount(TEST_AMOUNT).startDate(TEST_START_DATE).endDate(TEST_END_DATE).build();
+	}
 
 	public static AccountEntity getAccountEntity() {
 		return AccountEntity.builder().id(1L).password("$2a$12$5ZEfkhNQUREmioQ54TaFaOEM7h/QBgASIeqZceFGKPT80aTfYdvV.")
@@ -74,6 +82,12 @@ public class ModelUtils {
 		return ProductEntity.builder().id(UUID.fromString("c39314ce-b659-4776-86b9-8201b05bb339"))
 				.status(ProductStatus.VISIBLE).image(TEST_IMAGE_NAME).createdAt(DATE_TIME).quantity(100)
 				.price(BigDecimal.valueOf(100.00)).build();
+	}
+
+	public static ProductEntity getProductEntityWithDiscount() {
+		return ProductEntity.builder().id(UUID.fromString("c39314ce-b659-4776-86b9-8201b05bb339"))
+				.status(ProductStatus.VISIBLE).image(TEST_IMAGE_NAME).createdAt(DATE_TIME).quantity(100)
+				.discount(getDiscountEntity()).price(BigDecimal.valueOf(100.00)).build();
 	}
 
 	public static ProductEntity getProductEntityWithTranslation() {
