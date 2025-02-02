@@ -22,7 +22,7 @@ public class GetProductDetailsByIdUseCaseImpl implements GetProductDetailsByIdUs
 	@Override
 	public Product getProductDetailsById(UUID productId, String lang) {
 		var language = languageRepository.findByCode(lang).orElseThrow(() -> new LanguageNotFoundException(lang));
-		return productRepository.getByIdAndLanguageCode(productId, language.code())
+		return productRepository.getByIdAndLanguageCode(productId, language.code()).map(Product::applyDiscount)
 				.map(productImageRepository::loadImageForProduct)
 				.orElseThrow(() -> new ProductNotFoundException(productId));
 	}

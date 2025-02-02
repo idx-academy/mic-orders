@@ -12,6 +12,7 @@ import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.usecase.GetAllProductsUseCase;
 import com.academy.orders.domain.product.usecase.GetProductDetailsByIdUseCase;
 import com.academy.orders.domain.product.usecase.GetProductSearchResultsUseCase;
+import com.academy.orders.domain.product.usecase.GetProductsOnSaleUseCase;
 import com.academy.orders_api_rest.generated.model.PageProductSearchResultDTO;
 import com.academy.orders_api_rest.generated.model.PageableDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,18 +28,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static com.academy.orders.apirest.ModelUtils.getPageOf;
-import static com.academy.orders.apirest.ModelUtils.getPageProductsDTO;
-import static com.academy.orders.apirest.ModelUtils.getPageable;
-import static com.academy.orders.apirest.ModelUtils.getPageableDTO;
-import static com.academy.orders.apirest.ModelUtils.getProduct;
-import static com.academy.orders.apirest.ModelUtils.getProductDetailsResponseDTO;
-import static com.academy.orders.apirest.ModelUtils.getProductsPage;
-import static com.academy.orders.apirest.TestConstants.GET_ALL_PRODUCTS_URL;
-import static com.academy.orders.apirest.TestConstants.GET_PRODUCT_DETAILS_URL;
-import static com.academy.orders.apirest.TestConstants.LANGUAGE_UK;
-import static com.academy.orders.apirest.TestConstants.SEARCH_PRODUCTS_URL;
-import static com.academy.orders.apirest.TestConstants.TEST_UUID;
+import static com.academy.orders.apirest.ModelUtils.*;
+import static com.academy.orders.apirest.TestConstants.*;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
@@ -62,6 +53,9 @@ class ProductsControllerTest {
 
 	@MockBean
 	private GetProductSearchResultsUseCase getProductSearchResultsUseCase;
+
+	@MockBean
+	private GetProductsOnSaleUseCase getProductsOnSaleUseCase;
 
 	@MockBean
 	private GetProductDetailsByIdUseCase getProductDetailsByIdUseCase;
@@ -96,6 +90,28 @@ class ProductsControllerTest {
 
 		verify(pageableDTOMapper).fromDto(pageableDTO);
 		verify(getAllProductsUseCase).getAllProducts(LANGUAGE_UK, pageable, emptyList());
+		verify(productPreviewDTOMapper).toPageProductsDTO(pageProducts);
+	}
+
+	@Test
+	@SneakyThrows
+	void getProductsOnSaleTest() {
+		var pageableDTO = getPageableDTO();
+		var pageable = getPageable();
+		var pageProducts = getProductsWithDiscountPage();
+		var pageProductsDTO = getPageProductsWithDiscountDTO();
+		var language = LANGUAGE_EN;
+
+		when(pageableDTOMapper.fromDto(pageableDTO)).thenReturn(pageable);
+		when(getProductsOnSaleUseCase.getProductsOnSale(pageable, language)).thenReturn(pageProducts);
+		when(productPreviewDTOMapper.toPageProductsDTO(pageProducts)).thenReturn(pageProductsDTO);
+
+		mockMvc.perform(get(GET_PRODUCTS_ON_SALES_URL).param("lang", language)).andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(content().json(objectMapper.writeValueAsString(pageProductsDTO)));
+
+		verify(pageableDTOMapper).fromDto(pageableDTO);
+		verify(getProductsOnSaleUseCase).getProductsOnSale(pageable, language);
 		verify(productPreviewDTOMapper).toPageProductsDTO(pageProducts);
 	}
 

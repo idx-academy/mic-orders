@@ -7,6 +7,7 @@ import com.academy.orders.domain.account.entity.enumerated.UserStatus;
 import com.academy.orders.domain.cart.dto.UpdatedCartItemDto;
 import com.academy.orders.domain.common.Page;
 import com.academy.orders.domain.common.Pageable;
+import com.academy.orders.domain.discount.entity.Discount;
 import com.academy.orders.domain.order.dto.OrderStatusInfo;
 import com.academy.orders.domain.order.dto.OrdersFilterParametersDto;
 import com.academy.orders.domain.order.dto.UpdateOrderStatusDto;
@@ -75,22 +76,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static com.academy.orders.apirest.TestConstants.IMAGE_URL;
-import static com.academy.orders.apirest.TestConstants.LANGUAGE_UK;
-import static com.academy.orders.apirest.TestConstants.PRODUCT_DESCRIPTION;
-import static com.academy.orders.apirest.TestConstants.PRODUCT_NAME;
-import static com.academy.orders.apirest.TestConstants.TAG_NAME;
-import static com.academy.orders.apirest.TestConstants.TEST_CITY;
-import static com.academy.orders.apirest.TestConstants.TEST_DEPARTMENT;
-import static com.academy.orders.apirest.TestConstants.TEST_EMAIL;
-import static com.academy.orders.apirest.TestConstants.TEST_FIRST_NAME;
-import static com.academy.orders.apirest.TestConstants.TEST_FLOAT_PRICE;
-import static com.academy.orders.apirest.TestConstants.TEST_ID;
-import static com.academy.orders.apirest.TestConstants.TEST_LAST_NAME;
-import static com.academy.orders.apirest.TestConstants.TEST_PASSWORD;
-import static com.academy.orders.apirest.TestConstants.TEST_PRICE;
-import static com.academy.orders.apirest.TestConstants.TEST_QUANTITY;
-import static com.academy.orders.apirest.TestConstants.TEST_UUID;
+import static com.academy.orders.apirest.TestConstants.*;
 import static com.academy.orders_api_rest.generated.model.DeliveryMethodDTO.NOVA;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
@@ -100,14 +86,30 @@ public class ModelUtils {
 	private static final LocalDateTime DATE_TIME = LocalDateTime.of(1, 1, 1, 1, 1);
 	public static final OffsetDateTime OFFSET_DATE_TIME = OffsetDateTime.of(1, 1, 1, 1, 1, 1, 1, ZoneOffset.UTC);
 
+	public static Discount getDiscount() {
+		return Discount.builder().amount(TEST_AMOUNT).startDate(TEST_START_DATE).endDate(TEST_END_DATE).build();
+	}
+
 	public static Product getProduct() {
 		return Product.builder().id(TEST_UUID).status(ProductStatus.VISIBLE).image(IMAGE_URL).createdAt(DATE_TIME)
 				.quantity(TEST_QUANTITY).price(TEST_PRICE).tags(Set.of(getTag()))
 				.productTranslations(Set.of(getProductTranslation())).build();
 	}
 
+	public static Product getProductWithDiscount() {
+		return Product.builder().id(TEST_UUID).status(ProductStatus.VISIBLE).image(IMAGE_URL).createdAt(DATE_TIME)
+				.quantity(TEST_QUANTITY).price(TEST_PRICE).priceWithDiscount(TEST_PRICE_WITH_DISCOUNT)
+				.discount(getDiscount()).tags(Set.of(getTag())).productTranslations(Set.of(getProductTranslation()))
+				.build();
+	}
+
 	public static Page<Product> getProductsPage() {
 		List<Product> productList = List.of(getProduct());
+		return new Page<>(1L, 1, true, true, 1, productList.size(), productList.size(), false, productList);
+	}
+
+	public static Page<Product> getProductsWithDiscountPage() {
+		List<Product> productList = List.of(getProductWithDiscount());
 		return new Page<>(1L, 1, true, true, 1, productList.size(), productList.size(), false, productList);
 	}
 
@@ -149,6 +151,22 @@ public class ModelUtils {
 		productDTO.setName(PRODUCT_NAME);
 		productDTO.setDescription(PRODUCT_DESCRIPTION);
 		productDTO.setPrice(TEST_PRICE);
+		productDTO.setTags(List.of(TAG_NAME));
+		productDTO.setStatus(ProductPreviewDTO.StatusEnum.AVAILABLE);
+
+		return productDTO;
+	}
+
+	public static ProductPreviewDTO getProductWithDiscountPreviewDTO() {
+		var productDTO = new ProductPreviewDTO();
+
+		productDTO.setId(String.valueOf(TEST_UUID));
+		productDTO.setImage(IMAGE_URL);
+		productDTO.setName(PRODUCT_NAME);
+		productDTO.setDescription(PRODUCT_DESCRIPTION);
+		productDTO.setPrice(TEST_PRICE);
+		productDTO.setDiscount(TEST_AMOUNT);
+		productDTO.setPriceWithDiscount(TEST_PRICE_WITH_DISCOUNT);
 		productDTO.setTags(List.of(TAG_NAME));
 		productDTO.setStatus(ProductPreviewDTO.StatusEnum.AVAILABLE);
 
@@ -509,6 +527,20 @@ public class ModelUtils {
 		productSearchResultDTO.setName(TAG_NAME);
 		productSearchResultDTO.setImage("https://some/image");
 		return productSearchResultDTO;
+	}
+
+	public static PageProductsDTO getPageProductsWithDiscountDTO() {
+		var pageProductsDTO = new PageProductsDTO();
+		pageProductsDTO.content(Collections.singletonList(getProductWithDiscountPreviewDTO()));
+		pageProductsDTO.setTotalElements(1L);
+		pageProductsDTO.totalPages(1);
+		pageProductsDTO.first(true);
+		pageProductsDTO.last(true);
+		pageProductsDTO.number(1);
+		pageProductsDTO.numberOfElements(1);
+		pageProductsDTO.size(1);
+		pageProductsDTO.empty(false);
+		return pageProductsDTO;
 	}
 
 	public static PageProductsDTO getPageProductsDTO() {

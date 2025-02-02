@@ -19,16 +19,6 @@ import org.mapstruct.*;
 public interface ProductMapper {
 	Product fromEntity(ProductEntity productEntity);
 
-	@AfterMapping
-	default void defineDiscountRules(@MappingTarget Product.ProductBuilder builder, ProductEntity productEntity) {
-		builder.originalPrice(productEntity.getPrice());
-		if (productEntity.getDiscount() != null) {
-			builder.price(Product.calculatePrice(productEntity.getPrice(), productEntity.getDiscount().getAmount()));
-		} else {
-			builder.price(null);
-		}
-	}
-
 	default Product fromEntity(ProductTranslationEntity translationEntity) {
 		ProductEntity product = translationEntity.getProduct();
 		product.setProductTranslations(Set.of(translationEntity));

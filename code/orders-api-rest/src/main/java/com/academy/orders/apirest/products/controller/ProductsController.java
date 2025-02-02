@@ -44,7 +44,7 @@ public class ProductsController implements ProductsApi {
 
 	@Override
 	public PageProductsDTO getProductsOnSale(PageableDTO pageableDTO, String lang) {
-		pageableDTO.setSize(3);
+		pageableDTO.setSize(pageableDTO.getSize()); // fixme
 		var pageable = pageableDTOMapper.fromDto(pageableDTO);
 		var productsOnSale = getProductsOnSaleUseCase.getProductsOnSale(pageable, lang);
 		return productPreviewDTOMapper.toPageProductsDTO(productsOnSale);
@@ -64,5 +64,4 @@ public class ProductsController implements ProductsApi {
 		var products = getProductSearchResultsUseCase.findProductsBySearchQuery(searchQuery, lang, pageableDomain);
 		return pageProductSearchResultDTOMapper.toDto(products);
 	}
-
 }

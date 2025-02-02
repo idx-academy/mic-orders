@@ -18,6 +18,6 @@ public class GetProductsOnSaleUseCaseImpl implements GetProductsOnSaleUseCase {
 	@Override
 	public Page<Product> getProductsOnSale(Pageable pageable, String lang) {
 		var products = productRepository.findProductsWhereDiscountIsNotNull(lang, pageable);
-		return products.map(productImageRepository::loadImageForProduct);
+		return products.map(Product::applyDiscount).map(productImageRepository::loadImageForProduct);
 	}
 }
