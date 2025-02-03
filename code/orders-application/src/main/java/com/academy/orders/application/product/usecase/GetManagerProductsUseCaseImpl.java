@@ -18,7 +18,7 @@ public class GetManagerProductsUseCaseImpl implements GetManagerProductsUseCase 
 
 	@Override
 	public Page<Product> getManagerProducts(Pageable pageable, ProductManagementFilterDto filter, String lang) {
-		return productRepository.findAllByLanguageWithFilter(lang, filter, pageable)
+		return productRepository.findAllByLanguageWithFilter(lang, filter, pageable).map(Product::applyDiscount)
 				.map(productImageRepository::loadImageForProduct);
 	}
 }

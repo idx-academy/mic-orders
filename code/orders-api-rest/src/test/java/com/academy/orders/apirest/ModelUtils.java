@@ -407,7 +407,7 @@ public class ModelUtils {
 		content.setName(PRODUCT_NAME);
 		content.setImageLink(IMAGE_URL);
 		content.setQuantity(BigDecimal.valueOf(TEST_QUANTITY));
-		content.setPrice(TEST_PRICE.doubleValue());
+		content.setPrice(TEST_PRICE);
 		content.setStatus(ProductManagementStatusDTO.VISIBLE);
 		content.createdAt(OFFSET_DATE_TIME);
 		content.setTags(emptyList());

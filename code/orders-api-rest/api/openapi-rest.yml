@@ -961,7 +961,16 @@ components:
           example: 10
         price:
           type: number
-          example: 999.99
+          example: 90.00
+          description: Final price
+        discount:
+          type: integer
+          example: 10
+          description: The amount of the discount applied to the original price. This field is only returned if a discount is applied.
+        priceWithDiscount:
+          type: number
+          example: 100.00
+          description: The original price before any discount is applied. This field is only returned if a discount is applied.
         tags:
           type: array
           items:
@@ -1676,9 +1685,18 @@ components:
           minimum: 0
         price:
           type: number
-          format: double
-          example: 100.45
+          example: 90.00
+          description: Final price
           minimum: 0
+        discount:
+          type: integer
+          example: 10
+          description: The amount of the discount applied to the original price. This field is only returned if a discount is applied.
+        priceWithDiscount:
+          type: number
+          example: 100.00
+          description: The original price before any discount is applied. This field is only returned if a discount is applied.
+
         createdAt:
           type: string
           format: date-time
