@@ -1,6 +1,8 @@
 package com.academy.orders.apirest.products.mapper;
 
+import com.academy.orders.apirest.ModelUtils;
 import com.academy.orders.domain.product.entity.Language;
+import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.ProductTranslation;
 import com.academy.orders_api_rest.generated.model.ProductTranslationDTO;
 import org.junit.jupiter.api.Assertions;
@@ -19,6 +21,21 @@ class ProductResponseDTOMapperTest {
 	@BeforeEach
 	void setUp() {
 		productResponseDTOMapper = Mappers.getMapper(ProductResponseDTOMapper.class);
+	}
+
+	@Test
+	void toDto() {
+		var product = ModelUtils.getProductWithAppliedDiscount();
+		var dto = productResponseDTOMapper.toDTO(product);
+
+		Assertions.assertEquals(dto.getId(), product.getId());
+		Assertions.assertEquals(dto.getStatus().name(), product.getStatus().name());
+		Assertions.assertEquals(dto.getImage(), product.getImage());
+		Assertions.assertEquals(dto.getCreatedAt().toLocalDateTime(), product.getCreatedAt());
+		Assertions.assertEquals(dto.getQuantity(), product.getQuantity());
+		Assertions.assertEquals(dto.getPrice(), product.getPrice());
+		Assertions.assertEquals(dto.getDiscount(), product.getDiscount().getAmount());
+		Assertions.assertEquals(dto.getPriceWithDiscount(), product.getPriceWithDiscount());
 	}
 
 	@Test

@@ -103,6 +103,15 @@ public class ModelUtils {
 				.build();
 	}
 
+	public static Product getProductWithAppliedDiscount() {
+		var product =  Product.builder().id(TEST_UUID).status(ProductStatus.VISIBLE).image(IMAGE_URL).createdAt(DATE_TIME)
+				.quantity(TEST_QUANTITY).price(TEST_PRICE).priceWithDiscount(TEST_PRICE_WITH_DISCOUNT)
+				.discount(getDiscount()).tags(Set.of(getTag())).productTranslations(Set.of(getProductTranslation()))
+				.build();
+		product.applyDiscount();
+		return product;
+	}
+
 	public static Page<Product> getProductsPage() {
 		List<Product> productList = List.of(getProduct());
 		return new Page<>(1L, 1, true, true, 1, productList.size(), productList.size(), false, productList);
