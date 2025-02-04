@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   title: Retail API
   description: API description in OpenAPI 3.0 format
-  version: 0.0.1
+  version: 0.0.2
 
 servers:
   - url: http://localhost:8080/retail
@@ -1032,8 +1032,8 @@ components:
       type: object
       properties:
         id:
-          type: number
-          format: id
+          type: integer
+          format: int64
           example: 1
         name:
           type: string

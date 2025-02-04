@@ -16,6 +16,7 @@ public interface ProductDetailsResponseDTOMapper {
 	@Mapping(source = "image", target = "image")
 	@Mapping(source = "tags", target = "tags", qualifiedByName = "mapTags")
 	@Mapping(source = "quantity", target = "quantity")
+	@Mapping(target = "priceWithDiscount", expression = "java(product.getPriceWithDiscount())")
 	@Mapping(source = "discount.amount", target = "discount")
 	ProductDetailsResponseDTO toDTO(Product product);
 

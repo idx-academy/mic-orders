@@ -142,18 +142,4 @@ public class ProductRepositoryImpl implements ProductRepository {
 		var productEntity = productJpaAdapter.findProductByProductIdAndLanguageCode(productId, lang);
 		return productEntity.map(productMapper::fromEntity);
 	}
-
-	@Override
-	public boolean updateProductDiscount(UUID productId, Discount discount) {
-		var discountEntity = discountMapper.toEntity(discount);
-		var productEntity = productJpaAdapter.findProductByProductId(productId);
-		if (productEntity.isPresent()) {
-			var retrieved = productEntity.get();
-			retrieved.setDiscount(discountEntity);
-			productJpaAdapter.save(retrieved);
-			return true;
-		} else {
-			return false;
-		}
-	}
 }

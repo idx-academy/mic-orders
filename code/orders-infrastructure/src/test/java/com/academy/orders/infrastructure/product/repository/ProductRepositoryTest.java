@@ -57,8 +57,6 @@ class ProductRepositoryTest {
 	@Mock
 	private ProductMapper productMapper;
 	@Mock
-	private DiscountMapper discountMapper;
-	@Mock
 	private ProductPageMapper productPageMapper;
 	@Mock
 	private PageableMapper pageableMapper;
@@ -285,39 +283,5 @@ class ProductRepositoryTest {
 
 		verify(productJpaAdapter).findProductByProductIdAndLanguageCode(TEST_UUID, LANGUAGE_EN);
 		verify(productMapper).fromEntity(productEntity);
-	}
-
-	@Test
-	void updateProductDiscountWhenNotFoundTest() {
-		var product = getProduct();
-		var discount = getDiscount();
-		var discountEntity = getDiscountEntity();
-
-		when(productJpaAdapter.findProductByProductId(product.getId())).thenReturn(Optional.empty());
-		when(discountMapper.toEntity(discount)).thenReturn(discountEntity);
-
-		var result = productRepository.updateProductDiscount(product.getId(), discount);
-
-		assertFalse(result);
-	}
-
-	@Test
-	void updateProductDiscountTest() {
-		var product = getProduct();
-		var productEntity = getProductEntityWithDiscount();
-		var discount = getDiscount();
-		discount.setEndDate(LocalDateTime.of(2025, 4, 6, 10, 10, 19));
-		var discountEntity = getDiscountEntity();
-
-		assertNull(product.getDiscount());
-
-		when(productJpaAdapter.findProductByProductId(product.getId())).thenReturn(Optional.of(productEntity));
-		when(discountMapper.toEntity(discount)).thenReturn(discountEntity);
-
-		var result = productRepository.updateProductDiscount(product.getId(), discount);
-
-		assertNotNull(productEntity.getDiscount());
-
-		assertTrue(result);
 	}
 }

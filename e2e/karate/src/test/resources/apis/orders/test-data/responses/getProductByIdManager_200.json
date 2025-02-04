@@ -5,6 +5,8 @@
   "createdAt": "#string",
   "quantity": "#number",
   "price": "#number",
+  "discount": null,
+  "priceWithDiscount": null,
   "tags": "#array",
   "productTranslations": "#array"
 }

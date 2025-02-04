@@ -45,8 +45,6 @@ public class GetProductsOnSaleUseCaseTest {
 		when(productImageRepository.loadImageForProduct(any(Product.class)))
 				.thenAnswer(invocation -> invocation.getArgument(0));
 
-		assertNull(product.getPriceWithDiscount());
-
 		var actual = getProductsOnSaleUseCase.getProductsOnSale(pageable, lang);
 
 		assertNotNull(actual);

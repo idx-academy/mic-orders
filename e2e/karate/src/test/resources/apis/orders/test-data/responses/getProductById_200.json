@@ -4,5 +4,7 @@
   "image": "#string",
   "tags": "#array",
   "quantity": "#number",
-  "price": "#number"
+  "price": "#number",
+  "discount": null,
+  "priceWithDiscount": null
 }

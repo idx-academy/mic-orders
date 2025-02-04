@@ -18,8 +18,7 @@ public class GetProductByIdUseCaseImpl implements GetProductByIdUseCase {
 
 	@Override
 	public Product getProductById(UUID productId) {
-		return productRepository.getById(productId).map(Product::applyDiscount)
-				.map(productImageRepository::loadImageForProduct)
+		return productRepository.getById(productId).map(productImageRepository::loadImageForProduct)
 				.orElseThrow(() -> new ProductNotFoundException(productId));
 	}
 }

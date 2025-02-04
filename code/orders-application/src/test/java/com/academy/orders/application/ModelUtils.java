@@ -24,7 +24,6 @@ import com.academy.orders.domain.order.entity.enumerated.OrderStatus;
 import com.academy.orders.domain.product.dto.ProductRequestDto;
 import com.academy.orders.domain.product.dto.ProductManagementFilterDto;
 import com.academy.orders.domain.product.dto.ProductTranslationDto;
-import com.academy.orders.domain.product.dto.UpdateProductDiscountRequestDto;
 import com.academy.orders.domain.product.entity.Language;
 import com.academy.orders.domain.product.entity.Product;
 import com.academy.orders.domain.product.entity.ProductTranslation;
@@ -67,7 +66,7 @@ public class ModelUtils {
 
 	public static Product getProductWithImageUrlAndAppliedDiscount() {
 		return Product.builder().id(TEST_UUID).status(ProductStatus.VISIBLE).image(IMAGE_NAME).quantity(TEST_QUANTITY)
-				.price(TEST_PRICE).priceWithDiscount(TEST_DISCOUNT_PRICE).discount(getDiscount()).tags(Set.of(getTag()))
+				.price(TEST_PRICE).discount(getDiscount()).tags(Set.of(getTag()))
 				.productTranslations(Set.of(getProductTranslation())).build();
 	}
 
@@ -304,11 +303,6 @@ public class ModelUtils {
 
 	public static AccountManagementFilterDto getAccountManagementFilterDto() {
 		return AccountManagementFilterDto.builder().build();
-	}
-
-	public static UpdateProductDiscountRequestDto getUpdateProductDiscountRequestDto() {
-		return new UpdateProductDiscountRequestDto(getProductWithImageLink().getId(), 25,
-				LocalDateTime.of(2022, 12, 12, 18, 10, 0), LocalDateTime.of(2023, 1, 12, 18, 10, 0));
 	}
 
 	public static Page<Account> getAccountPage() {

@@ -18,6 +18,7 @@ public interface ManagementProductMapper extends ProductMapper {
 	@Mapping(target = "name", source = "productTranslations", qualifiedByName = "mapProductName")
 	@Mapping(target = "tags", source = "tags", qualifiedByName = "mapTags")
 	@Mapping(target = "discount", source = "discount.amount")
+	@Mapping(target = "priceWithDiscount", expression = "java(product.getPriceWithDiscount())")
 	ProductManagementContentDTO fromProduct(Product product);
 
 	ProductManagementPageDTO fromProductPage(Page<Product> productPage);

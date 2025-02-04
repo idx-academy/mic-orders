@@ -98,18 +98,8 @@ public class ModelUtils {
 
 	public static Product getProductWithDiscount() {
 		return Product.builder().id(TEST_UUID).status(ProductStatus.VISIBLE).image(IMAGE_URL).createdAt(DATE_TIME)
-				.quantity(TEST_QUANTITY).price(TEST_PRICE).priceWithDiscount(TEST_PRICE_WITH_DISCOUNT)
-				.discount(getDiscount()).tags(Set.of(getTag())).productTranslations(Set.of(getProductTranslation()))
-				.build();
-	}
-
-	public static Product getProductWithAppliedDiscount() {
-		var product =  Product.builder().id(TEST_UUID).status(ProductStatus.VISIBLE).image(IMAGE_URL).createdAt(DATE_TIME)
-				.quantity(TEST_QUANTITY).price(TEST_PRICE).priceWithDiscount(TEST_PRICE_WITH_DISCOUNT)
-				.discount(getDiscount()).tags(Set.of(getTag())).productTranslations(Set.of(getProductTranslation()))
-				.build();
-		product.applyDiscount();
-		return product;
+				.quantity(TEST_QUANTITY).price(TEST_PRICE).discount(getDiscount()).tags(Set.of(getTag()))
+				.productTranslations(Set.of(getProductTranslation())).build();
 	}
 
 	public static Page<Product> getProductsPage() {
@@ -477,8 +467,8 @@ public class ModelUtils {
 		productResponseDTO.setPrice(new BigDecimal("999.99"));
 
 		List<TagDTO> tags = new ArrayList<>();
-		tags.add(new TagDTO().id(BigDecimal.valueOf(1L)).name("Electronics"));
-		tags.add(new TagDTO().id(BigDecimal.valueOf(2L)).name("Gadgets"));
+		tags.add(new TagDTO().id(1L).name("Electronics"));
+		tags.add(new TagDTO().id(2L).name("Gadgets"));
 		productResponseDTO.setTags(tags);
 
 		List<ProductTranslationDTO> productTranslations = new ArrayList<>();

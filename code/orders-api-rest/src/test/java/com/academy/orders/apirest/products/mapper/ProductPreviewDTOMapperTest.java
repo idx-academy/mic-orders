@@ -27,11 +27,13 @@ class ProductPreviewDTOMapperTest {
 		Assertions.assertEquals(PRODUCT_DESCRIPTION, dto.getDescription());
 		Assertions.assertEquals(1, dto.getTags().size());
 		Assertions.assertEquals(TAG_NAME, dto.getTags().get(0));
+		Assertions.assertNull(dto.getDiscount());
+		Assertions.assertNull(dto.getPriceWithDiscount());
 	}
 
 	@Test
-	void toDtoWithAppliedDiscount() {
-		var product = getProductWithAppliedDiscount();
+	void toDtoWithDiscount() {
+		var product = getProductWithDiscount();
 		var dto = productPreviewDTOMapper.toDto(product);
 
 		Assertions.assertEquals(PRODUCT_NAME, dto.getName());
@@ -51,6 +53,8 @@ class ProductPreviewDTOMapperTest {
 		Assertions.assertNull(dto.getDescription());
 		Assertions.assertEquals(1, dto.getTags().size());
 		Assertions.assertEquals(TAG_NAME, dto.getTags().get(0));
+		Assertions.assertNull(dto.getDiscount());
+		Assertions.assertNull(dto.getPriceWithDiscount());
 	}
 
 	@Test
@@ -61,6 +65,8 @@ class ProductPreviewDTOMapperTest {
 		Assertions.assertEquals(PRODUCT_NAME, dto.getName());
 		Assertions.assertEquals(PRODUCT_DESCRIPTION, dto.getDescription());
 		Assertions.assertEquals(0, dto.getTags().size());
+		Assertions.assertNull(dto.getDiscount());
+		Assertions.assertNull(dto.getPriceWithDiscount());
 	}
 
 	@Test
@@ -72,5 +78,7 @@ class ProductPreviewDTOMapperTest {
 		Assertions.assertNull(dto.getDescription());
 		Assertions.assertEquals(1, dto.getTags().size());
 		Assertions.assertEquals(TAG_NAME, dto.getTags().get(0));
+		Assertions.assertNull(dto.getDiscount());
+		Assertions.assertNull(dto.getPriceWithDiscount());
 	}
 }

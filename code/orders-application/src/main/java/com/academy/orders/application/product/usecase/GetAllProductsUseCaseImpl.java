@@ -24,6 +24,6 @@ public class GetAllProductsUseCaseImpl implements GetAllProductsUseCase {
 		} else {
 			products = productRepository.findAllProducts(language, pageable, tags);
 		}
-		return products.map(Product::applyDiscount).map(productImageRepository::loadImageForProduct);
+		return products.map(productImageRepository::loadImageForProduct);
 	}
 }

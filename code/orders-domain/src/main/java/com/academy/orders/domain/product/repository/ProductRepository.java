@@ -189,23 +189,6 @@ public interface ProductRepository {
 	Optional<Product> getByIdAndLanguageCode(UUID productId, String lang);
 
 	/**
-	 * Updates the discount for a specified product.
-	 * <p>
-	 * This method applies the provided discount to the product identified by the
-	 * given product ID. It ensures that the discount information is updated
-	 * accordingly and returns a boolean value indicating whether the update was
-	 * successful or not.
-	 * </p>
-	 *
-	 * @param productId
-	 *            the unique identifier of the product to update the discount for
-	 * @param discount
-	 *            the discount information to apply to the product
-	 * @return {@code true} if the discount was successfully updated, {@code false}
-	 *         otherwise
-	 */
-	boolean updateProductDiscount(UUID productId, Discount discount);
-	/**
 	 * Retrieves a paginated list of {@link Product} entities where the discount is
 	 * available for the provided language. This method uses the language to filter
 	 * the products and only returns those that have a non-null discount.

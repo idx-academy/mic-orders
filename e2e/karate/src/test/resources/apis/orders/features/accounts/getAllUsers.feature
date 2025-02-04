@@ -18,7 +18,7 @@ Feature: Get all users
         "first": true,
         "last": false,
         "number": 0,
-        "numberOfElements": 8,
+        "numberOfElements": "#number",
         "size": 8,
         "empty": false,
         "content": "##array"

@@ -24,21 +24,16 @@ public class Product {
 	private LocalDateTime createdAt;
 	private Integer quantity;
 	private BigDecimal price;
-	private BigDecimal priceWithDiscount;
+	@Setter
 	private Discount discount;
 	private Set<Tag> tags;
 	private Set<ProductTranslation> productTranslations;
 
-	public Product applyDiscount() {
-		if (discount != null) {
-			BigDecimal percentage = BigDecimal.valueOf(100 - discount.getAmount()).divide(BigDecimal.valueOf(100));
-			this.priceWithDiscount = price.multiply(percentage).setScale(2, RoundingMode.HALF_DOWN);
+	public BigDecimal getPriceWithDiscount() {
+		if (discount == null) {
+			return null;
 		}
-		return this;
-	}
-
-	public void addDiscount(final Discount discount) {
-		this.discount = discount;
-		applyDiscount();
+		final BigDecimal percentage = BigDecimal.valueOf(100 - discount.getAmount()).divide(BigDecimal.valueOf(100));
+		return price.multiply(percentage).setScale(2, RoundingMode.HALF_DOWN);
 	}
 }
